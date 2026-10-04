@@ -1,0 +1,102 @@
+name: CI
+
+# ============================================================================
+# CI — o mesmo gate que roda na máquina, em ordem de custo crescente
+# ============================================================================
+# A ordem importa: o que é mais rápido e pega mais erro vem primeiro, para o
+# developer receber o sinal em segundos em vez de minutos.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Um workflow novo por push cancela o anterior: não faz sentido esperar duas
+# versões do mesmo commit.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Tipos, lint, formatação e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # allowBuilds em pnpm-workspace.yaml autoriza esbuild/unrs-resolver/
+      # workerd; sem --frozen-lockfile o CI instalaria de novo a cada run.
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Formatação
+        run: pnpm format:check
+
+      - name: Testes unitários
+        run: pnpm test:run
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # O build não pode depender de segredo: as variáveis ausentes caem no
+      # valor padrão local (ver lib/env.ts).
+      - name: Build do Next
+        run: pnpm build:next
+
+  security:
+    name: Segredos e dependências
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # gitleaks precisa do histórico, não só o último commit
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Auditar dependências
+        run: pnpm audit --audit-level=high
+
+      - name: Procurar segredos no histórico
+        run: pnpm security:secrets

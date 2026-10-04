@@ -1,0 +1,89 @@
+{
+  // ==========================================================================
+  // tsconfig.json — contrato de tipos do projeto
+  // ==========================================================================
+  //
+  // Este formato aceita comentários (JSONC). O package.json NÃO aceita, e é por
+  // isso que lá as secções viram campos ("engines", "packageManager").
+  //
+  // O Next 16 gera e mantém o `next-env.d.ts`; ele precisa estar em `include`
+  // para os tipos de `.next/types` não acusarem erro.
+  // ==========================================================================
+  "compilerOptions": {
+    // Alvo de compilação. O Next transpila com SWC (Turbopack), então este
+    // valor só orienta o `tsc --noEmit` usado no typecheck.
+    "target": "ES2022",
+    // Bibliotecas de tipos: DOM do navegador + iteráveis + ES moderno.
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Checar arquivos .js também — útil para scripts em JavaScript
+    // (scripts/, *.mjs de configuração).
+    "allowJs": true,
+    // Não checar tipos dentro de node_modules: lento e erros de terceiros não
+    // são responsabilidade deste projeto.
+    "skipLibCheck": true,
+    // Tipos globais carregados por padrão. "node" dá process.env e Buffer no
+    // código que roda no servidor (Server Components, Route Handlers).
+    "types": ["node"],
+    // Modo estrito. É o que segura a maior parte dos bugs de tipo.
+    "strict": true,
+    // Traz de volta os "unchecked index access" e "noImplicitOverride" como
+    // opções explícitas em vez de implícitas.
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    // Configuração só de checagem: quem gera JavaScript é o Next. O noEmit
+    // junto do incremental abaixo evita que o tsc emita arquivos.
+    "noEmit": true,
+    // Permite `import x from 'modulo'` mesmo com `export =` (CommonJS).
+    "esModuleInterop": true,
+    // ESM moderno + resolução no estilo de quem escreve para navegadores.
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    // Permite importar JSON direto (`import pkg from './package.json'`).
+    "resolveJsonModule": true,
+    // Garante que cada arquivo seja transpilável isoladamente — o que o Next
+    // faz. Impede usar apenas `const enum`, por exemplo.
+    "isolatedModules": true,
+    // JSX com a transform moderna: não é preciso importar React em todo
+    // arquivo .tsx.
+    "jsx": "react-jsx",
+    // Cache de verificação em tsconfig.tsbuildinfo (gerado, ignorado pelo git),
+    // deixando as checagens seguintes mais rápidas.
+    "incremental": true,
+    // Preserva os tipos na saída para o "Go to Definition" do VS Code.
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    // Apelidos de import: `import { cn } from '@/lib/utils/cn'` em vez de
+    // caminho relativo. Espelhado em vitest.config.mts e .vscode/settings.json.
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  // Tudo que é checado. next-env.d.ts e os tipos gerados pelo Next entram
+  // juntos: sem eles, `PageProps`/`RouteContext` não são reconhecidos.
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  // O que NÃO é checado, e por quê:
+  //   node_modules → dependências de terceiros
+  //   .agents/      → skills de Engenharia Agêntica (markdown + exemplos)
+  //   .storybook/   → configuração do Storybook
+  //   e2e/          → Playwright roda contra o site; o app não importa isso
+  //   __tests__/    → mocks de teste não refletem os tipos do app
+  //   scripts/      → utilitários de automação, não código de produto
+  "exclude": [
+    "node_modules",
+    ".agents/**",
+    ".storybook/**",
+    "e2e/**",
+    "__tests__/**",
+    "scripts/**",
+    ".next/**"
+  ]
+}

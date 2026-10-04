@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# ============================================================================
+# .husky/commit-msg — formato da mensagem de commit
+# ============================================================================
+# Conventional Commits: `tipo(escopo): descrição`. O commitlint roda sobre a
+# mensagem que o Git já montou (passada como $1).
+
+pnpm exec commitlint --edit "$1"

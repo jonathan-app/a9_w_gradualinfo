@@ -1,0 +1,62 @@
+'use client';
+
+import { useSyncExternalStore } from 'react';
+import { useTheme } from 'next-themes';
+import { LuMoon, LuSun } from 'react-icons/lu';
+import { Button } from '@/components/ui/button';
+
+// getServerSnapshot vale na SSR e no primeiro render do cliente (hidratação);
+// depois disso o React re-renderiza com o snapshot do cliente. É o "mounted"
+// oficial sem precisar de setState dentro de useEffect.
+function useMounted() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
+/**
+ * components/shared/theme-toggle.tsx — alterna claro/escuro
+ *
+ * O ícone é escolhido lendo `theme` do next-themes. Enquanto o componente não
+ * monta (o HTML do servidor não sabe o tema do usuário), renderiza um botão
+ * vazio com o mesmo tamanho: o botão não muda de largura ao hidratar, então
+ * não há layout shift.
+ *
+ * O next-themes 1.0.0-beta.0 lê `localStorage` já no useState inicial do
+ * cliente, então `resolvedTheme` está definido no primeiro render do cliente e
+ * antes só valia nada até um effect — o servidor renderiza botão vazio e o
+ * cliente entra com ícone, e a hidratação falha. Por isso o porteiro real é
+ * `mounted`: só vira true depois do effect, igualando a primeira renderização
+ * do cliente ao HTML do servidor.
+ */
+export function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useMounted();
+  const isDark = resolvedTheme === 'dark';
+  // Antes de montar, trava o rótulo na mesma string do servidor — senão o
+  // primeiro render do cliente já diverge no aria-label e a hidratação falha.
+  const label =
+    mounted && resolvedTheme
+      ? isDark
+        ? 'Usar tema claro'
+        : 'Usar tema escuro'
+      : 'Alternar tema';
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={label}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}>
+      {mounted && resolvedTheme ? (
+        isDark ? (
+          <LuSun aria-hidden />
+        ) : (
+          <LuMoon aria-hidden />
+        )
+      ) : null}
+    </Button>
+  );
+}

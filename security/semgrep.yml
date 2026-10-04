@@ -1,0 +1,75 @@
+# ============================================================================
+# security/semgrep.yml — regras de SAST específicas deste projeto
+# ============================================================================
+# Rode com: pnpm security:sast
+#
+# O Semgrep já traz regras genéricas (p/default). O valor deste arquivo são as
+# regras que ninguém escreveu para o seu projeto: aqui ficam os padrões que o
+# App Router, o Supabase e a Cloudflare tornam plausíveis — e que o ESLint,
+# sozinho, não enxerga.
+#
+# Como escrever uma boa regra
+#   1. um pattern que não dê falso positivo no código legítimo;
+#   2. message com o porquê, não só o "o que": quem corrige precisa entender o
+#      risco para não simplesmente suprimir a regra;
+#   3. pensa no contraexemplo — a linha legítima que NÃO pode ser apontada.
+#
+# Referência: https://semgrep.dev/docs/writing-rules/pattern-syntax
+# ============================================================================
+
+rules:
+  # --- Chave de serviço em caminho de cliente -----------------------------
+  - id: service-role-key-in-client
+    message: >-
+      Chave `service_role` em código que pode chegar ao browser. Ela ignora RLS:
+      quem a tiver lê e escreve qualquer tabela. Use apenas em Route Handler no
+      servidor, e mesmo assim só para operação administrativa.
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: process.env.SUPABASE_SERVICE_ROLE_KEY
+          - pattern: process.env['SUPABASE_SERVICE_ROLE_KEY']
+          - pattern: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
+
+  # --- HTML cru em markdown ----------------------------------------------
+  - id: react-markdown-skip-html
+    message: >-
+      react-markdown com `skipHtml`: o conteúdo não passa por sanitização. Se
+      a origem for dado do usuário, é XSS com um clique. Ou remova o `skipHtml`,
+      ou garanta que o HTML foi sanitizado no servidor antes de chegar aqui.
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern: |
+      <ReactMarkdown ... skipHtml ... >
+
+  # --- proxy.ts sem matcher ----------------------------------------------
+  - id: proxy-without-matcher
+    message: >-
+      proxy.ts sem `config.matcher` renova a sessão em TODA requisição,
+      inclusive em asset estático. Isso multiplica a carga sem necessidade.
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - '**/proxy.ts'
+        - '**/middleware.ts'
+    pattern: |
+      export async function $F(...)
+    pattern-not: |
+      export const config = { ... matcher: ..., ... }
+
+  # --- Consulta a dado no cliente quando dá para ser no servidor ----------
+  - id: supabase-query-inside-use-effect
+    message: >-
+      Consulta ao Supabase dentro de um Client Component. Funciona, mas leva o
+      dado e a credencial para o browser e cria uma volta de rede que o
+      Streamed Response do App Router não precisa. Se a rota puder ser Server
+      Component, a versão no servidor é mais rápida e mais segura.
+    severity: INFO
+    languages: [typescript, javascript]
+    pattern-either:
+      - pattern: |
+          useEffect(() => { ... $SUPABASE.from(...) ... }, [])
+      - pattern: |
+          useEffect(async () => { ... $SUPABASE.from(...) ... }, [])

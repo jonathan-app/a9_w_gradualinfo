@@ -1,0 +1,35 @@
+# ============================================================================
+# .prettierignore — o que o Prettier NÃO formata
+# ============================================================================
+# Regra: o Prettier nunca toca em arquivo gerado. Formatar lockfile ou saída
+# de build cria diff ruinoso e o próximo build desfaz a mudança.
+
+pnpm-lock.yaml
+skills-lock.json
+package.json
+node_modules/
+.next/
+out/
+dist/
+build/
+open-next/
+.open-next/
+.wrangler/
+coverage/
+playwright-report/
+test-results/
+next-env.d.ts
+
+# Conteúdo das skills: documentado em outro idioma e com formatação própria.
+.agents/**
+
+# A fila de delegação é append-only por regra. O Prettier realinha a tabela
+# do histórico, o que faz cada linha nova quebrar o gate de formatação — e
+# um gate que só quebra por puro alinhamento treina o time a ignorar o gate.
+workflow/STATE.md
+
+# Assets que não são texto.
+public/**
+*.min.js
+*.min.css
+*.svg

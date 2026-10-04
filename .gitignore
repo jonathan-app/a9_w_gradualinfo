@@ -1,0 +1,64 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# next.js
+.next/
+out/
+build/
+dist/*
+.open-next/
+open-next/
+
+# wrangler / cloudflare
+.wrangler/
+cloudflare-env.d.ts
+.dev.vars
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+supabase/volumes/
+
+# testing
+coverage/
+playwright-report/
+test-results/
+ci-results/
+*.lcov
+
+# storybook
+storybook-static/
+.storybook-out/
+
+# misc
+.DS_Store
+*.pem
+.env
+.env*.local
+!.env.example
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# debug
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# agents
+.agents/
+.kilo/
+Temp_Modelos/
+
+# reports
+reports/
+!dist/.gitkeep

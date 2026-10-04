@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# ============================================================================
+# .husky/pre-push — o que roda antes de cada push
+# ============================================================================
+# Só a suíte unitária: é o que pega regressão sem custo de minutos. O build e
+# os testes e2e ficam para a CI — push não pode custar tanto quanto a CI.
+
+pnpm test:run
+if [ $? -ne 0 ]; then
+  echo "❌ Testes falharam. Push cancelado."
+  exit 1
+fi
+
+echo "✅ Verificações de pre-push passaram."

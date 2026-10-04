@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# ============================================================================
+# .husky/pre-commit — o que roda antes de cada commit
+# ============================================================================
+# Só o que é barato e pega erro antes do CI. O `check:all` completo fica para
+# a CI: um commit não pode custar minutos.
+
+# 1. Whitespace, ponto e vírgula e aspas: o que o Prettier padroniza.
+pnpm exec prettier --check --ignore-unknown .
+
+# 2. Tipos. Roda em segundos e é o que mais derruba build depois.
+pnpm typecheck

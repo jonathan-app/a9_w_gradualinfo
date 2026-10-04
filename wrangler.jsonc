@@ -1,0 +1,28 @@
+{
+  // ==========================================================================
+  // wrangler.jsonc — configuração do runtime Cloudflare Workers
+  // ==========================================================================
+  //
+  // Este arquivo NÃO é lido pelo Next. Ele é lido pelo OpenNext (que gera o
+  // bundle em .open-next/) e pelo Wrangler (que publica).
+  //
+  // O JSON tem comentários (é JSONC); não renomeie para .json.
+  //
+  // Referência: https://developers.cloudflare.com/workers/wrangler/configuration/
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gradualinfo",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-01-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "observability": {
+    "enabled": true,
+  },
+  // `pnpm deploy` sobrescreve este worker; `pnpm build` gera a pasta .open-next.
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets",
+  },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.pages.dev",
+  },
+}

@@ -1,0 +1,90 @@
+/* ============================================================================
+ * app/globals.css — Tailwind 4, configuração em CSS
+ * ============================================================================
+ *
+ * Tailwind 4 não usa tailwind.config.js: o tema, os tokens e as variantes são
+ * declarados aqui, em CSS. O que existe como "config" é o bloco `@theme`, que
+ * transforma custom properties em utilidades (--color-brand-500 vira
+ * `bg-brand-500`).
+ *
+ * Ordem importa: o `@import` do Tailwind precisa vir primeiro, plugins depois,
+ * e o `@theme` por último.
+ *
+ * Referência: https://tailwindcss.com/docs/theme
+ */
+
+@import 'tailwindcss';
+
+/* Plugin de tipografia para prosa longa (artigos, docs, conteúdo de CMS). */
+@plugin '@tailwindcss/typography';
+
+/* Dark mode por classe no <html>, controlada pelo next-themes.
+   Sem esta linha o `dark:` não sabe o que observar. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+ * @theme — os tokens do design system
+ * ---------------------------------------------------------------------------
+ * Cada custom property vira uma utilitária com o mesmo nome. Trocar a paleta
+ * inteira do produto é editar este bloco, não caçar classes no código.
+ */
+@theme {
+  /* Superfícies e texto — escala neutra em oklch (perceptualmente uniforme:
+     cada passo tem o mesmo brilho percebido, então os contrastes são previsíveis). */
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.21 0.02 264);
+  --color-muted: oklch(0.97 0.005 264);
+  --color-muted-foreground: oklch(0.55 0.02 264);
+  --color-border: oklch(0.92 0.005 264);
+
+  /* Marca */
+  --color-brand-50: oklch(0.97 0.02 250);
+  --color-brand-100: oklch(0.93 0.04 250);
+  --color-brand-500: oklch(0.62 0.17 250);
+  --color-brand-600: oklch(0.55 0.17 250);
+  --color-brand-700: oklch(0.47 0.15 250);
+
+  /* Modo escuro: as mesmas chaves, outros valores. Como o dark mode é por
+     classe, basta trocar as variáveis em .dark — nenhuma utilitário muda. */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-card: 0.75rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Variáveis do modo escuro
+ * ---------------------------------------------------------------------------
+ * Trocar o valor de --color-* aqui redireciona todas as utilidades de uma vez.
+ */
+.dark {
+  --color-background: oklch(0.18 0.02 264);
+  --color-foreground: oklch(0.97 0.005 264);
+  --color-muted: oklch(0.24 0.02 264);
+  --color-muted-foreground: oklch(0.7 0.02 264);
+  --color-border: oklch(0.3 0.02 264);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ---------------------------------------------------------------------------
+ */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    /* Evita o "flash" de tema errado antes do next-themes aplicar a classe. */
+    color-scheme: light dark;
+  }
+
+  /* Foco visível e consistente: acessibilidade de teclado não é opcional. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}

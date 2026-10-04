@@ -1,0 +1,15 @@
+{
+  "framework": "vitest",
+  "runner": "vitest",
+  "unitDirectory": "__tests__",
+  "e2eDirectory": "e2e",
+  "e2eFramework": "playwright",
+  "componentTesting": "@testing-library/react",
+  "a11y": true,
+  "coverageThresholds": {
+    "statements": 60,
+    "branches": 60,
+    "functions": 60,
+    "lines": 60
+  }
+}

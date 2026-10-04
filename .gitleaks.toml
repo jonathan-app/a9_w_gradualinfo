@@ -1,0 +1,40 @@
+# ============================================================================
+# .gitleaks.toml — o que conta como segredo neste projeto
+# ============================================================================
+# Roda por `pnpm security:secrets` (scripts/run-gitleaks.mjs).
+#
+# Por que este arquivo existe
+# O padrão do gitleaks é amplo: acende para qualquer string longa que pareça
+# chave. Numa base com muito dado de exemplo e fixture isso vira ruído — e
+# ruído em scanner é ruído em conformidade: o time para de olhar.
+#
+# A allowlist abaixo é o equilíbrio. Ela cobre o caminho (arquivos gerados,
+# lockfile) e o valor (placeholder de .env.example e seed). Nada de padrão
+# frouxo tipo "qualquer coisa depois de `key_`" — isso desligaria a regra de
+# verdade em nome de um falso positivo.
+
+title = "gitleaks — gradualinfo"
+
+[extend]
+# Regras padrão, mantidas pelo projeto gitleaks.
+useDefault = true
+
+[allowlist]
+description = "Caminhos e valores que não carregam segredo real"
+
+paths = [
+  '''pnpm-lock\.yaml''',
+  '''skills-lock\.json''',
+  '''\.agents/''',
+  '''node_modules/''',
+  '''\.next/''',
+  '''security-reports/''',
+  '''coverage/''',
+]
+
+regexTarget = "match"
+regexes = [
+  '''YOUR_[A-Z0-9_]*(KEY|TOKEN|SECRET)''',
+  '''sb_(local|placeholder|example)_[a-zA-Z0-9_\-]+''',
+  '''example\.dev''',
+]
