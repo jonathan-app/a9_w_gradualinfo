@@ -1,0 +1,7 @@
+{
+  "project": "gradualinfo",
+  "version": "1.0.0",
+  "skills_dir": ".agents/skills",
+  "agent_framework": "antigravity",
+  "strict_mode": true
+}

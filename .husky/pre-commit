@@ -4,9 +4,40 @@
 # ============================================================================
 # Só o que é barato e pega erro antes do CI. O `check:all` completo fica para
 # a CI: um commit não pode custar minutos.
+#
+# Duas decisões, e as duas vêm de um defeito real:
+#
+#   1. ESCOPO. O Prettier roda só nos arquivos STAGED deste commit. Rodar em
+#      `.` faz o gate reprovar por arquivos que ninguém está commitando — foi
+#      exatamente o que acontecia: o commit base `bec25aa` já falhava, por 55
+#      arquivos de `template-aqua/` que nenhum commit tocaria. Gate que reprova
+#      por arquivo alheio treina o time a usar `--no-verify`, e aí o gate não
+#      existe mais.
+#
+#   2. PROPAGAÇÃO. O script sai com o código do primeiro passo que falhar.
+#      `sh -e` garante isso; sem ele, um `pnpm` que falha no meio deixa o hook
+#      continuar e o commit passa. Código de saída do prettier é 2 (diferença de
+#      formatação) e do tsc é 2 (erro de tipo) — ambos são falha.
+#
+# A CI segue com o gate global (`pnpm check:all`), que é onde a verificação
+# completa pertence: ela vê o repositório inteiro, não o diff.
 
-# 1. Whitespace, ponto e vírgula e aspas: o que o Prettier padroniza.
-pnpm exec prettier --check --ignore-unknown .
+set -e
 
-# 2. Tipos. Roda em segundos e é o que mais derruba build depois.
+# --- 1. Formatação dos arquivos staged ------------------------------------
+# `git diff --cached --name-only` respeita o rename e o delete, e o
+# `--ignore-unknown` evita erro em binário. O filtro de nós mesmo evita passar
+# lista vazia, que o prettier interpreta como "formate o diretório inteiro".
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -n "$STAGED" ]; then
+  # shellcheck disable=SC2086
+  pnpm exec prettier --check --ignore-unknown $STAGED
+else
+  echo "pre-commit: nada staged para formatar"
+fi
+
+# --- 2. Tipos -------------------------------------------------------------
+# `typecheck` é global de propósito: tipo quebrado em arquivo não staged
+# quebra o build de quem commitar em cima dele. Roda em segundos.
 pnpm typecheck

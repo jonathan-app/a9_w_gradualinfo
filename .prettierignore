@@ -23,6 +23,27 @@ next-env.d.ts
 # Conteúdo das skills: documentado em outro idioma e com formatação própria.
 .agents/**
 
+# ---------------------------------------------------------------------------
+# Referência externa preservada, não código ativo.
+#
+# `template-aqua/` é o template de blog que o dono escolheu como referência
+# visual. Ele fica versionado de propósito — apagá-lo perderia a fonte do
+# design system e tornaria a fatia 6 (portar tipografia, cards, listagens e
+# página de artigo) irrecuperável.
+#
+# Ele não passa a ser código ativo: a camada Velite/MDX foi descartada pela
+# spec de supersessão, e nada em `app/`, `lib/` ou `components/` o importa.
+# Formatar 55 arquivos de terceiro aqui geraria diff de ruído e, pior,
+# autorizaria o pre-commit a bloquear commits sem relação com o template.
+# A formatação dos arquivos ATIVOS do projeto é corrigida em alteração
+# separada, para o diff mostrar causa e efeito.
+# ---------------------------------------------------------------------------
+template-aqua/**
+
+# `scratch/` é rascunho de trabalho. Também não é código ativo, e por isso
+# segue a mesma regra do template.
+scratch/**
+
 # A fila de delegação é append-only por regra. O Prettier realinha a tabela
 # do histórico, o que faz cada linha nova quebrar o gate de formatação — e
 # um gate que só quebra por puro alinhamento treina o time a ignorar o gate.

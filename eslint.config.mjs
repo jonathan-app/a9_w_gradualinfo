@@ -30,6 +30,12 @@ export default defineConfig([
     'test-results/**',
     'node_modules/**',
     'next-env.d.ts',
+    // Referência visual versionada, não código ativo. A camada Velite/MDX foi
+    // descartada pela spec de supersessão e nada do app a importa; lintar um
+    // template de terceiro faz o lint do projeto depender do estilo de outro.
+    // Mesma decisão e mesmo motivo que no `.prettierignore`.
+    'template-aqua/**',
+    'scratch/**',
   ]),
 
   // --- Regras do Next (React, App Router, a11y) --------------------------
