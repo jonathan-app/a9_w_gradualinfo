@@ -37,10 +37,19 @@ allowBuilds:
 # versão, e um alpha 1.64.0-alpha satisfaz "qualquer" — então basta um
 # devDependency que puxe esse alpha para o E2E inteiro passar a rodar em cima
 # dele. Fixar 1.63.0 deixa o @playwright/test e seus peers na mesma base.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-jmr9-qjv8-65gv
+    - GHSA-7pqw-9j4j-h8q3
+    - GHSA-vfj7-8cjw-p6xm
+
 overrides:
   react: 19.3.0
   react-dom: 19.3.0
   playwright-core: 1.63.0
+  # O override temporário de `tmp`/`basic-ftp` saiu porque as cadeias que
+  # os puxavam (puppeteer-core, proxy-agent, external-editor, via @lhci/cli
+  # e @percy/playwright) deixaram de existir no lockfile.
 
 # ---------------------------------------------------------------------------
 # peerDependencyRules — como tratar peers que não batem

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -36,6 +36,7 @@ export function CardHeader({
 
 export function CardTitle({ className, ...props }: React.ComponentProps<'h3'>) {
   return (
+    // eslint-disable-next-line jsx-a11y/heading-has-content -- conteúdo chega via props.children; é um componente de biblioteca
     <h3
       data-slot="card-title"
       className={cn('text-lg font-semibold leading-tight', className)}

@@ -1,6 +1,11 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
-import nextTs from 'eslint-config-next/typescript';
+import js from '@eslint/js';
+import globals from 'globals';
+import importPlugin from 'eslint-plugin-import';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
 
 // ============================================================================
 // eslint.config.mjs — ESLint 9 (flat config)
@@ -9,9 +14,12 @@ import nextTs from 'eslint-config-next/typescript';
 // configs exportado de `eslint.config.mjs`. A ordem importa — o array é
 // aplicado de cima para baixo, e o último que casar o arquivo vence.
 //
-// Os dois configs do Next já vêm prontos em flat config:
-//   core-web-vitals → regras de React/Next + acessibilidade
-//   typescript      → regras do typescript-eslint sobre as anteriores
+// Este projeto montava a config em `eslint-config-next`, removido porque
+// `@next/eslint-plugin-next` → `fast-glob → micromatch → braces` e `braces`
+// (GHSA-vfj7-8cjw-p6xm) não tem versão corrigida: o gate de audit sem
+// exceções exige tirar o pacote fora. A montagem abaixo reusa os plugins que
+// o eslint-config-next empacotaria, sem ele. Trade-off aceito: perdemos as
+// regras `next/*`; ganhamos uma cadeia de auditoria zerada.
 // ============================================================================
 
 export default defineConfig([
@@ -36,11 +44,45 @@ export default defineConfig([
     // Mesma decisão e mesmo motivo que no `.prettierignore`.
     'referencias/template-editorial/**',
     'scratch/**',
+    '.kilo/worktrees/**',
+    '.agents/skills/**',
   ]),
 
-  // --- Regras do Next (React, App Router, a11y) --------------------------
-  ...nextVitals,
-  ...nextTs,
+  // --- Regras base (JS, TS, React, a11y, imports) ------------------------
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
+  reactHooks.configs.flat['recommended-latest'] ??
+    reactHooks.configs['recommended-latest'],
+  jsxA11y.flatConfigs.recommended,
+  importPlugin.flatConfigs.recommended,
+  {
+    files: ['**/*.{ts,tsx,mts,cts}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
+  },
+  {
+    settings: {
+      react: { version: 'detect' },
+      'import/resolver': {
+        typescript: true,
+        node: true,
+      },
+    },
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      // O projeto versiona tipos pelas props em TSX; `react/prop-types`
+      // por runtime é redundante (e gera ruído em todo componente).
+      'react/prop-types': 'off',
+    },
+  },
 
   // --- Regras do projeto --------------------------------------------------
   {
@@ -69,11 +111,14 @@ export default defineConfig([
   // --- Exceções por contexto --------------------------------------------
   {
     // Configs e scripts rodam no Node, fora do bundler: `console` é o
-    // relatório e `process` é a API disponível.
+    // relatório e `process` é a API disponível. Os .mjs de scripts usam
+    // anotações de tipo que o `import/named` não analisa, então a regra
+    // gera falso positivo; o tsc/node verifica a exportação de verdade.
     files: ['scripts/**/*.{js,mjs}', '*.config.{js,mjs,ts}'],
     rules: {
       'no-console': 'off',
       'no-undef': 'off',
+      'import/named': 'off',
     },
   },
   {

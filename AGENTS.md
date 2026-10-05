@@ -56,7 +56,7 @@ hooks/          Hooks que dependem de React.
 proxy.ts        O antigo middleware.ts. Renova a sessão a cada requisição.
 instrumentation.ts
                 Sentry. O `instrumentation-client.ts` inicializa no cliente.
-scripts/        Wrappers Node por trás de `security:*`, `lighthouse:ci` e preinstall.
+scripts/        Wrappers Node por trás de `security:*` e preinstall.
 supabase/       config.toml, migrations/ e seed.sql.
 e2e/            Testes Playwright.
 __tests__/      Testes Vitest (unit/ guarda a árvore).

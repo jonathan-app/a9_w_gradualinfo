@@ -24,11 +24,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-const OUTPUT_DIR = 'security-reports';
-const OUTPUT_FILE = path.join(OUTPUT_DIR, 'gitleaks.json');
-
-/** Procura o gitleaks no cache do projeto e, em seguida, no PATH. */
-function resolveBinary(cwd = process.cwd()) {
+/** Retorna o caminho do gitleaks (cache do projeto ou PATH) para reuso. */
+export function resolveGitleaksBinary(cwd = process.cwd()) {
   const local = path.join(cwd, '.cache/bin/gitleaks');
   if (fs.existsSync(local)) return local;
 
@@ -38,8 +35,65 @@ function resolveBinary(cwd = process.cwd()) {
   return null;
 }
 
+const OUTPUT_DIR = 'security-reports';
+const OUTPUT_FILE = path.join(OUTPUT_DIR, 'gitleaks.json');
+
+/** Executa o scan do Gitleaks e retorna os findings (para reuso em baseline). */
+export async function runGitleaksScan() {
+  const binary = resolveGitleaksBinary();
+
+  if (!binary) {
+    throw new Error('gitleaks não encontrado no sistema.');
+  }
+
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  const runs = [
+    {
+      label: 'histórico git',
+      args: [
+        'git',
+        '--redact',
+        '--report-format',
+        'json',
+        '--report-path',
+        OUTPUT_FILE,
+      ],
+    },
+    {
+      label: 'arquivos atuais',
+      args: [
+        'dir',
+        '.',
+        '--redact',
+        '--no-git',
+        '--report-format',
+        'json',
+        '--report-path',
+        OUTPUT_FILE,
+      ],
+    },
+  ];
+
+  let findings = [];
+
+  for (const run of runs) {
+    const result = spawnSync(binary, run.args, { stdio: 'pipe' });
+
+    if (result.error) {
+      throw new Error(`erro ao executar gitleaks: ${result.error.message}`);
+    }
+
+    if (fs.existsSync(OUTPUT_FILE)) {
+      findings = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+    }
+  }
+
+  return findings;
+}
+
 function main() {
-  const binary = resolveBinary();
+  const binary = resolveGitleaksBinary();
 
   if (!binary) {
     console.error('\n❌ gitleaks não encontrado no sistema.\n');

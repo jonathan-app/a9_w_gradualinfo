@@ -19,10 +19,48 @@
  * são código revisado junto com o resto.
  */
 
-import { spawnSync } from 'node:child_process';
-import fs from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
+/** Executa o scan do Semgrep e retorna os findings (para reuso em baseline). */
+export async function runSemgrepScan() {
+  const hasLocalRules = fs.existsSync(RULES_FILE);
+  const semgrep = resolveSemgrepBinary();
+
+  const args = [
+    ...semgrep.split(' '),
+    'scan',
+    '--config',
+    hasLocalRules ? RULES_FILE : 'p/default',
+    '--severity',
+    'ERROR',
+    '--error',
+    '--json',
+    '--quiet',
+    '--metrics',
+    'off',
+    '.',
+  ];
+
+  const result = spawnSync('sh', ['-c', args.join(' ')], { encoding: 'utf8' });
+
+  if (result.error) {
+    throw new Error(`erro ao executar semgrep: ${result.error.message}`);
+  }
+
+  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+
+  try {
+    const report = JSON.parse(result.stdout || '{"results":[]}');
+    const findings = report.results ?? [];
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(report, null, 2));
+    return findings;
+  } catch {
+    return [];
+  }
+}
+
+/** Retorna o comando do semgrep fixado no projeto (para reuso em outros scripts). */
+export function resolveSemgrepBinary() {
+  return 'pnpm dlx semgrep@1';
+}
 
 const RULES_FILE = 'security/semgrep.yml';
 const OUTPUT_FILE = 'security-reports/semgrep.json';

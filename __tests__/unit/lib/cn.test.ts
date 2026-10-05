@@ -15,6 +15,7 @@ describe('cn', () => {
   });
 
   it('ignora valores falsy vindos de condição', () => {
+    // eslint-disable-next-line no-constant-binary-expression -- o par constante é o caso de teste
     expect(cn('flex', false && 'hidden', null, undefined, '')).toBe('flex');
   });
 
