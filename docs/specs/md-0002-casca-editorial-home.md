@@ -1,11 +1,13 @@
 # md-0002. Home de leitura, página de artigo e SEO básico
 
 **Date**: 2026-10-05
-**Status**: Accepted
-**Decision source**: aceito pelo dono em 2026-10-05 (painel de decisão da
-sessão, `/architect`), sem alteração em relação ao texto revisado. A decisão
-sobre `editoria` ficar como texto livre até a fatia 9 foi explicitamente
-confirmada e fica registrada como premissa reversível.
+**Status**: Proposed
+**Decision source**: **nenhum**. Houve uma anotação anterior de `Accepted` nesta
+spec, e ela estava errada: a resposta obtida na sessão foi sobre a ordem do
+fluxo e sobre a escolha de `editoria` como texto livre, e foi convertida em
+aceite de conteúdo sem que isso tivesse sido dado. Revertido para `Proposed` em
+2026-10-05. O aceite exige aprovação explícita do dono sobre o **conteúdo** da
+spec, e nenhuma foi dada.
 
 ## Summary
 
@@ -16,10 +18,10 @@ parte básica de busca para buscadores: endereço canônico, dados estruturados 
 entrada no mapa do site.
 
 Para quem está construindo: a home e a página de artigo são Server Components
-que leem do banco no servidor, e a RLS do banco é a única coisa que decide o
-que é público. Nenhum filtro de publicação é duplicado no código. O que este
-documento NÃO faz é entregar a functionality: ele descreve o contrato, e a
-validação desse contrato vem depois, com `/check verify`, sobre o código
+que leem do banco no servidor, e a RLS do banco é a fronteira que decide o que
+é público. As consultas também filtram rascunho, como segunda barreira. O que
+este documento NÃO faz é entregar a funcionalidade: ele descreve o contrato, e
+a validação desse contrato vem depois, com `/check verify`, sobre o código
 escrito.
 
 ## Context
@@ -40,9 +42,10 @@ qualquer URL absoluta nova precisa sair do primeiro, senão o default errado
 fica copiado por arquivo. Segunda, `react-markdown` e `remark-gfm` já estão
 instalados, então renderizar Markdown é trabalho de uso, não de escolha de
 dependência. Terceira, e mais forte: a RLS do Supabase é a fronteira de
-segurança, e duplicar a regra "só publicado é público" dentro de uma query
-cria dois lugares onde a mesma política mora. Divergem, e quem divergir não tem
-alarme.
+autorização, mas sozinha não basta, porque existe cliente privilegiado que a
+burla por definição. Um caminho público que leia com `service_role` vaza
+rascunho mesmo com a policy impecável. Por isso a spec exige as duas camadas:
+a policy decide, e a consulta também filtra.
 
 A consequência de não decidir: a home e o artigo saem primeiro em código e a
 parte de indexação fica para depois, quando já há URLs públicas em produção
@@ -84,20 +87,30 @@ confere contra isto):
   em nenhum caminho; verificável por busca no bundle servido.
 - **md-0002/AC-07**: `slug` inexistente devolve **404** com a página de erro do
   app; artigo com `published_at` no futuro também devolve **404** em produção.
-- **md-0002/AC-08**: em ambiente `local`, artigo não publicado é acessível para
-  preview, e essa diferença mora em um único ponto testável, não espalhada em
-  três arquivos.
+- **md-0002/AC-08**: o preview de artigo não publicado existe, e é **autorizado
+  explicitamente**: exige uma credencial de preview deliberadamente configurada,
+  não apenas `NODE_ENV`. Em `local` com a credencial, o rascunho responde 200; em
+  build de produção, sem a credencial, responde **404** — e os dois lados têm
+  teste, porque um gate que só tem teste do lado que permite é meio gate.
 - **md-0002/AC-09**: o HTML servido contém
   `<script type="application/ld+json">` com `@type: Article`, título,
   `datePublished`, autor e imagem, e o JSON faz parse.
 - **md-0002/AC-10**: cada artigo tem canonical absoluto derivado de
   `SITE_ORIGIN`, e o mapa do site (`/sitemap.xml`) contém a URL de cada
   artigo publicado com `lastModified` igual a `published_at`.
-- **md-0002/AC-11**: `pnpm supabase:test` prova que o papel `anon` não lê
-  rascunho, e nenhuma rota de API pública contorna a RLS.
+- **md-0002/AC-11**: `pnpm supabase:test` prova, para `anon` e para cada papel
+  público, que rascunho e artigo agendado não são legíveis; e o código de leitura
+  pública **não** usa cliente `service_role`, com verificação automatizada de que
+  nenhum caminho alcançável por `anon` chega até ele.
 - **md-0002/AC-12**: a home e o artigo passam no `@axe-core/playwright` já
   configurado em `e2e/accessibility.spec.ts`, e a navegação por teclado
   funciona com foco visível.
+- **md-0002/AC-13**: a página de artigo exibe as `fontes_citadas` vindas do
+  `md-0001`, cada uma com o texto do link e o `href` absoluto da fonte; artigo
+  com lista vazia renderiza a página **sem** a seção e **sem** erro; e nenhuma
+  fonte é renderizada dentro do corpo do Markdown como HTML arbitrário.
+  Esta spec é a metade de exibição do contrato; a metade de dados é o AC-07 do
+  `md-0001`.
 
 ## Options considered
 
@@ -115,8 +128,9 @@ próprio. O corpo Markdown é convertido com `react-markdown` no servidor.
 
 **Cons**:
 
-- A diferença entre produção e preview precisa de um ramo condicional no
-  servidor, e ramo condicional em query é onde costuma nascer brecha.
+- O preview precisa de uma credencial própria, e toda consulta fica com um
+  caminho autenticado: dois caminhos de leitura para a mesma tabela é mais
+  superfície, não menos.
 - Mudança de conteúdo exige revalidação explícita (`revalidatePath` ou
   `revalidateTag`) para aparecer.
 
@@ -195,11 +209,18 @@ A Opção 3 está revogada por decisão de dono, registrada no `md-0001`. A Opç
 4 adia um painel que o produto declarou pós-MVP; escrevê-la aqui seria
 desenhar o que foi descartado.
 
-Sobre o preview (AC-08): ele é tentador de resolver com uma query que aceita
-slug de rascunho em qualquer ambiente. Isso seria uma brecha em produção.
-A condição de ambiente é checada **antes** da query, em um ponto só, e o teste
-correspondente cobre os dois lados — porque um ramo de preview sem teste é uma
-porta destrancada esperando o ambiente errado.
+Sobre o preview (AC-08): a resposta tentadora é checar `NODE_ENV` e, em
+desenvolvimento, aceitar rascunho. Isso não é autorização, e é pior do que
+não ter preview: `NODE_ENV` é uma constante de build, não um segredo, e a lógica
+de "quem é esse leitor" precisa sobreviver a um build de produção configurado
+errado. Por isso o
+preview exige credencial: um segredo deliberadamente configurado, mais simples
+de reverter do que um `NODE_ENV` que ninguém consegue auditar.
+
+O preço é uma segunda policy de leitura para o papel de preview, e por isso a
+emenda do `md-0001` acrescenta `posts_select_preview`. Duas policies com nomes
+claros são mais fáceis de revisar do que uma policy com `OR` dentro, que é onde
+esse tipo de acesso costuma dar errado.
 
 ## Feature design
 
@@ -278,8 +299,12 @@ A correção é somar `timeZone` opcional a `FormatOptions` em
 
 **Key invariants**:
 
-- RLS é a única fronteira de leitura. Nenhuma query duplica
-  `status = 'publicado'`.
+- A RLS decide o que é público. As consultas também filtram rascunho, e as duas
+  camadas têm teste. Filtro no código não substitui policy, e policy não
+  substitui filtro.
+- Nenhum caminho de leitura pública usa `service_role`. Ele burla a RLS por
+  definição, então usá-lo em código público é vazar rascunho com a policy
+  impecável.
 - Uma página tem exatamente um `<h1>`.
 - O corpo do artigo nunca passa por `dangerouslySetInnerHTML`.
 - Toda URL absoluta vem de `SITE_ORIGIN`.
@@ -287,10 +312,10 @@ A correção é somar `timeZone` opcional a `FormatOptions` em
 
 **Security model**:
 
-| Papel          | Lê                                                             | Escreve                   |
-| -------------- | -------------------------------------------------------------- | ------------------------- |
-| `anon`         | só linhas com `status = 'publicado'` e `published_at <= now()` | não                       |
-| `service_role` | tudo, por migration de seed                                    | sim, só em pipeline local |
+| Papel          | Lê                                                             | Escreve              |
+| -------------- | -------------------------------------------------------------- | -------------------- |
+| `anon`         | só linhas com `status = 'publicado'` e `published_at <= now()` | não                  |
+| `service_role` | tudo, por definição: burla a RLS                               | sim, só em migration |
 
 A policy é `posts_select_public` do `md-0001`. Sem tabela nova, não há policy
 nova para revisar. `author_name` é texto de autoria editorial e é servido
@@ -321,6 +346,9 @@ publicamente, como em qualquer blog.
 - Autorização: `anon` não lê rascunho, provado por pgTAP. Verifica
   **md-0002/AC-11**.
 - Acessibilidade: axe sem violações nas duas páginas. Verifica **md-0002/AC-12**.
+- Jornada: artigo com `fontes_citadas` preenchidas mostra cada fonte como link
+  com `href` absoluto; artigo com `[]` mostra a página sem a seção e sem erro.
+  Verifica **md-0002/AC-13**.
 
 ## Build plan
 
@@ -332,7 +360,8 @@ publicamente, como em qualquer blog.
    não tiver (ver `## Follow-up`). Satisfaz **md-0002/AC-01**, **md-0002/AC-11**.
 3. Criar a camada de leitura: função única que recebe o cliente do servidor e
    devolve artigos publicados já ordenados e limitados, e outra que busca por
-   `slug`, com a condição de preview da AC-08 em um único ponto.
+   `slug`, com a checagem de credencial de preview da AC-08 em um único ponto,
+   antes da query.
    Satisfaz **md-0002/AC-01**, **md-0002/AC-07**, **md-0002/AC-08**.
 4. Construir o card e a home, com esboço no topo, grade limitada a 10, estado
    vazio e `loading.tsx`. Satisfaz **md-0002/AC-02**, **md-0002/AC-03**,
@@ -346,14 +375,21 @@ publicamente, como em qualquer blog.
    publicados ao que já lista. Satisfaz **md-0002/AC-10**.
 8. Testes: pgTAP de RLS, E2E dos cenários acima e axe nas duas páginas.
    Satisfaz **md-0002/AC-11**, **md-0002/AC-12**.
+9. Renderizar as fontes citadas na página de artigo, a partir de
+   `fontes_citadas`, com o texto do link e o `href` da fonte, e sem erro quando
+   a lista está vazia. Satisfaz **md-0002/AC-13**.
+
+A tarefa 9 depende do formato de exibição decidido com o dono: o `AC-13` exige
+a exibição, e sem a decisão de onde a fonte aparece (seção final, nota de
+rodapé ou marcação no corpo) a tarefa fica sem critério de aceitação próprio.
 
 ## Consequences
 
 **Positive**:
 
 - O conteúdo existente no banco vira algo que o leitor e o buscador alcançam.
-- Um preview que não é brecha: a diferença entre local e produção tem um teste
-  que cobre os dois lados.
+- O preview exige credencial, não `NODE_ENV`: é auditable e reversível, ao
+  contrário de um ramo que decide por variável de build.
 - O SEO básico sai junto, então não há URL pública sem canonical depois.
 - Nenhuma rota de API nova para auditar.
 
@@ -375,19 +411,21 @@ publicamente, como em qualquer blog.
 
 ## Follow-up
 
-- [ ] **O `md-0001` está subespecificado em relação ao scope.** O AC-01 do
-      `md-0001` declara cinco colunas (`slug`, `title`, `content`,
-      `published_at`, `author_id`), mas o scope, revisão 3, atribui à fatia 1
-      também autor, editoria, fontes citadas, estado de publicação, data de
-      atualização e imagem de capa. Esta spec consome o schema completo do
-      scope. Alinhar `md-0001` é decisão do dono: emendar o AC-01 com a
-      decisão registrada, ou superseder. Não foi feito aqui porque `md-0001`
-      está `Accepted` e mexer no conteúdo de uma spec aceita é ato do
-      `/architect` com o dono, não efeito colateral de outra spec.
-- [ ] **`fontes citadas`** aparece no escopo da fatia 1 e não é requisito desta
-      spec nem tem coluna na tabela acima. Decidir onde a fonte citada é
-      renderizada (nota de rodapé, seção final, ou marcação no corpo) é
-      trabalho da spec que tratar fontes.
+- [ ] **Fontes citadas: o dado é do `md-0001`, a exibição é desta spec, e
+      ambas são obrigatórias.** Uma versão anterior desta spec registrava a coluna
+      como "sem renderizador", e estava errado: coluna guarda o contrato de dados,
+      não entrega transparência ao leitor. **AC-13** abaixo exige a exibição, e o
+      `md-0001` AC-07 exige que o dado exista. O AC-07 do `md-0001` e o AC-13
+      desta spec são as duas metades de um mesmo contrato.
+      **O formato de exibição não está decidido** (seção final, nota de rodapé, ou
+      marcação no corpo), e essa é a lacuna real: enquanto ela existir, a fatia 7
+      (primeira jornada, guia do notebook) **não pode ser validada**, porque um
+      guia que promete fontes e não as mostra é o que o AC existe para impedir.
+- [ ] **`md-0001` foi emendado, não supersedido**, por decisão do dono em
+      2026-10-05. A direção foi autorizada; o **conteúdo** do schema emendado
+      (colunas, policies, papel de preview, formato de `fontes_citadas`) segue
+      `Proposed` e precisa de aceite explícito antes de `/develop`. Ver a seção
+      `## Portão desta emenda` no `md-0001`.
 - [ ] **O nome do arquivo não segue a convenção** `NNNN-kebab-case.md` do
       `/architect`: este é `md-0002-...`. O prefixo foi adotado para não
       colidir com as specs revogadas da branch
@@ -440,6 +478,7 @@ verificações diferentes, em momentos diferentes, e nenhuma substitui a outra.
 **Practices & standards**:
 
 - Server Component por padrão, para HTML indexável sem JS de dados.
-- RLS como fronteira única, sem filtro duplicado na aplicação.
+- Defesa em profundidade: RLS como fronteira de autorização, mais filtro
+  editorial na consulta, porque cliente privilegiado burla a policy.
 - Canonical e JSON-LD no mesmo PR da página, para não publicar URL sem
   endereço definitivo.
