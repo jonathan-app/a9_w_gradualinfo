@@ -16,7 +16,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-4 px-4">
-        <Link href="/" className="font-semibold tracking-tight">Gradualinfo</Link>
+        <Link href="/" className="font-semibold tracking-tight">
+          Gradualinfo
+        </Link>
 
         <nav
           aria-label="Navegação principal"

@@ -12,9 +12,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-10">
       <section className="flex flex-col gap-4">
-        <h1 className="text-4xl font-semibold tracking-tight">
-          Gradualinfo
-        </h1>
+        <h1 className="text-4xl font-semibold tracking-tight">Gradualinfo</h1>
         <p className="max-w-prose text-muted-foreground">
           Next.js 16 com App Router, React 19, TypeScript 6, Tailwind CSS 4 e
           Supabase. A base já vem com sessão renovada no proxy, design system,

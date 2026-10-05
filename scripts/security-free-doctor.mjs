@@ -260,7 +260,9 @@ export function runSecurityDoctorFree({ cwd = process.cwd() } = {}) {
  */
 export function printSecurityDoctorFree(report) {
   console.log('='.repeat(64));
-  console.log('         Gradualinfo Security Free Baseline Doctor - Diagnóstico');
+  console.log(
+    '         Gradualinfo Security Free Baseline Doctor - Diagnóstico',
+  );
   console.log('='.repeat(64));
   for (const [key, val] of Object.entries(report)) {
     const padKey = (key + ':').padEnd(14, ' ');

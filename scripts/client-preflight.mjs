@@ -192,8 +192,7 @@ export function runClientPreflight({ cwd = process.cwd() } = {}) {
     const filePath = path.join(cwd, relativePath);
     if (!fs.existsSync(filePath)) continue;
     const content = fs.readFileSync(filePath, 'utf8');
-    const containsTemplateIdentity =
-      /Gradualinfo|gradualinfo/i.test(content);
+    const containsTemplateIdentity = /Gradualinfo|gradualinfo/i.test(content);
     // Placeholders: TODO/CHANGEME isolados como palavra (antes/depois de espaço ou tag)
     // ou o domínio sintético app.example.com.
     const containsPlaceholder =
