@@ -255,6 +255,9 @@ verificação automatizada.
   Verifica **md-0001/AC-05**.
 - Integridade: inserir `status = 'publicado'` com `published_at` nulo é
   rejeitado. Verifica **md-0001/AC-01**.
+- Reprodutibilidade: `pnpm supabase:reset` em banco vazio termina com o mesmo
+  schema que aplicar a migration sobre o estado de `main`, verificado por
+  comparação de `pg_dump --schema-only`. Verifica **md-0001/AC-06**.
 - Jornada: artigo com `fontes_citadas` preenchidas mostra as fontes linkadas na
   página; artigo com `[]` mostra a página sem a seção, sem erro.
   Verifica **md-0001/AC-07**.
