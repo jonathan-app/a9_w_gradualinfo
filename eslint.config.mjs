@@ -34,7 +34,7 @@ export default defineConfig([
     // descartada pela spec de supersessão e nada do app a importa; lintar um
     // template de terceiro faz o lint do projeto depender do estilo de outro.
     // Mesma decisão e mesmo motivo que no `.prettierignore`.
-    'template-aqua/**',
+    'referencias/template-editorial/**',
     'scratch/**',
   ]),
 

@@ -543,5 +543,5 @@ ocasião e voltou para `Proposed`.
 
 - `feat/identidade-portal-gradualinfo`:`0002-mvp-portal-gradualinfo.md` — a
   decisão de fluxo editorial por PR, MDX/Velite e `.velite/generated` está
-  revogada. O template `/template-aqua` permanece como **referência visual**,
-  nunca como base de conteúdo.
+  revogada. O template `/referencias/template-editorial` permanece como
+  **referência visual**, nunca como base de conteúdo.

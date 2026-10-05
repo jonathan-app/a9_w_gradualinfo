@@ -77,8 +77,8 @@
   //   e2e/          → Playwright roda contra o site; o app não importa isso
   //   __tests__/    → mocks de teste não refletem os tipos do app
   //   scripts/      → utilitários de automação, não código de produto
-  //   template-aqua/→ referência visual versionada; a camada Velite/MDX foi
-  //                   descartada e nada do app importa de lá
+  //   referencias/template-editorial/ → referência visual versionada; a camada
+  //                   Velite/MDX foi descartada e nada do app importa de lá
   //   scratch/      → rascunho de trabalho, não código de produto
   "exclude": [
     "node_modules",
@@ -87,7 +87,7 @@
     "e2e/**",
     "__tests__/**",
     "scripts/**",
-    "template-aqua/**",
+    "referencias/template-editorial/**",
     "scratch/**",
     ".next/**"
   ]

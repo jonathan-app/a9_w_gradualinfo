@@ -10,9 +10,9 @@
 #   1. ESCOPO. O Prettier roda só nos arquivos STAGED deste commit. Rodar em
 #      `.` faz o gate reprovar por arquivos que ninguém está commitando — foi
 #      exatamente o que acontecia: o commit base `bec25aa` já falhava, por 55
-#      arquivos de `template-aqua/` que nenhum commit tocaria. Gate que reprova
-#      por arquivo alheio treina o time a usar `--no-verify`, e aí o gate não
-#      existe mais.
+#      arquivos de `referencias/template-editorial/` que nenhum commit tocaria.
+#      Gate que reprova por arquivo alheio treina o time a usar `--no-verify`,
+#      e aí o gate não existe mais.
 #
 #   2. PROPAGAÇÃO. O script sai com o código do primeiro passo que falhar.
 #      `sh -e` garante isso; sem ele, um `pnpm` que falha no meio deixa o hook

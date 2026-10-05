@@ -1,15 +1,8 @@
 {
-  "name": "gradualinfo",
+  "name": "gradualinfo-editorial",
   "version": "2.0.0",
   "private": true,
-  "description": "Boilerplate profissional — Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Supabase",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aqua9/gradualinfo.git"
-  },
-  "bugs": {
-    "url": "https://github.com/aqua9/gradualinfo/issues"
-  },
+  "description": "GradualInfo Editorial — portal editorial sobre tecnologia e consumo digital",
   "homepage": "https://gradualinfo.com.br",
   "author": "Jonathan Simão",
   "license": "MIT",
@@ -57,10 +50,10 @@
     "performance": "pnpm bundle:analyze && pnpm lighthouse",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "supabase:start": "pnpm dlx supabase start",
-    "supabase:stop": "pnpm dlx supabase stop",
-    "supabase:reset": "pnpm dlx supabase db reset",
-    "supabase:test": "pnpm dlx supabase test db",
+    "supabase:start": "pnpm dlx supabase@2.119.0 start",
+    "supabase:stop": "pnpm dlx supabase@2.119.0 stop",
+    "supabase:reset": "pnpm dlx supabase@2.119.0 db reset",
+    "supabase:test": "pnpm dlx supabase@2.119.0 test db",
     "security:audit": "pnpm audit",
     "security:sast": "node scripts/run-semgrep.mjs",
     "security:secrets": "node scripts/run-gitleaks.mjs"

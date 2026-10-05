@@ -1,0 +1,43 @@
+# /check verify — md-0001, tarefas 1 a 5
+
+Data: 2026-10-05. Clone `a9_w_gradualinfo__iso`. Base `0275021`.
+
+## Verificação ponto a ponto contra os ACs
+
+| AC        | Critério                                                                                                                                                                                        | Resultado | Evidência                                                                                                      |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------- |
+| **AC-01** | Schema editorial com 12 colunas, `slug` único/minúsculo, `status` em 3 valores, `published_at` anulável, índice `(status, published_at desc)`                                                   | **PASS**  | 13 colunas (inclui `created_at` preservada), constraints ativas, índice `idx_posts_status_published_at` existe |
+| **AC-02** | `anon` não lê `status <> 'publicado'`; não lê `publicado` com `published_at` nulo ou futuro. Asserção negativa explícita                                                                        | **PASS**  | `set local role anon`: 0 rascunho, 0 arquivado, 0 agendado; vê apenas 1 publicado no passado                   |
+| **AC-03** | Nenhum papel além de `service_role` insere/altera/apaga. Prova por pgTAP                                                                                                                        | **PASS**  | `has_table_privilege` = false para INSERT/UPDATE/DELETE em `anon` e `authenticated`; escrita dá `42501`        |
+| **AC-04** | Acesso **efetivo** por `set local role`: `anon` e `authenticated`-sem-claim = 1; `authenticated`+`app_metadata.preview` = 4; claim em `user_metadata` **não** abre rascunho; `service_role` = 4 | **PASS**  | 5 papéis testados individualmente com contagens exatas                                                         |
+| **AC-05** | Remover policy de leitura quebra a suíte                                                                                                                                                        | **PASS**  | `drop policy posts_select_public` → **FAIL 5/63**; restaurado → **PASS 63/63**                                 |
+| **AC-06** | Migration forward-only; reaplicar do zero = mesmo schema que sobre estado de `main`                                                                                                             | **PASS**  | `pg_dump --schema-only`: 8992 linhas idênticas nos dois caminhos                                               |
+| **AC-07** | `fontes_citadas` array de `{titulo,url}` com url absoluta, default `[]`                                                                                                                         | **PASS**  | Schema + CHECK + função validadora; fixture publicado tem 1 fonte real                                         |
+| **AC-08** | `pnpm supabase:reset` sem erro + `pnpm supabase:test` verde                                                                                                                                     | **PASS**  | Reset 30s, Tests=63, Result=PASS                                                                               |
+
+## Correção registrada durante a verificação
+
+**RLS + `grant select`**: a afirmação anterior "revoke all + grant select fecha a segunda porta e protege rascunhos se RLS for desligada" era incorreta. Com `grant select` a `anon`/`authenticated` e RLS desligada, eles leem tudo. A proteção de leitura **é a RLS**; o `grant` protege **escrita** (AC-03). Correção gravada em `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md`.
+
+## Pendências do dono (não bloqueiam a verificação)
+
+1. **COMMENT da tabela**: corrigido de "Conteúdo de exemplo" para descrição editorial via migration `20261005000002_posts_comment_correction.sql` ✅
+2. **9 posts AQUA9**: orientação confirmada — **não importar**; excluir o banco legado exige identificar o alvo exato (project_id `website_aqua9.com.br`, containers parados, dump em `~/Downloads/aqua9-website_db-dump-2026-10-05.sql`)
+3. **Capas das fixtures**: `https://gradualinfo.com.br/exemplo-capa.jpg` é placeholder (imagem não existe). Conteúdo público precisará de imagem válida ou fallback — ficará na fatia 6
+4. **`md-0002`**: permanece `Proposed` — esta verificação não constitui aceite
+
+## Qualidade global
+
+```
+pnpm check:all → typecheck, lint, prettier, 65 testes unitários: PASS
+pnpm supabase:test → 63 asserções pgTAP: PASS
+pnpm build:next → compila 7 rotas, sem erro
+```
+
+## Estado do repositório
+
+- 4 migrations novas (1 transformação, 1 RLS/preview, 1 comment, 1 init rename já existente)
+- Suíte pgTAP: 15 → **63 asserções**
+- `seed.sql`: 4 fixtures com colunas `not null` preenchidas
+- Nada commitado; preparação de identidade (119 renomes) e alteração de banco separadas no índice
+- CI remota: job `database` vai rodar 63 asserções com CLI 2.119.0 pinada e timeout 30 min

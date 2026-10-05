@@ -23,49 +23,126 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: executar o pacote da tarefa 0 preparado em outra sessão e
-registrar `/check verify`.** O mecanismo da tarefa 0 já está verificado aqui por
-execução; falta o pacote que a conclude.
+**Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado
+por execução e revisado** — tarefas 1 a 5, `PASS 63/63`, AC-06 provado,
+`/check verify` e `/check review` registrados. O `COMMENT` da tabela foi
+corrigido via migration `20261005000002_posts_comment_correction.sql`. Os **9
+posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão
+do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed`
+e precisa de aceite.
 
-- **A suíte pgTAP rodou pela primeira vez.** Com `supabase start` no ar (Docker
-  aqui é shim sobre podman) e o rename aplicado, `supabase db reset --local`
-  conclui limpo e `supabase test db` executa: **2 falhas de 12**, ambas de
-  contagem. As policies que nunca haviam sido executadas estão corretas.
-- **A contagem errada escondia uma policy quebrada.** Com a policy de leitura em
-  `using (false)` — `anon` não lê nada — e a contagem original `7`, a suíte falha
-  **exatamente as mesmas 2 asserções**. Com a contagem corrigida para 1, a mesma
-  sabotagem aparece como `have: 0, want: 1`, e com a policy certa o resultado é
-  **PASS 12/12**. Ou seja: corrigir a contagem não é cosmético, é o que dá
-  dentes à suíte, e é o que o AC-05 exige.
-- **Verde vazio é a armadilha.** Com a tabela sem linhas, `anon não lê rascunho`
-  passa por vacuidade — passaria igual com a policy em `using (false)`. Com os
-  quatro fixtures, `anon` viu **exatamente 1 linha** de 4: rascunho, arquivado e
-  agendado invisíveis. É por isso que os fixtures não são decoração.
-- **Agendamento confirmado por execução:** artigo `publicado` com
-  `published_at` no futuro **existe** e é invisível ao público. A semântica
-  existente está certa e a invariante `CHECK` que eu tinha mandado continua
-  corretamente **retirada**.
-- **Defeito meu, no ZIP entregue:** `supabase/snippets/` e
-  `supabase/functions/` não foram no pacote, porque diretório vazio não entra no
-  `git archive`, e o CLI faz `statfs` nos dois no start. Derrubaria a verificação
-  de quem recebeu, com mensagem que não aponta a causa. Corrigido com
-  `.gitkeep` nos dois.
-- **Preparado em outra sessão, ainda não executado:** rename para
-  `20261003000000_profiles_foundation.sql` (SQL preservado byte a byte,
-  `fb50d877`), 4 fixtures no seed, pgTAP com 15 asserções, job de banco na CI e
-  relatório em `docs/reviews/2026-10-05-tarefa-0-stack-local.md`. **Os hashes
-  batem com o meu `3bb7714`** em todos os arquivos que não deveriam mudar
-  (`md-0001`, `md-0002`, `INDICE.md`, `posts_exemplo.sql`, `package.json`,
-  `pnpm-lock.yaml`), o que prova que a cópia parte do mesmo commit, sem drift.
-- **AC-08 segue UNVERIFIABLE** até o pacote rodar e ser registrado. Aqui ele é
-  **demonstrável**, não registrado.
-- **O clone tem a tarefa 0 pela metade:** mantive o rename e os `.gitkeep`, e
-  reverti os fixtures e a contagem, que eram rascunho meu. `md-0002` continua
-  `Proposed`; concluir o banco não autoriza a interface.
-- **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
-  7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
-  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
-  deve editar a árvore compartilhada; o trabalho continua no clone.
+- **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
+  (`20261005000000_posts_schema_editorial.sql`,
+  `20261005000001_posts_rls_preview.sql`,
+  `20261005000002_posts_comment_correction.sql`), suíte pgTAP de 15 para **63
+  asserções**, `seed` ajustado. `reset --local` limpo, `PASS 63/63`; `check:all`
+  com 65 testes. Verificação ponto a ponto contra os 8 ACs em
+  `docs/reviews/2026-10-05-check-verify-md-0001.md`; revisão em
+  `docs/reviews/2026-10-05-check-review-md-0001.md`.
+- **Correção técnica registrada:** a afirmação "revoke all + grant select protege
+  rascunhos se RLS for desligada" era incorreta. Com `grant select` a
+  `anon`/`authenticated` e RLS desligada, eles leem tudo. A proteção de leitura
+  **é a RLS**; o `grant` protege **escrita** (AC-03). Correção no relatório
+  `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md`.
+- **O que a suíte prova e o que não prova.** Escrita virou erro (`42501`), não
+  silêncio. `user_metadata.preview` **não** abre rascunho (duas asserções: catálogo
+  e leitura efetiva). Remover `posts_select_public` → FAIL 5/63. Trocar
+  `app_metadata` por `user_metadata` na preview → FAIL 7/63. `service_role` é o
+  único que escreve e lê tudo.
+- **AC-06 provado dentro do mesmo ambiente.** `pg_dump --schema-only`: 8992
+  linhas idênticas do zero vs. sobre estado de `main` com 3 linhas legadas
+  preservadas.
+- **Pendências que são do dono:** (a) os **9 posts AQUA9** não entram; exclusão do
+  banco legado (`project_id = website_aqua9.com.br`, containers parados, dump em
+  `~/Downloads/aqua9-website_db-dump-2026-10-05.sql`) exige a conta; (b) capas das
+  fixtures são placeholder (`https://gradualinfo.com.br/exemplo-capa.jpg`, imagem
+  não existe); (c) `md-0002` permanece `Proposed` — esta verificação não é aceite.
+- **CI remota** — job `database` com 63 asserções, CLI 2.119.0 pinada, timeout 30
+  min. Não executada.
+- **Bloqueio de concorrência confirmado em 2026-10-05 13:32:** PIDs 6895
+  (copilot-runtime), 7207 (agy) e 7640 (codex) **vivos**, mais
+  `codex-code-mode` (PID 100721).
+  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente deve
+  editar a árvore compartilhada; o trabalho continua no clone.
+- **Nada commitado.** Duas entregas separadas no índice: preparação de identidade
+  (119 renomes, 15 arquivos) + alteração de banco (4 migrations, suíte, seed).
+
+- **Tarefas 1 a 5 do `md-0001` executadas.** Duas migrations novas
+  (`20261005000000_posts_schema_editorial.sql` e
+  `20261005000001_posts_rls_preview.sql`), suíte pgTAP de 15 para **63
+  asserções**, `seed` ajustado. `reset --local` limpo e `PASS 63/63`; `check:all`
+  com 65 testes. Detalhe em
+  `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md`.
+- **A dependência que só a execução revelou:** as **quatro** policies `*_own`
+  citam `author_id`, e qualquer uma delas impede o `drop column`. A primeira
+  execução falhou com `2BP01` e a mensagem apontou as três de escrita. Elas saem na
+  migration do schema por dependência de catálogo, não por escolha.
+- **`CHECK` de `fontes_citadas` vive numa função `immutable`.** `CHECK` do
+  PostgreSQL não aceita subconsulta, e a validação precisa percorrer o array.
+  `fontes_citadas_validas(jsonb)` tem `set search_path = ''` e **não** é
+  `SECURITY DEFINER`: valida forma, não autoriza.
+- **Escrita virou erro, não silêncio.** Antes, o teste provava que `UPDATE` e
+  `DELETE` anônimos "não escreviam" contando linhas — e RLS não levanta erro
+  nesses dois: linhas que falham no `USING` são ignoradas em silêncio. Com o
+  `grant` removido, o comando dá `42501`, e é isso que a asserção exige agora.
+  `anon` e `authenticated` saíram de 7 privilégios para `SELECT` só.
+- **Duas sabotagens, e a segunda é a que importa.** Remover
+  `posts_select_public` → **FAIL 5/63**. Trocar `app_metadata` por
+  `user_metadata` na policy de preview → **FAIL 7/63**, incluindo as duas
+  asserções que pegam `user_metadata` abrindo rascunho. Restaurado: `PASS 63/63`.
+- **AC-06 provado dentro do mesmo ambiente.** `pg_dump --schema-only` de quatro
+  migrations em banco novo contra as mesmas transformações sobre o estado de
+  `main` com 3 linhas legadas plantadas: **8992 linhas, idênticas**, com as linhas
+  preservadas e o backfill aplicado. A primeira tentativa recriou o schema `public`
+  e mediu o ambiente, não as migrations — o método está no relatório.
+- **Pendências que são do dono:** (a) o `COMMENT` da tabela segue dizendo
+  "Conteúdo de exemplo", preservado por instrução e agora falso; (b) os **9 posts
+  editoriais** da base legada do AQUA9 (`website_aqua9.com.br`) continuam sem
+  destino — se forem aproveitados, viram migration de conteúdo depois que o schema
+  novo suportar `editoria` e `fontes_citadas`; (c) a capa das fixtures é
+  `https://gradualinfo.com.br/exemplo-capa.jpg`, que **não existe** — placeholder
+  para satisfazer o `CHECK` de URL absoluta, e a imagem real vem na fatia 6.
+- **O que a `md-0002` herda:** o schema está pronto e testado, e o caminho de
+  preview também — policy pronta, falta o token, o cookie `HttpOnly` e o
+  `timingSafeEqual`. Sem usuário de preview a policy não tem quem a use, e o
+  preview não existe: é o comportamento correto de falha fechada. A `md-0002`
+  continua `Proposed` e precisa de aceite do dono.
+- **A CI no GitHub ainda não foi executada.** O job `database` vai rodar esta
+  suíte com 63 asserções em vez de 15; resultado em runner real continua esperado,
+  não observado.
+- **Bloqueio de concorrência confirmado em 2026-10-05 12:15:** PIDs 6895
+  (copilot-runtime), 7207 (agy) e 7640 (codex) **vivos**, mais
+  `codex-code-mode` (PID 100721).
+  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente deve
+  editar a árvore compartilhada; o trabalho continua no clone.
+- **Nada foi commitado, e as duas entregas estão separadas no índice:** a
+  preparação de identidade (rename da referência visual, identificador, CLI
+  pinada, timeout, limpeza do AQUA9) e a alteração de banco (duas migrations,
+  suíte, `seed`) podem ser commitadas em separado, e o dono autorizou **apenas a
+  preparação** a ser commitada quando decidir — commit, push e merge continuam sem
+  autorização.
+- **Histórico desta rodada:** identidade aplicada e registrada
+  (`docs/reviews/2026-10-05-preparacao-identidade.md`, linha 35). O rename da
+  referência visual, a CLI pinada em 2.119.0, o `timeout-minutes: 30`, a remoção
+  das URLs do GitHub e do `scratch/rename-project.mjs` estão lá; antes de mudar o
+  `project_id` houve dump e `supabase stop` **sem** `--no-backup`, e os volumes
+  `supabase_*_gradualinfo` continuam intactos e datados.
+- **O achado que muda a decisão de exclusão:** o banco legado do AQUA9
+  (`website_aqua9.com.br`, containers parados) tem **9 posts editoriais** em
+  `public.posts`, com `published_at` real e uma coluna `category` que o schema
+  anterior não tinha. Não é dado descartável, e está despejado em
+  `~/Downloads/aqua9-website_db-dump-2026-10-05.sql`. `auth.users` e
+  `admin_users` estão vazios. **Continua sem resposta o projeto hospedado:** o
+  repositório não tem nenhuma referência a ele, então excluir exigiria a conta.
+- **Pendências de documentação, que são de outras habilidades:** o corpo do
+  `README.md` ainda se apresenta como boilerplate (`/document`), e o `AGENTS.md`
+  descreve o `package.json` como boilerplate e não menciona a CLI pinada nem o
+  novo `project_id` (`/sync`).
+- **O que a suíte já provou:** policy de leitura em `using (false)` e
+  `posts` vazia quebravam a versão de 15; com as 63 asserções, as duas sabotagens
+  novas falham 5 e 7. Sem as quatro fixtures, `anon não lê rascunho` passaria por
+  vacuidade — por isso elas continuam no `seed`, agora preenchendo as colunas
+  `not null`.
 
 **Passo 1 do Plano (Scope Reconciliado): encerrado.** O arquivo de escopo `0001-mvp-portal-gradualinfo.md` foi atualizado para alinhar-se com a visão editorial: conteúdo Markdown via Supabase, `/template-aqua` mantido como referência, e público direcionado. Próxima etapa desta tarefa: nenhuma. As pendências anteriores do produto e das branches seguem abaixo.
 
@@ -229,6 +306,10 @@ de agentes abaixo.**
 | 31  | 2026-10-05 | aceite de conteúdo do `md-0001` e formato das fontes | `docs/specs/md-0001-arquitetura-markdown-supabase.md` (`Status: Accepted` com aprovação de conteúdo coluna a coluna; `Decision source` com as três fontes; `## Portão desta emenda` resolvido), `docs/specs/md-0002-casca-editorial-home.md` (AC-13 agora é concreto: seção "Fontes" ao final do corpo, lista de links; `md-0002` segue `Proposed` por decisão explícita), `docs/specs/INDICE.md` (status por linha; regra nova: `Decision source` cita decisão e data, nunca artefato de controle), `workflow/STATE.md` (Bastão atual = aceite de md-0002, depois `/develop` do schema) | concluído |
 | 32  | 2026-10-05 | bloqueio do stack local + correção de três contratos | `docs/reviews/2026-10-05-bloqueio-stack-local.md` (novo: `pnpm supabase:reset` falha porque a migration `init` é pulada pela CLI e o seed quebra em `public.profiles`; a suíte pgTAP nunca executou; a asserção espera 7 posts que nada cria; nem `check:all` nem a CI tocam em banco), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (passa a **transformar** uma tabela existente; nova seção de conflitos itemizada; preview redesenhado de papel fictício para `authenticated` + claim `app_metadata`; matriz de acesso efetivo por papel com `set local role`; invariante `published_at` **retirada**; AC-08 novo para o stack; tarefa 0 no build plan), `docs/specs/md-0002-casca-editorial-home.md` (AC-08 alinhado ao mecanismo real; tabela de schema duplicada unificada), `workflow/STATE.md` | concluído |
 | 33  | 2026-10-05 | verificação por execução da tarefa 0 | `docs/reviews/2026-10-05-verificacao-tarefa-0.md` (novo: suíte pgTAP executou pela primeira vez — 2 falhas de 12, ambas de contagem; A/B prova que com a contagem errada uma policy de leitura quebrada produz saída idêntica à de uma boa, e que com a contagem corrigida a mesma sabotagem aparece e a policy certa dá PASS 12/12; agendamento confirmado por execução; **defeito meu**: `supabase/snippets/` e `supabase/functions/` faltavam no ZIP entregue, e o CLI faz `statfs` nos dois), `supabase/migrations/20261003000000_profiles_foundation.sql` (rename verificado, SQL idêntico byte a byte), `supabase/snippets/.gitkeep` + `supabase/functions/.gitkeep` (novos), `workflow/STATE.md` | concluído |
+| 34  | 2026-10-05 | integração do pacote final e verificação por execução da tarefa 0 | `supabase/seed.sql` (4 fixtures locais, upsert por slug), `supabase/tests/rls_posts_test.sql` (`plan(15)`: 12 anteriores preservadas com contagem corrigida mais 3 de fixtures, perfis e trigger), `.github/workflows/ci.yml` (job `database`: start, reset `--local`, pgTAP com `pipefail`, log como artefato, stop em `always`; **1 linha corrigida** — o pacote reprovava `format:check`), `docs/reviews/2026-10-05-tarefa-0-stack-local.md` (novo, relatório de origem), `docs/reviews/2026-10-05-verificacao-tarefa-0-pacote-final.md` (novo: manifesto 251/251, delta de 4 arquivos, `PASS 15/15` com saída real, sabotagem da policy → FAIL 2/15, tabela vazia → FAIL 3/15, catálogo do banco, revisão do job da CI, inventário dos volumes), `workflow/STATE.md` | concluído |
+| 35  | 2026-10-05 | preparação de identidade: identificador, rename da referência visual, CLI pinada, CI em 30 min, limpeza do AQUA9 | `referencias/template-editorial/` (**119 arquivos** por `git mv`, com 8 ponteiros atualizados: `.prettierignore`, `eslint.config.mjs`, `tsconfig.json`, `.husky/pre-commit`, scope, `INDICE.md`, `md-0001`; `globals.css` do template muda **uma linha**, e é comentário), `package.json` (nome `gradualinfo-editorial`, descrição do produto, `repository`/`bugs` **removidos** sem substituto, quatro wrappers em `pnpm dlx supabase@2.119.0`), `supabase/config.toml` (`project_id = gradualinfo-editorial`), `wrangler.jsonc`, `README.md` (título e mapa de pastas), `.github/workflows/ci.yml` (`timeout-minutes: 30`), `scratch/rename-project.mjs` (removido), `referencias/template-editorial/src/utils/siteMetaData.js` e 13 arquivos da referência (marca "GradualInfo" e **identidade de agência** trocada pelo posicionamento editorial; README de origem preservado por atribuição), `docs/reviews/2026-10-05-preparacao-identidade.md` (novo: ordem dump → stop → mudança de `project_id`, dois dumps com SHA-256 e comando de restore, inventário de containers e volumes, **9 posts editoriais na base legada do AQUA9**, `PASS 15/15` sob o novo identificador), `workflow/STATE.md` | concluído |
+| 36  | 2026-10-05 | md-0001 tarefas 1 a 5: transformação do schema, RLS com preview e acesso efetivo por papel | `supabase/migrations/20261005000000_posts_schema_editorial.sql` (nova: `author_name`, `editoria`, `cover_image_url`, `fontes_citadas` com default `[]`; `author_id` e a FK fora; backfill antes de endurecer; CHECKs de slug minúsculo, título não vazio, capa absoluta e `fontes_citadas_validas(jsonb)`; índice `(status, published_at desc)`; COMMENTs novos sem perder os antigos), `supabase/migrations/20261005000001_posts_rls_preview.sql` (nova: as quatro `*_own` removidas, `posts_select_preview` por `app_metadata.preview`, `revoke all` + `grant select` para `anon`/`authenticated`), `supabase/tests/rls_posts_test.sql` (reescrito: 15 → **63 asserções**, acesso efetivo por `set local role` para os cinco papéis, armadilha do `user_metadata`, escrita por privilégio, agendamento), `supabase/seed.sql` (as quatro fixtures, agora com as colunas `not null`; publicado é o único com fonte real), `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md` (novo: ordem da transformação, `2BP01` das policies, os 7 privilégios que saíram, sabotagem 5/63 e 7/63, AC-06 por `pg_dump --schema-only` com 8992 linhas idênticas nos dois caminhos), `workflow/STATE.md` | concluído |
+| 37  | 2026-10-05 | /check verify + /check review do md-0001 tarefas 1 a 5 | `docs/reviews/2026-10-05-check-verify-md-0001.md` (novo: 8 ACs verificados ponto a ponto — AC-01 schema, AC-02 anon, AC-03 escrita, AC-04 acesso efetivo 5 papéis, AC-05 sabotagem 5/63, AC-06 pg_dump idêntico, AC-07 fontes_citadas, AC-08 stack), `docs/reviews/2026-10-05-check-review-md-0001.md` (novo: revisão com gaps, riscos e conformidade), `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md` (corrigido: RLS+grant), `supabase/migrations/20261005000002_posts_comment_correction.sql` (nova: COMMENT editorial), `workflow/STATE.md` | concluído |
 
 ### Evidência da linha 01
 

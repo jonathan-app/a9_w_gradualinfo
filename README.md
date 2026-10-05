@@ -1,4 +1,4 @@
-# Gradualinfo 🌊
+# GradualInfo Editorial
 
 Boilerplate definitivo para aplicações Next.js ultra-rápidas hospedadas na **Cloudflare Workers**, com **Supabase** como backend. Feito para ser o ponto de partida ideal para novos produtos, já trazendo a fundação necessária para desenvolvimento, deploy, CI/CD, testes, segurança e engenharia agêntica.
 
@@ -104,6 +104,7 @@ Agentes não mantêm memória compartilhada. Eles se comunicam pelo repositório
 ├── e2e/               # Suíte de testes automatizados E2E do Playwright
 ├── hooks/             # Hooks globais do React
 ├── lib/               # env.ts tipado, clientes Supabase, e utils puros
+├── referencias/       # template-editorial/ = referência visual versionada
 ├── scripts/           # Ferramentas Node customizadas para o boilerplate
 ├── security/          # Regras do Semgrep (SAST)
 ├── supabase/          # Configurações do Supabase, Migrations e Seeds

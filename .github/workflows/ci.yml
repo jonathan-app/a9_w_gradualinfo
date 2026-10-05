@@ -100,3 +100,42 @@ jobs:
 
       - name: Procurar segredos no histórico
         run: pnpm security:secrets
+
+  database:
+    name: Banco local e RLS
+    runs-on: ubuntu-latest
+    # 30 min, não 20: o download do stack completo do Supabase é a etapa
+    # dominante em runner frio. Ajustar depois de observar execuções reais.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Os wrappers existentes usam Supabase CLI via pnpm dlx.
+      # Alvo exclusivamente local; nenhuma credencial hospedada é necessária.
+      - name: Iniciar stack descartável
+        run: pnpm supabase:start
+      - name: Aplicar migrations e seed local
+        run: pnpm supabase:reset --local
+      - name: Executar pgTAP
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p ci-results
+          pnpm supabase:test 2>&1 | tee ci-results/pgtap.log
+      - name: Preservar resultado do pgTAP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-pgtap
+          path: ci-results/pgtap.log
+          if-no-files-found: warn
+      - name: Encerrar stack local
+        if: always()
+        run: pnpm supabase:stop --no-backup

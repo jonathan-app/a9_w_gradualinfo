@@ -51,7 +51,7 @@ As três specs revogadas **permanecem nas branches**. Não foram apagadas e as
 branches não foram descartadas: elas são o registro do que foi decidido e
 depois revogado, e é delas que vem o material de referência visual. Descartá-las
 faria a fatia 6 (portar tipografia, cards, listagens e página de artigo de
-`template-aqua`) perder a fonte.
+`referencias/template-editorial`) perder a fonte.
 
 ## Citação por caminho, não por ID
 
@@ -72,7 +72,7 @@ branch de identidade construiu `/blogs` com 11 posts MDX e 5 tabelas com RLS.
 A linha vigente **não reutiliza** esse material: o schema do artigo é
 reescrito do zero e consolidado no AC-01 do `md-0001` (emenda de 2026-10-05),
 a rota é `/artigos/[slug]`, e o que se aproveita da branch é a **referência
-visual** (em `template-aqua/`), não a camada de conteúdo.
+visual** (em `referencias/template-editorial/`), não a camada de conteúdo.
 
 ## Regra de status
 

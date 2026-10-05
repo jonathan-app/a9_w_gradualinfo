@@ -32,3 +32,53 @@ where id in (
   '11111111-1111-1111-1111-111111111111',
   '22222222-2222-2222-2222-222222222222'
 );
+
+
+-- Fixtures locais: uma linha de cada estado para provar leitura pública real.
+-- Não mover para migration: o deploy de schema não deve publicar exemplos.
+--
+-- Preenchem todas as colunas `not null` do schema editorial porque a migration
+-- de transformação endurece `excerpt`, `content`, `author_name`, `editoria` e
+-- `cover_image_url`. `fontes_citadas` só aparece no publicado, de propósito: é a
+-- linha que a spec `md-0002` vai renderizar, e ela precisa de fonte real para
+-- o AC-07 não passar por vacuidade.
+insert into public.posts (
+  title, slug, excerpt, content,
+  cover_image_url, editoria, author_name, fontes_citadas,
+  status, published_at
+)
+values
+  (
+    'Fixture publicado', 'fixture-publicado', 'Exemplo local', '# Publicado',
+    'https://gradualinfo.com.br/exemplo-capa.jpg', 'Mão na Massa', 'Equipe GradualInfo',
+    '[{"titulo": "Documentação do Supabase", "url": "https://supabase.com/docs"}]',
+    'publicado', now() - interval '1 day'
+  ),
+  (
+    'Fixture rascunho', 'fixture-rascunho', 'Exemplo local', '# Rascunho',
+    'https://gradualinfo.com.br/exemplo-capa.jpg', 'Mão na Massa', 'Equipe GradualInfo',
+    '[]',
+    'rascunho', null
+  ),
+  (
+    'Fixture arquivado', 'fixture-arquivado', 'Exemplo local', '# Arquivado',
+    'https://gradualinfo.com.br/exemplo-capa.jpg', 'Mão na Massa', 'Equipe GradualInfo',
+    '[]',
+    'arquivado', now() - interval '1 day'
+  ),
+  (
+    'Fixture agendado', 'fixture-agendado', 'Exemplo local', '# Agendado',
+    'https://gradualinfo.com.br/exemplo-capa.jpg', 'Mão na Massa', 'Equipe GradualInfo',
+    '[]',
+    'publicado', now() + interval '100 years'
+  )
+on conflict (slug) do update
+set title = excluded.title,
+    excerpt = excluded.excerpt,
+    content = excluded.content,
+    cover_image_url = excluded.cover_image_url,
+    editoria = excluded.editoria,
+    author_name = excluded.author_name,
+    fontes_citadas = excluded.fontes_citadas,
+    status = excluded.status,
+    published_at = excluded.published_at;
