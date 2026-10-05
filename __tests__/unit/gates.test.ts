@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -27,21 +27,20 @@ interface Resultado {
 }
 
 function roda(script: string, args: string[], cwd?: string): Resultado {
-  try {
-    const stdout = execFileSync('node', [script, ...args], {
-      encoding: 'utf-8',
-      cwd,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    return { status: 0, stdout, stderr: '' };
-  } catch (e) {
-    const err = e as { status?: number; stdout?: string; stderr?: string };
-    return {
-      status: err.status ?? 1,
-      stdout: err.stdout ?? '',
-      stderr: err.stderr ?? '',
-    };
-  }
+  // `spawnSync`, e não `execFileSync`: este devolve `stderr` só quando o
+  // processo falha. Um gate que anuncia a árvore verificada **no caminho de
+  // aprovação** escreve em stderr justamente quando sai com 0, e um teste que
+  // só enxerga stderr em falha não veria nada — foi o que aconteceu com os
+  // quatro casos de auditoria e de compatibilidade.
+  const r = spawnSync('node', [script, ...args], {
+    encoding: 'utf-8',
+    cwd,
+  });
+  return {
+    status: r.status ?? 1,
+    stdout: r.stdout ?? '',
+    stderr: r.stderr ?? '',
+  };
 }
 
 function resultado(json: unknown): Resultado {
@@ -147,19 +146,18 @@ describe('check-decision.mjs — caminho de reprovação', () => {
   });
 });
 
-describe('check-gate.mjs — a aprovação expira quando o conteúdo muda', () => {
+describe('check-gate.mjs — a decisão vale só para o commit e a árvore que ela mediu', () => {
   let repo: string;
-  let review: string;
   let fora: string;
 
   beforeEach(() => {
-    // Um repositório real, descartável. O gate le `git rev-parse HEAD` e
+    // Um repositório real e descartável. O gate le `git rev-parse HEAD` e
     // `git status --porcelain`; mockar isso testaria o mock.
     repo = mkdtempSync(join(tmpdir(), 'gate-repo-'));
-    // O arquivo de revisão vai para FORA do repo de propósito: dentro dele, o
-    // próprio `git status --porcelain` ficaria sujo e o gate dispararia o
+    // Os artefatos de decisão vão para FORA do repo de propósito: dentro dele,
+    // o próprio `git status --porcelain` ficaria sujo e o gate dispararia o
     // bloqueio de árvore suja antes de chegar ao motivo real do teste.
-    fora = mkdtempSync(join(tmpdir(), 'gate-rev-'));
+    fora = mkdtempSync(join(tmpdir(), 'gate-art-'));
     const git = (...args: string[]) =>
       execFileSync('git', ['-C', repo, ...args], { encoding: 'utf-8' });
 
@@ -169,8 +167,6 @@ describe('check-gate.mjs — a aprovação expira quando o conteúdo muda', () =
     writeFileSync(join(repo, 'app.ts'), 'export const a = 1;\n');
     git('add', '-A');
     git('commit', '-qm', 'base');
-
-    review = join(fora, 'revisao.md');
   });
 
   afterEach(() => {
@@ -178,79 +174,292 @@ describe('check-gate.mjs — a aprovação expira quando o conteúdo muda', () =
     rmSync(fora, { recursive: true, force: true });
   });
 
-  const escreveReview = (sha: string, veredito = 'Veredito: APROVADO') =>
-    writeFileSync(
-      review,
-      `# Revisão\n\nCommit Avaliado: ${sha}\n\n${veredito}\n`,
-    );
-
   const sha = () =>
     execFileSync('git', ['-C', repo, 'rev-parse', 'HEAD'], {
       encoding: 'utf-8',
     }).trim();
 
-  it('aprova quando o HEAD é o commit avaliado e a árvore está limpa', () => {
-    escreveReview(sha());
-    const r = roda(GATE, [review], repo);
+  /** Artefato estruturado, no formato que check-decision.mjs emite. */
+  const escreveDecisao = (
+    aprovado: boolean,
+    veredito = 'APROVADO',
+    motivos: string[] = [],
+  ) => {
+    const arquivo = join(fora, 'resultado.json');
+    writeFileSync(
+      arquivo,
+      JSON.stringify(
+        {
+          approved: aprovado,
+          verdict: veredito,
+          counts: {
+            totalACs: 12,
+            PASS: aprovado ? 12 : 11,
+            FAIL: aprovado ? 0 : 1,
+          },
+          reasons: motivos,
+        },
+        null,
+        2,
+      ),
+    );
+    return arquivo;
+  };
+
+  const escreveLegado = (
+    shaAvaliado: string,
+    veredito = 'Veredito: APROVADO',
+  ) => {
+    const arquivo = join(fora, 'revisao.md');
+    writeFileSync(
+      arquivo,
+      `# Revisão\n\nCommit Avaliado: ${shaAvaliado}\n\n${veredito}\n`,
+    );
+    return arquivo;
+  };
+
+  // ── contrato estruturado ──
+
+  it('aprova a decisão estruturada que casa com HEAD e árvore limpa', () => {
+    const r = roda(GATE, [escreveDecisao(true), '--commit', sha()], repo);
 
     expect(r.status).toBe(0);
   });
 
-  it('bloqueia quando o conteúdo foi alterado depois da aprovação', () => {
+  it('anuncia a árvore verificada e o HEAD, para o resultado ser auditável', () => {
+    const r = roda(GATE, [escreveDecisao(true), '--commit', sha()], repo);
+
+    expect(r.stderr).toContain(
+      `Árvore verificada: ${execFileSync('git', ['-C', repo, 'rev-parse', '--show-toplevel'], { encoding: 'utf-8' }).trim()}`,
+    );
+    expect(r.stderr).toContain(`HEAD: ${sha()}`);
+  });
+
+  it('bloqueia aprovação com commit diferente do HEAD, e diz qual é cada um', () => {
     const aprovado = sha();
-    // Simula aapprove e, depois, um commit novo: é o caso "a PR mudou depois
-    // do /check", que invalida a evidência do /check.
     writeFileSync(join(repo, 'app.ts'), 'export const a = 2;\n');
     execFileSync('git', ['-C', repo, 'add', '-A']);
     execFileSync('git', ['-C', repo, 'commit', '-qm', 'depois do check']);
-    escreveReview(aprovado);
 
-    const r = roda(GATE, [review], repo);
+    const r = roda(GATE, [escreveDecisao(true), '--commit', aprovado], repo);
 
-    expect(r.status).not.toBe(0);
-    expect(r.stderr).toMatch(/diverg|dividiu|mudou/i);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/conteúdo mudou/i);
+    // O motivo tem que identificar os dois commits: "bloqueou" sem dizer qual
+    // divergiu de qual obriga o operador a abrir o git de novo.
+    expect(r.stderr).toContain(aprovado);
+    expect(r.stderr).toContain(sha());
   });
 
-  it('bloqueia arquivo novo não commitado depois da aprovação', () => {
-    escreveReview(sha());
+  it('bloqueia quando a decisão estruturada é REPROVADA, e repassa os motivos', () => {
+    const r = roda(
+      GATE,
+      [
+        escreveDecisao(false, 'REPROVADO', ['AC reprovado: md-0002/AC-05']),
+        '--commit',
+        sha(),
+      ],
+      repo,
+    );
+
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/REPROVADA/);
+    expect(r.stderr).toContain('md-0002/AC-05');
+  });
+
+  it('bloqueia quando o artefato não tem "approved", distinguindo de uma reprovação', () => {
+    const arquivo = join(fora, 'lixo.json');
+    writeFileSync(arquivo, JSON.stringify({ verdict: 'APROVADO' }));
+
+    const r = roda(GATE, [arquivo, '--commit', sha()], repo);
+
+    expect(r.status).toBe(1);
+    // Não pode dizer "REPROVADA": o arquivo nem chegou a ser uma decisão.
+    expect(r.stderr).toMatch(/"approved"/);
+    expect(r.stderr).toMatch(/check-decision/i);
+  });
+
+  it('bloqueia JSON inválido como erro de uso, não como reprovação', () => {
+    const arquivo = join(fora, 'quebrado.json');
+    writeFileSync(arquivo, '{ nao é json');
+
+    const r = roda(GATE, [arquivo, '--commit', sha()], repo);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/não é JSON válido/i);
+  });
+
+  it('exige --commit no formato estruturado, senão uma aprovação antiga valeria para sempre', () => {
+    const r = roda(GATE, [escreveDecisao(true)], repo);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/--commit é obrigatório/i);
+  });
+
+  // ── árvore-alvo explícita ──
+
+  it('recusa --repo que não é um repositório git, dizendo o que fazer', () => {
+    const r = roda(
+      GATE,
+      [escreveDecisao(true), '--commit', sha(), '--repo', fora],
+      repo,
+    );
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/Erro de contexto/i);
+    expect(r.stderr).toMatch(/--repo/);
+  });
+
+  it('recusa rodar de dentro de um subdiretório, em vez de verificar a árvore errada em silêncio', () => {
+    const sub = join(repo, 'app', 'artigos');
+    // O subdiretório precisa conter arquivo: git não versiona diretório vazio,
+    // e sem commit o gate cairia no bloqueio de árvore suja em vez do de
+    // contexto — que é justamente o que este teste precisa isolar.
+    mkdirSync(sub, { recursive: true });
+    writeFileSync(join(sub, 'page.tsx'), 'export default null;\n');
+    execFileSync('git', ['-C', repo, 'add', '-A']);
+    execFileSync('git', ['-C', repo, 'commit', '-qm', 'subdir']);
+
+    const r = roda(GATE, [escreveDecisao(true), '--commit', sha()], sub);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/Erro de contexto/i);
+    expect(r.stderr).toMatch(/não é a raiz/i);
+  });
+
+  it('verifica a árvore certa quando --repo aponta para outro repositório', () => {
+    const outro = mkdtempSync(join(tmpdir(), 'gate-outro-'));
+    try {
+      const git = (...args: string[]) =>
+        execFileSync('git', ['-C', outro, ...args], { encoding: 'utf-8' });
+      git('init', '-q');
+      git('config', 'user.email', 'outro@teste.invalid');
+      git('config', 'user.name', 'Outro');
+      writeFileSync(join(outro, 'b.ts'), 'export const b = 1;\n');
+      git('add', '-A');
+      git('commit', '-qm', 'base');
+      const shaOutro = git('rev-parse', 'HEAD').trim();
+
+      // Executado a partir de `repo`, que tem a árvore suja de propósito: sem
+      // --repo o gate bloquearia por `repo`; com --repo tem que aprovar `outro`.
+      writeFileSync(join(repo, 'lixo.ts'), 'export const c = 1;\n');
+
+      const r = roda(
+        GATE,
+        [escreveDecisao(true), '--commit', shaOutro, '--repo', outro],
+        repo,
+      );
+
+      expect(r.status).toBe(0);
+      expect(r.stderr).toContain(
+        `Árvore verificada: ${execFileSync('git', ['-C', outro, 'rev-parse', '--show-toplevel'], { encoding: 'utf-8' }).trim()}`,
+      );
+    } finally {
+      rmSync(outro, { recursive: true, force: true });
+    }
+  });
+
+  it('bloqueia árvore suja pelo motivo certo, antes de olhar o commit', () => {
     writeFileSync(join(repo, 'novo.ts'), 'export const b = 1;\n');
 
-    const r = roda(GATE, [review], repo);
+    const r = roda(GATE, [escreveDecisao(true), '--commit', sha()], repo);
 
-    expect(r.status).not.toBe(0);
-    expect(r.stderr).toMatch(/não commitadas|suja/i);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/não commitadas/i);
+    expect(r.stderr).toMatch(/working tree suja/i);
   });
 
-  it('bloqueia arquivo novo staged e não commitado', () => {
-    escreveReview(sha());
+  it('bloqueia staged e não commitado com o mesmo motivo de árvore suja', () => {
     writeFileSync(join(repo, 'novo.ts'), 'export const b = 1;\n');
     execFileSync('git', ['-C', repo, 'add', 'novo.ts']);
 
-    const r = roda(GATE, [review], repo);
+    const r = roda(GATE, [escreveDecisao(true), '--commit', sha()], repo);
 
-    expect(r.status).not.toBe(0);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/working tree suja/i);
   });
 
-  it('bloqueia quando o veredito não é APROVADO', () => {
-    escreveReview(sha(), 'Veredito: REPROVADO');
+  it('recusa repo sem HEAD, que não tem nada que possa ser aprovado', () => {
+    const vazio = mkdtempSync(join(tmpdir(), 'gate-vazio-'));
+    try {
+      execFileSync('git', ['-C', vazio, 'init', '-q'], { encoding: 'utf-8' });
 
-    const r = roda(GATE, [review], repo);
+      const r = roda(
+        GATE,
+        [escreveDecisao(true), '--commit', sha(), '--repo', vazio],
+        repo,
+      );
 
-    expect(r.status).not.toBe(0);
-    expect(r.stderr).toMatch(/APROVADO/);
+      expect(r.status).toBe(2);
+      expect(r.stderr).toMatch(/não tem HEAD/i);
+    } finally {
+      rmSync(vazio, { recursive: true, force: true });
+    }
   });
 
-  it('bloqueia quando o arquivo de revisão não tem commit avaliado', () => {
-    writeFileSync(review, '# Revisão\n\nVeredito: APROVADO\n');
+  // ── compatibilidade do formato legado ──
 
-    const r = roda(GATE, [review], repo);
+  it('ainda aprova um relatório .md legado, para não invalidar o que já foi emitido', () => {
+    const r = roda(GATE, [escreveLegado(sha())], repo);
 
-    expect(r.status).not.toBe(0);
+    expect(r.status).toBe(0);
+    expect(r.stderr).toMatch(/formato legado/i);
+    expect(r.stderr).toMatch(/deprecad/i);
   });
 
-  it('bloqueia arquivo de revisão inexistente', () => {
-    const r = roda(GATE, [join(fora, 'nao-existe.md')], repo);
+  it('bloqueia relatório legado sem aprovação, e nomeia a incompatibilidade do template', () => {
+    const r = roda(GATE, [escreveLegado(sha(), 'Veredito: REPROVADO')], repo);
 
-    expect(r.status).not.toBe(0);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/não registra aprovação/i);
+    expect(r.stderr).toMatch(/\*\*Aprovado\*\*/);
+  });
+
+  it('bloqueia relatório legado sem commit avaliado', () => {
+    const arquivo = join(fora, 'sem-sha.md');
+    writeFileSync(arquivo, '# Revisão\n\nVeredito: APROVADO\n');
+
+    const r = roda(GATE, [arquivo], repo);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/Commit Avaliado/);
+  });
+
+  // ── uso ──
+
+  it('recusa não informar artefato, e diz o uso', () => {
+    const r = roda(GATE, [], repo);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/check-decision\.mjs/);
+  });
+
+  it('recusa mais de um artefato, em vez de verificar só o primeiro', () => {
+    const r = roda(
+      GATE,
+      [escreveDecisao(true), escreveDecisao(true), '--commit', sha()],
+      repo,
+    );
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/um artefato por vez/i);
+  });
+
+  it('recusa artefato inexistente como erro de uso', () => {
+    const r = roda(
+      GATE,
+      [join(fora, 'nao-existe.json'), '--commit', sha()],
+      repo,
+    );
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/não encontrado/i);
+  });
+
+  it('recusa opção desconhecida em vez de ignorá-la em silêncio', () => {
+    const r = roda(GATE, [escreveDecisao(true), '--aprouva', sha()], repo);
+
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/opção desconhecida/i);
   });
 });

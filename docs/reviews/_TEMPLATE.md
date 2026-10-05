@@ -47,6 +47,41 @@ Observações de review: {lista ou nenhuma}.
 - [ ] **Aprovado** — ACs cobertos, review limpo, regressão verde. Merge liberado.
 - [ ] **Reprovado** — motivo: {}. Itens a corrigir antes de novo /check: {lista}.
 
+## Artefato do gate (copiar e preencher)
+
+O gate `scripts/check-gate.mjs` consome **JSON estruturado**, não a frase em
+Markdown acima. Grave o resultado de `scripts/check-decision.mjs` em
+`docs/reviews/<slug>.resultado.json` e passe o commit com `--commit`.
+
+Por que estruturado: o gate já exigia a string `Veredito: APROVADO`, que este
+template nunca produz — ele escreve `- [ ] **Aprovado**`. Os dois discordavam e
+um relatório copiado daqui era reprovado por motivo de texto. Um campo é
+parseável; uma frase em prosa não é.
+
+```bash
+# 1. decidir (o /check produz isto; não escreva à mão)
+node scripts/check-decision.mjs docs/reviews/<slug>.resultado.json
+
+# 2. vincular ao commit e à árvore
+node scripts/check-gate.mjs \
+  docs/reviews/<slug>.resultado.json \
+  --commit "$(git rev-parse HEAD)" \
+  --repo "$(git rev-parse --show-toplevel)"
+```
+
+Saída esperada do passo 2:
+
+```text
+Árvore verificada: /caminho/absoluto/do/repo
+HEAD: <sha>
+Gate aprovado. Commit <sha> coberto por decisão aprovada em <repo>.
+```
+
+O relatório Markdown acima continua valendo como registro humano, e o caminho
+`.md` do gate segue aceito para **não invalidar relatórios já emitidos** —
+com aviso de depreciação em stderr. As duas coisas precisam coexistir até o
+dono decidir remover o legado.
+
 ## Hash binding
 
 Este relatório vale apenas para o SHA declarado. Qualquer commit novo no PR
