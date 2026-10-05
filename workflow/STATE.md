@@ -23,7 +23,32 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Passo 1 do Plano (Scope Reconciliado)**: encerrado.** O arquivo de escopo `0001-mvp-portal-gradualinfo.md` foi atualizado para alinhar-se com a visão editorial: conteúdo Markdown via Supabase, `/template-aqua` mantido como referência, e público direcionado. Próxima etapa desta tarefa: nenhuma. As pendências anteriores do produto e das branches seguem abaixo.
+**Próximo passo: `/check verify` de `md-0001` e `md-0002`, e só depois `/develop`.** Nenhum código de produto foi escrito.
+
+- **Aceite da spec: pendente e bloqueado por gate, não por esquecimento.**
+  `md-0002` está **Proposed**, e o portão está escrito nela: `/check verify`
+  precisa sair aprovado pelos ACs, com `scripts/check-decision.mjs` em APROVADO
+  e evidência anexada; o status só então vira `Accepted`, com a decisão
+  registrada aqui. Marcar `Accepted` sem `/check` seria falsificar o portão — por
+  isso não foi feito.
+- **IDs resolvidos.** `docs/specs/INDICE.md` mapeia as duas linhas e a
+  supersessão. Prefixo `md-` na linha vigente (`md-0001`, `md-0002`); as specs
+  MDX/Velite ficam nas branches, porque são o registro do que foi revogado e a
+  fonte da referência visual da fatia 6.
+- **Duas armadilhas dos gates, documentadas e cobertas por teste**
+  (`__tests__/unit/gates.test.ts`, 16 testes): `check-gate.mjs` lê `git` do
+  diretório atual, sem parâmetro para dizer qual árvore verificar; e ele exige
+  `Veredito: APROVADO` enquanto `docs/reviews/_TEMPLATE.md` escreve
+  `- [ ] **Aprovado**`. **A incompatibilidade gate × template continua aberta**
+  e é defeito do gate, não de `md-0002`: enquanto durar, um relatório copiado
+  do template é reprovado por motivo de texto. Corrigir antes de confiar no
+  `check-gate.mjs` como sinal de CI.
+- **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
+  7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
+  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
+  deve editar a árvore compartilhada; o trabalho continua no clone.
+
+**Passo 1 do Plano (Scope Reconciliado): encerrado.** O arquivo de escopo `0001-mvp-portal-gradualinfo.md` foi atualizado para alinhar-se com a visão editorial: conteúdo Markdown via Supabase, `/template-aqua` mantido como referência, e público direcionado. Próxima etapa desta tarefa: nenhuma. As pendências anteriores do produto e das branches seguem abaixo.
 
 **Aberto.** O scope está na **revisão 2**, reconciliado com as decisões do dono.
 Nenhum código foi escrito. **Antes de qualquer escrita: resolver a concorrência
@@ -93,8 +118,11 @@ de agentes abaixo.**
   de produto: publicar para leitor no Brasil e coletar e-mail depois exige
   privacidade e termos. É piso de compliance, não melhoria.
 - **Trabalho isolado em clone:** `a9_w_gradualinfo__iso`, branch
-  `chore/reconciliar-scope-spec-gates`, staged e **sem commit** porque o
-  pre-commit reprova sempre (gate herdado, não desta tarefa).
+  `chore/reconciliar-scope-spec-gates`, **3 commits** (`5288dca`, `557f123`,
+  `ad18725`). A afirmação anterior de "staged e sem commit porque o pre-commit
+  reprova sempre" era falsa e está retificada: o hook era escopado aos arquivos
+  staged e passou nos três commits. `pnpm check:all` verde, 52 testes, sem
+  push/merge/deploy.
 - **Produto:** portal de tecnologia em pt-BR, cinco editorias, foco em
   cauda longa. Diferencial é o Selo "Oferta Verificada", que é a fatia de maior
   risco (fatia 7) porque depende de fonte de preço de terceiro e de janela de
@@ -175,6 +203,7 @@ de agentes abaixo.**
 | 24  | 2026-10-05 | /scope revisão 2 (reconciliação com o dono) | `docs/scope/0001-mvp-portal-gradualinfo.md` (9 fatias: schema do artigo, home, página de artigo, publicação por migration, referência visual, primeira jornada do guia do notebook, SEO, busca, comentários; bloco MDX fora de escopo; seção "Specs a substituir"), `workflow/STATE.md` (decisões do dono, bloqueio de supersessão de `0001`/`0002`, contagem de skills corrigida para 48) | concluído |
 | 25  | 2026-10-05 | /scope revisão 3 + retificação da auditoria | `docs/scope/0001-mvp-portal-gradualinfo.md` (SEO básico vira fatia 4; comentários saem para pós-MVP; Markdown reexplicado — não bloqueia calculadoras/selos; publicação por migration com AC de reaplicação; seção "Specs: as que existem e as que precisam de identificador livre"), `docs/reviews/2026-10-04-auditoria-skills-estrutura.md` (Finding 8 superado com prova por execução; Finding 3 retificado — `kilo.json` existe com campo inválido), `workflow/STATE.md` (`/check` desbloqueado; colisão de ID `0001`/`0002`) | concluído |
 | 26  | 2026-10-05 | isolamento em clone + auditoria de entrega | `docs/reviews/2026-10-05-manifesto-captura.md` (origem `bec25aa`, 9 artefatos com SHA-256 em dois passos, commit barrado por gate herdado), `docs/reviews/2026-10-05-auditoria-estado-entrega.md` (checklist de agência: média declarada ~55% não fecha — a real é 35,0%; SEO está em `main`, não só em branches; auth tem infra e zero páginas; 0 de 9 fatias do produto entregues; 3 das 7 branches propostas conflitam com decisão do dono; páginas legais é a única lacuna real, por LGPD), `workflow/STATE.md` | concluído |
+| 27  | 2026-10-05 | testes dos gates + reconciliação da md-0002 | `__tests__/unit/gates.test.ts` (16 testes de `check-decision.mjs` e `check-gate.mjs`, incluindo os caminhos de reprovação e a expiração da aprovação), `docs/specs/INDICE.md` (prefixo `md-` na linha vigente; MDX/Velite preservadas nas branches), `docs/specs/md-0002-casca-editorial-home.md` (fatias 2/3/4; SEO básico na mesma fatia; estado vazio e de erro como AC; 12 ACs com plano de validação), `scripts/check-gate.mjs` (documenta a árvore do `cwd` e o texto do veredito), `workflow/STATE.md` | concluído |
 
 ### Evidência da linha 01
 
