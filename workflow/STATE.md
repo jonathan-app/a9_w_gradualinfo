@@ -23,56 +23,46 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: aceite explícito do conteúdo das duas specs pelo dono. Nenhum
-código de produto escrito. `/develop` não começa antes disso.**
+**Próximo passo: aceite de conteúdo do `md-0002`, e então `/develop` do schema
+(`md-0001`).** O schema já tem aceite explícito; a página ainda não.
 
-- **Retificação grave: eu registrei um aceite que não existia.** Uma anotação
-  anterior marcou `md-0002` como `Accepted` e o `INDICE.md` como fonte da
-  aprovação. A resposta que eu tinha obtido era sobre **a ordem do fluxo** e
-  sobre a escolha de `editoria`, e eu a converti em aceite de conteúdo sem que
-  isso tivesse sido dado. Explicação de fluxo não é aprovação de spec. O status
-  voltou para `Proposed` e o `Decision source` agora diz, literalmente, que
-  **não há** fonte de decisão. A mesma retificação vale para a emenda do
-  `md-0001`: a **direção** (emendar em vez de superseder) foi autorizada, o
-  **conteúdo** do schema não.
-- **Sequência de entrega, definida pelo dono em 2026-10-05** (esta substitui a
-  ordem de fatias do scope como ordem de trabalho):
-  1. **schema e RLS** — `md-0001`, com migration e testes de banco;
-  2. **publicação mínima de conteúdo** — um artigo real publicado e um rascunho,
-     por migration, para as specs seguintes terem dado real;
+- **`md-0001` está `Accepted`, com aprovação de conteúdo, coluna a coluna.** O
+  dono aprovou em 2026-10-05 as doze colunas, as duas policies de leitura
+  separadas, o papel de preview com credencial, a proibição de `service_role` em
+  leitura pública e as sete ACs. A aprovação está no `Decision source` do
+  cabeçalho, e a seção `## Portão desta emenda` registra como foi resolvida.
+- **`md-0002` está `Proposed`, deliberadamente.** A aprovação anterior cobria a
+  ordem do fluxo, não o conteúdo; foi revertida. Falta o aceite de conteúdo
+  dela, e a sequência do dono diz que ele vem depois do schema.
+- **Retificação que vale registrar por ser do tipo que se repete:** eu havia
+  convertido uma resposta sobre **ordem de fluxo** em aceite de **conteúdo**, e
+  apontado o `INDICE.md` como fonte da aprovação. O `INDICE.md` nunca foi fonte
+  de nada — era o índice, não a decisão. Regra que passa a valer: `Decision
+  source` cita a decisão e a data, nunca um artefato de controle.
+- **Fontes citadas: formato fechado.** Seção "Fontes" ao final do corpo, lista de
+  links, `titulo` como texto e `url` como `href` (decisão do dono em 2026-10-05).
+  `md-0001` AC-07 é a metade de dados e `md-0002` AC-13 é a metade de exibição;
+  as duas juntas destravam a fatia 7. Enquanto não existissem, um guia que
+  promete fontes e não as mostra era o risco real, não uma lacuna de spec.
+- **Sequência de entrega, definida pelo dono em 2026-10-05:**
+  1. **schema e RLS** — `md-0001`, migration e testes de banco;
+  2. **publicação mínima** — um artigo real publicado e um rascunho, por
+     migration, para as specs seguintes terem dado real;
   3. **home e artigo com SEO básico** — `md-0002`;
   4. **testes**;
   5. **`/check verify + review`** sobre a entrega, com evidência por AC.
-- **`md-0001` virou contrato construível.** Tinha 2 ACs e nenhum plano. Agora tem
-  7 ACs, com negação explícita (`anon` não lê rascunho, prova por asserção e não
-  por ausência de erro), ausência de escrita para papéis não privilegiados, o
-  papel de preview, a prova de que **remover a policy quebra o teste**, e a
-  invariante que impede `status = 'publicado'` com `published_at` nulo. O AC-02
-  antigo (renderizar a rota) foi movido para o `md-0002`, para que cada spec
-  tenha um dono só.
-- **RLS é fronteira de autorização, não de filtro.** Minha decisão anterior de
-  "não duplicar `status = 'publicado'` na consulta" estava errada. O essencial é
-  que **nenhuma consulta pública exponha rascunho, inclusive quando houver cliente
-  privilegiado** — e `service_role` burla a RLS por definição. Então: a policy
-  decide, a consulta também filtra, e as duas camadas têm teste. Nenhum caminho
-  de leitura pública pode usar `service_role`, com verificação automatizada
-  (AC-11).
-- **Preview agora é autorização, não ambiente.** `NODE_ENV` é constante de
-  build, não segredo, e a lógica de "quem é esse leitor" precisa sobreviver a um
-  build de produção configurado errado. O AC-08 passou a exigir credencial
-  deliberadamente configurada (falha fechada sem ela), com teste do lado que
-  permite **e** do lado que recusa. Preço: uma segunda policy de leitura
-  (`posts_select_preview`), separada e não um `OR` dentro da mesma policy.
-- **Fontes citadas: dado e exibição são as duas metades.** Guardar a coluna
-  entrega o contrato de dados, não a transparência ao leitor; era meio recurso.
-  Agora `md-0001` AC-07 exige o dado e `md-0002` AC-13 exige a exibição na
-  página. **O formato de exibição não está decidido**, e enquanto não estiver, a
-  fatia 7 (guia do notebook) não pode ser validada.
-- **O que os 29 testes provam, e o que não provam.** Provam os cenários dos
-  gates que foram exercitados: contrato estruturado, `--commit`, `--repo`,
-  contexto, legado `.md`, e os motivos de cada bloqueio. **Não** validam schema,
-  nem preview, nem produto: nenhum dos três existe ainda. Qualquer afirmação de
-  que a fatia 1 está coberta seria falsa.
+- **RLS corrigida:** é fronteira de autorização, e a consulta também filtra como
+  segunda barreira. O essencial é que nenhuma consulta pública exponha rascunho
+  **inclusive com cliente privilegiado**, e `service_role` burla a RLS por
+  definição — por isso ele é proibido em leitura pública, com verificação
+  automatizada (AC-11).
+- **Preview corrigido:** `NODE_ENV` é constante de build, não segredo. O AC-08
+  exige credencial deliberadamente configurada, com falha fechada, e teste do
+  lado que permite **e** do lado que recusa.
+- **O que os 29 testes provam:** os cenários dos gates exercitados — contrato
+  estruturado, `--commit`, `--repo`, contexto, legado `.md`, e o motivo de cada
+  bloqueio. **O que não provam:** schema, preview e produto. Nenhum dos três
+  existe ainda, e afirmar cobertura da fatia 1 seria falso.
 - **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
   7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
   `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
@@ -237,6 +227,7 @@ de agentes abaixo.**
 | 28  | 2026-10-05 | correção do contrato dos gates + md-0002 no formato do `architect` | `scripts/check-gate.mjs` (contrato estruturado + `--commit` + `--repo` + legado `.md` deprecado; códigos 1 e 2 separados), `docs/reviews/_TEMPLATE.md` (emite o artefato do gate), `__tests__/unit/gates.test.ts` (16 → 29 testes; cada caso negativo casa o motivo; `spawnSync` para enxergar stderr no caminho de aprovação), `docs/specs/md-0002-casca-editorial-home.md` (reescrita no formato do spec-template: Summary, Context, Requirements, Options considered, Decision, Rationale, Feature design com Value sourcing, Critical test scenarios, Build plan, Consequences; portão corrigido), `workflow/STATE.md` | concluído |
 | 29  | 2026-10-05 | aceite das specs de fundação (decisão do dono) | `docs/specs/md-0002-casca-editorial-home.md` (`Status: Accepted`, fonte da decisão registrada; `editoria` texto livre confirmado como premissa reversível), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (AC-01 emendado para o schema completo da fatia 1; `author_id` → `author_name`; `fontes_citadas` sem renderizador), `docs/specs/INDICE.md` (md-0002 Accepted; `md-0003` removido — duas specs não disputam a fatia 1; regra de status corrigida; desvio de nome registrado), `workflow/STATE.md` (Bastão atual passa a `/develop`) | concluído |
 | 30  | 2026-10-05 | retificação do aceite + schema, RLS, preview e fontes | `docs/specs/md-0002-casca-editorial-home.md` (voltou a `Proposed`; `Decision source` declara que não há aceite; RLS corrigida em 5 lugares — filtro na consulta é segunda barreira, não duplicação indevida; `service_role` proibido em leitura pública; AC-08 de preview exige credencial explícita com teste dos dois lados; AC-13 novo exige exibição das fontes; 9 tarefas, 13 ACs, todos rastreados), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (reescrita como contrato construível: 7 ACs com negação explícita, papel de preview, prova de que remover a policy quebra o teste, invariante `published_at`; AC-02 de render movido para md-0002; `## Portão desta emenda` separa direção autorizada de conteúdo não aceito), `docs/specs/INDICE.md` (status de md-0002 corrigido), `workflow/STATE.md` (sequência schema → publicação → home/artigo → testes → verify) | concluído |
+| 31  | 2026-10-05 | aceite de conteúdo do `md-0001` e formato das fontes | `docs/specs/md-0001-arquitetura-markdown-supabase.md` (`Status: Accepted` com aprovação de conteúdo coluna a coluna; `Decision source` com as três fontes; `## Portão desta emenda` resolvido), `docs/specs/md-0002-casca-editorial-home.md` (AC-13 agora é concreto: seção "Fontes" ao final do corpo, lista de links; `md-0002` segue `Proposed` por decisão explícita), `docs/specs/INDICE.md` (status por linha; regra nova: `Decision source` cita decisão e data, nunca artefato de controle), `workflow/STATE.md` (Bastão atual = aceite de md-0002, depois `/develop` do schema) | concluído |
 
 ### Evidência da linha 01
 

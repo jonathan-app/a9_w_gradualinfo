@@ -105,12 +105,13 @@ confere contra isto):
 - **md-0002/AC-12**: a home e o artigo passam no `@axe-core/playwright` já
   configurado em `e2e/accessibility.spec.ts`, e a navegação por teclado
   funciona com foco visível.
-- **md-0002/AC-13**: a página de artigo exibe as `fontes_citadas` vindas do
-  `md-0001`, cada uma com o texto do link e o `href` absoluto da fonte; artigo
-  com lista vazia renderiza a página **sem** a seção e **sem** erro; e nenhuma
-  fonte é renderizada dentro do corpo do Markdown como HTML arbitrário.
-  Esta spec é a metade de exibição do contrato; a metade de dados é o AC-07 do
-  `md-0001`.
+- **md-0002/AC-13**: a página de artigo exibe as `fontes_citadas` do `md-0001`
+  em uma **seção "Fontes" ao final do corpo**, depois do último parágrafo e
+  **antes** dos metadados de autoria; cada fonte é um link com o texto de
+  `titulo` e o `href` de `url`, em URL absoluta; artigo com lista vazia renderiza
+  a página **sem** a seção e **sem** erro; e nenhuma fonte é inserida dentro do
+  corpo Markdown como HTML arbitrário. Esta spec é a metade de exibição do
+  contrato, e a metade de dados é o AC-07 do `md-0001`.
 
 ## Options considered
 
@@ -379,9 +380,9 @@ publicamente, como em qualquer blog.
    `fontes_citadas`, com o texto do link e o `href` da fonte, e sem erro quando
    a lista está vazia. Satisfaz **md-0002/AC-13**.
 
-A tarefa 9 depende do formato de exibição decidido com o dono: o `AC-13` exige
-a exibição, e sem a decisão de onde a fonte aparece (seção final, nota de
-rodapé ou marcação no corpo) a tarefa fica sem critério de aceitação próprio.
+A tarefa 9 executa o formato aprovado: seção "Fontes" ao final do corpo, lista
+de links, `titulo` como texto do link e `url` como `href`. Era a última decisão
+que faltava para esta tarefa ter critério de aceitação próprio.
 
 ## Consequences
 
@@ -411,16 +412,16 @@ rodapé ou marcação no corpo) a tarefa fica sem critério de aceitação próp
 
 ## Follow-up
 
-- [ ] **Fontes citadas: o dado é do `md-0001`, a exibição é desta spec, e
-      ambas são obrigatórias.** Uma versão anterior desta spec registrava a coluna
-      como "sem renderizador", e estava errado: coluna guarda o contrato de dados,
-      não entrega transparência ao leitor. **AC-13** abaixo exige a exibição, e o
-      `md-0001` AC-07 exige que o dado exista. O AC-07 do `md-0001` e o AC-13
-      desta spec são as duas metades de um mesmo contrato.
-      **O formato de exibição não está decidido** (seção final, nota de rodapé, ou
-      marcação no corpo), e essa é a lacuna real: enquanto ela existir, a fatia 7
-      (primeira jornada, guia do notebook) **não pode ser validada**, porque um
-      guia que promete fontes e não as mostra é o que o AC existe para impedir.
+- [x] **Fontes citadas: formato decidido — seção final, lista de links**, pelo
+      dono em 2026-10-05. A lacuna real era essa: coluna guarda o contrato de
+      dados, não entrega transparência ao leitor, e guardar sem exibir é meio
+      recurso. O AC-07 do `md-0001` exige o dado e o AC-13 desta spec exige a
+      exibição, e os dois juntos destravam a fatia 7 (guia do notebook), que não
+      podia ser validada enquanto a apresentação não existisse.
+- [x] **`md-0001` foi emendado, não supersedido**, por decisão do dono em
+      2026-10-05, e o **conteúdo** do schema foi aprovado explicitamente na
+      mesma ocasião, coluna a coluna. A spec está `Accepted` e pode ir para
+      `/develop`.
 - [ ] **`md-0001` foi emendado, não supersedido**, por decisão do dono em
       2026-10-05. A direção foi autorizada; o **conteúdo** do schema emendado
       (colunas, policies, papel de preview, formato de `fontes_citadas`) segue

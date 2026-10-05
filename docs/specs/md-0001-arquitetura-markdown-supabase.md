@@ -1,11 +1,20 @@
 # md-0001. Adotar Supabase e Markdown para o conteúdo editorial
 
 **Date**: 2026-10-04 (decisão de fundação) · 2026-10-05 (emenda do schema)
-**Status**: Accepted (fundação) · schema emendado **Proposed**
-**Decision source**: fundação aceita em 2026-10-04. A emenda do schema tem
-**direção autorizada** pelo dono em 2026-10-05 (emendar o AC-01, escolhido entre
-emendar e superseder), mas o **conteúdo do schema não tem aceite**: ver
-`## Portão desta emenda`.
+**Status**: Accepted
+**Decision source**:
+
+- **Fundação** (Supabase + Markdown, rota `/artigos/[slug]`, sem painel
+  editorial): aceita em 2026-10-04.
+- **Conteúdo do schema emendado** (as doze colunas, as duas policies de
+  leitura, o papel de preview, o formato de `fontes_citadas` e as sete
+  ACs): aprovado **explicitamente** pelo dono em 2026-10-05, com a lista de
+  colunas e de policies enunciada na pergunta de aprovação e o "aprove o
+  conteúdo" dado como resposta. Não é aceite por consequência nem por silêncio:
+  a aprovação cobriu o conteúdo, coluna a coluna.
+- **Exibição das fontes citadas**: seção final, lista de links, decideda pelo
+  dono em 2026-10-05. A exibição é executada pelo `md-0002` (AC-13), porque
+  apresentação é página, não schema.
 
 ## Summary
 
@@ -290,20 +299,20 @@ leitura.
 - `react-markdown` e `remark-gfm` já estavam instalados.
 - Nenhuma rota de API é criada por esta spec.
 
-## Portão desta emenda
+## Portão desta emenda — resolvido
 
-O **conteúdo** desta emenda (as doze colunas, as duas policies, o papel de
-preview, o formato de `fontes_citadas`) **não tem aceite**. Foi autorizado
-emendar o AC-01 em vez de superseder, o que é decisão sobre _como_ registrar a
-mudança, não aprovação do * quê* mudou.
+Uma anotação anterior desta spec dizia que o conteúdo da emenda não tinha
+aceite, e estava certo na época: o que fora autorizado era **emendar** o AC-01
+em vez de superseder, que é decisão sobre _como_ registrar a mudança, não
+aprovação do _quê_ mudou.
 
-Antes do `/develop`:
+O conteúdo foi aprovado explicitamente pelo dono em 2026-10-05, coluna a coluna
+e policy a policy, e a aprovação está no `Decision source` do cabeçalho.
 
-1. o dono revisa e aprova explicitamente o conteúdo da emenda; e
-2. a decisão é registrada no cabeçalho, com data e fonte.
-
-Enquanto isso, o status desta parte é `Proposed`, e `/develop` deve voltar ao
-`/architect`.
+Vale registrar o que quase aconteceu: uma resposta anterior, que falava sobre a
+**ordem do fluxo** de trabalho, foi convertida em aceite de conteúdo. Ordem de
+fluxo não é aprovação de spec. `md-0002` sofreu o mesmo deslize na mesma
+ocasião e voltou para `Proposed`.
 
 ## Follow-up
 

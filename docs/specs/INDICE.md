@@ -19,10 +19,10 @@ ser ambíguo quando alguém comparar `main` com uma branch histórica.
 
 ## Specs vigentes
 
-| ID        | Arquivo                                    | Status   | Revisão | Origem da fatia          |
-| --------- | ------------------------------------------ | -------- | ------- | ------------------------ |
-| `md-0001` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | 2       | decisão de arquitetura   |
-| `md-0002` | `md-0002-casca-editorial-home.md`          | Accepted | 2       | fatias 2, 3 e 4 do scope |
+| ID        | Arquivo                                    | Status   | Revisão | Origem da fatia             |
+| --------- | ------------------------------------------ | -------- | ------- | --------------------------- |
+| `md-0001` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | 2       | fundação + fatia 1 (schema) |
+| `md-0002` | `md-0002-casca-editorial-home.md`          | Proposed | 2       | fatias 2, 3 e 4 do scope    |
 
 `md-0003` não existe, e não deve ser escrito. Uma versão anterior deste índice
 reservava `md-0003` para a fatia 1 (schema do artigo), o que punha duas specs
@@ -32,6 +32,12 @@ do `md-0001` em vez de superseder, então a fatia 1 tem um dono de schema único
 
 O schema resultante está na tabela de data model de `md-0002`, e a emenda está
 registrada no próprio `md-0001` com a fonte da decisão.
+
+`md-0001` está `Accepted` com o conteúdo do schema **aprovado explicitamente**
+pelo dono em 2026-10-05, coluna a coluna. `md-0002` está `Proposed`: a
+aprovação que eu tinha registrado cobria a **ordem do fluxo**, não o conteúdo da
+spec, e foi revertida. O registro fica aqui porque o erro é do tipo que se
+repete — transformar explicação de processo em aceite de conteúdo.
 
 ## Tabela de supersessão
 
