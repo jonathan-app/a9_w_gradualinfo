@@ -19,11 +19,19 @@ ser ambíguo quando alguém comparar `main` com uma branch histórica.
 
 ## Specs vigentes
 
-| ID        | Arquivo                                    | Status   | Revisão | Origem da fatia            |
-| --------- | ------------------------------------------ | -------- | ------- | -------------------------- |
-| `md-0001` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | 1       | decisão de arquitetura     |
-| `md-0002` | `md-0002-casca-editorial-home.md`          | Proposed | 1       | fatias 2, 3 e 4 do scope   |
-| `md-0003` | — a escrever pelo `/architect`             | —        | —       | fatia 1 (schema do artigo) |
+| ID        | Arquivo                                    | Status   | Revisão | Origem da fatia          |
+| --------- | ------------------------------------------ | -------- | ------- | ------------------------ |
+| `md-0001` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | 2       | decisão de arquitetura   |
+| `md-0002` | `md-0002-casca-editorial-home.md`          | Accepted | 2       | fatias 2, 3 e 4 do scope |
+
+`md-0003` não existe, e não deve ser escrito. Uma versão anterior deste índice
+reservava `md-0003` para a fatia 1 (schema do artigo), o que punha duas specs
+concorrendo pela mesma fatia: `md-0001` já é `Accepted` desde 2026-10-04 e o
+seu AC-01 carrega o schema. Em 2026-10-05 o dono optou por **emendar** o AC-01
+do `md-0001` em vez de superseder, então a fatia 1 tem um dono de schema único.
+
+O schema resultante está na tabela de data model de `md-0002`, e a emenda está
+registrada no próprio `md-0001` com a fonte da decisão.
 
 ## Tabela de supersessão
 
@@ -55,13 +63,38 @@ mesmo prefixo, e são specs que discordam sobre onde o artigo vive.
 `md-0001` fixa `/artigos/[slug]` e Markdown no Supabase. A spec revogada
 `0002-mvp-portal-gradualinfo.md` fixa `/blogs/[slug]` e MDX. Quem implementou a
 branch de identidade construiu `/blogs` com 11 posts MDX e 5 tabelas com RLS.
-A linha vigente **não reutiliza** esse material: o schema do artigo é reescrito
-do zero em `md-0003`, a rota é `/artigos/[slug]`, e o que se aproveita da branch
-é a **referência visual** (em `template-aqua/`), não a camada de conteúdo.
+A linha vigente **não reutiliza** esse material: o schema do artigo é
+reescrito do zero e consolidado no AC-01 do `md-0001` (emenda de 2026-10-05),
+a rota é `/artigos/[slug]`, e o que se aproveita da branch é a **referência
+visual** (em `template-aqua/`), não a camada de conteúdo.
 
 ## Regra de status
 
-`Proposed` → `Accepted` exige o `/check` verify com o gate de
-`scripts/check-decision.mjs` em estado APROVADO. Registre a decisão **antes** do
-`/develop`: spec não aceita é código sem contrato, e o `/develop` deve parar e
-voltar ao `/architect`.
+`Proposed` → `Accepted` é decisão do **engenheiro**, não verificação técnica. O
+`/architect` é explícito: `Accepted` significa que o dono confirmou o design
+(escopo, contratos, dependências e ACs verificáveis), e proíbe o agente de
+aceitar em nome dele.
+
+Uma versão anterior desta regra dizia que o aceite exigia `/check verify` com o
+gate em APROVADO. Isso era um deadlock: `check-decision.mjs` reprova qualquer AC
+que não esteja em PASS com evidência, e os ACs de uma spec descrevem código que
+ainda não existe. O portão só abriria depois da construção que ele autorizava.
+A ordem correta é:
+
+| Etapa           | Confirma                                              |
+| --------------- | ----------------------------------------------------- |
+| aceite          | que o design está decidido (dono)                     |
+| `/develop`      | constrói contra os ACs                                |
+| `/check verify` | que cada AC se sustenta em evidência, sobre a entrega |
+
+`Accepted` é pré-requisito do `/develop`; `/check verify` comprova a entrega
+depois. Nenhum dos dois substitui o outro.
+
+## Desvio da convenção de nome, registrado
+
+O `/architect` nomeia spec como `NNNN-kebab-case.md`. Aqui o número é
+`md-NNNN`, com prefixo. O desvio é intencional e tem motivo: sem o prefixo,
+`0001` e `0002` nomeiam documentos diferentes dependendo da branch, que é a
+colisão que este índice existe para documentar. Migrar para `NNNN` puro exige
+renomear `md-0001` e `md-0002` juntos, e só é seguro depois de as branches
+revogadas saírem do caminho de merge.

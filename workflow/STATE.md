@@ -23,34 +23,37 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: aceite de `md-0002` pelo dono, e só depois `/develop`.**
-`md-0002` está **Proposed** e o portão correto está na própria spec.
+**Próximo passo: `/develop` de `md-0002` (fatias 2, 3 e 4).** As duas specs de
+fundação estão `Accepted`, com a decisão do dono registrada.
 
-- **Um deadlock meu foi corrigido.** `md-0002` dizia que o portão do
-  `/develop` era "`/check verify` aprovado pelos 12 ACs". Os ACs descrevem
-  código que ainda não existe, e `check-decision.mjs` reprova qualquer AC fora
-  de PASS com evidência — o portão só abria depois da construção que ele
-  autorizava. **Aceite é sobre o design; `/check verify` é sobre a
-  implementação.** São verificações diferentes, em momentos diferentes.
-  A ordem é aceite → `/develop` → `/check verify` sobre a entrega.
-- **Aceite não é do agente.** O `architect` é explícito: `Accepted` exige
-  confirmação do engenheiro e "nunca aceitar em nome do engenheiro". Por isso
-  o status segue `Proposed` e o próximo passo é decisão do usuário.
-- **`md-0001` está subespecificado em relação ao scope.** O AC-01 declara cinco
-  colunas; o scope revisão 3 dá à fatia 1 também autor, editoria, fontes
-  citadas, estado, data de atualização e capa. `md-0002` consome o schema do
-  scope e registra a divergência como Follow-up. **Alinhar `md-0001` é decisão
-  do dono**: emendar o AC-01 com a decisão registrada, ou superseder. Não foi
-  feito aqui porque `md-0001` está `Accepted` e mexer em spec aceita é ato do
-  `/architect` com o dono.
-- **Contrato dos gates resolvido.** `check-gate.mjs` agora lê o JSON de
+- **`md-0002` foi aceita em 2026-10-05** pelo painel de decisão da sessão
+  (`/architect`), sem alteração no texto. A decisão de `editoria` ficar como
+  texto livre até a fatia 9 foi confirmada explicitamente e fica registrada
+  como premissa **reversível**. Estado de entrega: **Ready**.
+- **`md-0001` teve o AC-01 emendado** na mesma decisão, escolhido entre emendar
+  e superseder. O AC-01 original declarava cinco colunas e o scope revisão 3
+  atribui à fatia 1 também autor, editoria, fontes citadas, estado, data de
+  atualização e capa. Duas consequências dentro da emenda, ambas registradas no
+  corpo do `md-0001`: `author_id` virou `author_name` (texto), porque sem
+  cadastro o id ficaria órfão; e `fontes_citadas` entrou como coluna **sem
+  renderizador**, porque o scope pede na fatia 1 mas nenhuma spec decide onde a
+  fonte é exibida.
+- **`md-0003` não existe e não deve ser escrito.** Uma versão anterior do
+  índice o reservava para a fatia 1, o que punha duas specs competindo pela
+  mesma fatia. A fatia 1 tem dono único: o AC-01 do `md-0001`.
+- **O deadlock do portão está corrigido nas três places** que o carregavam: a
+  seção `## Portão, na ordem certa` do `md-0002` e a `## Regra de status` do
+  `INDICE.md`. Aceite é sobre o design e é do dono; `/check verify` é sobre a
+  implementação e vem depois do `/develop`.
+- **Contrato dos gates resolvido.** `check-gate.mjs` lê o JSON de
   `check-decision.mjs` e recebe `--commit`; o caminho `.md` segue aceito como
-  **legado deprecado**, para não invalidar relatórios já emitidos. `--repo`
-  declara a árvore-alvo, e sem ele o gate exige a raiz do work tree. Códigos
-  de saída separados: 1 bloqueio de conteúdo, 2 erro de uso/contexto.
-- **`md-0001` e `md-0002` seguem Proposed/Accepted como estavam.** A fila não
-  marca nenhuma das duas: o aceite de `md-0002` depende do dono, e o de
-  `md-0001` das perguntas abertas acima.
+  legado deprecado, para não invalidar relatórios já emitidos. `--repo` declara
+  a árvore-alvo e, sem ele, o gate exige a raiz do work tree. Códigos de saída
+  separados: 1 bloqueio de conteúdo, 2 erro de uso ou contexto. 29 testes.
+- **`/develop` não deve começar pela tarefa 2 sem ler a emenda.** A tarefa 2 do
+  `md-0002` (confirmar que a migration tem as dez colunas) é de **schema**, e o
+  schema da fatia 1 não existe ainda: nenhuma das 9 fatias foi entregue e `main`
+  não tem rota de produto. A tarefa 2 provavelmente vira a fatia 1 inteira.
 - **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
   7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
   `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
@@ -213,6 +216,7 @@ de agentes abaixo.**
 | 26  | 2026-10-05 | isolamento em clone + auditoria de entrega | `docs/reviews/2026-10-05-manifesto-captura.md` (origem `bec25aa`, 9 artefatos com SHA-256 em dois passos, commit barrado por gate herdado), `docs/reviews/2026-10-05-auditoria-estado-entrega.md` (checklist de agência: média declarada ~55% não fecha — a real é 35,0%; SEO está em `main`, não só em branches; auth tem infra e zero páginas; 0 de 9 fatias do produto entregues; 3 das 7 branches propostas conflitam com decisão do dono; páginas legais é a única lacuna real, por LGPD), `workflow/STATE.md` | concluído |
 | 27  | 2026-10-05 | testes dos gates + reconciliação da md-0002 | `__tests__/unit/gates.test.ts` (16 testes de `check-decision.mjs` e `check-gate.mjs`, incluindo os caminhos de reprovação e a expiração da aprovação), `docs/specs/INDICE.md` (prefixo `md-` na linha vigente; MDX/Velite preservadas nas branches), `docs/specs/md-0002-casca-editorial-home.md` (fatias 2/3/4; SEO básico na mesma fatia; estado vazio e de erro como AC; 12 ACs com plano de validação), `scripts/check-gate.mjs` (documenta a árvore do `cwd` e o texto do veredito), `workflow/STATE.md` | concluído |
 | 28  | 2026-10-05 | correção do contrato dos gates + md-0002 no formato do `architect` | `scripts/check-gate.mjs` (contrato estruturado + `--commit` + `--repo` + legado `.md` deprecado; códigos 1 e 2 separados), `docs/reviews/_TEMPLATE.md` (emite o artefato do gate), `__tests__/unit/gates.test.ts` (16 → 29 testes; cada caso negativo casa o motivo; `spawnSync` para enxergar stderr no caminho de aprovação), `docs/specs/md-0002-casca-editorial-home.md` (reescrita no formato do spec-template: Summary, Context, Requirements, Options considered, Decision, Rationale, Feature design com Value sourcing, Critical test scenarios, Build plan, Consequences; portão corrigido), `workflow/STATE.md` | concluído |
+| 29  | 2026-10-05 | aceite das specs de fundação (decisão do dono) | `docs/specs/md-0002-casca-editorial-home.md` (`Status: Accepted`, fonte da decisão registrada; `editoria` texto livre confirmado como premissa reversível), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (AC-01 emendado para o schema completo da fatia 1; `author_id` → `author_name`; `fontes_citadas` sem renderizador), `docs/specs/INDICE.md` (md-0002 Accepted; `md-0003` removido — duas specs não disputam a fatia 1; regra de status corrigida; desvio de nome registrado), `workflow/STATE.md` (Bastão atual passa a `/develop`) | concluído |
 
 ### Evidência da linha 01
 

@@ -1,9 +1,11 @@
 # md-0002. Home de leitura, página de artigo e SEO básico
 
 **Date**: 2026-10-05
-**Status**: Proposed
-**Decision source**: pendente — aguardando confirmação do dono (regra do
-`/architect`: aceite nunca é atribuído ao agente). Ver `## Follow-up`.
+**Status**: Accepted
+**Decision source**: aceito pelo dono em 2026-10-05 (painel de decisão da
+sessão, `/architect`), sem alteração em relação ao texto revisado. A decisão
+sobre `editoria` ficar como texto livre até a fatia 9 foi explicitamente
+confirmada e fica registrada como premissa reversível.
 
 ## Summary
 
