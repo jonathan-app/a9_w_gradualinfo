@@ -148,10 +148,10 @@ especificação é a mesma que já existe para painel editorial e RAG.
 
 **A spec de supersessão já foi escrita** (2026-10-04, 20:34) e está **Accepted**:
 
-| Branch | Artefato                                | Status   | Premissa               |
-| ------ | --------------------------------------- | -------- | ---------------------- |
-| `main` | `0001-arquitetura-markdown-supabase.md` | Accepted | Supabase + Markdown ✅ |
-| `main` | `0002-casca-editorial-home.md`          | Proposed | Supabase + Markdown ✅ |
+| Branch | Artefato                                   | Status   | Premissa               |
+| ------ | ------------------------------------------ | -------- | ---------------------- |
+| `main` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | Supabase + Markdown ✅ |
+| `main` | `md-0002-casca-editorial-home.md`          | Proposed | Supabase + Markdown ✅ |
 
 O `0001` de `main` revoga explicitamente as decisões de Velite, MDX e fluxo
 editorial por PR, e fixa `/artigos/[slug]`. Ele está coerente com a revisão 2
@@ -209,7 +209,7 @@ Detalhe completo em `docs/reviews/2026-10-04-auditoria-skills-estrutura.md`.
 - [x] Ordem de dependências declarada e sem ciclo.
 - [x] Riscos identificados por fatia.
 - [x] Nenhuma fatia depende de decisão humana não tomada.
-- [x] Spec de supersessão existe (`main:0001-arquitetura-markdown-supabase.md`,
+- [x] Spec de supersessão existe (`main:md-0001-arquitetura-markdown-supabase.md`,
       Accepted) e é coerente com esta revisão.
 - [ ] Colisão de ID `0001`/`0002` entre `main` e a branch resolvida, ou
       documentada como isenta por caminho completo.
@@ -217,7 +217,7 @@ Detalhe completo em `docs/reviews/2026-10-04-auditoria-skills-estrutura.md`.
 ## Próxima etapa
 
 `/architect` → primeiro reconciliar a **colisão de ID** e a **spec `0002`
-existente** (`main:0002-casca-editorial-home.md`, Proposed), que cobre as fatias
+existente** (`main:md-0002-casca-editorial-home.md`, Proposed), que cobre as fatias
 2, 3 e 4 deste scope; corrigi-la em vez de criar uma spec concorrente. A fatia #1
 (schema do artigo) é o `AC-01` do `main:0001` — se ainda não estiver detalhado
 como AC, é aí que entra, não em um `0003` novo. Nada de código antes disso.

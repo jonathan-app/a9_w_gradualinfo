@@ -38,9 +38,9 @@ de agentes abaixo.**
   histórico de preços, Selo "Oferta Verificada", painel, RAG e comunidade — cada
   um em spec própria.
 - **Bloqueio de sequência:** a spec de supersessão **já existe** em `main`
-  (`0001-arquitetura-markdown-supabase.md`, Accepted, 2026-10-04 20:34) e está
+  (`md-0001-arquitetura-markdown-supabase.md`, Accepted, 2026-10-04 20:34) e está
   coerente com a decisão do dono. Não escrever outra. O que falta é a
-  **colisão de ID** entre `main` e a branch, e a `0002-casca-editorial-home.md`
+  **colisão de ID** entre `main` e a branch, e a `md-0002-casca-editorial-home.md`
   (Proposed), que cobre as fatias 2, 3 e 4 do scope e precisa ser reconciliada
   com elas em vez de duplicada.
 - **Concurrency blocker:** às 00:08 de 2026-10-05 havia **três outras sessões de
@@ -72,8 +72,8 @@ de agentes abaixo.**
   reiniciada, porque `skills.paths` é lido no startup — e essa verificação está
   pendente, não concluída.
 - **Colisão de ID de spec:** `0001` e `0002` nomeam documentos **diferentes**
-  dependendo da branch. Em `main`: `0001-arquitetura-markdown-supabase.md`
-  (Accepted) e `0002-casca-editorial-home.md` (Proposed). Na branch
+  dependendo da branch. Em `main`: `md-0001-arquitetura-markdown-supabase.md`
+  (Accepted) e `md-0002-casca-editorial-home.md` (Proposed). Na branch
   `feat/identidade-portal-gradualinfo`: `0001-blog-template-aqua.md` e
   `0002-mvp-portal-gradualinfo.md` (premissa MDX, revogada). A spec de
   supersessão **já existe** — não escrever outra. Resolver a colisão por caminho
@@ -104,7 +104,7 @@ de agentes abaixo.**
   **SEO básico** → publicação por migration → referência visual → primeira
   jornada → SEO aprofundado → busca. **Comentários e conta saíram** para
   pós-MVP, junto com comunidade. Specs existentes: `main:0001` (Accepted,
-  supersessão) e `main:0002-casca-editorial-home.md` (Proposed, cobre as fatias
+  supersessão) e `main:md-0002-casca-editorial-home.md` (Proposed, cobre as fatias
   2, 3 e 4).
 - **Estado real do produto:** `main` não tem nenhuma rota de produto. Tudo que
   existe está em 9 branches não mergeadas; a mais advanced é

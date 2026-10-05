@@ -38,8 +38,8 @@ mudança durante o transporte. Resultado: **nenhum arquivo mudou** entre `t0` e
 | `71def70717f5745709ccd6e3d3fe8f4c207a3f6256bbe3684210a98c808f85d8` | `workflow/STATE.md`                                     |
 | `7b8b1db1d4c0b5e2450e1dc197630a7ca77d8b9293d3d65fa59e3bd33da05caf` | `docs/scope/0001-mvp-portal-gradualinfo.md`             |
 | `0b9838413f1388226e4efd022248ebbc72acd0f7252f73b6859e8f999749eece` | `docs/reviews/2026-10-04-auditoria-skills-estrutura.md` |
-| `0f23a3505bfd55e5200f3841ad42da5b751dc0a4b6c5eaf6ae6be81e07e25dfa` | `docs/specs/0001-arquitetura-markdown-supabase.md`      |
-| `a773b6eb29ca1450393be3207b057a668f2aa2c3e463b7755de2a13fcddcb82b` | `docs/specs/0002-casca-editorial-home.md`               |
+| `0f23a3505bfd55e5200f3841ad42da5b751dc0a4b6c5eaf6ae6be81e07e25dfa` | `docs/specs/md-0001-arquitetura-markdown-supabase.md`   |
+| `a773b6eb29ca1450393be3207b057a668f2aa2c3e463b7755de2a13fcddcb82b` | `docs/specs/md-0002-casca-editorial-home.md`            |
 | `ca22e8fa719707ae4f3df466bb32532dd93d43661f0f6f27e080575b3294d8d8` | `docs/workflow/arquitetura-editorial.md`                |
 | `55be3ea8033f8f599f7da1cf3d9520a19861f4fecd81a762c53f475a9ba29c30` | `kilo.json`                                             |
 | `77126d55934d849c48d5e57ff4b1cabb3e99e174e84fd5634a05418177e9c352` | `scripts/check-decision.mjs`                            |

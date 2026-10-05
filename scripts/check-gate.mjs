@@ -6,6 +6,27 @@
  * do check-decision foi APROVADA e se o conteúdo avaliado não mudou.
  *
  * Uso: node scripts/check-gate.mjs <arquivo-de-revisao.md>
+ *
+ * ── armadilha conhecida: este script não recebe qual árvore verificar ──
+ *
+ * `git rev-parse HEAD` e `git status --porcelain` são lidos do **diretório
+ * atual**, sem parâmetro para apontar outro repositório. Rodar de outro lugar
+ * verifica a árvore errada — e falha pela razão errada, que é mais grave que
+ * não falhar: o bloqueio continua acontecendo, mas com mensagem que não
+ * corresponde ao motivo.
+ *
+ * Consequência prática: sempre invoque a partir da raiz do repositório que está
+ * sendo verificado. Os testes em `__tests__/unit/gates.test.ts` rodam com `cwd`
+ * explícito por causa disso.
+ *
+ * ── segunda armadilha: o texto do veredito ──
+ *
+ * Este script exige a string literal `Veredito: APROVADO`, que **não é** o que
+ * `docs/reviews/_TEMPLATE.md` produz — o template escreve `- [ ] **Aprovado**`.
+ * Um relatório copiado do template é reprovado por motivo de texto. Isso está
+ * registrado como pendência em `docs/reviews/2026-10-05-auditoria-estado-entrega.md`:
+ * ou o gate passa a aceitar o texto do template, ou o template passa a produzir
+ * o texto do gate. As duas coisas precisam casar.
  */
 
 import { existsSync, readFileSync } from 'fs';
