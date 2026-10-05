@@ -23,58 +23,45 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: `/develop` da tarefa 0 do `md-0001` — consertar o stack local do
-Supabase.** Nenhum código de produto escrito. Antes da tarefa 0, há duas
-decisões suas pendentes, registradas aqui e na spec.
+**Próximo passo: executar o pacote da tarefa 0 preparado em outra sessão e
+registrar `/check verify`.** O mecanismo da tarefa 0 já está verificado aqui por
+execução; falta o pacote que a conclude.
 
-- **Um número que eu reportei estava errado, e para pior.** Eu afirmei, no
-  histórico e na auditoria, que nada de produto foi entregue e que a cobertura
-  de banco seria o que viesse a ser escrito. A tabela `posts` **existe** em
-  `main` desde 2026-10-04, com RLS, policies, função `SECURITY DEFINER`, trigger
-  e índices — e com 12 asserções pgTAP escritas. Cobertura escrita e nunca
-  executada é pior que ausência de cobertura, porque parece cobertura.
-- **O stack local não sobe, e isso é achado de execução, não de leitura.**
-  `pnpm supabase:reset` falha: a migration `00000000000000_init.sql` é **pulada
-  pela própria CLI** por usar o nome reservado `init`, então `public.profiles`
-  nunca é criada, e `supabase/seed.sql` quebra em
-  `relation "public.profiles" does not exist`. Logo `pnpm supabase:test` roda com
-  `ECONNREFUSED`. Além disso a suíte espera 7 posts publicados e nada os cria:
-  o seed não insere nenhum. Evidência completa, com saídas, em
-  `docs/reviews/2026-10-05-bloqueio-stack-local.md`.
-- **Nem `check:all` nem a CI pegariam.** `check:all` é typecheck, lint,
-  formatação e `test:run`; a CI tem três jobs e nenhum toca em banco. Um stack
-  que não sobe não reprova nada em lugar nenhum. Virou AC-08 do `md-0001`.
-- **Preview: minha spec inventava um papel que não existe.** Eu escrevi "papel
-  `preview`" e tratei `SUPABASE_PREVIEW_TOKEN` como se a variável criasse o
-  papel. Não cria: no Supabase os papéis são `anon`, `authenticated`,
-  `service_role` e `supabase_admin`. Redesenhado como `authenticated` com claim
-  `app_metadata.preview = 'true'` — nativo, sem papel novo, sem dependência nova,
-  e com acesso efetivo testável por `set local role`. A armadilha que a spec
-  agora nomeia: claim em **`user_metadata`** daria a qualquer um o privilégio de
-  ler rascunho editando o próprio perfil, e é gravável pelo usuário.
-- **Policy separada não é isolamento.** Duas policies descrevem intenção;
-  isolamento é comportamento observado. A spec agora exige leitura **real** por
-  papel com `set local role` e contagem exata de linhas, incluindo uma asserção
-  que prova que claim em `user_metadata` **não** abre rascunho, e uma asserção
-  cruzada de que `anon` não foi alargado por existir a policy de preview.
-- **Agendamento: minha invariante estava errada e foi retirada.** Eu mandava um
-  `CHECK` exigindo `published_at` quando `status = 'publicado'`, o que **recusa**
-  a linha. A policy existente já faz o que você pediu: artigo com data futura
-  **existe** e fica invisível ao público. Sem `CHECK`; a semântica existente é
-  preservada e ganha cenário de teste.
-- **`md-0001` passa a transformar, não criar.** A tabela vira o schema editorial
-  por `alter table`, e a spec itemiza **seis conflitos** com o que já existe,
-  cada um com quem decide. Quatro estão resolvidos pelo seu aceite; **dois são
-  suas**: manter o valor `arquivado` (existe, tem `COMMENT` e tem asserção de
-  que `anon` não lê) e manter `created_at` (existe e está no índice composto).
-- **Conteúdo de teste fica no ambiente local.** `seed.sql` é local; migration que
-  insere linha publica artigo fictício no deploy. A tarefa 4 do build plan foi
-  corrigida: os quatro posts de validação (publicado, rascunho, arquivado,
-  agendado) vão para `seed.sql`.
-- **Sequência, do dono em 2026-10-05:** schema e RLS → publicação mínima →
-  home e artigo com SEO básico → testes → `/check verify + review`. `md-0002`
-  permanece `Proposed`; concluir o banco **não** autoriza implementar a
-  interface.
+- **A suíte pgTAP rodou pela primeira vez.** Com `supabase start` no ar (Docker
+  aqui é shim sobre podman) e o rename aplicado, `supabase db reset --local`
+  conclui limpo e `supabase test db` executa: **2 falhas de 12**, ambas de
+  contagem. As policies que nunca haviam sido executadas estão corretas.
+- **A contagem errada escondia uma policy quebrada.** Com a policy de leitura em
+  `using (false)` — `anon` não lê nada — e a contagem original `7`, a suíte falha
+  **exatamente as mesmas 2 asserções**. Com a contagem corrigida para 1, a mesma
+  sabotagem aparece como `have: 0, want: 1`, e com a policy certa o resultado é
+  **PASS 12/12**. Ou seja: corrigir a contagem não é cosmético, é o que dá
+  dentes à suíte, e é o que o AC-05 exige.
+- **Verde vazio é a armadilha.** Com a tabela sem linhas, `anon não lê rascunho`
+  passa por vacuidade — passaria igual com a policy em `using (false)`. Com os
+  quatro fixtures, `anon` viu **exatamente 1 linha** de 4: rascunho, arquivado e
+  agendado invisíveis. É por isso que os fixtures não são decoração.
+- **Agendamento confirmado por execução:** artigo `publicado` com
+  `published_at` no futuro **existe** e é invisível ao público. A semântica
+  existente está certa e a invariante `CHECK` que eu tinha mandado continua
+  corretamente **retirada**.
+- **Defeito meu, no ZIP entregue:** `supabase/snippets/` e
+  `supabase/functions/` não foram no pacote, porque diretório vazio não entra no
+  `git archive`, e o CLI faz `statfs` nos dois no start. Derrubaria a verificação
+  de quem recebeu, com mensagem que não aponta a causa. Corrigido com
+  `.gitkeep` nos dois.
+- **Preparado em outra sessão, ainda não executado:** rename para
+  `20261003000000_profiles_foundation.sql` (SQL preservado byte a byte,
+  `fb50d877`), 4 fixtures no seed, pgTAP com 15 asserções, job de banco na CI e
+  relatório em `docs/reviews/2026-10-05-tarefa-0-stack-local.md`. **Os hashes
+  batem com o meu `3bb7714`** em todos os arquivos que não deveriam mudar
+  (`md-0001`, `md-0002`, `INDICE.md`, `posts_exemplo.sql`, `package.json`,
+  `pnpm-lock.yaml`), o que prova que a cópia parte do mesmo commit, sem drift.
+- **AC-08 segue UNVERIFIABLE** até o pacote rodar e ser registrado. Aqui ele é
+  **demonstrável**, não registrado.
+- **O clone tem a tarefa 0 pela metade:** mantive o rename e os `.gitkeep`, e
+  reverti os fixtures e a contagem, que eram rascunho meu. `md-0002` continua
+  `Proposed`; concluir o banco não autoriza a interface.
 - **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
   7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
   `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
@@ -241,6 +228,7 @@ de agentes abaixo.**
 | 30  | 2026-10-05 | retificação do aceite + schema, RLS, preview e fontes | `docs/specs/md-0002-casca-editorial-home.md` (voltou a `Proposed`; `Decision source` declara que não há aceite; RLS corrigida em 5 lugares — filtro na consulta é segunda barreira, não duplicação indevida; `service_role` proibido em leitura pública; AC-08 de preview exige credencial explícita com teste dos dois lados; AC-13 novo exige exibição das fontes; 9 tarefas, 13 ACs, todos rastreados), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (reescrita como contrato construível: 7 ACs com negação explícita, papel de preview, prova de que remover a policy quebra o teste, invariante `published_at`; AC-02 de render movido para md-0002; `## Portão desta emenda` separa direção autorizada de conteúdo não aceito), `docs/specs/INDICE.md` (status de md-0002 corrigido), `workflow/STATE.md` (sequência schema → publicação → home/artigo → testes → verify) | concluído |
 | 31  | 2026-10-05 | aceite de conteúdo do `md-0001` e formato das fontes | `docs/specs/md-0001-arquitetura-markdown-supabase.md` (`Status: Accepted` com aprovação de conteúdo coluna a coluna; `Decision source` com as três fontes; `## Portão desta emenda` resolvido), `docs/specs/md-0002-casca-editorial-home.md` (AC-13 agora é concreto: seção "Fontes" ao final do corpo, lista de links; `md-0002` segue `Proposed` por decisão explícita), `docs/specs/INDICE.md` (status por linha; regra nova: `Decision source` cita decisão e data, nunca artefato de controle), `workflow/STATE.md` (Bastão atual = aceite de md-0002, depois `/develop` do schema) | concluído |
 | 32  | 2026-10-05 | bloqueio do stack local + correção de três contratos | `docs/reviews/2026-10-05-bloqueio-stack-local.md` (novo: `pnpm supabase:reset` falha porque a migration `init` é pulada pela CLI e o seed quebra em `public.profiles`; a suíte pgTAP nunca executou; a asserção espera 7 posts que nada cria; nem `check:all` nem a CI tocam em banco), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (passa a **transformar** uma tabela existente; nova seção de conflitos itemizada; preview redesenhado de papel fictício para `authenticated` + claim `app_metadata`; matriz de acesso efetivo por papel com `set local role`; invariante `published_at` **retirada**; AC-08 novo para o stack; tarefa 0 no build plan), `docs/specs/md-0002-casca-editorial-home.md` (AC-08 alinhado ao mecanismo real; tabela de schema duplicada unificada), `workflow/STATE.md` | concluído |
+| 33  | 2026-10-05 | verificação por execução da tarefa 0 | `docs/reviews/2026-10-05-verificacao-tarefa-0.md` (novo: suíte pgTAP executou pela primeira vez — 2 falhas de 12, ambas de contagem; A/B prova que com a contagem errada uma policy de leitura quebrada produz saída idêntica à de uma boa, e que com a contagem corrigida a mesma sabotagem aparece e a policy certa dá PASS 12/12; agendamento confirmado por execução; **defeito meu**: `supabase/snippets/` e `supabase/functions/` faltavam no ZIP entregue, e o CLI faz `statfs` nos dois), `supabase/migrations/20261003000000_profiles_foundation.sql` (rename verificado, SQL idêntico byte a byte), `supabase/snippets/.gitkeep` + `supabase/functions/.gitkeep` (novos), `workflow/STATE.md` | concluído |
 
 ### Evidência da linha 01
 
