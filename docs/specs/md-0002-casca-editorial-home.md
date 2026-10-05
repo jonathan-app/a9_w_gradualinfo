@@ -87,11 +87,12 @@ confere contra isto):
   em nenhum caminho; verificável por busca no bundle servido.
 - **md-0002/AC-07**: `slug` inexistente devolve **404** com a página de erro do
   app; artigo com `published_at` no futuro também devolve **404** em produção.
-- **md-0002/AC-08**: o preview de artigo não publicado existe, e é **autorizado
-  explicitamente**: exige uma credencial de preview deliberadamente configurada,
-  não apenas `NODE_ENV`. Em `local` com a credencial, o rascunho responde 200; em
-  build de produção, sem a credencial, responde **404** — e os dois lados têm
-  teste, porque um gate que só tem teste do lado que permite é meio gate.
+- **md-0002/AC-08**: o preview de artigo não publicado existe e é **autorizado
+  explicitamente**, pelo mecanismo do `md-0001` (`app_metadata.preview` em sessão
+  `authenticated`, obtida a partir de `SUPABASE_PREVIEW_TOKEN`): nunca por
+  `NODE_ENV`, que é constante de build e não credencial. Com sessão de preview, o
+  rascunho responde **200**; sem sessão, responde **404** — e **os dois lados têm
+  teste**, porque um portão com teste só do lado que permite é meio portão.
 - **md-0002/AC-09**: o HTML servido contém
   `<script type="application/ld+json">` com `@type: Article`, título,
   `datePublished`, autor e imagem, e o JSON faz parse.
@@ -218,30 +219,36 @@ errado. Por isso o
 preview exige credencial: um segredo deliberadamente configurado, mais simples
 de reverter do que um `NODE_ENV` que ninguém consegue auditar.
 
-O preço é uma segunda policy de leitura para o papel de preview, e por isso a
-emenda do `md-0001` acrescenta `posts_select_preview`. Duas policies com nomes
-claros são mais fáceis de revisar do que uma policy com `OR` dentro, que é onde
-esse tipo de acesso costuma dar errado.
+O preço é uma segunda policy de leitura, e por isso o `md-0001` acrescenta
+`posts_select_preview`. Duas policies com nomes claros são mais fáceis de revisar
+do que uma policy com `OR` dentro, que é onde esse tipo de acesso costuma dar
+errado. O mecanismo completo — como a credencial vira sessão e por que a claim
+fica em `app_metadata` e não em `user_metadata` — está em `md-0001`, e o teste
+de acesso efetivo por papel também.
 
 ## Feature design
 
-**Data model sketch**: esta spec **não cria tabela nova** e **não altera** o
-schema definido no `md-0001`. Ela consome a tabela `posts` na forma completa
-que o scope, revisão 3, atribui à fatia 1:
+**Data model sketch**: esta spec **não cria nem altera tabela**. Consome a tabela
+`posts` como o `md-0001` a deixar, e a forma abaixo é a **referência de leitura**
+para quem constrói a página — não uma segunda declaração de schema. A tabela já
+existe em `main` desde 2026-10-04 como exemplo; o `md-0001` a transforma no
+schema editorial. A lista completa e a tensão das colunas está lá; aqui estão
+só as que a página lê, com uma coluna a mais para o que a página precisa saber:
 
-| Coluna            | Tipo          | Nulo | Nota                                          |
-| ----------------- | ------------- | ---- | --------------------------------------------- |
-| `id`              | `uuid`        | não  | PK                                            |
-| `slug`            | `text`        | não  | unique, indexado                              |
-| `title`           | `text`        | não  | fonte do `<h1>` e do JSON-LD                  |
-| `content`         | `text`        | não  | corpo Markdown                                |
-| `excerpt`         | `text`        | não  | `description` e resumo do card                |
-| `cover_image_url` | `text`        | não  | URL absoluta; capa do card e `og:image`       |
-| `editoria`        | `text`        | não  | rótulo do card; texto livre no MVP (ver nota) |
-| `author_name`     | `text`        | não  | autor do JSON-LD                              |
-| `status`          | `text`        | não  | `rascunho` \| `publicado`                     |
-| `published_at`    | `timestamptz` | sim  | ordena, filtra e é o `lastModified`           |
-| `updated_at`      | `timestamptz` | não  |                                               |
+| Coluna            | Por que a página precisa                                       |
+| ----------------- | -------------------------------------------------------------- |
+| `slug`            | resolve a rota `/artigos/[slug]` e monta o canonical           |
+| `title`           | `<h1>` e `headline` do JSON-LD                                 |
+| `content`         | corpo Markdown do corpo do artigo                              |
+| `excerpt`         | `description`, `og:description` e resumo do card               |
+| `cover_image_url` | capa do card e `og:image`                                      |
+| `editoria`        | rótulo do card                                                 |
+| `author_name`     | `author` do JSON-LD                                            |
+| `fontes_citadas`  | seção "Fontes" do AC-13                                        |
+| `status`          | filtra rascunho e arquivado                                    |
+| `published_at`    | ordenação, filtro de agendamento e `lastModified`              |
+| `created_at`      | existe desde 2026-10-04 e é preservada; não é lida pela página |
+| `updated_at`      | existe e é preservada; não é lida pela página                  |
 
 **Nota sobre `editoria`**: no MVP é texto livre, sem lista fechada. A busca com
 recorte por editoria é a fatia 9, e é lá que a taxonomia precisa virar
@@ -356,9 +363,10 @@ publicamente, como em qualquer blog.
 1. Ampliar `formatDate` com `timeZone` opcional em `lib/utils/format.ts`,
    default `undefined`, com teste unitário do novo parâmetro.
    Satisfaz **md-0002/AC-02**.
-2. Confirmar que a migration de `posts` do `md-0001` tem as dez colunas da
-   tabela acima, com RLS e índice de listagem; corrigir a spec do `md-0001` se
-   não tiver (ver `## Follow-up`). Satisfaz **md-0002/AC-01**, **md-0002/AC-11**.
+2. Confirmar que `posts`, depois da transformação do `md-0001`, tem as colunas
+   que a página lê, com RLS e índice de listagem. **A tabela já existe** em `main`
+   como exemplo, então isto é dependência, não construção: se o `md-0001` não
+   entregou, esta tarefa não avança. Satisfaz **md-0002/AC-01**, **md-0002/AC-11**.
 3. Criar a camada de leitura: função única que recebe o cliente do servidor e
    devolve artigos publicados já ordenados e limitados, e outra que busca por
    `slug`, com a checagem de credencial de preview da AC-08 em um único ponto,

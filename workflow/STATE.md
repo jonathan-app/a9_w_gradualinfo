@@ -23,46 +23,58 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: aceite de conteúdo do `md-0002`, e então `/develop` do schema
-(`md-0001`).** O schema já tem aceite explícito; a página ainda não.
+**Próximo passo: `/develop` da tarefa 0 do `md-0001` — consertar o stack local do
+Supabase.** Nenhum código de produto escrito. Antes da tarefa 0, há duas
+decisões suas pendentes, registradas aqui e na spec.
 
-- **`md-0001` está `Accepted`, com aprovação de conteúdo, coluna a coluna.** O
-  dono aprovou em 2026-10-05 as doze colunas, as duas policies de leitura
-  separadas, o papel de preview com credencial, a proibição de `service_role` em
-  leitura pública e as sete ACs. A aprovação está no `Decision source` do
-  cabeçalho, e a seção `## Portão desta emenda` registra como foi resolvida.
-- **`md-0002` está `Proposed`, deliberadamente.** A aprovação anterior cobria a
-  ordem do fluxo, não o conteúdo; foi revertida. Falta o aceite de conteúdo
-  dela, e a sequência do dono diz que ele vem depois do schema.
-- **Retificação que vale registrar por ser do tipo que se repete:** eu havia
-  convertido uma resposta sobre **ordem de fluxo** em aceite de **conteúdo**, e
-  apontado o `INDICE.md` como fonte da aprovação. O `INDICE.md` nunca foi fonte
-  de nada — era o índice, não a decisão. Regra que passa a valer: `Decision
-  source` cita a decisão e a data, nunca um artefato de controle.
-- **Fontes citadas: formato fechado.** Seção "Fontes" ao final do corpo, lista de
-  links, `titulo` como texto e `url` como `href` (decisão do dono em 2026-10-05).
-  `md-0001` AC-07 é a metade de dados e `md-0002` AC-13 é a metade de exibição;
-  as duas juntas destravam a fatia 7. Enquanto não existissem, um guia que
-  promete fontes e não as mostra era o risco real, não uma lacuna de spec.
-- **Sequência de entrega, definida pelo dono em 2026-10-05:**
-  1. **schema e RLS** — `md-0001`, migration e testes de banco;
-  2. **publicação mínima** — um artigo real publicado e um rascunho, por
-     migration, para as specs seguintes terem dado real;
-  3. **home e artigo com SEO básico** — `md-0002`;
-  4. **testes**;
-  5. **`/check verify + review`** sobre a entrega, com evidência por AC.
-- **RLS corrigida:** é fronteira de autorização, e a consulta também filtra como
-  segunda barreira. O essencial é que nenhuma consulta pública exponha rascunho
-  **inclusive com cliente privilegiado**, e `service_role` burla a RLS por
-  definição — por isso ele é proibido em leitura pública, com verificação
-  automatizada (AC-11).
-- **Preview corrigido:** `NODE_ENV` é constante de build, não segredo. O AC-08
-  exige credencial deliberadamente configurada, com falha fechada, e teste do
-  lado que permite **e** do lado que recusa.
-- **O que os 29 testes provam:** os cenários dos gates exercitados — contrato
-  estruturado, `--commit`, `--repo`, contexto, legado `.md`, e o motivo de cada
-  bloqueio. **O que não provam:** schema, preview e produto. Nenhum dos três
-  existe ainda, e afirmar cobertura da fatia 1 seria falso.
+- **Um número que eu reportei estava errado, e para pior.** Eu afirmei, no
+  histórico e na auditoria, que nada de produto foi entregue e que a cobertura
+  de banco seria o que viesse a ser escrito. A tabela `posts` **existe** em
+  `main` desde 2026-10-04, com RLS, policies, função `SECURITY DEFINER`, trigger
+  e índices — e com 12 asserções pgTAP escritas. Cobertura escrita e nunca
+  executada é pior que ausência de cobertura, porque parece cobertura.
+- **O stack local não sobe, e isso é achado de execução, não de leitura.**
+  `pnpm supabase:reset` falha: a migration `00000000000000_init.sql` é **pulada
+  pela própria CLI** por usar o nome reservado `init`, então `public.profiles`
+  nunca é criada, e `supabase/seed.sql` quebra em
+  `relation "public.profiles" does not exist`. Logo `pnpm supabase:test` roda com
+  `ECONNREFUSED`. Além disso a suíte espera 7 posts publicados e nada os cria:
+  o seed não insere nenhum. Evidência completa, com saídas, em
+  `docs/reviews/2026-10-05-bloqueio-stack-local.md`.
+- **Nem `check:all` nem a CI pegariam.** `check:all` é typecheck, lint,
+  formatação e `test:run`; a CI tem três jobs e nenhum toca em banco. Um stack
+  que não sobe não reprova nada em lugar nenhum. Virou AC-08 do `md-0001`.
+- **Preview: minha spec inventava um papel que não existe.** Eu escrevi "papel
+  `preview`" e tratei `SUPABASE_PREVIEW_TOKEN` como se a variável criasse o
+  papel. Não cria: no Supabase os papéis são `anon`, `authenticated`,
+  `service_role` e `supabase_admin`. Redesenhado como `authenticated` com claim
+  `app_metadata.preview = 'true'` — nativo, sem papel novo, sem dependência nova,
+  e com acesso efetivo testável por `set local role`. A armadilha que a spec
+  agora nomeia: claim em **`user_metadata`** daria a qualquer um o privilégio de
+  ler rascunho editando o próprio perfil, e é gravável pelo usuário.
+- **Policy separada não é isolamento.** Duas policies descrevem intenção;
+  isolamento é comportamento observado. A spec agora exige leitura **real** por
+  papel com `set local role` e contagem exata de linhas, incluindo uma asserção
+  que prova que claim em `user_metadata` **não** abre rascunho, e uma asserção
+  cruzada de que `anon` não foi alargado por existir a policy de preview.
+- **Agendamento: minha invariante estava errada e foi retirada.** Eu mandava um
+  `CHECK` exigindo `published_at` quando `status = 'publicado'`, o que **recusa**
+  a linha. A policy existente já faz o que você pediu: artigo com data futura
+  **existe** e fica invisível ao público. Sem `CHECK`; a semântica existente é
+  preservada e ganha cenário de teste.
+- **`md-0001` passa a transformar, não criar.** A tabela vira o schema editorial
+  por `alter table`, e a spec itemiza **seis conflitos** com o que já existe,
+  cada um com quem decide. Quatro estão resolvidos pelo seu aceite; **dois são
+  suas**: manter o valor `arquivado` (existe, tem `COMMENT` e tem asserção de
+  que `anon` não lê) e manter `created_at` (existe e está no índice composto).
+- **Conteúdo de teste fica no ambiente local.** `seed.sql` é local; migration que
+  insere linha publica artigo fictício no deploy. A tarefa 4 do build plan foi
+  corrigida: os quatro posts de validação (publicado, rascunho, arquivado,
+  agendado) vão para `seed.sql`.
+- **Sequência, do dono em 2026-10-05:** schema e RLS → publicação mínima →
+  home e artigo com SEO básico → testes → `/check verify + review`. `md-0002`
+  permanece `Proposed`; concluir o banco **não** autoriza implementar a
+  interface.
 - **Bloqueio de concorrência segue valendo:** PIDs 6895 (copilot-runtime),
   7207 (agy) e 7640 (codex) **vivos** em 2026-10-05 00:58.
   `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente
@@ -228,6 +240,7 @@ de agentes abaixo.**
 | 29  | 2026-10-05 | aceite das specs de fundação (decisão do dono) | `docs/specs/md-0002-casca-editorial-home.md` (`Status: Accepted`, fonte da decisão registrada; `editoria` texto livre confirmado como premissa reversível), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (AC-01 emendado para o schema completo da fatia 1; `author_id` → `author_name`; `fontes_citadas` sem renderizador), `docs/specs/INDICE.md` (md-0002 Accepted; `md-0003` removido — duas specs não disputam a fatia 1; regra de status corrigida; desvio de nome registrado), `workflow/STATE.md` (Bastão atual passa a `/develop`) | concluído |
 | 30  | 2026-10-05 | retificação do aceite + schema, RLS, preview e fontes | `docs/specs/md-0002-casca-editorial-home.md` (voltou a `Proposed`; `Decision source` declara que não há aceite; RLS corrigida em 5 lugares — filtro na consulta é segunda barreira, não duplicação indevida; `service_role` proibido em leitura pública; AC-08 de preview exige credencial explícita com teste dos dois lados; AC-13 novo exige exibição das fontes; 9 tarefas, 13 ACs, todos rastreados), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (reescrita como contrato construível: 7 ACs com negação explícita, papel de preview, prova de que remover a policy quebra o teste, invariante `published_at`; AC-02 de render movido para md-0002; `## Portão desta emenda` separa direção autorizada de conteúdo não aceito), `docs/specs/INDICE.md` (status de md-0002 corrigido), `workflow/STATE.md` (sequência schema → publicação → home/artigo → testes → verify) | concluído |
 | 31  | 2026-10-05 | aceite de conteúdo do `md-0001` e formato das fontes | `docs/specs/md-0001-arquitetura-markdown-supabase.md` (`Status: Accepted` com aprovação de conteúdo coluna a coluna; `Decision source` com as três fontes; `## Portão desta emenda` resolvido), `docs/specs/md-0002-casca-editorial-home.md` (AC-13 agora é concreto: seção "Fontes" ao final do corpo, lista de links; `md-0002` segue `Proposed` por decisão explícita), `docs/specs/INDICE.md` (status por linha; regra nova: `Decision source` cita decisão e data, nunca artefato de controle), `workflow/STATE.md` (Bastão atual = aceite de md-0002, depois `/develop` do schema) | concluído |
+| 32  | 2026-10-05 | bloqueio do stack local + correção de três contratos | `docs/reviews/2026-10-05-bloqueio-stack-local.md` (novo: `pnpm supabase:reset` falha porque a migration `init` é pulada pela CLI e o seed quebra em `public.profiles`; a suíte pgTAP nunca executou; a asserção espera 7 posts que nada cria; nem `check:all` nem a CI tocam em banco), `docs/specs/md-0001-arquitetura-markdown-supabase.md` (passa a **transformar** uma tabela existente; nova seção de conflitos itemizada; preview redesenhado de papel fictício para `authenticated` + claim `app_metadata`; matriz de acesso efetivo por papel com `set local role`; invariante `published_at` **retirada**; AC-08 novo para o stack; tarefa 0 no build plan), `docs/specs/md-0002-casca-editorial-home.md` (AC-08 alinhado ao mecanismo real; tabela de schema duplicada unificada), `workflow/STATE.md` | concluído |
 
 ### Evidência da linha 01
 

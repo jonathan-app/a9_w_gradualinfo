@@ -12,6 +12,14 @@
   colunas e de policies enunciada na pergunta de aprovação e o "aprove o
   conteúdo" dado como resposta. Não é aceite por consequência nem por silêncio:
   a aprovação cobriu o conteúdo, coluna a coluna.
+- **Correção de base factual, 2026-10-05, sem novo aceite:** a aprovação acima
+  foi dada sobre a premissa de que a tabela **não existia**. Ela existe desde
+  2026-10-04 (`supabase/migrations/20261004000000_posts_exemplo.sql`), como
+  tabela de exemplo, e a forma correta desta spec é **transformá-la**, não criá-la
+  do zero. Isso muda o trabalho, não a decisão: as colunas e as policies
+  aprovadas continuam válidas, mas seis delas precisam de `alter table` em vez de
+  `create table`, e duas decisões da tabela existente estão em conflito com o
+  aprovado (ver `## Conflitos com o que já existe`).
 - **Exibição das fontes citadas**: seção final, lista de links, decideda pelo
   dono em 2026-10-05. A exibição é executada pelo `md-0002` (AC-13), porque
   apresentação é página, não schema.
@@ -27,9 +35,10 @@ Isto também liquida uma herança: as branches antigas do projeto usavam um
 framework de conteúdo compilado, com os artigos em arquivos e publicação por
 código. Esse caminho foi revogado.
 
-Para quem está construindo: esta spec entrega a tabela, as regras de acesso e
-os testes de banco. Ela **não** entrega página nenhuma — a home e o artigo são
-`md-0002`.
+Para quem está construindo: esta spec **transforma** uma tabela de exemplo que já
+existe em `main` no schema editorial real, fecha as regras de acesso e conserta
+os testes de banco, que nunca chegaram a rodar. Ela **não** entrega página
+nenhuma — a home e o artigo são `md-0002`.
 
 ## Context
 
@@ -81,9 +90,17 @@ por construção, não por discipline de revisão.
   Provado por pgTAP, com asserção negativa explícita, não por ausência de erro.
 - **md-0001/AC-03**: nenhum papel além de `service_role` insere, altera ou apaga
   linha de `posts`. Provado por pgTAP, incluindo tentativa com `authenticated`.
-- **md-0001/AC-04**: o papel de preview lê rascunho **apenas** com a credencial
-  de preview, e o papel `anon` continua sem acesso a rascunho mesmo quando a
-  credencial de preview está configurada no ambiente. Os dois lados têm asserção.
+- **md-0001/AC-04**: o acesso **efetivo** de cada papel da matriz de
+  `## Security model` é provado por leitura real com `set local role`: `anon` e
+  `authenticated`-sem-claim leem só publicados no passado; `authenticated` com
+  `app_metadata.preview = 'true'` lê rascunho e agendado; e um claim em
+  `user_metadata` **não** concede leitura de rascunho. Cada papel tem asserção
+  própria, com contagem exata de linhas — existir a policy no catálogo não basta.
+- **md-0001/AC-08**: `pnpm supabase:reset` conclui sem erro e
+  `pnpm supabase:test` roda verde. Hoje os dois falham: a migration
+  `00000000000000_init.sql` é pulada pela CLI por usar o nome reservado `init`,
+  o seed quebra em `public.profiles`, e a suíte pgTAP **nunca executou**.
+  Evidência em `docs/reviews/2026-10-05-bloqueio-stack-local.md`.
 - **md-0001/AC-05**: `pnpm supabase:test` roda verde em banco limpo, e o
   teste falha se alguém remover uma policy. Existe asserção que prova que
   remover a policy de leitura **quebra** o teste, para que a ausência de policy
@@ -166,6 +183,47 @@ problema, e o custo — não poder embutir componente reativo dentro do texto �
 irrelevante para artigo de tecnologia, que é texto com imagem e bloco de
 código.
 
+## Conflitos com o que já existe
+
+A tabela `posts` de 2026-10-04 é rotulada como exemplo no próprio catálogo
+(`comment on table` diz "Conteúdo de exemplo"). Seis itens do schema aprovado
+coincidem com ela, e **seis estão em conflito**. A tabela itemiza o conflito
+para que a decisão de cada linha seja rastreável, porque "alterar ou remover" é
+escolha de dono e não detalhe de migration.
+
+| #   | Existe em `main`                                                               | Schema aprovado                    | Resolução                           | Quem decide |
+| --- | ------------------------------------------------------------------------------ | ---------------------------------- | ----------------------------------- | ----------- |
+| 1   | `author_id uuid references auth.users`                                         | `author_name text`                 | remover a coluna e a FK             | aprovado    |
+| 2   | `status` com `arquivado`                                                       | `rascunho`, `publicado`            | **manter `arquivado`** (ver abaixo) | **dono**    |
+| 3   | `excerpt`, `content` nuláveis                                                  | `not null`                         | endurecer com `alter table`         | aprovado    |
+| 4   | `created_at timestamptz`                                                       | não listado                        | **manter** (tem uso e índice)       | **dono**    |
+| 5   | policies `*_own` para `authenticated`                                          | sem escrita fora de `service_role` | remover                             | aprovado    |
+| 6   | `posts_select_own`, `posts_insert_own`, `posts_update_own`, `posts_delete_own` | mesmo de 5                         | remover as quatro                   | aprovado    |
+
+Os dois itens marcados como **dono** existem porque a aprovação veio com base
+falsa, e nenhum dos dois é óbvio:
+
+- **`arquivado`**: a tabela existente tem o terceiro valor, tem `COMMENT`
+  explicando, e tem asserção de que `anon` não lê. Removê-lo é perder uma
+  capacidade já testada, e artigo arquivado é o caso real de "publiquei e
+  preciso tirar do ar sem apagar". O schema aprovado tinha dois valores porque eu
+  descrevi a tabela como não existindo. **Manter** é o caminho reversível;
+  estreitar para dois é uma linha de migration e uma de teste.
+- **`created_at`**: não estava na lista aprovada, mas já existe, está no índice
+  `(status, created_at desc)` e é o campo mais útil para depurar uma linha.
+  Adicionar coluna é barato; remover exige reescrever índice.
+
+### O que existe e é bom, e não deve ser refeito
+
+- `posts_select_public` com
+  `status = 'publicado' and published_at is not null and published_at <= now()`.
+  Esta cláusula **já resolve agendamento** e deve ser preservada.
+- `is_post_public` como predicado `SECURITY DEFINER` com `set search_path = ''`,
+  `revoke all ... from public` e `grant execute` explícito.
+- Trigger de `updated_at` em toda escrita.
+- `COMMENT` em tabela, coluna e função: o catálogo é a documentação, e a regra de
+  visibilidade já está escrita em português.
+
 ## Feature design
 
 **Data model sketch**:
@@ -201,37 +259,123 @@ recorte por editoria é a fatia 9, e é lá que a taxonomia precisa virar
 vocabulário controlado. Fixar cinco valores agora trava um texto que ninguém
 definiu. O preço é admitir variante com erro de digitação até a fatia 9.
 
+### Preview: credencial não é papel, e esta é a parte que exige desenho
+
+Uma versão anterior desta spec escrevia "papel `preview`" e tratava
+`SUPABASE_PREVIEW_TOKEN` como se a variável criasse o papel. **Não cria.** No
+Supabase os papéis do Postgres são `anon`, `authenticated`, `service_role` e os
+`supabase_admin`; nenhum papel `preview` existe, e nenhuma variável de ambiente
+registra papel. A spec precisa dizer como a credencial é validada e como a
+consulta assume identidade autorizada, sem que o segredo apareça no cliente.
+
+O desenho escolhido usa **`authenticated` com claim**, que é nativo do Supabase,
+não exige papel novo nem cliente de banco novo, e — o ponto que decide — permite
+**testar o acesso efetivo do papel** com o mesmo mecanismo que o repositório já
+usa (`set local role` + `set local request.jwt.claims`).
+
+**Fluxo, passo a passo:**
+
+1. O leitor informa o token por um formulário no servidor. O token vai para um
+   cookie **`HttpOnly`**, e **nunca** em query string: query string entra em log
+   de acesso, em `Referer` e em histórico, o que transforma o segredo em
+   vazamento diferido.
+2. O servidor compara o valor com `SUPABASE_PREVIEW_TOKEN` em **tempo
+   constante** (`timingSafeEqual`). Comparar com `===` vaza informação pelo
+   tempo de resposta, e a diferença é medível.
+3. Havendo igualdade, o servidor autentica o **usuário de preview** e a sessão
+   passa a valer nos pedidos seguintes. O segredo não vira token: ele **troca**
+   por uma sessão do Supabase, que é o que o RLS entende.
+4. A policy `posts_select_preview` é `for select to authenticated`, com
+   `using ((select auth.jwt() -> 'app_metadata' ->> 'preview') = 'true')`.
+   `app_metadata`, e **nunca** `user_metadata`: `user_metadata` é gravável pelo
+   próprio usuário, então usá-la daria a qualquer um o privilégio de ver
+   rascunho editando o próprio perfil. `app_metadata` só o `service_role`
+   escreve.
+5. Sem `SUPABASE_PREVIEW_TOKEN` configurada, o preview **não existe**: o passo 2
+   não tem contra o que comparar e a rota falha fechada. Não existe caminho
+   "sem token = preview liberado".
+
+**Por que esta opção e não as outras duas:**
+
+| Opção                                              | Mecanismo                                  | Por que não                                                                                                                                                                                           |
+| -------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `service_role` no caminho de preview               | Cliente privilegiado, token só como guarda | `service_role` **burla a RLS**, então o filtro passa a ser só o código — e não há papel para testar. Um bug nesse caminho vaza tudo, e o teste de acesso efetivo que a spec exige não tem onde rodar. |
+| Papel Postgres `preview` com senha própria         | Conectar pelo pooler com `pg`              | RLS continua mandando, o que é bom, mas exige **dependência nova** (`pg` não está instalado) e **um segundo segredo de banco** para gerenciar. Custo alto para um preview.                            |
+| **`authenticated` + claim `app_metadata.preview`** | Nativo, sem role nova                      | **Escolhida.** Sem dependência nova, sem segredo novo, RLS continua sendo a fronteira e o acesso efetivo do papel é testável com `set local role authenticated` + `request.jwt.claims`.               |
+
+O custo aceito: o preview depende de existir um usuário de preview em
+`auth.users`, com `app_metadata.preview = true`. Isso é configuração, não código,
+e o seed local já cria usuários — então é setup, não obstáculo. E é por isso que a
+policy é separada em vez de um `OR`: policy com `OR` dentro é mais difícil de
+revisar, e aqui a diferença entre "vê rascunho" e "não vê" é a coisa mais
+importante da tabela.
+
 **RLS e papéis**:
 
-| Papel           | Lê                                                   | Escreve |
-| --------------- | ---------------------------------------------------- | ------- |
-| `anon`          | `status = 'publicado'` e `published_at <= now()`     | não     |
-| `preview`       | o mesmo que `anon`, mais rascunho **com credencial** | não     |
-| `authenticated` | igual a `anon` no MVP (sem área logada)              | não     |
-| `service_role`  | tudo, por definição: burla a RLS                     | sim     |
+| Papel                                                   | Lê                                               | Escreve |
+| ------------------------------------------------------- | ------------------------------------------------ | ------- |
+| `anon`                                                  | `status = 'publicado'` e `published_at <= now()` | não     |
+| `authenticated` **sem** claim de preview                | o mesmo que `anon`                               | não     |
+| `authenticated` **com** `app_metadata.preview = 'true'` | tudo, inclusive rascunho e agendado              | não     |
+| `service_role`                                          | tudo, por definição: burla a RLS                 | sim     |
 
-**Query de leitura pública**: `posts_select_public`, com
-`using (status = 'publicado' and published_at <= now())`. Para o preview,
-`posts_select_preview`, que **não** é a mesma policy com um `OR`: é policy
-separada, porque policy com `OR` dentro é onde esse tipo de acesso costuma dar
-errado, e uma policy por papel é mais fácil de revisar e de revogar.
+**Agendamento**: artigo com `published_at` no futuro **existe** e fica invisível
+ao público, e essa semântica já está na policy existente e deve ser preservada.
+Não há `CHECK` exigindo `published_at` quando `status = 'publicado'`: a
+invisibilidade é dada pela policy, e o `CHECK` foi retirado desta spec porque
+recusaria a linha em vez de escondê-la — e esconder é o que o dono pediu.
 
 **Service role**: `service_role` burla a RLS por definição, então nenhum caminho
-de leitura pública pode usá-lo. `md-0002` carrega essa proibição como AC, com
-verificação automatizada.
+de leitura pública pode usá-lo — nem o caminho de preview, que é justamente onde
+a tentação aparece, por ser o único caminho que precisa de mais do que a policy
+dá. `md-0002` carrega essa proibição como AC, com verificação automatizada.
 
 **Security model**:
 
-- `posts` tem RLS ligada e policy **por operação**: uma de `select` para `anon`,
-  uma de `select` para `preview`, e nenhuma de `insert`/`update`/`delete` para
-  papéis não privilegiados.
-- `anon` não tem `grant` de escrita. Ausência de policy **e** ausência de grant:
-  os dois precisam faltar, porque policy sem grant não impede e grant sem
-  policy permite quando a RLS está desligada.
+- `posts` tem RLS ligada e policy **por operação**: `select` para `anon`, `select`
+  para `authenticated` com claim de preview, e nenhuma de
+  `insert`/`update`/`delete` para papéis não privilegiados.
+- Nenhum papel não privilegiado tem `grant` de escrita. Ausência de policy **e**
+  ausência de grant: os dois precisam faltar, porque policy sem grant não impede
+  e grant sem policy permite quando a RLS está desligada por engano.
 - `fontes_citadas.url` é validada como URL absoluta por `CHECK`, para o JSON-LD
   não injetar `javascript:` no `sameAs`.
 - RLS desligada por engano não expõe rascunho **se** o `grant` também faltar: é
   por isso que os dois são testados.
+
+### Policy separada não é isolamento, e a diferença é testada
+
+Duas policies separadas descrevem **intenção**. Isolamento é **comportamento
+observado**, e as duas coisas divergem com frequência: uma policy pode existir
+com o predicado errado, o `grant` pode vir por tabela padrão, o `search_path`
+pode resolver nome em outro schema, ou o papel pode ter `bypassrls`.
+
+Por isso a exigência é outra: para **cada papel**, um teste que assume o papel
+com `set local role` e **lê de verdade**, affirmando a contagem exata de linhas
+visíveis. Não basta afirmar que a policy existe no catálogo, e não basta afirmar
+que a policy não deixa passar — o teste tem que mostrar a **leitura efetiva**.
+
+Os papéis que precisam de asserção própria, e não herdada:
+
+| Papel                                        | Deve ler                                 | Deve **não** ler                             |
+| -------------------------------------------- | ---------------------------------------- | -------------------------------------------- |
+| `anon`                                       | publicados com `published_at` no passado | rascunho, arquivado, agendado                |
+| `authenticated` sem claim                    | o mesmo que `anon`                       | rascunho, arquivado, agendado                |
+| `authenticated` **com** claim de preview     | inclusive rascunho e agendado            | —                                            |
+| `authenticated` com claim em `user_metadata` | o mesmo que `anon`                       | rascunho (**a armadilha do `app_metadata`**) |
+| `service_role`                               | tudo, por definição                      | —                                            |
+
+A quarta linha é a que mais importa e a que a implementação erra primeiro: um
+claim em `user_metadata` **passa** o teste de quem só escreve o policy e **falha**
+este. Como `user_metadata` é gravável pelo próprio usuário, transformá-lo em
+privilegio de leitura é uma escalada de privilégio que o usuário executa sozinho,
+no próprio perfil, sem tocar em código.
+
+`anon` e `authenticated`-sem-claim precisam da **mesma** asserção, e é
+deliberado: é a prova de que existir uma policy de preview **não** alarga
+`anon` por efeito colateral. Uma policy nova que não estreita nenhuma outra é o
+comportamento correto, e a asserção cruzada é o que transforma isso em fato
+verificado.
 
 **Configuration required**:
 
@@ -248,13 +392,22 @@ verificação automatizada.
   recebe zero linhas. Verifica **md-0001/AC-02**.
 - Escrita: `anon` e `authenticated` tentam `insert`, `update` e `delete` e
   recebem erro de permissão. Verifica **md-0001/AC-03**.
-- Preview: papel `preview` com credencial lê rascunho; o mesmo papel sem
-  credencial não lê; `anon` não lê mesmo com a credencial configurada.
-  Verifica **md-0001/AC-04**.
-- Regressão de segurança: remover a policy de leitura faz o teste **falhar**.
+- Preview: `set local role authenticated` **sem** claim não lê rascunho; **com**
+  `app_metadata.preview = 'true'` lê rascunho; e `anon` não lê rascunho mesmo com
+  o usuário de preview existindo. Verifica **md-0001/AC-04**.
+- Escalada: claim em `user_metadata` em vez de `app_metadata` **não** concede
+  leitura de rascunho. Verifica **md-0001/AC-04**.
+- Agendamento: artigo `publicado` com `published_at` no futuro **existe** na
+  tabela e é lido por quem tem privilégio, mas **não** é lido por `anon`.
+  Verifica **md-0001/AC-02**.
+- Stack: `pnpm supabase:reset` conclui sem erro e `pnpm supabase:test` roda
+  verde. Verifica **md-0001/AC-08**.
+- Integridade: inserir `fontes_citadas` com `url` relativa é rejeitado, e
+  `cover_image_url` vazio é rejeitado. Verifica **md-0001/AC-01**. (O `CHECK` de
+  `published_at` não é testado aqui porque não existe mais: a invisibilidade do
+  agendado é da policy, e é testada no cenário de agendamento.)
+- Regressão de segurança: remover `posts_select_public` faz a suíte **falhar**.
   Verifica **md-0001/AC-05**.
-- Integridade: inserir `status = 'publicado'` com `published_at` nulo é
-  rejeitado. Verifica **md-0001/AC-01**.
 - Reprodutibilidade: `pnpm supabase:reset` em banco vazio termina com o mesmo
   schema que aplicar a migration sobre o estado de `main`, verificado por
   comparação de `pg_dump --schema-only`. Verifica **md-0001/AC-06**.
@@ -264,17 +417,39 @@ verificação automatizada.
 
 ## Build plan
 
-1. Migration `posts` com as doze colunas, restrições de coerência, índice de
-   listagem e `updated_at`. Satisfaz **md-0001/AC-01**, **md-0001/AC-06**.
-2. RLS ligada, `posts_select_public` para `anon`, `posts_select_preview` para o
-   papel de preview, e nenhum grant de escrita fora de `service_role`.
-   Satisfaz **md-0001/AC-02**, **md-0001/AC-03**, **md-0001/AC-04**.
-3. Testes pgTAP de leitura negativa e escrita negada, com asserção de que remover
-   a policy quebra o teste. Satisfaz **md-0001/AC-05**.
-4. Seed local com um artigo publicado e um rascunho, para as specs seguintes
-   terem dado real. Satisfaz **md-0001/AC-01**.
+A tarefa 0 vem primeiro porque nenhuma das outras é verificável sem ela: o AC de
+prova do schema é a suíte pgTAP verde, e a suíte hoje nem chega a rodar.
 
-A tarefa 5 é a exibição das fontes, e ela pertence a `md-0002` porque é
+0. **Consertar o stack local.** Renomear `00000000000000_init.sql` para um
+   timestamp real, para a CLI aplicar `profiles` e o trigger de signup; corrigir
+   a asserção de contagem do teste ou semear os posts que ela espera; e registrar
+   o resultado real de `pnpm supabase:test`, reprovação inclusive.
+   Satisfaz **md-0001/AC-08**.
+1. **Migration de transformação** de `posts` de exemplo no schema editorial:
+   adicionar `cover_image_url`, `editoria` e `fontes_citadas`; endurecer
+   `excerpt` e `content` para `not null`; remover `author_id` e a FK em
+   `auth.users`; e adicionar `author_name`. Preservar `created_at`, os índices,
+   o trigger de `updated_at` e todos os `COMMENT`.
+   Satisfaz **md-0001/AC-01**, **md-0001/AC-06**.
+2. **Policies**: remover as quatro `*_own` de escrita, manter
+   `posts_select_public` como está, e adicionar `posts_select_preview` para
+   `authenticated` com claim em `app_metadata`. Garantir ausência de `grant` de
+   escrita fora de `service_role`.
+   Satisfaz **md-0001/AC-02**, **md-0001/AC-03**, **md-0001/AC-04**.
+3. **Testes pgTAP**: acesso efetivo por papel com `set local role`, incluindo a
+   escalada por `user_metadata`; agendamento presente e invisível; escrita negada;
+   e a asserção de que remover a policy de leitura **quebra** a suíte.
+   Satisfaz **md-0001/AC-05**, **md-0001/AC-04**.
+4. **Dados de validação em `supabase/seed.sql`, nunca em migration.** Um artigo
+   publicado, um rascunho, um arquivado e um agendado para o futuro, para as specs
+   seguintes terem dado real. Migration que insere conteúdo publica artigo
+   fictício no deploy.
+   Satisfaz **md-0001/AC-01**, **md-0001/AC-02**.
+5. **Incluir `supabase:test` na CI** em job próprio, porque nem `check:all` nem os
+   três jobs atuais tocam em banco, e um stack que não sobe não reprova nada.
+   Satisfaz **md-0001/AC-08**.
+
+A tarefa 6 é a exibição das fontes, e ela pertence a `md-0002` porque é
 apresentação, não contrato de dados: satisfaz **md-0001/AC-07** na página de
 leitura.
 
