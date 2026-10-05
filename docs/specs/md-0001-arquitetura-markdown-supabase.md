@@ -6,12 +6,22 @@
 
 - **Fundação** (Supabase + Markdown, rota `/artigos/[slug]`, sem painel
   editorial): aceita em 2026-10-04.
-- **Conteúdo do schema emendado** (as doze colunas, as duas policies de
-  leitura, o papel de preview, o formato de `fontes_citadas` e as sete
-  ACs): aprovado **explicitamente** pelo dono em 2026-10-05, com a lista de
-  colunas e de policies enunciada na pergunta de aprovação e o "aprove o
-  conteúdo" dado como resposta. Não é aceite por consequência nem por silêncio:
-  a aprovação cobriu o conteúdo, coluna a coluna.
+- **Conteúdo do schema emendado** (as doze colunas, a segunda policy de leitura,
+  o formato de `fontes_citadas` e as sete ACs então existentes): aprovado
+  **explicitamente** pelo dono em 2026-10-05, com a lista de colunas e de
+  policies enunciada na pergunta de aprovação e o "aprove o conteúdo" dado como
+  resposta. Não é aceite por consequência nem por silêncio: a aprovação cobriu o
+  conteúdo, coluna a coluna.
+- **Três ajustes posteriores a esse aceite, registrados porque mudam o que foi
+  aprovado, e nenhum deles é descrito aqui:** (a) o "papel `preview`" da aprovação
+  **não existe** no Supabase e foi substituído por `authenticated` com claim
+  `app_metadata.preview` (ver `## Preview`); (b) o `CHECK` de `published_at` foi
+  **retirado**, porque recusar linha é diferente de esconder linha, e o dono
+  pediu que artigo agendado exista invisível; (c) as ACs passaram de sete para
+  **oito**, com a AC-08 para o stack local, que não existia quando a aprovação
+  foi dada. Os três mudam a execução, e nenhum reabre uma decisão editorial já
+  fechada — mas são registrados porque aprovação sem registro do que mudou depois
+  é aprovação que ninguém consegue auditar depois de seis meses.
 - **Correção de base factual, 2026-10-05, sem novo aceite:** a aprovação acima
   foi dada sobre a premissa de que a tabela **não existia**. Ela existe desde
   2026-10-04 (`supabase/migrations/20261004000000_posts_exemplo.sql`), como
