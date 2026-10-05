@@ -33,6 +33,9 @@
 - **Exibição das fontes citadas**: seção final, lista de links, decideda pelo
   dono em 2026-10-05. A exibição é executada pelo `md-0002` (AC-13), porque
   apresentação é página, não schema.
+- **Manter o valor `arquivado` em `status`**: decidido pelo dono em 2026-10-05,
+  depois de saber que a tabela já tinha os três valores. Registrado porque muda a
+  migration, e porque a aprovação original listava dois.
 
 ## Summary
 
@@ -201,27 +204,30 @@ coincidem com ela, e **seis estão em conflito**. A tabela itemiza o conflito
 para que a decisão de cada linha seja rastreável, porque "alterar ou remover" é
 escolha de dono e não detalhe de migration.
 
-| #   | Existe em `main`                                                               | Schema aprovado                    | Resolução                           | Quem decide |
-| --- | ------------------------------------------------------------------------------ | ---------------------------------- | ----------------------------------- | ----------- |
-| 1   | `author_id uuid references auth.users`                                         | `author_name text`                 | remover a coluna e a FK             | aprovado    |
-| 2   | `status` com `arquivado`                                                       | `rascunho`, `publicado`            | **manter `arquivado`** (ver abaixo) | **dono**    |
-| 3   | `excerpt`, `content` nuláveis                                                  | `not null`                         | endurecer com `alter table`         | aprovado    |
-| 4   | `created_at timestamptz`                                                       | não listado                        | **manter** (tem uso e índice)       | **dono**    |
-| 5   | policies `*_own` para `authenticated`                                          | sem escrita fora de `service_role` | remover                             | aprovado    |
-| 6   | `posts_select_own`, `posts_insert_own`, `posts_update_own`, `posts_delete_own` | mesmo de 5                         | remover as quatro                   | aprovado    |
+| #   | Existe em `main`                                                               | Schema aprovado                    | Resolução                             | Quem decide          |
+| --- | ------------------------------------------------------------------------------ | ---------------------------------- | ------------------------------------- | -------------------- |
+| 1   | `author_id uuid references auth.users`                                         | `author_name text`                 | remover a coluna e a FK               | aprovado             |
+| 2   | `status` com `arquivado`                                                       | `rascunho`, `publicado`            | **manter os três valores** (decidido) | **dono, 2026-10-05** |
+| 3   | `excerpt`, `content` nuláveis                                                  | `not null`                         | endurecer com `alter table`           | aprovado             |
+| 4   | `created_at timestamptz`                                                       | não listado                        | **manter** (tem uso e índice)         | **dono**             |
+| 5   | policies `*_own` para `authenticated`                                          | sem escrita fora de `service_role` | remover                               | aprovado             |
+| 6   | `posts_select_own`, `posts_insert_own`, `posts_update_own`, `posts_delete_own` | mesmo de 5                         | remover as quatro                     | aprovado             |
 
 Os dois itens marcados como **dono** existem porque a aprovação veio com base
 falsa, e nenhum dos dois é óbvio:
 
-- **`arquivado`**: a tabela existente tem o terceiro valor, tem `COMMENT`
-  explicando, e tem asserção de que `anon` não lê. Removê-lo é perder uma
-  capacidade já testada, e artigo arquivado é o caso real de "publiquei e
-  preciso tirar do ar sem apagar". O schema aprovado tinha dois valores porque eu
-  descrevi a tabela como não existindo. **Manter** é o caminho reversível;
-  estreitar para dois é uma linha de migration e uma de teste.
-- **`created_at`**: não estava na lista aprovada, mas já existe, está no índice
-  `(status, created_at desc)` e é o campo mais útil para depurar uma linha.
-  Adicionar coluna é barato; remover exige reescrever índice.
+- **`arquivado`: mantido, por decisão do dono em 2026-10-05.** A tabela existente
+  tem o terceiro valor, tem `COMMENT` explicando, e tem asserção de que `anon` não
+  lê. Removê-lo seria perder capacidade já testada, e artigo arquivado é o caso
+  real de "publiquei e preciso tirar do ar sem apagar" — que é diferente de
+  "nunca publiquei". A distinção importa editorialmente, e o custo de manter é
+  zero. O schema aprovado tinha dois valores porque eu descrevi a tabela como não
+  existindo, o que foi erro meu de premissa.
+- **`created_at`: mantido, por default defensável.** Não estava na lista aprovada,
+  mas já existe, está no índice `(status, created_at desc)` e é o campo mais útil
+  para depurar uma linha. Adicionar coluna é barato; remover exige reescrever
+  índice. **Se você quiser removê-la, é uma linha de migration e uma de índice** —
+  mas a spec assume que fica.
 
 ### O que existe e é bom, e não deve ser refeito
 
@@ -238,20 +244,20 @@ falsa, e nenhum dos dois é óbvio:
 
 **Data model sketch**:
 
-| Coluna            | Tipo          | Nulo | Restrição                                              |
-| ----------------- | ------------- | ---- | ------------------------------------------------------ |
-| `id`              | `uuid`        | não  | PK, default `gen_random_uuid()`                        |
-| `slug`            | `text`        | não  | unique, índice, minúsculas                             |
-| `title`           | `text`        | não  | não vazio                                              |
-| `content`         | `text`        | não  | corpo Markdown                                         |
-| `excerpt`         | `text`        | não  | resumo; vira `description` e card da home              |
-| `cover_image_url` | `text`        | não  | URL absoluta                                           |
-| `editoria`        | `text`        | não  | texto livre no MVP (ver nota)                          |
-| `author_name`     | `text`        | não  | autor do JSON-LD                                       |
-| `fontes_citadas`  | `jsonb`       | não  | array de `{ titulo, url }`, default `[]`               |
-| `status`          | `text`        | não  | check em (`rascunho`, `publicado`), default `rascunho` |
-| `published_at`    | `timestamptz` | sim  | coerente com `status` (ver invariante)                 |
-| `updated_at`      | `timestamptz` | não  | default `now()`                                        |
+| Coluna            | Tipo          | Nulo | Restrição                                                           |
+| ----------------- | ------------- | ---- | ------------------------------------------------------------------- |
+| `id`              | `uuid`        | não  | PK, default `gen_random_uuid()`                                     |
+| `slug`            | `text`        | não  | unique, índice, minúsculas                                          |
+| `title`           | `text`        | não  | não vazio                                                           |
+| `content`         | `text`        | não  | corpo Markdown                                                      |
+| `excerpt`         | `text`        | não  | resumo; vira `description` e card da home                           |
+| `cover_image_url` | `text`        | não  | URL absoluta                                                        |
+| `editoria`        | `text`        | não  | texto livre no MVP (ver nota)                                       |
+| `author_name`     | `text`        | não  | autor do JSON-LD                                                    |
+| `fontes_citadas`  | `jsonb`       | não  | array de `{ titulo, url }`, default `[]`                            |
+| `status`          | `text`        | não  | check em (`rascunho`, `publicado`, `arquivado`), default `rascunho` |
+| `published_at`    | `timestamptz` | sim  | coerente com `status` (ver invariante)                              |
+| `updated_at`      | `timestamptz` | não  | default `now()`                                                     |
 
 **Invariante de coerência**: `status = 'publicado'` exige `published_at` não
 nulo. Um artigo publicado sem data não tem como ser ordenado nem tem
