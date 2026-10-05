@@ -10,6 +10,7 @@ const DEFAULT_LOCALE = 'pt-BR';
 
 export type FormatOptions = {
   locale?: string;
+  timeZone?: string;
 };
 
 /** Número com separador de milhar e casas decimais. */
@@ -31,13 +32,19 @@ export function formatCurrency(
   }).format(valueInCents / 100);
 }
 
-/** Data por extenso no formato curto do locale. */
+/**
+ * Fuso explícito evita mudar o dia editorial. Quando omitido, preserva o
+ * fuso do ambiente para os consumidores existentes.
+ */
 export function formatDate(
   value: Date | string | number,
-  { locale = DEFAULT_LOCALE }: FormatOptions = {},
+  { locale = DEFAULT_LOCALE, timeZone }: FormatOptions = {},
 ): string {
   const date = value instanceof Date ? value : new Date(value);
-  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeZone,
+  }).format(date);
 }
 
 /**

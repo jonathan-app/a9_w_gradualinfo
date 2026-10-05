@@ -31,6 +31,34 @@ describe('formatCurrency', () => {
 });
 
 describe('formatDate', () => {
+  it('mantém o dia editorial de São Paulo na virada da data UTC', () => {
+    const value = '2026-10-05T01:30:00.000Z';
+    expect(
+      formatDate(value, { locale: 'en-US', timeZone: 'America/Sao_Paulo' }),
+    ).toBe('Oct 4, 2026');
+    expect(formatDate(value, { locale: 'en-US', timeZone: 'UTC' })).toBe(
+      'Oct 5, 2026',
+    );
+  });
+
+  it('preserva o fuso do ambiente quando timeZone é omitido', () => {
+    const value = new Date('2026-10-05T01:30:00.000Z');
+    const expected = new Intl.DateTimeFormat('pt-BR', {
+      dateStyle: 'medium',
+    }).format(value);
+    expect(formatDate(value)).toBe(expected);
+    expect(formatDate(value, { timeZone: undefined })).toBe(expected);
+  });
+
+  it('aplica o fuso explícito a Date, string e timestamp', () => {
+    const iso = '2026-10-05T01:30:00.000Z';
+    const date = new Date(iso);
+    const options = { locale: 'en-US', timeZone: 'America/Sao_Paulo' };
+    expect(formatDate(date, options)).toBe('Oct 4, 2026');
+    expect(formatDate(iso, options)).toBe('Oct 4, 2026');
+    expect(formatDate(date.getTime(), options)).toBe('Oct 4, 2026');
+  });
+
   it('formata uma data ISO', () => {
     expect(formatDate('2026-01-15T12:00:00.000Z', { locale: 'pt-BR' })).toMatch(
       /2026/,
