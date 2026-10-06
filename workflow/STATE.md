@@ -23,7 +23,9 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Desenvolvimento md-0002 (em curso).** Tarefas 2 e 3 implementadas (schema conferido; `lib/services/posts.ts` criado com dupla verificação de status e autenticação de preview via jwt claim). Backup cron a cada 30min para o clone `a9_w_gradualinfo__iso` restaurado a partir do zip e validado com sucesso. Próxima etapa: /develop (Tarefa 4). PROMPT: "Continue a spec md-0002: construa o card e a home, com esboço no topo, grade limitada a 10 e estados (loading, vazios). Não faça merge nem deploy."
+**Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado por execução e revisado**. O `COMMENT` da tabela foi corrigido. Os **9 posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed` e precisa de aceite.
+
+**Desenvolvimento md-0002 (em curso).** Tarefa 4 (home e card) implementada. `DESIGN.md` criado na raiz definindo os tokens e direcionamento, atendendo ao portão de design TIER 2. Componentes de UI construídos sob os tokens definidos. `app/page.tsx` consome os dados reais em Server Component, dividindo o array no formato 1 destaque + 9 grade. Tratamento de loading state (`app/loading.tsx`) e estado vazio explícito (`app/artigos-vazios.tsx`). Tudo verificado por compilação, linting e formatação. Próxima etapa: /check (Tarefa 5). PROMPT: "Continue a spec md-0002: execute o /check verify do componente da home e do card, testando o layout via script/Playwright contra os requisitos da especificação, validando os 13 ACs definidos e gerando o relatório final."
 
 - **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
   (`20261005000000_posts_schema_editorial.sql`,
@@ -310,6 +312,7 @@ de agentes abaixo.**
 | 40 | 2026-10-06 | /sync documental dos achados da auditoria | `AGENTS.md`: lock versionado, skills locais ignoradas, docs preenchidos; .storybook confirmada presente, sem edição. `workflow/STATE.md`: registro desta manutenção, fila de produto preservada | corrigido, CI pendente |
 | 41 | 2026-10-06 | /check da PR documental #5 | `docs/reviews/2026-10-06-check-pr-5.md` (APROVADO): Revisão favorável, vulnerabilidades (pnpm audit) resolvidas via overrides, CI remota verde. Fila de produto preservada. Sem autorização de merge ou deploy | concluído |
 | 42 | 2026-10-06 | /develop | `md-0002` Tarefas 2 e 3: verificação do schema (`posts`), RLS e índice, criação de `lib/services/posts.ts` com auth de preview via `app_metadata.preview`. Backup cron `a9_w_gradualinfo__iso` restaurado e verificado. | concluído |
+| 43 | 2026-10-06 | /develop | `md-0002` Tarefa 4: Componentização visual (`post-card.tsx`) e home page (`page.tsx`) com Server Components consumindo `getPublishedPosts`. Tratamento de empty state e loading. Criação do artefato de design `DESIGN.md` exigido pelo TIER 2 design gate. Testes `pnpm check:all` executados. | concluído |
 
 ### Evidência da linha 01
 
