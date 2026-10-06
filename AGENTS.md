@@ -187,10 +187,12 @@ Subir o piso acima do que o projeto mede esconde o número em vez de avisar.
 
 ## Skills de Engenharia Agêntica
 
-`.agents/skills/` (versionado, `skills-lock.json` fixa a origem em
-`JavaScript-Mastery-Pro/skills`) traz `/scope`, `/architect`, `/audit`,
-`/develop`, `/check`, `/debug`, `/test`, `/document` e `/sync`. Atualizar:
-`npx skills@latest update`.
+`skills-lock.json` é versionado e registra as origens das skills do ciclo.
+`.agents/skills/` é instalação local, ignorada pelo Git; seu conteúdo não é
+versionado. Instalação, descoberta pelo cliente e execução são estados
+diferentes, que devem ser conferidos no ambiente utilizado. O ciclo inclui
+`/scope`, `/architect`, `/audit`, `/develop`, `/check`, `/debug`, `/test`,
+`/document` e `/sync`. Atualizar: `npx skills@latest update`.
 
 Quem escreve o quê, para ninguém gravar estado no lugar errado:
 
@@ -201,5 +203,6 @@ Quem escreve o quê, para ninguém gravar estado no lugar errado:
 | `docs/reviews/`     | `/check`        | Verificação e revisão do que foi feito  |
 | `workflow/STATE.md` | qualquer agente | A fila de delegação (ver a regra acima) |
 
-As três pastas de `docs/` contêm apenas `.gitkeep`: são destino de artefato,
-ainda vazias. Dono aqui é quem vai escrever nelas, não quem já escreveu.
+As pastas `docs/scope/`, `docs/specs/` e `docs/reviews/` já contêm escopo,
+índice, specs, templates e relatórios. Consulte os artefatos vigentes e seus
+estados; a presença de um arquivo não comprova aprovação ou execução.
