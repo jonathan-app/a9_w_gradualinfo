@@ -1,5 +1,13 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
+/**
+ * app/artigos/[slug]/loading.tsx — skeleton da página do artigo
+ *
+ * Exibido enquanto o Server Component da página busca o artigo no banco.
+ * O layout espelha a estrutura de ArticlePage: badge/título/data, imagem de
+ * capa e linhas de prosa. O `animate-pulse` do Tailwind cria o efeito de
+ * "brilho" sem JavaScript extra.
+ */
 export default function ArticleLoading() {
   return (
     <main className="container mx-auto px-4 py-8 md:py-12 max-w-4xl animate-pulse">

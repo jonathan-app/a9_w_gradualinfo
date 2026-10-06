@@ -5,9 +5,14 @@ import { useTheme } from 'next-themes';
 import { LuMoon, LuSun } from 'react-icons/lu';
 import { Button } from '@/components/ui/button';
 
-// getServerSnapshot vale na SSR e no primeiro render do cliente (hidratação);
-// depois disso o React re-renderiza com o snapshot do cliente. É o "mounted"
-// oficial sem precisar de setState dentro de useEffect.
+/**
+ * Hook interno: detecta se o componente já montou no cliente.
+ *
+ * Usa `useSyncExternalStore` em vez de `useState + useEffect` para evitar o
+ * segundo render e o warning do react-hooks/set-state-in-effect. O snapshot
+ * do servidor é `false`; o do cliente é `true`. O React iguala os dois lados
+ * na hidratação e só depois re-renderiza com o valor do cliente.
+ */
 function useMounted() {
   return useSyncExternalStore(
     () => () => {},

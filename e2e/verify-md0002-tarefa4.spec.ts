@@ -2,6 +2,17 @@ import { test, expect } from '@playwright/test';
 import { execSync } from 'child_process';
 import fs from 'fs';
 
+/**
+ * e2e/verify-md0002-tarefa4.spec.ts — verificação ponta a ponta da Tarefa 4 (Home e Card)
+ *
+ * Este teste serial valida os Critérios de Aceite AC-01 a AC-04 e AC-12 da
+ * spec md-0002. Ele escreve o resultado em verify-result.json para o gate
+ * `check-gate.mjs` consumir.
+ *
+ * Cada teste manipula o banco real via Supabase CLI (truncate/insert/alter table)
+ * para reproduzir os cenários: lista cheia, limite de 10, estado vazio,
+ * erro de banco e acessibilidade por teclado.
+ */
 const verifyJson = { acs: [], findings: [] };
 
 test.describe.serial('md-0002 Tarefa 4 (Home e Card)', () => {
