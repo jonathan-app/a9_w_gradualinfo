@@ -1,3 +1,10 @@
+/**
+ * app/artigos-vazios.tsx — estado vazio da listagem de artigos
+ *
+ * Server Component. Exibido quando a query de artigos publicados retorna array
+ * vazio. Sem este componente, a home mostraria apenas o container vazio, o que
+ * não comunica ao usuário o que aconteceu.
+ */
 export function ArtigosVazios() {
   return (
     <div

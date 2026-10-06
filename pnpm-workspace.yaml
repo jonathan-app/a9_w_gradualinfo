@@ -47,6 +47,13 @@ overrides:
   react: 19.3.0
   react-dom: 19.3.0
   playwright-core: 1.63.0
+  # Fix pnpm audit vulnerabilities:
+  # - postcss-selector-parser: quadratic complexity in flat selector parsing (GHSA-rj75-hqrm-r3gf)
+  postcss-selector-parser: ^7.1.6
+  # - sharp: vulnerability in librsvg dependency CVE-2026-96889 (GHSA-wq5f-xc86-pv6w)
+  sharp: ^0.35.5
+  # - shell-quote: command injection via line terminator (GHSA-pqg4-j6r4-53mv)
+  shell-quote: ^1.11.0
   # O override temporário de `tmp`/`basic-ftp` saiu porque as cadeias que
   # os puxavam (puppeteer-core, proxy-agent, external-editor, via @lhci/cli
   # e @percy/playwright) deixaram de existir no lockfile.

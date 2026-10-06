@@ -5,6 +5,13 @@ import {
   isPreviewSession,
 } from '@/lib/services/posts';
 
+/**
+ * Testes unitários do serviço de posts.
+ *
+ * Cada teste isola uma função do `lib/services/posts.ts` mockando o cliente
+ * Supabase. O foco é validar a construção da query (filtros, ordenação, limite)
+ * e a lógica de preview, não a integração real com o banco.
+ */
 describe('Posts Service', () => {
   let supabaseMock: any;
   let queryBuilderMock: any;
