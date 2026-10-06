@@ -13,6 +13,14 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+/**
+ * Gera os metadados SEO e Open Graph do artigo.
+ *
+ * Busca o artigo no banco (respeitando preview via RLS) e constrói o objeto
+ * Metadata com title, description, canonical e tags article do Open Graph.
+ * Se o artigo não existir, devolve title de fallback para que o 404 tenha
+ * metadados coerentes.
+ */
 export async function generateMetadata(
   props: Props,
   _parent: ResolvingMetadata,
@@ -54,6 +62,16 @@ export async function generateMetadata(
   };
 }
 
+/**
+ * Página do artigo (Server Component).
+ *
+ * - Busca o artigo via getPostBySlug (já aplica RLS e lógica de preview).
+ * - Se não encontrado, delega para notFound() do Next (renderiza app/not-found.tsx).
+ * - Formata a data no fuso de São Paulo.
+ * - Injeta JSON-LD Article para SEO estruturado.
+ * - Renderiza markdown via ReactMarkdown (sem dangerouslySetInnerHTML).
+ * - Lista fontes citadas com links externos seguros (noopener noreferrer).
+ */
 export default async function ArticlePage(props: Props) {
   const params = await props.params;
   const supabase = await createClient();
@@ -91,7 +109,7 @@ export default async function ArticlePage(props: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
         <header className="mb-8 flex flex-col items-start gap-4">
           <Badge variant="secondary" className="text-brand-600 bg-brand-50">
             {post.editoria}
@@ -123,7 +141,11 @@ export default async function ArticlePage(props: Props) {
 
         <article className="prose prose-slate prose-lg dark:prose-invert max-w-none mb-12">
           {/* O conteúdo markdown não usa dangerouslySetInnerHTML por restrição do spec (AC-06). */}
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: 'h2',
+            }}>
             {post.content}
           </ReactMarkdown>
         </article>
@@ -146,7 +168,7 @@ export default async function ArticlePage(props: Props) {
             </ul>
           </section>
         )}
-      </main>
+      </div>
     </>
   );
 }
