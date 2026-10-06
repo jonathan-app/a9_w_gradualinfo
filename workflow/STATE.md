@@ -25,8 +25,10 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 **Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado por execução e revisado**. O `COMMENT` da tabela foi corrigido. Os **9 posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed` e precisa de aceite.
 
-**Desenvolvimento md-0002 (em curso).** Tarefa 4 (home e card) implementada e verificada pelo `/check`. Os Critérios de Aceite AC-01 a AC-04, e AC-12 referentes à Home foram validados empiricamente (ver `docs/reviews/2026-10-06-md-0002-tarefa-4.md`), embora o veredito final do script exija a implementação da spec completa para autorizar merge. Próxima etapa: /develop da Tarefa 5 (página de artigo `/artigos/[slug]`). PROMPT: "Continue a spec md-0002: inicie a Tarefa 5 desenvolvendo a rota `/artigos/[slug]`. Implemente a consulta e formatação com `react-markdown` (sem `dangerouslySetInnerHTML`), a renderização das `fontes_citadas` (AC-13) no final do corpo, os estados de loading e erro (404), além do SEO (metadata). Use os estilos estabelecidos no `DESIGN.md`."
+**Desenvolvimento md-0002 (em curso).** Tarefa 8 (Preview HTTP) iniciada. As verificações da Tarefa 5 registraram pendências que devem ser resolvidas futuramente no build de produção: a validação de status HTTP (404/500) mascara-se em ambiente local de dev com Turbopack, e a acessibilidade (AC-12) exige execução com axe-core/playwright. A reconciliação documental da PR #5 também encontra-se na fila para registro separado. O merge e o deploy continuam estritamente bloqueados até nova ordem.
 
+- **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
+- **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.
 - **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
   (`20261005000000_posts_schema_editorial.sql`,
   `20261005000001_posts_rls_preview.sql`,
@@ -313,6 +315,7 @@ de agentes abaixo.**
 | 41 | 2026-10-06 | /check da PR documental #5 | `docs/reviews/2026-10-06-check-pr-5.md` (APROVADO): Revisão favorável, vulnerabilidades (pnpm audit) resolvidas via overrides, CI remota verde. Fila de produto preservada. Sem autorização de merge ou deploy | concluído |
 | 42 | 2026-10-06 | /develop | `md-0002` Tarefas 2 e 3: verificação do schema (`posts`), RLS e índice, criação de `lib/services/posts.ts` com auth de preview via `app_metadata.preview`. Backup cron `a9_w_gradualinfo__iso` restaurado e verificado. | concluído |
 | 43 | 2026-10-06 | /develop | `md-0002` Tarefa 4: Componentização visual (`post-card.tsx`) e home page (`page.tsx`) com Server Components consumindo `getPublishedPosts`. Tratamento de empty state e loading. Criação do artefato de design `DESIGN.md` exigido pelo TIER 2 design gate. Testes `pnpm check:all` executados. | concluído |
+| 44 | 2026-10-06 | /develop | `md-0002` Tarefa 5: Rota `/artigos/[slug]` usando `getPostBySlug`, formatação com `react-markdown`, estado de loading com skeletons, fallback para `notFound()`, inclusão de `generateMetadata`, JSON-LD `Article` explícito, sitemap dinâmico e renderização condicional de `fontes_citadas` no final do conteúdo. | concluído |
 
 ### Evidência da linha 01
 
