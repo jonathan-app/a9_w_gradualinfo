@@ -23,7 +23,7 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Sync documental de 2026-10-06 (concluído):** diff da [PR #5](https://github.com/jonathan-app/a9_w_gradualinfo/pull/5) e status da CI conferidos por `/check`. Alterações restritas a correções factuais em `AGENTS.md` e registro no `STATE.md`. CI da PR teve 3/4 jobs verdes (falha isolada em infra do `gitleaks`, superada em `main`). A fila de produto abaixo segue preservada intacta.
+**Revisão documental da PR #5 (concluído).** Revisão documental favorável; gate de segurança pendente. O job `Segredos e dependências` falhou neste SHA, então a confirmação definitiva requer a incorporação da correção (o que gerará um **novo SHA**), registro desse novo SHA no relatório, reexecução da CI até aprovação total e verificação pelo `check-gate.mjs`. O registro da revisão está em `docs/reviews/2026-10-06-check-pr-5.md`. Nenhuma ação complementar autorizada para esta tarefa (merge e deploy continuam dependendo de autorização). Próxima etapa: nenhuma.
 
 **Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado
 por execução e revisado** — tarefas 1 a 5, `PASS 63/63`, AC-06 provado,
@@ -316,7 +316,7 @@ de agentes abaixo.**
 | 39  | 2026-10-05 | audit da CI zerado por **remoção da ferramenta afetada**, sem ignores nem prod-only (reprovação do SHA da PR #1) | `package.json` (`@lhci/cli`, `@percy/playwright` e `eslint-config-next` removidos; `lighthouse`, `lighthouse:ci`, `performance` fora; scripts `lighthouse:ci` removidos com `scripts/lighthouse-ci.js` + `lighthouserc.js`; adicionados `@eslint/js`, `typescript-eslint`, `globals`, `eslint-plugin-import/react/react-hooks/jsx-a11y`, `eslint-import-resolver-{node,typescript}`), `eslint.config.mjs` (portado para plugins diretos — trade-off: perde regras `next/*`), `pnpm-workspace.yaml` (overrides de tmp/basic-ftp retirados — cadeias mortas com a remoção), `.github/workflows/ci.yml` (`--ignore` retirados; audit volta ao padrão), `scripts/pagespeed-monitor.js` (comentário do delta atualizado), `AGENTS.md` (linha de `scripts/` corrigida), `pnpm-lock.yaml` (regenerado). **Verificação no SHA local:** `pnpm audit` → "No known vulnerabilities found" (todos os níveis, `--audit-level=high` exit 0); `typecheck` ✓; `lint` ✓; `format:check` ✓; `test:run` 68/68 ✓; `build:next` ✓; `install --frozen-lockfile` ✓. Job `database` não reexecutado: a alteração não toca wrappers Supabase nem deps do job | concluído |
 
 | 40 | 2026-10-06 | /sync documental dos achados da auditoria | `AGENTS.md`: lock versionado, skills locais ignoradas, docs preenchidos; .storybook confirmada presente, sem edição. `workflow/STATE.md`: registro desta manutenção, fila de produto preservada | corrigido, CI pendente |
-| 41 | 2026-10-06 | /check da PR documental #5 | Conferência de diff e CI da PR #5; 3/4 jobs verdes na execução original (gitleaks resolvido em main posterior); validação local íntegra (`check:all` 68/68 PASS); fila de produto preservada intacta; sem merge/deploy | concluído |
+| 41 | 2026-10-06 | /check da PR documental #5 | `docs/reviews/2026-10-06-check-pr-5.md` (PENDENTE): Revisão documental favorável; gate de segurança pendente por CI falhar neste SHA. A fila de produto em STATE.md segue preservada intacta sem merge ou deploy | concluído |
 
 ### Evidência da linha 01
 
