@@ -62,3 +62,7 @@ Temp_Modelos/
 # reports
 reports/
 !dist/.gitkeep
+
+# Downloaded locally by scripts/run-gitleaks.mjs (pin board, não backing source)
+.cache/
+security-reports/

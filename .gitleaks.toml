@@ -1,40 +1,18 @@
-# ============================================================================
-# .gitleaks.toml — o que conta como segredo neste projeto
-# ============================================================================
-# Roda por `pnpm security:secrets` (scripts/run-gitleaks.mjs).
+# Configuração local do Gitleaks — limita alarmes falsos conhecidos.
 #
-# Por que este arquivo existe
-# O padrão do gitleaks é amplo: acende para qualquer string longa que pareça
-# chave. Numa base com muito dado de exemplo e fixture isso vira ruído — e
-# ruído em scanner é ruído em conformidade: o time para de olhar.
-#
-# A allowlist abaixo é o equilíbrio. Ela cobre o caminho (arquivos gerados,
-# lockfile) e o valor (placeholder de .env.example e seed). Nada de padrão
-# frouxo tipo "qualquer coisa depois de `key_`" — isso desligaria a regra de
-# verdade em nome de um falso positivo.
-
-title = "gitleaks — gradualinfo"
-
-[extend]
-# Regras padrão, mantidas pelo projeto gitleaks.
-useDefault = true
+# A PR é para não vazar a NÃO colidir com isso: qualquer segredo real que
+# aparecer no git ou na árvore ainda é encontrado, com `dir` ou `git`.
 
 [allowlist]
-description = "Caminhos e valores que não carregam segredo real"
-
+description = "Achados que não são segredos"
 paths = [
-  '''pnpm-lock\.yaml''',
-  '''skills-lock\.json''',
-  '''\.agents/''',
-  '''node_modules/''',
-  '''\.next/''',
-  '''security-reports/''',
-  '''coverage/''',
+  # supabase/.temp é stack local descartável e já está no .gitignore; o
+  # próprio scan `dir` não deveria subir por ali, mas ainda sobe porque a
+  # varredura atual não respeita .gitignore.
+  '''supabase/.temp''',
 ]
-
-regexTarget = "match"
 regexes = [
-  '''YOUR_[A-Z0-9_]*(KEY|TOKEN|SECRET)''',
-  '''sb_(local|placeholder|example)_[a-zA-Z0-9_\-]+''',
-  '''example\.dev''',
+  # Placeholder JWT injetado em lib/env.ts só para o build ter um valor a ler;
+  # a assinatura é literalmente "local-development-placeholder-signature".
+  '''local-development-placeholder-signature''',
 ]
