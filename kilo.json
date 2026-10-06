@@ -1,4 +1,5 @@
 {
+  "$schema": "https://app.kilo.ai/config.json",
   "project": "gradualinfo",
   "version": "1.0.0",
   "skills_dir": ".agents/skills",
