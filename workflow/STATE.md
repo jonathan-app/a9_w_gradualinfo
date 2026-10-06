@@ -25,8 +25,9 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 **Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado por execução e revisado**. O `COMMENT` da tabela foi corrigido. Os **9 posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed` e precisa de aceite.
 
-**Desenvolvimento md-0002 (em curso).** Tarefa 5 (página `/artigos/[slug]`) e as partes das Tarefas 6, 7 e 10 (SEO/JSON-LD, sitemap e fontes condicionais) foram **implementadas e verificadas via E2E com Playwright**. Durante a verificação, foi tratada a questão do streaming do Next.js Server Components e a duplicidade da tag `<main>`, consolidando os cenários AC-05 a AC-07 e AC-10/11/13 no script de testes. O check:all passou (sem avisos e typechecks corretos). **Próxima etapa: Tarefa 8 (Preview HTTP) e pendências de reconciliação de fila de produto do PR #5.** O merge e o deploy continuam estritamente bloqueados até nova ordem.
+**Desenvolvimento md-0002 (em curso).** Tarefa 8 (Preview HTTP) iniciada. As verificações da Tarefa 5 registraram pendências que devem ser resolvidas futuramente no build de produção: a validação de status HTTP (404/500) mascara-se em ambiente local de dev com Turbopack, e a acessibilidade (AC-12) exige execução com axe-core/playwright. A reconciliação documental da PR #5 também encontra-se na fila para registro separado. O merge e o deploy continuam estritamente bloqueados até nova ordem.
 
+- **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
 - **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.
 - **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
   (`20261005000000_posts_schema_editorial.sql`,
