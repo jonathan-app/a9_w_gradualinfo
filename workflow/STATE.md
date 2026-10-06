@@ -23,15 +23,7 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Revisão documental da PR #5 (concluído).** Revisão documental favorável; aguardando CI remota. A correção de segurança foi incorporada (novo SHA `fb492b0a14a1827c8da794d60389f4fbe972376c`) e o gate local foi validado, mas a confirmação final depende da CI remota ficar verde após o push. O registro parcial da revisão está em `docs/reviews/2026-10-06-check-pr-5.md`. Nenhuma ação complementar autorizada para esta tarefa (merge e deploy continuam sem autorização e dependem do dono). Próxima etapa: nenhuma.
-
-**Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado
-por execução e revisado** — tarefas 1 a 5, `PASS 63/63`, AC-06 provado,
-`/check verify` e `/check review` registrados. O `COMMENT` da tabela foi
-corrigido via migration `20261005000002_posts_comment_correction.sql`. Os **9
-posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão
-do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed`
-e precisa de aceite.
+**Desenvolvimento md-0002 (em curso).** Tarefas 2 e 3 implementadas (schema conferido; `lib/services/posts.ts` criado com dupla verificação de status e autenticação de preview via jwt claim). Backup cron a cada 30min para o clone `a9_w_gradualinfo__iso` restaurado a partir do zip e validado com sucesso. Próxima etapa: /develop (Tarefa 4). PROMPT: "Continue a spec md-0002: construa o card e a home, com esboço no topo, grade limitada a 10 e estados (loading, vazios). Não faça merge nem deploy."
 
 - **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
   (`20261005000000_posts_schema_editorial.sql`,
@@ -316,7 +308,8 @@ de agentes abaixo.**
 | 39  | 2026-10-05 | audit da CI zerado por **remoção da ferramenta afetada**, sem ignores nem prod-only (reprovação do SHA da PR #1) | `package.json` (`@lhci/cli`, `@percy/playwright` e `eslint-config-next` removidos; `lighthouse`, `lighthouse:ci`, `performance` fora; scripts `lighthouse:ci` removidos com `scripts/lighthouse-ci.js` + `lighthouserc.js`; adicionados `@eslint/js`, `typescript-eslint`, `globals`, `eslint-plugin-import/react/react-hooks/jsx-a11y`, `eslint-import-resolver-{node,typescript}`), `eslint.config.mjs` (portado para plugins diretos — trade-off: perde regras `next/*`), `pnpm-workspace.yaml` (overrides de tmp/basic-ftp retirados — cadeias mortas com a remoção), `.github/workflows/ci.yml` (`--ignore` retirados; audit volta ao padrão), `scripts/pagespeed-monitor.js` (comentário do delta atualizado), `AGENTS.md` (linha de `scripts/` corrigida), `pnpm-lock.yaml` (regenerado). **Verificação no SHA local:** `pnpm audit` → "No known vulnerabilities found" (todos os níveis, `--audit-level=high` exit 0); `typecheck` ✓; `lint` ✓; `format:check` ✓; `test:run` 68/68 ✓; `build:next` ✓; `install --frozen-lockfile` ✓. Job `database` não reexecutado: a alteração não toca wrappers Supabase nem deps do job | concluído |
 
 | 40 | 2026-10-06 | /sync documental dos achados da auditoria | `AGENTS.md`: lock versionado, skills locais ignoradas, docs preenchidos; .storybook confirmada presente, sem edição. `workflow/STATE.md`: registro desta manutenção, fila de produto preservada | corrigido, CI pendente |
-| 41 | 2026-10-06 | /check da PR documental #5 | `docs/reviews/2026-10-06-check-pr-5.md` (PENDENTE): Revisão favorável, gate local passado, porém CI remota pendente no SHA `fb492b0`. Fila de produto preservada. Sem autorização de merge ou deploy | concluído |
+| 41 | 2026-10-06 | /check da PR documental #5 | `docs/reviews/2026-10-06-check-pr-5.md` (APROVADO): Revisão favorável, vulnerabilidades (pnpm audit) resolvidas via overrides, CI remota verde. Fila de produto preservada. Sem autorização de merge ou deploy | concluído |
+| 42 | 2026-10-06 | /develop | `md-0002` Tarefas 2 e 3: verificação do schema (`posts`), RLS e índice, criação de `lib/services/posts.ts` com auth de preview via `app_metadata.preview`. Backup cron `a9_w_gradualinfo__iso` restaurado e verificado. | concluído |
 
 ### Evidência da linha 01
 
