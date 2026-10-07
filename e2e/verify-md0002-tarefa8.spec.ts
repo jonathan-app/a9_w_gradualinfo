@@ -60,7 +60,9 @@ test.describe('md-0002 Tarefa 8 - Preview HTTP', () => {
     page,
     context,
   }) => {
-    await page.goto(`/api/preview?token=${PREVIEW_TOKEN}&slug=fixture-rascunho`);
+    await page.goto(
+      `/api/preview?token=${PREVIEW_TOKEN}&slug=fixture-rascunho`,
+    );
 
     let response = await page.goto('/artigos/fixture-rascunho');
     expect(response?.status()).toBe(200);

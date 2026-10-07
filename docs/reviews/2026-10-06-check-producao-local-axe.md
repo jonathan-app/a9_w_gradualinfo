@@ -6,20 +6,20 @@ Build existente: `seu9Q_DEPg_LAHwE76-X2`; vínculo à árvore atual não comprov
 
 `node node_modules/next/dist/bin/next start --port 3211` falhou com `listen EPERM: operation not permitted 0.0.0.0:3211`. Solicitada execução fora do sandbox. Curl na porta 3210 retornou status `000` (exit 7): ausência de resposta, não status HTTP da aplicação. Nenhum desses comandos prova comportamento de produção.
 
-| Cenário | Resultado |
-| --- | --- |
-| HTTP artigo público | UNVERIFIABLE |
-| HTTP artigo inexistente | UNVERIFIABLE |
-| HTTP rascunho sem preview | UNVERIFIABLE |
-| HTTP rascunho com preview | UNVERIFIABLE |
-| Secure em Set-Cookie de produção | UNVERIFIABLE |
-| no-store no artigo protegido | UNVERIFIABLE |
+| Cenário                                              | Resultado    |
+| ---------------------------------------------------- | ------------ |
+| HTTP artigo público                                  | UNVERIFIABLE |
+| HTTP artigo inexistente                              | UNVERIFIABLE |
+| HTTP rascunho sem preview                            | UNVERIFIABLE |
+| HTTP rascunho com preview                            | UNVERIFIABLE |
+| Secure em Set-Cookie de produção                     | UNVERIFIABLE |
+| no-store no artigo protegido                         | UNVERIFIABLE |
 | Sessão expirada (sem apagar cookies como substituto) | UNVERIFIABLE |
-| Usuário autenticado sem claim | UNVERIFIABLE |
-| Identidade diferente da dedicada | UNVERIFIABLE |
-| Logout com falha simulada e acesso subsequente | UNVERIFIABLE |
-| Axe home | UNVERIFIABLE |
-| Axe artigo | UNVERIFIABLE |
+| Usuário autenticado sem claim                        | UNVERIFIABLE |
+| Identidade diferente da dedicada                     | UNVERIFIABLE |
+| Logout com falha simulada e acesso subsequente       | UNVERIFIABLE |
+| Axe home                                             | UNVERIFIABLE |
+| Axe artigo                                           | UNVERIFIABLE |
 
 Os testes existentes não comprovam expiração real (apenas limpam cookies), nem falha simulada de logout. `isPreviewSession` verifica claim, sem conferir identidade dedicada: observação estática, comportamento em produção ainda não executado. Axe ainda não executado nesta rodada. Não converter build, inspeção ou timeout em PASS.
 

@@ -34,9 +34,9 @@ export async function GET(request: NextRequest) {
     console.error('Erro no logout de preview', err);
   }
 
-  const authCookies = request.cookies.getAll().filter((cookie) =>
-    cookie.name.includes('sb-'),
-  );
+  const authCookies = request.cookies
+    .getAll()
+    .filter((cookie) => cookie.name.includes('sb-'));
   authCookies.forEach((cookie) => {
     response.cookies.delete(cookie.name);
   });
