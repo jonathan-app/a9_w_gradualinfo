@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { createClient } from '@/lib/supabase/server';
-import { getPostBySlug, isPreviewSession } from '@/lib/services/posts';
+import { getPostBySlug } from '@/lib/services/posts';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { formatDate } from '@/lib/utils/format';
 import { Badge } from '@/components/ui/badge';
@@ -69,7 +69,6 @@ export default async function ArticlePage(props: Props) {
     notFound();
   }
 
-  const isPreview = await isPreviewSession(supabase);
   const publishedAt = post.published_at
     ? formatDate(post.published_at, { timeZone: 'America/Sao_Paulo' })
     : null;

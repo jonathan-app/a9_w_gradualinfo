@@ -20,6 +20,18 @@
         "-y",
         "@modelcontextprotocol/server-fetch"
       ]
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server"
+      ],
+      "env": {
+        "SUPABASE_URL": "http://127.0.0.1:54321",
+        "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjo0MTAyNDQ0ODAwfQ.local-development-placeholder-signature"
+      },
+      "notes": "Uso restrito a desenvolvimento. Nunca apontar para produção. Agente → MCP Supabase → dev, nunca agente → produção → database."
     }
   }
 }

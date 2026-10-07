@@ -1,31 +1,23 @@
 {
   "acs": [
     {
-      "id": "md-0002/AC-05",
+      "id": "md-0002/AC-01",
       "status": "UNVERIFIABLE"
     },
     {
-      "id": "md-0002/AC-06",
+      "id": "md-0002/AC-02",
       "status": "UNVERIFIABLE"
     },
     {
-      "id": "md-0002/AC-07",
+      "id": "md-0002/AC-03",
       "status": "UNVERIFIABLE"
     },
     {
-      "id": "md-0002/AC-09",
+      "id": "md-0002/AC-04",
       "status": "UNVERIFIABLE"
     },
     {
-      "id": "md-0002/AC-10",
-      "status": "UNVERIFIABLE"
-    },
-    {
-      "id": "md-0002/AC-11",
-      "status": "UNVERIFIABLE"
-    },
-    {
-      "id": "md-0002/AC-13",
+      "id": "md-0002/AC-12",
       "status": "UNVERIFIABLE"
     }
   ],

@@ -23,7 +23,7 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: nenhuma.** Verificação permanece bloqueada pelo ambiente; os 12 cenários da Tarefa 8 continuam `UNVERIFIABLE` até resolução das chamadas pendentes. Merge e deploy seguem sem autorização.
+**Próxima etapa: `/check` — verificação autorizada; causa dos timeouts ainda não isolada.** `pnpm test:run` passou 74/74 (não revalida pgTAP, páginas ou sitemap). Os 12 cenários da Tarefa 8 permanecem `UNVERIFIABLE`. Registrado separadamente: `listen EPERM` observado em tentativa de build/servidor de produção local; timeouts de navegação em E2E com causa não isolada. Merge e deploy seguem sem autorização.
 
 - **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
 - **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.

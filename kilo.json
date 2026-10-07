@@ -1,8 +1,36 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "project": "gradualinfo",
-  "version": "1.0.0",
-  "skills_dir": ".agents/skills",
-  "agent_framework": "antigravity",
-  "strict_mode": true
+  "mcps": [
+    {
+      "name": "playwright",
+      "description": "Playwright MCP para automação e E2E quando necessário.",
+      "enabled": true,
+      "required_env": [],
+      "notes": "Usar apenas para diagnósticos de browser/E2E; não habilitado por padrão."
+    },
+    {
+      "name": "next-devtools",
+      "description": "Next DevTools MCP para inspeção local do App Router.",
+      "enabled": false,
+      "required_env": [],
+      "notes": "Habilitar apenas durante investigação de runtime/build."
+    },
+    {
+      "name": "supabase",
+      "description": "Supabase MCP oficial; uso restrito a ambiente de desenvolvimento.",
+      "enabled": false,
+      "required_env": [
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+      ],
+      "notes": "Nunca apontar para produção. Agente → MCP Supabase → dev, nunca agente → produção → database."
+    },
+    {
+      "name": "fetch",
+      "description": "Fetch MCP para requisições HTTP externas quando necessário.",
+      "enabled": false,
+      "required_env": [],
+      "notes": "Usar com cautela; preferir libs do projeto quando disponíveis."
+    }
+  ]
 }
