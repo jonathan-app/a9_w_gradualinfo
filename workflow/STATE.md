@@ -23,7 +23,7 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: resolver a reprovação do `/check gate` e verificar a CI no novo SHA (merge e deploy continuam sem autorização).**
+**Próxima etapa: decisão do usuário — como tratar o piso de performance do Lighthouse (`categories:performance` minScore 0.8) que flakera a CI (run `37688711457`: E2E e todos os jobs PASS, mas Lighthouse máximo 0.77/0.78; mesmo perfil de métricas do run verde `9f23ebd`; app code idêntico; flake pré-existente também visto em runs 37676017984, 37667734011, 37663851027). `/check gate` permanece skipped enquanto o Lighthouse não passar. Os 5 ACs da tarefa 4 estão resolvidos e provados (E2E 100% PASS local 3× e na CI). Merge e deploy continuam NÃO AUTORIZADOS.**
 
 Status da resolução da reprovação do `/check gate`:
 - **Auditoria de Parsing Semgrep:** 110 caminhos escaneados, 41 arquivos de aplicação (`app/`, `components/`, `lib/`, `proxy.ts`) integralmente analisados com zero erros de parsing e zero omissões (conferido: 41/41 no núcleo, `errors[]` vazio; fora do núcleo, apenas `scripts/check-portability.mjs` intencional e `vitest.config.mts` fora do alvo do Semgrep 1.179).
@@ -149,6 +149,7 @@ Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad58731
 | 81 | 2026-10-07 | quarentena das 81 skills extras executada com autorização do dono | `.agents/skills/` → `.agents/quarantine-skills/2026-10-07/` (81 extras preservados com `MANIFEST.json`); `eslint.config.mjs` atualizado para ignorar `.agents/**`; `scripts/check-skills.mjs` 100% PASS (9 skills ativas idênticas à allowlist e `skills-lock.json`); `pnpm check:all` 100% PASS (92/92 testes) | concluído |
 | 82 | 2026-10-07 | /check: isolamento estrito de testes E2E e inventário de parsing do Semgrep | `e2e/verify-md0002-tarefa4.spec.ts`: hooks `beforeEach`/`afterEach` para reset de falha e restauração garantida de posts; inventário dos 41 arquivos da aplicação com 100% de cobertura de parsing no Semgrep; `pnpm check:all` 92/92 PASS | concluído |
 | 83 | 2026-10-07 | /check: suíte corrigida validado em produção local e flake critical-flows corrigido | `pnpm test:e2e` em servidor `next start` HTTPS local: 34/34 PASS em 3 rodadas consecutivas — AC-01/02/04, AC-03 (x2) e AC-12 da tarefa 4 sem `skipped`, confirmando a correção do streaming; `e2e/critical-flows.spec.ts` corrigido (`getByRole` com nível+nome + `toHaveText` no lugar de `page.locator('h1')` estrito), 5/5 no spec isolado; inventário Semgrep revalidado: 41/41 no núcleo, `errors[]` vazio, fora do núcleo `vitest.config.mts` fora do alvo do semgrep 1.179 | concluído; CI no SHA b9b201d a acompanhar |
+| 84 | 2026-10-07 | /check: CI verde em tudo exceto flake do Lighthouse de performance | run `37688711457` no SHA `5726692`: E2E 100% PASS (5 ACs da tarefa 4 confirmados na CI), typecheck/lint/testes, Build, RLS, Segredos, OSV, SAST todos SUCCESS; único FAIL = Lighthouse `categories:performance` mínimo 0.8 (máx 0.77/0.78 nas 3 runs) — mesmo perfil de métricas (TBT 430-1620ms) do run `9f23ebd` que passou, app code idêntico, flake de piso pré-existente (também falhou em runs 37676017984, 37667734011, 37663851027); `/check gate` skipped por dependência | em curso; revisar decisão do piso de performance |
 
 
 ### Evidência da linha 01
