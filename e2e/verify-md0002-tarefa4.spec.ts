@@ -29,19 +29,19 @@ function localAdmin() {
     );
   return createClient(url, key, { auth: { persistSession: false } });
 }
-test.describe.serial('home editorial', () => {
+test.describe('home editorial', () => {
   test('md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite', async ({
     page,
   }) => {
     await page.goto('/');
-    const cards = page.locator('a[href^="/artigos/"]');
-    expect(await cards.count()).toBeGreaterThan(0);
-    // Limite de 10 por página: acima disso a home deixa de ser homepage e vira arquivo.
-    expect(await cards.count()).toBe(10);
+    const cards = page.locator('main a[href^="/artigos/"]');
+    // Limite de 10 por página: `toHaveCount` aguarda a estabilização do DOM (auto-waiting),
+    // eliminando leituras transitórias de nós duplicados durante o streaming do SSR.
+    await expect(cards).toHaveCount(10);
     // Ordenação conferida sobre os atributos <time>: mais novo primeiro é o contrato
     // editorial que o card em destaque também pressupõe.
     const dates = await page
-      .locator('time[datetime]')
+      .locator('main time[datetime]')
       .evaluateAll((elements) =>
         elements.map((element) => element.getAttribute('datetime')!),
       );
@@ -50,10 +50,10 @@ test.describe.serial('home editorial', () => {
       page.locator('section[aria-label="Artigo em Destaque"]'),
     ).toBeVisible();
     await expect(
-      page.locator('a[href="/artigos/fixture-rascunho"]'),
+      page.locator('main a[href="/artigos/fixture-rascunho"]'),
     ).toHaveCount(0);
     await expect(
-      page.locator('a[href="/artigos/fixture-agendado"]'),
+      page.locator('main a[href="/artigos/fixture-agendado"]'),
     ).toHaveCount(0);
     await expect(
       page.locator('[data-slot="post-card-featured"] img'),
@@ -84,7 +84,11 @@ test.describe.serial('home editorial', () => {
         );
       if (result.error) throw result.error;
       await page.goto('/');
-      await expect(page.getByText('Nenhum artigo publicado')).toBeVisible();
+      // `getByRole` resolve sobre a árvore de acessibilidade (ignorando nós ocultos de streaming
+      // marcados com hidden fora de main) e aguarda a visibilidade de forma estrita.
+      await expect(
+        page.getByRole('heading', { name: 'Nenhum artigo publicado' }),
+      ).toBeVisible();
       await expect(
         page.getByRole('heading', { name: 'Algo deu errado' }),
       ).toHaveCount(0);
@@ -112,7 +116,9 @@ test.describe.serial('home editorial', () => {
       await expect(
         page.getByRole('heading', { name: 'Algo deu errado' }),
       ).toBeVisible();
-      await expect(page.getByText('Nenhum artigo publicado')).toHaveCount(0);
+      await expect(
+        page.getByRole('heading', { name: 'Nenhum artigo publicado' }),
+      ).toHaveCount(0);
     } finally {
       await setFault(request, 'none');
     }

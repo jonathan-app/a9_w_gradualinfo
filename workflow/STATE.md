@@ -23,12 +23,14 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: resolver os três jobs e verificar a CI no novo SHA (merge e deploy continuam sem autorização).**
+**Próxima etapa: resolver a reprovação do `/check gate` e verificar a CI no novo SHA (merge e deploy continuam sem autorização).**
 
-Status da resolução dos 3 jobs no CI:
-- **Lighthouse (Home + Artigo):** APROVADO (100% dos critérios passaram, sem redução do threshold 0.80).
-- **Semgrep (SAST):** APROVADO (0 findings ERROR no código do app após isolamento e correção do mock de teste).
-- **OSV (Dependency scan):** Corrigido o caminho para o subdiretório `google/osv-scanner-action/osv-scanner-action@v2.6.0` e delimitado o scan a `--lockfile=pnpm-lock.yaml` (eliminando falsos positivos de `referencias/`).
+Status da resolução da reprovação do `/check gate`:
+- **Auditoria de Parsing Semgrep:** 110 caminhos escaneados, 41 arquivos de aplicação (`app/`, `components/`, `lib/`, `proxy.ts`) integralmente analisados com zero erros de parsing e zero omissões.
+- **Investigação dos 5 ACs da tarefa 4 (`e2e/verify-md0002-tarefa4.spec.ts`):**
+  - Causa raiz de `AC-01, AC-02, AC-04 (FAIL)`: `cards.count()` síncrono avaliado durante chunk transitório de streaming SSR gerava contagem 20 (10 + 10 nós ocultos). Corrigido com escopo em `main a[href^="/artigos/"]` e asserção com auto-waiting `await expect(cards).toHaveCount(10)`.
+  - Causa raiz de `AC-03 (UNVERIFIABLE)`: `getByText('Nenhum artigo publicado')` disparava violação de strict mode (2 nós, sendo 1 em container de streaming hidden fora de `main`). Corrigido usando `getByRole('heading', { name: 'Nenhum artigo publicado' })`.
+  - Causa raiz de `AC-12 (UNVERIFIABLE)`: Testes subsequentes marcados como `skipped` na primeira tentativa pelo `test.describe.serial` após falha do teste 1, violando o critério estrito de integridade de `ci-assess.mjs`. Corrigido com a eliminação das falhas na tentativa 0 e remoção de `.serial` (já executado sequencialmente em worker 1).
 - **Aprovação histórica (commit `2639744b`):** 13/13 ACs PASS mantidos como registro histórico no SHA avaliado.
 - **Governança:** Merge e deploy continuam expressamente NÃO AUTORIZADOS.
 
@@ -141,6 +143,8 @@ Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad58731
 | 76 | 2026-10-07 | verificação de `docs/` (erros e inconsistências) + delegação /sync e /architect | `docs/audits/2026-10-07-auditoria-completa.md` (seção 14 nova com os achados; correções próprias: 6 jobs da CI, status `0003`/`0004` Accepted, worktrees, drift pós-captura do HEAD `ac2bb18`): INDICE × md-0002 (Proposed × Accepted), INDICE sem `0003`/`0004`, scope/0001 com "48 skills"/`kilo.json` inválido desatualizados, contradições internas da md-0001 (AC-01 2 vs 3 status, CHECK retirado vs invariante, linha 142), matriz de autorização com papel `preview` e `service_role` em admin, secrets-policy vs `.agents/mcp.json`, backup-restore com flag inexistente, MCP.md @ `percy`/@mcp-server legado, jsdoc inexistente, editorial skills instaladas marcadas "não instaladas", follow-ups `[ ]` já resolvidos (md-0002:466/471/477, 0003:214); `workflow/STATE.md` (Bastão atual = delegação); decisão do dono: encaminhar a /sync (status/índice/follow-ups) e /architect (conteúdo da md-0001); merge e deploy seguem retidos | concluído; delegação emitida |
 | 77 | 2026-10-07 | resolução de 3 jobs CI (Semgrep PASS, Lighthouse PASS, OSV corrigido) | `.github/workflows/ci.yml` (action path `google/osv-scanner-action/osv-scanner-action@v2.6.0` e `scan-args: '--lockfile=pnpm-lock.yaml'` sem flag inexistente `--skip-git`), `components/shared/post-card.tsx` (`priority` na imagem do hero/destaque), `__tests__/unit/components/google-analytics.test.tsx` (`textContent` no mock de script); Lighthouse e Semgrep 100% PASS na CI; aprovação histórica 2639744b preservada; merge/deploy retidos | em curso; verificar CI no novo SHA |
 | 78 | 2026-10-07 | /sync: reconciliação do AGENTS.md e sinalização de specs desatualizadas | `AGENTS.md` (corrige bloco "zero commits / main unborn" → "sessões paralelas"; adiciona ponteiro do `DESIGN.md` no Mapa de pastas); `workflow/STATE.md` (linha 78); encaminhado a /architect: INDICE.md × md-0002 (Proposed × Accepted) e sem 0003/0004, contradições internas da md-0001 (AC-01, CHECK, linha 142), follow-ups `[ ]` já resolvidos (md-0002:466/471/477, 0003:214), matriz de autorização (papel preview, service_role em admin), secrets-policy vs `.agents/mcp.json`, backup-restore com flag inexistente, MCP.md @ percy/legado, jsdoc inexistente, editorial skills instaladas marcadas "não instaladas"; scope/0001 stats desatualizados (48 skills, kilo.json inválido) sinalizados sem editar; aviso: 3 commits atrás de `origin/main` (PR #12 já mergeado pela sessão paralela); Bastão atual (CI em curso, sessão paralela) preservado | concluído; bastão /architect (pós CI) + decisão do usuário p/ merge/deploy |
+| 79 | 2026-10-07 | /check: investigação dos 5 ACs e auditoria de parsing Semgrep | `e2e/verify-md0002-tarefa4.spec.ts`: elimina contagem síncrona sem wait e strict mode violation por nós transitórios de streaming SSR fora de `main`; remove `test.describe.serial` causador de `skipped` em cascata; Semgrep auditado com 41/41 arquivos de aplicação e 0 erros de parsing; aprovação histórica vinculada a `2639744b` preservada; merge e deploy desautorizados | em curso; verificar CI no novo SHA |
+
 
 ### Evidência da linha 01
 
