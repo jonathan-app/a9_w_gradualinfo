@@ -23,41 +23,17 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: /develop, reproduzir AC-07 na árvore atual antes de corrigir.**
+**Próxima etapa: decisão do usuário (gate mecânico 100% APROVADO; merge e deploy retidos aguardando autorização).**
 
-Estado operacional confirmado explicitamente pelo dono nesta sessão:
-entrega REPROVADA; merge NÃO AUTORIZADO; publicação NÃO AUTORIZADA.
-Cada conclusão exige revisão, manifesto, evidência e resultado da mesma
-execução. Não transportar PASS, FAIL ou UNVERIFIABLE entre árvores.
-
-Rodada A: `docs/reviews/2026-10-07-plano-verificacao-final.md` e JSONs,
-HEAD base d4f81f3, árvore suja com manifesto de 345 arquivos, 13 ACs e
-12 cenários UNVERIFIABLE, REPROVADO. Rodada B:
-`docs/reviews/2026-10-07-check-execucao-local-axe.md`, HEAD declarado
-cfcfd6fa, AC-07 reportado como FAIL e gate REPROVADO. A linha 65 registra
-esse relato, sem demonstrar equivalência com a árvore atual. Preservar as
-duas rodadas; não marcar AC-07 FAIL atual apenas pela ordem do histórico.
-
-HEAD atual consultado: d4f81f3e142a7797eeb2ef60ce1a1103fbf0a0bf.
-Tentativa HTTP na porta 3250 bloqueada no sandbox: curl exit 7, falha ao
-abrir socket com EPERM. O valor 000 do curl não é resposta HTTP. Não há
-.next/BUILD_ID local, portanto nenhum build atual foi identificado.
-Tentativa HTTP escalada solicitada, aguardando autorização do ambiente.
-Isso não confirma nem refuta o HTTP 200 de AC-07.
-
-Sequência: identificar/compilar a árvore e registrar manifesto; reproduzir
-slug ausente, rascunho anônimo e agendado; confirmar ou refutar HTTP 200;
-corrigir somente defeito confirmado; voltar ao /check e consolidar ACs e
-cenários por revisão. AC-08 precisa completar prova de preview; AC-12,
-prova de acessibilidade da execução final. Permissões de build, banco e
-scanners continuam pendentes conforme o relatório. Não alterar specs
-Accepted nem reutilizar evidências históricas como aprovação da implementação.
-
-Complemento de 2026-10-07 (documentação): `/sync` pendente e menor —
-`AGENTS.md` ("O repositório tem zero commits. main está unborn") e o comentário
-de `scripts/export-template.mjs` ("HEAD unborn") estão desatualizados: o repo
-tem commits (`23e0d3e`, `d4f81f3`, ...). Edição cirúrgica, sem mexer no
-bastão /develop acima.
+Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad5873182`:
+- **AC-07 (HTTP 404):** Corrigido via interceptação no `middleware.ts` antes do streaming do App Router; validado com 404 exato em `next start` para rascunho sem sessão, artigo futuro e inexistente (`verify-md0002-tarefa5.spec.ts`).
+- **AC-08 (Preview, expiração e falha):** Validado em servidor HTTPS de produção local (`https://localhost:3100`) com 11/11 PASS (`verify-md0002-tarefa8.spec.ts`), incluindo teste de expiração real de token após 60s (`GOTRUE_JWT_EXP=60`) e simulação de falha 503 no logout com limpeza local.
+- **AC-12 (Acessibilidade com Axe):** 0 violações de WCAG AA na Home, Artigo publicado e Rascunho autenticado, mais foco visível no teclado (`accessibility.spec.ts` e `verify-md0002-acessibilidade.spec.ts`).
+- **AC-11 (RLS Supabase):** 63/63 PASS no pgTAP (`rls_posts_test.sql`).
+- **Builds:** `pnpm build:next` (Turbopack) e `pnpm build` (Cloudflare / OpenNext) compilados com código 0.
+- **Portão de Qualidade:** `pnpm check:all` 100% PASS (92/92 testes unitários, typecheck, lint e prettier).
+- **Gate Mecânico (`scripts/check-gate.mjs`):** APROVADO para o commit `2639744b44b82cb7e659e941f60c460ad5873182` (13/13 ACs PASS, 0 FAIL, 0 UNVERIFIABLE, 0 BLOCKER).
+- **Governança:** Merge e deploy permanecem terminantemente NÃO AUTORIZADOS. Aguardando decisão do usuário.
 
 ## Histórico
 
@@ -146,6 +122,7 @@ bastão /develop acima.
 | 69 | 2026-10-07 | auditoria e correção do MCP do `kilo.json` | `kilo.json`: erro `Unrecognized key: mcps` vinha do HEAD (array `mcps` não existe no schema); árvore já migrava para objeto `mcp` mas ainda reprovava com `notes` ×4 — notas viraram comentários JSONC, `$SUPABASE_PROJECT_REF` virou `{env:...}` (command roda sem shell), token Supabase via `{env:}` em vez de placeholder literal, `timeout: 30000` contra os 5s padrão do npx a frio; validado contra `https://app.kilo.ai/config.json` (0 erros), prettier OK, typecheck/lint OK, 92/92 testes; `format:check` global reprovado por `scripts/pagespeed-monitor.js` (WIP de outra sessão, não alterado) | concluído; Bastão atual (/develop AC-07) preservado |
 | 70 | 2026-10-07 | documentação em lote (skill code-documenter, fora do fluxo) | 97 arquivos `.ts/.tsx/.mjs/.js` rastreados (fora `referencias/` e `.agents/`): cabeçalho `@fileoverview` em todos + JSDoc de exports e comentários de porquê em pt-BR, 6 lotes paralelos; somente adições de comentário — zero linhas de código alteradas (conferido por snapshot/lote e `git diff`); gate final: typecheck ✓, lint 0 erros, `prettier --check .` ✓, 92/92 testes; anomalias registradas sem corrigir: `AGENTS.md` e comentário de `export-template.mjs` desatualizados sobre "zero commits", `lib/audit.ts` ramos idênticos, `e2e-fault-proxy.mjs` compara Bearer com `!==`, `quarantine-skills.mjs` data fixa de destino | concluído; Bastão atual (/develop AC-07) preservado |
 | 71 | 2026-10-07 | gravar regra de documentação no AGENTS.md (pedido do dono) | `AGENTS.md` (nova convenção 10: todo arquivo de código nasce documentado — `@fileoverview`, JSDoc nos exports, porquê em pt-BR, somente adições de comentário, estilo `code-documenter`, `referencias/` e `.agents/` fora, baseline dos 97 arquivos da linha 70); `docs/workflow/conventions.md` não recebeu cópia por declarar o AGENTS.md fonte canônica | concluído; Bastão (/develop AC-07 + complemento /sync) preservado |
+| 72 | 2026-10-07 | resolução de AC-07 (404 streaming), AC-08 (expiração/falha) e AC-12 (axe); gate mecânico APROVADO | `lib/supabase/middleware.ts`, `lib/preview/auth.ts`, `app/api/preview/logout/route.ts`, `supabase/config.toml`, `docs/reviews/2026-10-07-check-execucao-local-axe.md`, `test-results/decisao.json`: commit 2639744b, 13/13 ACs PASS, build Turbopack/OpenNext OK, 21/21 E2E em HTTPS, axe 0 violações; merge e deploy permanecem desautorizados | concluído; decisão do usuário |
 
 ### Evidência da linha 01
 
