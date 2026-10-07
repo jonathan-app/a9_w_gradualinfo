@@ -71,6 +71,13 @@ export default function RootLayout({
     // no <html> antes do React hidratar. A diferença entre o HTML do servidor
     // e o do cliente neste atributo é esperada, não é bug.
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preconnect"
+          href="https://www.googletagmanager.com"
+          crossOrigin=""
+        />
+      </head>
       <body className="flex min-h-dvh flex-col antialiased">
         <GoogleTagManager />
         <GoogleAnalytics />

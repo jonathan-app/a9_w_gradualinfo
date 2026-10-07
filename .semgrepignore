@@ -1,0 +1,9 @@
+# Arquivo de exclusão do Semgrep
+# AGENTS.md: "referencias/ e .agents/ ficam de fora."
+# referencias/ contém templates externos de terceiros — não é código do projeto.
+referencias/
+
+# scripts/check-portability.mjs contém regex que o parser do Semgrep não consegue
+# interpretar (regex literal malformado), gerando PartialParsing warning que
+# faz o relatório sair com errors[]. Excluído para evitar false failures.
+scripts/check-portability.mjs

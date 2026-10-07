@@ -9,7 +9,8 @@ import { env } from '@/lib/env';
  * - O gtag.js precisa ser carregado de forma assíncrona sem bloquear o FCP
  *   ou o LCP da página.
  * - Usamos o componente nativo `Script` do Next.js com a estratégia
- *   `afterInteractive`, que gerencia deduplicação e execução segura no browser.
+ *   `lazyOnload`, que carrega o script apenas depois que a página está
+ *   interativa e o idle está disponível — prioriza o Core Web Vitals.
  * - O Measurement ID vem de `env.gaMeasurementId` (configurável via
  *   NEXT_PUBLIC_GA_MEASUREMENT_ID ou padrão de produção).
  */
@@ -24,9 +25,9 @@ export function GoogleAnalytics() {
     <>
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
-      <Script id="google-analytics-init" strategy="afterInteractive">
+      <Script id="google-analytics-init" strategy="lazyOnload">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
