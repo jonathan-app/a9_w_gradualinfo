@@ -1,6 +1,6 @@
 # Auditoria de progresso contra plano-atualizacao-auditoria.md
 
-Data: 2026-10-07 · Árvore-base: `3fd3e50` · Árvore corrente: `ac2bb18` + alterações não commitadas
+Data: 2026-10-07 · Árvore-base: `3fd3e50` · SHA da branch (`feat/md-0002-casca-editorial-home`): `c059f8da6b67dfd1e5518613e7f78482403177aa` (também registrado no ZIP/artefatos) · SHA avaliado pela CI (merge de teste da PR #21): `208980f14e1bc819e69812600d478f40b587562e`
 Fonte: plano-atualizacao-auditoria.md (etapas 1-10) + docs/audits/*
 
 ## 1. Estado dos artefatos auditoria
@@ -132,6 +132,7 @@ Fonte: plano-atualizacao-auditoria.md (etapas 1-10) + docs/audits/*
 - **Etapas 1-8**: implementadas conforme plano, com correções aplicadas e verificadas localmente.
 - **Etapa 9**: produção compilada e verificada localmente (`pnpm build:next` + `pnpm build` exit 0, `pnpm dev` respondeu todas as rotas); `pnpm check:all` 92/92 testes; pgTAP (63/63 PASS) e E2E compilado (21/21 PASS em HTTPS) concluídos.
 - **Etapa 10**: retida — merge e deploy sem autorização do dono; RAG/MCP produto/preços fora de escopo.
-- **CI remota**: 7/7 funcionais PASS contra merge commit PR #13.
-- **Gate local**: FAIL por design (SHA diverge da aprovação `2639744b`).
+- **CI remota**: 9/9 jobs PASS (run `37696700726`, merge `208980f1`, histórico). Nova run `37700528857` (PR #22) 100% verde (9/9 jobs SUCCESS). **SHA da branch**: `2960e7a6752e7f4cbc0189e57df197fd4b3e004e`. **SHA avaliado**: `92fa614f9e5531e8dc5e3a5e0ee069b2b14719f3` (merge de teste da PR #22) — log do gate: _"Gate mecânico aprovado para 92fa614f…"_ (Artifact ID 11518610072). Aprovação remota comprovada para o commit vigente.
+- **CI local**: `pnpm check:all` 92/92 testes, build + OpenNext exit 0, dev server respondeu todas as rotas; E2E local da tarefa 4 (4/4 PASS x2 com integridade do banco).
+- **Gate local**: FAIL por design (SHA corrente `2960e7a` ≠ aprovação histórica `2639744b`).
 - **Merge/deploy**: retidos até autorização explícita do dono.
