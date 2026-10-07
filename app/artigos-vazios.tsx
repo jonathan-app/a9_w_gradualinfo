@@ -4,6 +4,20 @@
  * Server Component. Exibido quando a query de artigos publicados retorna array
  * vazio. Sem este componente, a home mostraria apenas o container vazio, o que
  * não comunica ao usuário o que aconteceu.
+ *
+ * @fileoverview Estado vazio da listagem de artigos publicados.
+ * @module app/artigos-vazios
+ * @dependencies nenhum além do React/JSX (Server Component puro).
+ */
+/**
+ * Bloco de estado vazio exibido quando não há artigo publicado.
+ *
+ * Não oferece link de ação nem botão de recarregar: não existe destino útil
+ * enquanto o catálogo está vazio, e fingir que existe só convida ao clique
+ * que devolve a mesma tela.
+ *
+ * @returns Container centralizado com borda tracejada e o aviso em duas linhas
+ *   (título + explicação), legível sem leitor de tela.
  */
 export function ArtigosVazios() {
   return (

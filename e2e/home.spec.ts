@@ -1,15 +1,16 @@
-import { expect, test } from '@playwright/test';
-
 /**
- * e2e/home.spec.ts — a página inicial funciona de verdade
+ * @fileoverview A página inicial funciona de verdade — bundle, hidratação e servidor reais.
+ * @module e2e/home
+ * @description Diferença para o Vitest: aqui o app sobe inteiro, então o teste pega o que só
+ *   quebra no navegador. Por isso a asserção é sobre comportamento observável (título,
+ *   navegação, tema no atributo do `<html>`, status HTTP), nunca sobre detalhe de
+ *   implementação.
+ * @dependencies @playwright/test, fixture `fixture-publicado` do seed.
  *
- * Diferença para o Vitest: aqui o app sobe de verdade, com bundle, hidratação e
- * servidor. É o que pega erro que unit test não vê — por isso o teste é sobre
- * comportamento observável, e não sobre detalhe de implementação.
- *
- * O servidor é iniciado pelo próprio Playwright (ver `webServer` em
- * playwright.config.ts). `pnpm test:e2e` não pede que você suba nada antes.
+ * O servidor é iniciado pelo próprio Playwright (ver `webServer` em playwright.config.ts):
+ * `pnpm test:e2e` não pede que você suba nada antes.
  */
+import { expect, test } from '@playwright/test';
 test.describe('página inicial', () => {
   test('carrega o título principal', async ({ page }) => {
     await page.goto('/');
@@ -19,19 +20,11 @@ test.describe('página inicial', () => {
     ).toBeVisible();
   });
 
-  test('navega para a página de exemplo e volta', async ({ page }) => {
+  test('abre o artigo publicado pela navegação da home', async ({ page }) => {
     await page.goto('/');
-
-    await page.getByRole('link', { name: 'Ver página de exemplo' }).click();
-
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Exemplo' }),
-    ).toBeVisible();
-
-    await page.getByRole('link', { name: 'Voltar para o início' }).click();
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
-    ).toBeVisible();
+    await page.locator('a[href="/artigos/fixture-publicado"]').first().click();
+    await expect(page).toHaveURL(/\/artigos\/fixture-publicado$/);
+    await expect(page.locator('h1')).toContainText('Fixture publicado');
   });
 
   test('alterna o tema', async ({ page }) => {

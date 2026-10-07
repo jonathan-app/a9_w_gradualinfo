@@ -13,6 +13,20 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
  *
  * `attribute="class"` combina com o `@custom-variant dark` do globals.css: o
  * next-themes escreve `class="dark"` no <html> e o Tailwind responde a isso.
+ *
+ * @fileoverview Envoltório do next-themes (folha client do tema).
+ * @module components/shared/theme-provider
+ * @dependencies next-themes (NextThemesProvider).
+ */
+/**
+ * Provider de tema usado pelo root layout.
+ *
+ * @param props.children - Árvore que recebe o contexto de tema.
+ * @returns Filhos envolvidos pelo provider, sem elemento próprio no DOM.
+ *
+ * `disableTransitionOnChange`: sem ele, trocar de tema dispara as transições
+ * CSS de cada elemento da página ao mesmo tempo — um flash de animação coletiva
+ * no lugar de uma troca limpa.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (

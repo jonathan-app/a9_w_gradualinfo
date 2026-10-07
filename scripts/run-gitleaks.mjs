@@ -2,6 +2,7 @@
 
 /**
  * scripts/run-gitleaks.mjs — procura segredo no histórico e na árvore de trabalho
+ * @fileoverview Procura segredos no histórico e na árvore de trabalho.
  *
  * Por que existe
  * O `.gitignore` protege o futuro: ele impede que `.env` seja commitado agora.
@@ -24,6 +25,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
 // Versão pinada do scanner: mesma verificação em qualquer máquina ou CI,
 // revisada em diff, e sem exigir que o dev tenha gitleaks instalado.
@@ -43,7 +45,13 @@ function cacheBin(cwd) {
   return path.join(cwd, '.cache', 'bin', 'gitleaks');
 }
 
-/** Retorna o caminho do gitleaks (cache do projeto ou PATH) para reuso. */
+/**
+ * Localiza o binário do gitleaks sem executá-lo.
+ *
+ * @param [cwd] - Base para procurar `.cache/bin/gitleaks`.
+ * @returns {string} Caminho do binário — o cache do projeto tem prioridade sobre o PATH — ou
+ *   `null` quando não há nenhum. Quem decide o que fazer com `null` é o chamador.
+ */
 export function resolveGitleaksBinary(cwd = process.cwd()) {
   const local = cacheBin(cwd);
   if (fs.existsSync(local)) return local;
@@ -54,10 +62,27 @@ export function resolveGitleaksBinary(cwd = process.cwd()) {
   return null;
 }
 
-/** Baixa o gitleaks pinado para `.cache/bin/` quando ausente do PATH/cache. */
+/**
+ * Garante um gitleaks disponível com a versão pinada.
+ *
+ * @param [cwd] - Base para o cache `.cache/bin/`.
+ * @returns {Promise<string>} Caminho do binário autenticado, pronto para `spawnSync`.
+ * @throws {Error} Versão divergente da pinada, plataforma sem checksum publicado, download
+ *   com HTTP ≠ 200 ou SHA-256 que não confere com o pinado.
+ */
 export async function ensureGitleaksBinary(cwd = process.cwd()) {
   const found = resolveGitleaksBinary(cwd);
-  if (found) return found;
+  if (found) {
+    // Binário existente ainda precisa ser a versão pinada: gitleaks antigo na máquina do dev
+    // reprova aqui em vez de gerar relatório incomparável com o da CI.
+    const version = spawnSync(found, ['version'], { encoding: 'utf8' });
+    if (version.error) throw version.error;
+    if (version.status !== 0 || version.stdout.trim() !== GITLEAKS_VERSION)
+      throw new Error(
+        `Exige gitleaks ${GITLEAKS_VERSION}, binário instalado diverge.`,
+      );
+    return found;
+  }
 
   const key = `${process.platform}-${process.arch}`;
   const sha = GITLEAKS_SHA256[key];
@@ -98,7 +123,13 @@ export async function ensureGitleaksBinary(cwd = process.cwd()) {
 const OUTPUT_DIR = 'security-reports';
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'gitleaks.json');
 
-/** Executa o scan do Gitleaks e retorna os findings (para reuso em baseline). */
+/**
+ * Executa os dois scans do gitleaks e devolve os findings consolidados.
+ *
+ * @returns {Promise<Array>} Lista de findings (pode estar vazia). Lança em qualquer anomalia
+ *   operacional — exit code inesperado, relatório ausente/inválido, falha sem findings —
+ *   porque "scanner quebrado" não pode se disfarçar de "nada encontrado".
+ */
 export async function runGitleaksScan() {
   const binary = await ensureGitleaksBinary();
 
@@ -122,7 +153,6 @@ export async function runGitleaksScan() {
         'dir',
         '.',
         '--redact',
-        '--no-git',
         '--report-format',
         'json',
         '--report-path',
@@ -131,7 +161,7 @@ export async function runGitleaksScan() {
     },
   ];
 
-  let findings = [];
+  const findings = [];
 
   for (const run of runs) {
     const result = spawnSync(binary, run.args, { stdio: 'pipe' });
@@ -140,88 +170,35 @@ export async function runGitleaksScan() {
       throw new Error(`erro ao executar gitleaks: ${result.error.message}`);
     }
 
-    if (fs.existsSync(OUTPUT_FILE)) {
-      findings = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
-    }
+    if (![0, 1].includes(result.status))
+      throw new Error('Falha operacional do gitleaks.');
+    if (!fs.existsSync(OUTPUT_FILE))
+      throw new Error('Relatório gitleaks ausente.');
+    const current = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+    if (!Array.isArray(current))
+      throw new Error('Relatório gitleaks inválido.');
+    if (result.status === 1 && current.length === 0)
+      throw new Error('Gitleaks retornou falha sem findings.');
+    findings.push(...current);
   }
 
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(findings, null, 2));
   return findings;
 }
 
 async function main() {
-  // O wrapper baixa e verifica um binário pinado quando preciso — a CI
-  // (e um clone fresco) não precisam de instalação manual.
-  const binary = await ensureGitleaksBinary();
-
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-
-  // `git` varre o histórico inteiro (pega segredo que já saiu do arquivo);
-  // `dir` varre só a árvore atual. Os dois rodam: o primeiro é o que pega
-  // segredo antigo, o segundo pega o que está em arquivo não rastreado.
-  const runs = [
-    {
-      label: 'histórico git',
-      args: [
-        'git',
-        '--redact',
-        '--report-format',
-        'json',
-        '--report-path',
-        OUTPUT_FILE,
-      ],
-    },
-    {
-      label: 'arquivos atuais',
-      args: [
-        'dir',
-        '.',
-        '--redact',
-        '--no-git',
-        '--report-format',
-        'json',
-        '--report-path',
-        OUTPUT_FILE,
-      ],
-    },
-  ];
-
-  let findings = [];
-
-  for (const run of runs) {
-    console.log(`\n→ gitleaks: verificando ${run.label}…`);
-
-    const result = spawnSync(binary, run.args, { stdio: 'pipe' });
-
-    if (result.error) {
-      console.error(`   erro ao executar gitleaks: ${result.error.message}`);
-      process.exit(1);
-    }
-
-    // O gitleaks escreve [] quando não acha nada e sobrescreve a cada execução,
-    // então o relatório do último run é sempre o mais recente.
-    if (fs.existsSync(OUTPUT_FILE)) {
-      findings = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
-    }
-
-    // 0 = limpo; 1 = segredo encontrado (o gitleaks usa 1 para achado).
-    if (result.status === 1) {
-      console.error('   segredo potencial encontrado.');
-    }
-  }
-
-  console.log('');
-  if (findings.length > 0) {
-    console.error(
-      `❌ ${findings.length} possível(is) segredo(s) encontrado(s).`,
-    );
-    console.error(`   Relatório: ${OUTPUT_FILE}`);
-    process.exit(1);
-  }
-
-  console.log('✅ Nenhum segredo encontrado.');
+  const findings = await runGitleaksScan();
+  console.log(
+    `Gitleaks: ${findings.length} findings redigidos, histórico e árvore.`,
+  );
+  process.exitCode = findings.length ? 1 : 0;
 }
-
-main().catch((err) => {
-  console.error(`\n❌ ${err.message}\n`);
-  process.exit(1);
-});
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

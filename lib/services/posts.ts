@@ -1,5 +1,27 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+/**
+ * @fileoverview Consultas de leitura de posts (camada de serviço).
+ * @module lib/services/posts
+ * @description Aplica as regras de visibilidade editorial por cima do Supabase: o público
+ *   só enxerga `publicado` com data passada; sessão de preview enxerga também rascunho e
+ *   agendado. Erros do banco são propagados (throw) para quem chama decidir o status HTTP.
+ * @dependencies next/headers (cookie), @/lib/env, @/lib/preview/session,
+ *   @/lib/preview/auth, @supabase/supabase-js.
+ *
+ * Quando executado: em Server Components e Route Handlers — nunca em Client Component,
+ *   que não lê o cookie de preview de forma confiável.
+ * Lê: cookie da requisição e tabelas `posts`. Escreve: nada.
+ */
+import { cookies } from 'next/headers';
+import { env } from '@/lib/env';
+import { PREVIEW_COOKIE } from '@/lib/preview/session';
+import { verifyPreviewSession } from '@/lib/preview/auth';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+/**
+ * Uma linha de `posts` no formato em que a UI consome. `status` espelha o enum
+ * gravado na coluna (domínio em português: rascunho/publicado/arquivado) —
+ * traduzir aqui quebraria a comparação direta com o valor do banco.
+ */
 export interface Post {
   id: string;
   slug: string;
@@ -15,19 +37,30 @@ export interface Post {
   updated_at: string;
   created_at: string;
 }
-
+/**
+ * Verifica se a requisição corrente tem sessão de preview válida.
+ *
+ * @param supabase - Cliente criado com o cookie store da requisição.
+ * @returns `true` quando o cookie de preview passa na verificação completa
+ *   (assinatura, prazo e usuário); `false` nos demais casos.
+ */
 export async function isPreviewSession(
   supabase: SupabaseClient,
 ): Promise<boolean> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return (
-    user?.app_metadata?.preview === true ||
-    user?.app_metadata?.preview === 'true'
-  );
+  const cookieStore = await cookies();
+  const cookieValue = cookieStore.get(PREVIEW_COOKIE)?.value;
+  return verifyPreviewSession(supabase, cookieValue);
 }
 
+/**
+ * Lista posts publicados, mais recentes primeiro.
+ *
+ * @param supabase - Cliente com a sessão do leitor.
+ * @param [limit=10] - Máximo de linhas devolvidas.
+ * @returns As linhas em ordem decrescente de `published_at`, já filtradas por
+ *   status e por não estar com data no futuro.
+ * @throws O erro do Supabase (inclusive de RLS) quando a consulta falha.
+ */
 export async function getPublishedPosts(
   supabase: SupabaseClient,
   limit = 10,
@@ -46,14 +79,35 @@ export async function getPublishedPosts(
   return data as Post[];
 }
 
+/**
+ * Busca um post pelo slug na visibilidade do leitor.
+ *
+ * @param supabase - Cliente com a sessão do leitor (usado para detectar preview).
+ * @param slug - Slug do artigo.
+ * @returns O post, ou `null` quando não existe — ou não é visível: fora de
+ *   preview, rascunho e publicação futura contam como invisível.
+ * @throws O erro do Supabase quando a consulta falha.
+ */
 export async function getPostBySlug(
   supabase: SupabaseClient,
   slug: string,
 ): Promise<Post | null> {
   const isPreview = await isPreviewSession(supabase);
 
-  let query = supabase.from('posts').select('*').eq('slug', slug);
+  // Uma sessão vencida não deve contaminar a consulta pública com JWT inválido.
+  const reader = isPreview
+    ? supabase
+    : createClient(env.supabase.url, env.supabase.anonKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      });
+  let query = reader.from('posts').select('*').eq('slug', slug);
 
+  // Leitor comum: a consulta nasce com os mesmos filtros de publicação da
+  // lista pública — visibilidade não pode depender só do RLS do banco.
   if (!isPreview) {
     query = query
       .eq('status', 'publicado')

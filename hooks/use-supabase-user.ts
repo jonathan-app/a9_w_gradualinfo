@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 
 /**
  * hooks/use-supabase-user.ts — usuário logado, no cliente
+ * @fileoverview Usuário do Supabase no cliente, com sinal de montagem.
  *
  * Quando usar
  * Quando o estado do usuário é de fato do cliente: botão "sair", avatar,
@@ -25,6 +26,13 @@ type State = {
   mounted: boolean;
 };
 
+/**
+ * Espelha a sessão do Supabase no cliente e devolve o `signOut`.
+ *
+ * @returns `{ user, isLoading, mounted, signOut }` — renderize o estado de
+ *   carregamento enquanto `mounted` for `false`; é o que evita trocar de ramo
+ *   na hidratação (premissa detalhada no cabeçalho do arquivo).
+ */
 export function useSupabaseUser() {
   const [state, setState] = useState<State>({
     user: null,

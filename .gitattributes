@@ -1,0 +1,28 @@
+# .gitattributes — gradualinfo-editorial
+#
+# Configurações de atributos git e regras de exclusão de exportação
+# (consumidas por git archive e scripts/export-template.mjs)
+
+* text=auto eol=lf
+
+# Export ignore: artefatos que não devem entrar no pacote de distribuição
+.git export-ignore
+.github export-ignore
+.husky export-ignore
+.kilo export-ignore
+.agents export-ignore
+.open-next export-ignore
+dist export-ignore
+node_modules export-ignore
+test-results export-ignore
+playwright-report export-ignore
+ci-results export-ignore
+*.tsbuildinfo export-ignore
+verify-result.json export-ignore
+
+
+# Saídas geradas não pertencem ao template exportado.
+.next export-ignore
+coverage export-ignore
+security-reports export-ignore
+.lighthouseci export-ignore

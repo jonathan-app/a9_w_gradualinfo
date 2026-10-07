@@ -8,6 +8,13 @@
 > são versionadas no repo — são grandes e mudam com frequência; o lock fixa a
 > origem e o hash.
 
+> Inventário em 2026-10-07: há 90 diretórios locais e somente 9 nomes no
+> lock. Os 81 extras estão instalados localmente, mas fora da allowlist.
+> `node scripts/check-skills.mjs` detecta extras, ausências e mudança de
+> conteúdo pelo algoritmo documentado em `security/skills-allowlist.json`.
+> A baseline registra o conteúdo observado, não comprova sua origem upstream.
+> `computedHash` do instalador não é tratado como SHA de um único arquivo.
+
 ## NÍVEL 1 —instaladas (as 9 do lock, o ciclo do fluxo SDD)
 
 `/scope`, `/architect`, `/develop`, `/check`, `/debug`, `/test`, `/document`,
@@ -17,7 +24,7 @@ Essas são o suficiente para qualquer task de produto: use `/architect` para
 decidir, `/develop` para escrever, `/check` para validar. Carregue a skill
 **implícita** na sua chamada — nenhuma delas precisa ser nomeada no prompt.
 
-## NÍVEL 2 — catálogo do upstream, NÃO instalado neste repo
+## NÍVEL 2 — catálogo fora do lock
 
 `security`, `security-and-hardening`, `api-security-best-practices`,
 `auth-implementation-patterns`, `performance-optimization`, `frontend-design`,

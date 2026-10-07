@@ -1,14 +1,17 @@
+/**
+ * @fileoverview Suíte de `cn` (árvore unit/) — o merge de classes do Tailwind.
+ * @module __tests__/unit/lib/cn
+ * @description Espelha `__tests__/lib/cn.test.ts`: concatenação, falsy descartado e resolução
+ *   de conflito entre utilitários — a regra de que a última classe vence, sem a qual o CSS
+ *   vira corrida de especificidade.
+ * @dependencies vitest, @/lib/utils/cn.
+ *
+ * `cn` é a função mais chamada do projeto e o motivo número um de "meu estilo não aplicou".
+ * O comportamento que vale travar é o conflito de utilitários do Tailwind: é exatamente aí
+ * que um erro passa despercebido.
+ */
 import { describe, expect, it } from 'vitest';
 import { cn } from '@/lib/utils/cn';
-
-/**
- * __tests__/unit/lib/cn.test.ts
- *
- * Por que testar esta função
- * `cn` é a função mais chamada do projeto e o motivo número um de "meu estilo
- * não aplicou". O comportamento que vale travar é o conflito de utilitários do
- * Tailwind: é exatamente aí que um erro passa despercebido.
- */
 describe('cn', () => {
   it('concatena classes simples', () => {
     expect(cn('flex', 'items-center')).toBe('flex items-center');

@@ -1,0 +1,39 @@
+{
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 12,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNVERIFIABLE": 12,
+    "missingEvidence": 12,
+    "BLOCKER": 0,
+    "WARNING": 0
+  },
+  "reasons": [
+    "AC reprovado ou não verificável: HTTP artigo público (UNVERIFIABLE)",
+    "Falta evidência para o AC: HTTP artigo público",
+    "AC reprovado ou não verificável: HTTP artigo inexistente (UNVERIFIABLE)",
+    "Falta evidência para o AC: HTTP artigo inexistente",
+    "AC reprovado ou não verificável: HTTP rascunho sem preview (UNVERIFIABLE)",
+    "Falta evidência para o AC: HTTP rascunho sem preview",
+    "AC reprovado ou não verificável: HTTP rascunho com preview (UNVERIFIABLE)",
+    "Falta evidência para o AC: HTTP rascunho com preview",
+    "AC reprovado ou não verificável: Secure em Set-Cookie de produção (UNVERIFIABLE)",
+    "Falta evidência para o AC: Secure em Set-Cookie de produção",
+    "AC reprovado ou não verificável: no-store no artigo protegido (UNVERIFIABLE)",
+    "Falta evidência para o AC: no-store no artigo protegido",
+    "AC reprovado ou não verificável: Sessão expirada (sem apagar cookies como substituto) (UNVERIFIABLE)",
+    "Falta evidência para o AC: Sessão expirada (sem apagar cookies como substituto)",
+    "AC reprovado ou não verificável: Usuário autenticado sem claim (UNVERIFIABLE)",
+    "Falta evidência para o AC: Usuário autenticado sem claim",
+    "AC reprovado ou não verificável: Identidade diferente da dedicada (UNVERIFIABLE)",
+    "Falta evidência para o AC: Identidade diferente da dedicada",
+    "AC reprovado ou não verificável: Logout com falha simulada e acesso subsequente (UNVERIFIABLE)",
+    "Falta evidência para o AC: Logout com falha simulada e acesso subsequente",
+    "AC reprovado ou não verificável: Axe home (UNVERIFIABLE)",
+    "Falta evidência para o AC: Axe home",
+    "AC reprovado ou não verificável: Axe artigo (UNVERIFIABLE)",
+    "Falta evidência para o AC: Axe artigo"
+  ]
+}

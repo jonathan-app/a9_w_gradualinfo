@@ -1,15 +1,14 @@
 /**
- * instrumentation.ts — inicialização no servidor
+ * @fileoverview Inicialização do Sentry no servidor (`instrumentation.ts`).
+ * @module instrumentation
+ * @description O Next chama `register()` uma vez, quando o runtime sobe, antes de atender a
+ *   primeira requisição — é o ponto certo para instrumentação que precisa estar ativa antes do
+ *   primeiro erro. Junto com `instrumentation-client.ts`, forma o init do Sentry v11: a v11
+ *   tirou o `withSentryConfig` do next.config, então estes dois arquivos são o init inteiro.
+ * @dependencies @sentry/nextjs (import dinâmico), `NEXT_PUBLIC_SENTRY_DSN`.
  *
- * O Next chama `register()` uma vez, quando o runtime sobe, antes de atender a
- * primeira requisição. É o ponto certo para ligar instrumentação que precisa
- * estar ativa antes do primeiro erro.
- *
- * O Sentry v11 não usa mais `withSentryConfig` no next.config: ele se
- * inicializa por aqui, no servidor, e em instrumentation-client.ts, no browser.
- *
- * Sem DSN configurado nada é inicializado — e é o que permite build e CI
- * rodarem sem depender da rede do Sentry.
+ * Sem DSN configurado nada é inicializado — e é o que permite build e CI rodarem sem depender
+ * da rede do Sentry. O import é dinâmico porque só entra no bundle se houver DSN.
  */
 export async function register() {
   const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;

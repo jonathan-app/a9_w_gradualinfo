@@ -1,5 +1,22 @@
+/**
+ * @fileoverview Shell de carregamento da home (`app/loading.tsx`).
+ * @module app/loading
+ * @description O App Router renderiza este arquivo sozinho enquanto o Server
+ *   Component da rota ainda busca dados — ele ocupa o lugar da página inteira
+ *   até a resolução. O desenho espelha o da home real (1 card de destaque +
+ *   grade de 6), para que a chegada do conteúdo troque bloco por bloco sem
+ *   deslocar a página (CLS).
+ * @dependencies components/ui/skeleton.
+ */
 import { Skeleton } from '@/components/ui/skeleton';
 
+/**
+ * Placeholder da home enquanto os artigos são buscados.
+ *
+ * @returns Duas seções, cada uma com `aria-label` e título `sr-only`: quem
+ *   navega por leitor de tela ouve que há conteúdo carregando em vez de
+ *   silêncio, e o `data-slot` de cada bloco é alvo estável para teste.
+ */
 export default function Loading() {
   return (
     <div className="container max-w-6xl mx-auto py-10 px-4 flex flex-col gap-12">

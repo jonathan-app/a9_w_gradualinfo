@@ -16,6 +16,11 @@ import { cn } from '@/lib/utils/cn';
  * entrega as classes e os props para o filho (geralmente uma <a>). Assim o
  * link continua sendo link — e é isso que o teclado, o leitor de tela e o
  * "abrir em nova aba" esperam.
+ *
+ * @fileoverview Botão do design system.
+ * @module components/ui/button
+ * @dependencies @radix-ui/react-slot (renderização com `asChild`),
+ *   class-variance-authority (variantes), lib/utils/cn (merge de className).
  */
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4',
@@ -48,6 +53,15 @@ type ButtonProps = React.ComponentProps<'button'> &
     asChild?: boolean;
   };
 
+/**
+ * Botão do design system.
+ *
+ * @param props - `variant` (padrão `default`) e `size` (padrão `default`),
+ *   derivados do `cva`; `asChild` troca o elemento renderizado pelo filho.
+ * @returns `<button>` com as classes da variante, ou o filho ocupando o lugar
+ *   dele quando `asChild` — aí o papel semântico (link, navegação) é o do
+ *   filho, e o estilo é o mesmo.
+ */
 export function Button({
   className,
   variant,

@@ -2,6 +2,7 @@
 
 /**
  * scripts/enforce-pnpm.js
+ * @fileoverview Aborta o preinstall quando o gerenciador não é pnpm.
  *
  * Roda no `preinstall`. Lê o user-agent do gerenciador que disparou a
  * instalação e aborta se não for pnpm. Motivo: o lockfile é gerado pelo pnpm

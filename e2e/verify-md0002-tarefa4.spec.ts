@@ -1,180 +1,134 @@
-import { test, expect } from '@playwright/test';
-import { execSync } from 'child_process';
-import fs from 'fs';
-
 /**
- * e2e/verify-md0002-tarefa4.spec.ts — verificação ponta a ponta da Tarefa 4 (Home e Card)
+ * @fileoverview Evidência da home editorial de md-0002 — AC-01, AC-02, AC-03, AC-04 e AC-12.
+ * @module e2e/verify-md0002-tarefa4
+ * @description Casa os cards completos (limite de 10, ordenados por data decrescente), o
+ *   destaque visível, a ocultação de rascunho e agendado, a mensagem própria para lista vazia,
+ *   a distinção entre lista vazia e falha real de transporte, e o atalho de teclado com foco
+ *   visível.
+ * @dependencies @playwright/test, `setFault` (e2e/support/faults) para injeção de falha,
+ *   @supabase/supabase-js com service role — aceito somente na stack local descartável.
  *
- * Este teste serial valida os Critérios de Aceite AC-01 a AC-04 e AC-12 da
- * spec md-0002. Ele escreve o resultado em verify-result.json para o gate
- * `check-gate.mjs` consumir.
- *
- * Cada teste manipula o banco real via Supabase CLI (truncate/insert/alter table)
- * para reproduzir os cenários: lista cheia, limite de 10, estado vazio,
- * erro de banco e acessibilidade por teclado.
+ * `describe.serial`: o teste de estado vazio muta a tabela `posts` e restaura em `finally`;
+ * séries paralelas leriam o banco no meio da mutação e reprovarian sem ser bug.
  */
-const verifyJson = { acs: [], findings: [] };
-
-test.describe.serial('md-0002 Tarefa 4 (Home e Card)', () => {
-  test.beforeAll(() => {
-    verifyJson.acs = [
-      { id: 'md-0002/AC-01', status: 'UNVERIFIABLE' },
-      { id: 'md-0002/AC-02', status: 'UNVERIFIABLE' },
-      { id: 'md-0002/AC-03', status: 'UNVERIFIABLE' },
-      { id: 'md-0002/AC-04', status: 'UNVERIFIABLE' },
-      { id: 'md-0002/AC-12', status: 'UNVERIFIABLE' },
-    ];
-    // Garantir banco de dados limpo para os testes (base seed)
-    execSync(
-      'pnpm dlx supabase@2.119.0 db query "truncate table public.posts cascade;"',
-      { stdio: 'ignore' },
+import { test, expect } from '@playwright/test';
+import { setFault } from './support/faults';
+import { createClient } from '@supabase/supabase-js';
+function localAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.CI_LOCAL_SERVICE_ROLE;
+  // O service role só é aceito em host local: abortar fora de `localhost`/`127.0.0.1` é o
+  // que impede um spec de mutar (ou apagar) dado de um projeto remoto por engano.
+  if (
+    !url ||
+    !key ||
+    !['localhost', '127.0.0.1'].includes(new URL(url).hostname)
+  )
+    throw new Error(
+      'Mutação permitida somente na stack descartável preparada para E2E.',
     );
-    // Inserir um artigo inicial válido
-    execSync(
-      `pnpm dlx supabase@2.119.0 db query "
-      insert into public.posts (title, slug, excerpt, content, cover_image_url, editoria, author_name, status, published_at)
-      values ('Artigo Inicial', 'artigo-inicial', 'Resumo', '# Conteúdo', 'https://example.com/image.jpg', 'Geral', 'Autor', 'publicado', now());
-    "`,
-      { stdio: 'ignore' },
-    );
-  });
-
-  test.afterAll(() => {
-    fs.writeFileSync('verify-result.json', JSON.stringify(verifyJson, null, 2));
-    // Restaurar banco no final
-    execSync('pnpm supabase:reset', { stdio: 'ignore' });
-  });
-
-  test('AC-02: Campos do card no estado com 1 artigo', async ({ page }) => {
-    await page.goto('/');
-
-    const destaque = page.locator('section[aria-label="Artigo em Destaque"]');
-    await expect(destaque).toBeVisible();
-
-    const editoria = await destaque.locator('.text-brand-600').textContent();
-    const title = await destaque.locator('h3').textContent();
-    const excerpt = await destaque.locator('p').first().textContent();
-    const date = await destaque
-      .locator('.text-muted-foreground')
-      .first()
-      .textContent();
-
-    if (title && excerpt && editoria && date) {
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-02').status = 'PASS';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-02').evidence =
-        'O card exibe todos os campos requeridos (editoria, título, resumo e data) visualmente na home.';
-    } else {
-      verifyJson.findings.push({
-        severity: 'BLOCKER',
-        message: 'AC-02: Faltam campos essenciais no card',
-      });
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-02').status = 'FAIL';
-    }
-  });
-
-  test('AC-01 e AC-04: Limite de 10 artigos (1 destaque + 9 grade)', async ({
+  return createClient(url, key, { auth: { persistSession: false } });
+}
+test.describe.serial('home editorial', () => {
+  test('md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite', async ({
     page,
   }) => {
-    // Insere mais 15 artigos novos, totalizando 16
-    execSync(
-      `pnpm dlx supabase@2.119.0 db query "
-      insert into public.posts (title, slug, excerpt, content, cover_image_url, editoria, author_name, status, published_at)
-      select 'Post ' || i, 'post-' || i, 'Resumo ' || i, '# Corpo', 'https://example.com/img' || i || '.jpg', 'Ed', 'Autor', 'publicado', now() - interval '1 hour'
-      from generate_series(1, 15) as i;
-    "`,
-      { stdio: 'ignore' },
-    );
-
     await page.goto('/');
-
-    const countDestaque = await page
-      .locator(
-        'section[aria-label="Artigo em Destaque"] [data-slot="post-card-featured"]',
-      )
-      .count();
-    const countGrade = await page
-      .locator(
-        'section[aria-labelledby="latest-articles-heading"] [data-slot="post-card"]',
-      )
-      .count();
-
-    if (countDestaque === 1 && countGrade === 9) {
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-01').status = 'PASS';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-01').evidence =
-        'Após inserir 16 artigos, a home exibe no máximo 10 publicados.';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-04').status = 'PASS';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-04').evidence =
-        'Layout da home respeita a regra de 1 em destaque e 9 na grade sem duplicação.';
-    } else {
-      verifyJson.findings.push({
-        severity: 'BLOCKER',
-        message: `AC-01/04: Qtd incorreta. Destaque: ${countDestaque}, Grade: ${countGrade}`,
-      });
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-01').status = 'FAIL';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-04').status = 'FAIL';
-    }
+    const cards = page.locator('a[href^="/artigos/"]');
+    expect(await cards.count()).toBeGreaterThan(0);
+    // Limite de 10 por página: acima disso a home deixa de ser homepage e vira arquivo.
+    expect(await cards.count()).toBe(10);
+    // Ordenação conferida sobre os atributos <time>: mais novo primeiro é o contrato
+    // editorial que o card em destaque também pressupõe.
+    const dates = await page
+      .locator('time[datetime]')
+      .evaluateAll((elements) =>
+        elements.map((element) => element.getAttribute('datetime')!),
+      );
+    expect(dates).toEqual([...dates].sort().reverse());
+    await expect(
+      page.locator('section[aria-label="Artigo em Destaque"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('a[href="/artigos/fixture-rascunho"]'),
+    ).toHaveCount(0);
+    await expect(
+      page.locator('a[href="/artigos/fixture-agendado"]'),
+    ).toHaveCount(0);
+    await expect(
+      page.locator('[data-slot="post-card-featured"] img'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-slot="post-card-featured"] time'),
+    ).toBeVisible();
   });
-
-  test('AC-03 (Parte 1): Estado Vazio', async ({ page }) => {
-    execSync(`pnpm dlx supabase@2.119.0 db query "delete from public.posts;"`, {
-      stdio: 'ignore',
-    });
-
-    await page.goto('/');
-    const emptyText = page.getByText('Nenhum artigo publicado');
-    await expect(emptyText).toBeVisible();
-
-    verifyJson.acs.find((a) => a.id === 'md-0002/AC-03').status = 'PASS';
-    verifyJson.acs.find((a) => a.id === 'md-0002/AC-03').evidence =
-      'Quando banco não tem registros, mensagem correta é exibida.';
-  });
-
-  test('AC-03 (Parte 2): Estado de Erro (banco offline/tabela ausente)', async ({
+  test('md-0002/AC-03: lista vazia mostra mensagem própria', async ({
     page,
   }) => {
-    execSync(
-      `pnpm dlx supabase@2.119.0 db query "alter table public.posts rename to posts_broken;"`,
-      { stdio: 'ignore' },
-    );
-
-    await page.goto('/');
-    const errorText = page.getByText('Algo deu errado');
-    await expect(errorText).toBeVisible();
-
-    execSync(
-      `pnpm dlx supabase@2.119.0 db query "alter table public.posts_broken rename to posts;"`,
-      { stdio: 'ignore' },
-    );
-
-    const ac03 = verifyJson.acs.find((a) => a.id === 'md-0002/AC-03');
-    if (ac03.status === 'PASS') {
-      ac03.evidence += ' Em erro de banco, mensagem de fallback é exibida.';
-    } else {
-      ac03.status = 'FAIL';
+    const admin = localAdmin();
+    const { data: rows, error } = await admin
+      .from('posts')
+      .select('id,status')
+      .eq('status', 'publicado');
+    if (error || !rows) throw new Error('Falha na preparação do estado vazio.');
+    const restoreErrors: unknown[] = [];
+    // Mutação destrutiva com restauração garantida em `finally`: se a asserção falhar, os
+    // posts ainda voltam ao estado original e o resto da suíte não herda banco vazio.
+    try {
+      const result = await admin
+        .from('posts')
+        .update({ status: 'arquivado' })
+        .in(
+          'id',
+          rows.map((row) => row.id),
+        );
+      if (result.error) throw result.error;
+      await page.goto('/');
+      await expect(page.getByText('Nenhum artigo publicado')).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Algo deu errado' }),
+      ).toHaveCount(0);
+    } finally {
+      for (const row of rows) {
+        const restored = await admin
+          .from('posts')
+          .update({ status: row.status })
+          .eq('id', row.id);
+        if (restored.error) restoreErrors.push(restored.error);
+      }
+    }
+    expect(restoreErrors).toEqual([]);
+  });
+  test('md-0002/AC-03: falha real de transporte mostra erro, não vazio', async ({
+    page,
+    request,
+  }) => {
+    // Injeção de falha de transporte real: o critério é a UI mostrar o estado de erro. Exibir
+    // "Nenhum artigo publicado" durante uma falha mentiria ao usuário, que acharia que não
+    // existe conteúdo — é por isso que vazio e erro são asserções separadas.
+    await setFault(request, 'read');
+    try {
+      await page.goto('/');
+      await expect(
+        page.getByRole('heading', { name: 'Algo deu errado' }),
+      ).toBeVisible();
+      await expect(page.getByText('Nenhum artigo publicado')).toHaveCount(0);
+    } finally {
+      await setFault(request, 'none');
     }
   });
-
-  test('AC-12: Acessibilidade Teclado e Foco', async ({ page }) => {
-    // Insere um artigo para poder testar o foco
-    execSync(
-      `pnpm dlx supabase@2.119.0 db query "
-      insert into public.posts (title, slug, excerpt, content, cover_image_url, editoria, author_name, status, published_at)
-      values ('Artigo Foco', 'artigo-foco', 'Resumo', '# Conteúdo', 'https://example.com/image.jpg', 'Geral', 'Autor', 'publicado', now());
-    "`,
-      { stdio: 'ignore' },
-    );
+  test('md-0002/AC-12: teclado chega ao conteúdo com foco visível', async ({
+    page,
+  }) => {
     await page.goto('/');
-
-    // Testa o foco
+    // O skip-link é o primeiro destino do Tab: sem ele, o teclado teria de percorrer toda a
+    // navegação antes de chegar ao conteúdo.
     await page.keyboard.press('Tab');
-    const focused = await page.evaluate(() => document.activeElement?.tagName);
-
-    if (focused) {
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-12').status = 'PASS';
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-12').evidence =
-        'Navegação por teclado funciona e altera foco ativo.';
-    } else {
-      verifyJson.acs.find((a) => a.id === 'md-0002/AC-12').status = 'FAIL';
-    }
+    await expect(
+      page.getByRole('link', { name: 'Pular para o conteúdo' }),
+    ).toBeFocused();
+    await expect(
+      page.getByRole('link', { name: 'Pular para o conteúdo' }),
+    ).toBeVisible();
   });
 });

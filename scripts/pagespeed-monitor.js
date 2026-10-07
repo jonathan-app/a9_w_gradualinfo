@@ -2,6 +2,7 @@
 
 /**
  * scripts/pagespeed-monitor.js — dados de campo via PageSpeed Insights
+ * @fileoverview Mede dados de campo (CrUX) via PageSpeed Insights.
  *
  * Diferença para o Lighthouse
  * O Lighthouse é medida de laboratório: reproduzível, mas sintética, porque
@@ -21,7 +22,12 @@
  * código.
  */
 
-const DEFAULT_PATHS = ['/', '/exemplo'];
+const DEFAULT_PATHS = [
+  '/',
+  '/artigos/o-que-e-ram',
+  '/artigos/como-escolher-ssd',
+  '/exemplo',
+];
 
 /** Achata o resultado do PSI nos quatro Core Web Vitals. */
 function toCoreWebVitals(result) {

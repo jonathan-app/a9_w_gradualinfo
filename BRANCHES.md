@@ -1,4 +1,13 @@
-# Branches do boilerplate (organizadas por assunto)
+# Planejamento histórico de branches do boilerplate
+
+> Reconciliação em 2026-10-07: a tabela abaixo é planejamento histórico,
+> não inventário de implementação ou proteção remota. A árvore local não
+> contém CODEOWNERS nem os artefatos de proteção citados na tabela. Não há
+> evidência de proteção aplicada no GitHub. O fluxo vigente está em
+> `workflow/STATE.md` e `plano-atualizacao-auditoria.md`. O checkout atual é
+> `feat/md-0002-casca-editorial-home`; as branches locais observadas incluem
+> `main`, `actually-energy`, `build/fix-deps-audit` e
+> `docs/sync-skills-estrutura-20261006`. Isso não demonstra branches remotas.
 
 Todas derivam de `main` (base v2.0.0). Cada branch é um Pull Request separado,
 com escopo único — na ordem sugerida de merge:
@@ -17,8 +26,8 @@ com escopo único — na ordem sugerida de merge:
 
 ## Regra de merge
 
-- `main` é protegida (ver `docs/BRANCH_PROTECTION.md`): só entra por PR, com
-  sua aprovação (Code Owner) e os 4 checks da CI verdes.
+- Intenção histórica: proteger `main` com aprovação do dono e checks obrigatórios.
+  Configuração remota e identidade do Code Owner ainda exigem evidência.
 - Merge na ordem da tabela (1 → 9); cada PR é atômico.
 - Conflitos esperados: `package.json` (várias branches adicionam scripts) e
   `.github/workflows/ci.yml` (a branch 2 reescreve). Resolva favorecendo a

@@ -1,129 +1,98 @@
 #!/usr/bin/env node
-
 /**
- * scripts/run-semgrep.mjs — análise estática de segurança (SAST)
+ * @fileoverview Wrapper canônico do Semgrep com as regras locais do projeto.
+ * @module scripts/run-semgrep
+ * @description Exige `semgrep==SEMGREP_VERSION` e `security/semgrep.yml`, roda o scan em
+ *   modo estrito (`--severity ERROR --error --strict`, métricas desligadas) e grava o
+ *   relatório bruto em `security-reports/semgrep.json` para consumo pelo baseline.
+ * @dependencies node:fs, node:path, node:child_process, node:url.
  *
- * Por que o Semgrep e não só o ESLint
- * O ESLint aponta estilo e bug. O Semgrep aponta padrão de vulnerabilidade
- * conhecido — eval com entrada do usuário, SQL montado por concatenação,
- * `dangerouslySetInnerHTML` sem sanitizar. São erros que passam em revisão.
- *
- * Quando roda: `pnpm security:sast` (local e CI).
- * Lê: regras em security/semgrep.yml (ou o pacote `p/default`, se não houver
- *   arquivo próprio).
- * Saída: 0 = nada grave; 1 = finding de severidade alta ou superior.
- *
- * Por que as regras ficam versionadas
- * O Semgrep sem configuração só aponta coisa óbvia. O valor está no
- * security/semgrep.yml: ali estão as regras específicas deste projeto, e elas
- * são código revisado junto com o resto.
+ * Quando executado: `pnpm security:sast`, como etapa 3/5 de `pnpm security:baseline`
+ *   (via security-baseline.mjs) e pelos testes do gate.
+ * Lê: binário `semgrep` no PATH e `security/semgrep.yml`.
+ * Escreve: `security-reports/semgrep.json` (sobrescrito a cada execução).
+ * Códigos de saída: 0 = sem finding ERROR; 1 = ao menos um finding ou falha operacional —
+ *   qualquer desvio sai como erro em stderr, nunca como sucesso silencioso.
  */
-
-/** Executa o scan do Semgrep e retorna os findings (para reuso em baseline). */
-export async function runSemgrepScan() {
-  const hasLocalRules = fs.existsSync(RULES_FILE);
-  const semgrep = resolveSemgrepBinary();
-
-  const args = [
-    ...semgrep.split(' '),
-    'scan',
-    '--config',
-    hasLocalRules ? RULES_FILE : 'p/default',
-    '--severity',
-    'ERROR',
-    '--error',
-    '--json',
-    '--quiet',
-    '--metrics',
-    'off',
-    '.',
-  ];
-
-  const result = spawnSync('sh', ['-c', args.join(' ')], { encoding: 'utf8' });
-
-  if (result.error) {
-    throw new Error(`erro ao executar semgrep: ${result.error.message}`);
-  }
-
-  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-
-  try {
-    const report = JSON.parse(result.stdout || '{"results":[]}');
-    const findings = report.results ?? [];
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(report, null, 2));
-    return findings;
-  } catch {
-    return [];
-  }
-}
-
-/** Retorna o comando do semgrep fixado no projeto (para reuso em outros scripts). */
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+export const SEMGREP_VERSION = '1.179.0';
 export function resolveSemgrepBinary() {
-  return 'pnpm dlx semgrep@1';
+  return 'semgrep';
 }
-
-const RULES_FILE = 'security/semgrep.yml';
-const OUTPUT_FILE = 'security-reports/semgrep.json';
-
-function main() {
-  const hasLocalRules = fs.existsSync(RULES_FILE);
-
-  // `npx` sem versão fixada resolveria a última versão a cada execução, e um
-  // update do Semgrep passa a reprovar build antigo. A faixa abaixo é
-  // suficiente para o formato do relatório, que não muda entre patches.
-  const semgrep = 'pnpm dlx semgrep@1';
-
-  const args = [
-    ...semgrep.split(' '),
-    'scan',
-    '--config',
-    hasLocalRules ? RULES_FILE : 'p/default',
-    '--severity',
-    'ERROR',
-    '--error',
-    '--json',
-    '--quiet',
-    '--metrics',
-    'off',
-    '.',
-  ];
-
-  console.log(
-    `\n→ semgrep: regras ${hasLocalRules ? RULES_FILE : 'p/default (padrão do semgrep)'}…`,
+export function runSemgrepScan() {
+  const rules = 'security/semgrep.yml';
+  if (!fs.existsSync(rules)) throw new Error('Regras locais ausentes.');
+  // O binário é resolvido por nome, não por caminho: ausência só aparece na execução, e por
+  // isso a versão é conferida a cada scan — semgrep diferente gera relatório incomparável.
+  const binary = resolveSemgrepBinary();
+  const version = spawnSync(binary, ['--version'], { encoding: 'utf8' });
+  if (version.error) throw version.error;
+  if (version.status !== 0)
+    throw new Error(`Semgrep indisponível: ${version.stderr.trim()}`);
+  if (
+    version.error ||
+    version.status !== 0 ||
+    version.stdout.trim() !== SEMGREP_VERSION
+  )
+    throw new Error(
+      `Instale semgrep==${SEMGREP_VERSION}; versão ausente ou divergente.`,
+    );
+  // Scan estrito: ERROR vira exit 1 (`--error`), e qualquer erro interno do scanner falha o
+  // report (`--strict`). `--metrics off` evita telemetria da rede corporativa/isolada.
+  const result = spawnSync(
+    binary,
+    [
+      'scan',
+      '--config',
+      rules,
+      '--severity',
+      'ERROR',
+      '--error',
+      '--strict',
+      '--json',
+      '--quiet',
+      '--metrics',
+      'off',
+      '.',
+    ],
+    { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 },
   );
-
-  const result = spawnSync('sh', ['-c', args.join(' ')], { encoding: 'utf8' });
-
-  if (result.error) {
-    console.error(`   erro ao executar semgrep: ${result.error.message}`);
-    process.exit(1);
-  }
-
-  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-
-  let findings = [];
+  // 0 = sem findings; 1 = findings ERROR. Qualquer outro status é scanner quebrado.
+  if (result.error || ![0, 1].includes(result.status))
+    throw new Error('Falha operacional do Semgrep.');
+  let report;
   try {
-    const report = JSON.parse(result.stdout || '{"results":[]}');
-    findings = report.results ?? [];
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(report, null, 2));
+    report = JSON.parse(result.stdout);
   } catch {
-    // O semgrep nem sempre emite JSON puro em stdout (avisos do runtime, por
-    // exemplo). Sem parsear, o achado continua visível no código de saída.
-    findings = [];
+    throw new Error('Relatório Semgrep inválido.');
   }
-
-  if (findings.length > 0) {
-    console.error(`\n❌ ${findings.length} finding(s) de segurança.`);
-    for (const finding of findings) {
-      console.error(
-        `   ${finding.path}:${finding.start?.line} — ${finding.extra?.message}`,
-      );
-    }
-    console.error(`   Relatório: ${OUTPUT_FILE}\n`);
-    process.exit(1);
-  }
-
-  console.log('✅ Sem finding de segurança.');
+  // `results` vazio com `errors` populado é scan abortado que se disfarça de limpo.
+  if (!Array.isArray(report.results) || report.errors?.length)
+    throw new Error('Scan incompleto ou relatório inválido.');
+  fs.mkdirSync('security-reports', { recursive: true });
+  fs.writeFileSync(
+    'security-reports/semgrep.json',
+    JSON.stringify(report, null, 2),
+  );
+  // Exit diferente de 0 sem findings é contradição interna: falha com ferramenta íntegra
+  // mandaria um JSON vazio que passaria batido.
+  if (result.status !== 0 && !report.results.length)
+    throw new Error('Semgrep retornou erro sem findings.');
+  return report.results;
 }
-
-main();
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  try {
+    const findings = runSemgrepScan();
+    console.log(`Semgrep: ${findings.length} findings ERROR.`);
+    process.exitCode = findings.length ? 1 : 0;
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
+}

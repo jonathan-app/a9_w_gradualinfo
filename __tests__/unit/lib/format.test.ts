@@ -1,18 +1,23 @@
+/**
+ * @fileoverview Suíte das funções de formatação e de serialização de `lib/utils/format`.
+ * @module __tests__/unit/lib/format
+ * @description Fixa o que o usuário vê — separador por locale, escala de centavos, fuso de São
+ *   Paulo na virada da data UTC e iniciais — e a fronteira de segurança do JSON-LD: escape de
+ *   `</script>` é o que impede que um título hostil feche a tag e execute no leitor.
+ * @dependencies vitest, @/lib/utils/format.
+ *
+ * As funções são puras e recebem locale por parâmetro justamente para poderem ser testadas
+ * sem mock de módulo. O teste fixa o comportamento que o usuário vê — inclusive quando a
+ * entrada é inesperada.
+ */
 import { describe, expect, it } from 'vitest';
 import {
   formatCurrency,
   formatDate,
   formatNumber,
   initials,
+  serializeJsonLd,
 } from '@/lib/utils/format';
-
-/**
- * __tests__/unit/lib/format.test.ts
- *
- * Estas funções são puras e recebem locale por parâmetro justamente para
- * poderem ser testadas sem mock de módulo. O teste fixa o comportamento que o
- * usuário vê — inclusive quando a entrada é inesperada.
- */
 describe('formatNumber', () => {
   it('usa separador de milhar do locale', () => {
     // 1234 em pt-BR é "1.234"; o ponto é separador de milhar, não decimal.
@@ -84,5 +89,45 @@ describe('initials', () => {
 
   it('não quebra com nome vazio', () => {
     expect(initials('')).toBe('');
+  });
+});
+
+// O JSON-LD é emitido como texto dentro de uma tag <script>: sem escape, um conteúdo com
+// `</script>` fecha a tag na hora e o resto do payload vira script executável no leitor.
+describe('serializeJsonLd', () => {
+  it('escapa caracteres críticos e tags de fechamento de script', () => {
+    const payload = {
+      title: '</script><script>alert("xss")</script>',
+      bio: 'Guia <programador> & "estudante"',
+    };
+    const serialized = serializeJsonLd(payload);
+
+    // Não deve conter a tag de fechamento literal </script> nem < ou > puros
+    expect(serialized).not.toContain('</script>');
+    expect(serialized).not.toContain('<script>');
+    expect(serialized).toContain('\\u003c/script\\u003e');
+    expect(serialized).toContain('\\u003cscript\\u003e');
+    expect(serialized).toContain('\\u0026');
+
+    // Ao fazer JSON.parse, o dado original deve ser recuperado com perfeição
+    const parsed = JSON.parse(serialized);
+    expect(parsed.title).toBe('</script><script>alert("xss")</script>');
+    expect(parsed.bio).toBe('Guia <programador> & "estudante"');
+  });
+
+  it('escapa o payload de teste específico </script><script>alert(1)</script> mantendo JSON válido', () => {
+    const payload = {
+      headline: '</script><script>alert(1)</script>',
+    };
+    const serialized = serializeJsonLd(payload);
+
+    expect(serialized).not.toContain('</script>');
+    expect(serialized).not.toContain('<script>');
+    expect(serialized).toBe(
+      '{"headline":"\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e"}',
+    );
+
+    const parsed = JSON.parse(serialized);
+    expect(parsed.headline).toBe('</script><script>alert(1)</script>');
   });
 });

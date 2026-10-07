@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Mantém o cabeçalho de `.gitattributes` sincronizado com o nome
+ *   real do projeto, lido do `package.json`.
+ * @module scripts/sync-gitattributes
+ * @description Só as linhas `# .gitattributes — ...` são reescritas aqui; o corpo
+ *   do arquivo é fonte humana e nunca é tocado. Rodar sempre que o nome do projeto
+ *   mudar, senão o export do template volta a falhar em silêncio.
+ * @dependencies node:fs, node:path, node:url; `package.json`, `.gitattributes`.
+ *
+ * Execução: `pnpm gitattributes:sync`.
+ */
 // scripts/sync-gitattributes.mjs
 //
 // Mantém o cabeçalho de `.gitattributes` com o nome real do projeto. O corpo

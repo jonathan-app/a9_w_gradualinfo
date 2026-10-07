@@ -89,6 +89,15 @@ next.config.ts, open-next.config.ts, wrangler.jsonc
 9. **`pnpm build` só funciona porque `buildCommand` está no topo de
    `open-next.config.ts`.** `defineCloudflareConfig()` descarta chaves globais,
    e o padrão do OpenNext é rodar `pnpm build` — que aqui é o próprio OpenNext.
+10. **Todo arquivo de código nasce documentado — e um arquivo tocado que não
+    tenha cabeçalho ganha um.** Topo do arquivo com
+    `/** @fileoverview ... @module ... @description ... @dependencies ... */`,
+    JSDoc (`@param`/`@returns`) em cada export e comentário de porquê onde a
+    lógica não se explica sozinha; tudo em pt-BR e **somente adições de
+    comentário** — documentar nunca altera linha de código. A fonte de estilo é
+    a skill `code-documenter` e o exemplo `scripts/check-env-leak.mjs`;
+    `referencias/` e `.agents/` ficam de fora. Baseline: 97 arquivos rastreados
+    cobertos em 2026-10-07 (linha 70 de `workflow/STATE.md`).
 
 ## Regra Universal de Delegação (handoff entre agentes)
 

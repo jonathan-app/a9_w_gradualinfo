@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { env } from '@/lib/env';
@@ -18,6 +19,10 @@ import { env } from '@/lib/env';
  * Por que `async`: `cookies()` é assíncrono a partir do Next 15. Todo mundo
  * que chama esta função precisa de `await` — assinatura única, sem o bug
  * clássico de esquecer o await e receber `{}` em vez de cookie.
+ *
+ * @fileoverview Cliente Supabase do servidor, com sessão em cookie.
+ * @returns Cliente `@supabase/ssr` com `getAll`/`setAll` encaixados no cookie
+ *   store desta requisição; nenhum parâmetro — tudo vem de `env` e dos cookies.
  */
 export async function createClient() {
   const cookieStore = await cookies();
@@ -41,6 +46,17 @@ export async function createClient() {
           // Chamado a partir de um Server Component: sem escrita de cookie.
         }
       },
+    },
+  });
+}
+
+/** Leitura pública não envia cookies nem tokens de sessões editoriais. */
+export function createPublicClient() {
+  return createSupabaseClient(env.supabase.url, env.supabase.anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
     },
   });
 }

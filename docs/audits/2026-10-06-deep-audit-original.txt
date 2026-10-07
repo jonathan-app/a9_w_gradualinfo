@@ -1,0 +1,906 @@
+# Auditoria profunda do a9_w_gradualinfo
+
+Data: 2026-10-06
+
+## Escopo
+
+Auditoria estrutural e estática do ZIP atual do `a9_w_gradualinfo`, cruzada com:
+- specs e estado persistente do projeto;
+- código de aplicação;
+- migrations e testes;
+- Git/branches/worktrees;
+- CI e scripts de gate;
+- catálogo de skills;
+- documentação oficial atual de Next.js, Supabase, MCP e OWASP.
+
+A auditoria não trata histórico de execução como execução atual. Onde a evidência veio de relatórios anteriores, isso é indicado como evidência histórica.
+
+---
+
+# 1. Veredito
+
+## Estado geral
+
+**Fundação de engenharia: AMARELA/VERDE**
+
+**Prontidão para merge da feature atual: VERMELHA**
+
+**Prontidão para produção: VERMELHA**
+
+O projeto tem uma base técnica boa, mas ainda não possui uma cadeia de evidência confiável o suficiente para afirmar que a primeira jornada editorial está aprovada.
+
+O maior problema encontrado não é de stack. É de **governança da prova**.
+
+---
+
+# 2. Findings P0
+
+## P0-01 — Catálogo de skills não é reproduzível
+
+### Evidência
+
+O `skills-lock.json` fixa 9 skills:
+
+- scope
+- audit
+- architect
+- develop
+- check
+- test
+- document
+- sync
+- debug
+
+Porém a árvore `.agents/skills/` contém aproximadamente 101 `SKILL.md` no ZIP atual.
+
+Ao mesmo tempo, `.agents/` está ignorado pelo Git.
+
+### Risco
+
+O projeto documenta "9 instaladas", mas o ambiente real contém muito mais capacidades não fixadas no lock.
+
+Outro ambiente pode:
+- não possuir as mesmas skills;
+- possuir versões diferentes;
+- carregar especialistas que não foram aprovados;
+- produzir comportamento diferente do ambiente atual.
+
+### Ação
+
+Definir uma política explícita:
+
+1. 9 skills core continuam canônicas.
+2. Especialistas precisam entrar no lock antes de serem considerados disponíveis.
+3. Se skills extras forem deliberadamente instaladas localmente, marcar como `local-only`.
+4. Criar verificação automática:
+   `installed skills == locked skills + allowlist local explícita`.
+
+---
+
+## P0-02 — `/check` existe, mas não é gate do `check:all`
+
+### Evidência
+
+`package.json` define:
+
+`check:all = typecheck && lint && format:check && test:run`
+
+Não chama:
+- `check-decision.mjs`;
+- `check-gate.mjs`.
+
+O próprio `workflow/STATE.md` registra essa pendência.
+
+### Risco
+
+O repositório possui um mecanismo de aprovação formal, mas o comando principal de qualidade não o executa.
+
+Logo:
+
+`pnpm check:all verde`
+
+não significa:
+
+`entrega coberta por decisão aprovada`.
+
+### Ação
+
+Separar:
+
+- checks mecânicos;
+- decisão `/check verify`;
+- revisão `/check review`;
+- gate final ligado ao SHA.
+
+O CI deve impedir merge quando o artefato de decisão estiver ausente, desatualizado ou reprovado.
+
+---
+
+## P0-03 — AC-06 é violado pelo código atual
+
+### Evidência
+
+A spec `md-0002` define AC-06 como:
+
+> o corpo do artigo não usa `dangerouslySetInnerHTML` em nenhum caminho.
+
+Porém:
+
+`app/artigos/[slug]/page.tsx`
+
+contém:
+
+`dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}`
+
+### Classificação
+
+**FAIL estático do AC-06**, salvo se o AC for formalmente alterado pelo dono.
+
+### Observação
+
+O uso está no JSON-LD, não no corpo Markdown, mas o texto atual do AC é amplo: "em nenhum caminho".
+
+Não devemos reinterpretar o AC depois da implementação.
+
+### Ação
+
+Escolher uma das duas decisões:
+
+1. manter AC-06 amplo e substituir a injeção por um helper seguro de JSON-LD; ou
+2. emendar o AC para permitir JSON-LD explicitamente, com requisito de escaping seguro de `<`, `>`, `&` e `</script>`.
+
+A opção 1 é mais rigorosa.
+
+---
+
+## P0-04 — JSON-LD possui risco de quebra de `script` por conteúdo editorial
+
+`JSON.stringify()` sozinho não neutraliza uma sequência `</script>` dentro de dados.
+
+Como título, descrição e autor vêm do banco, conteúdo editorial malicioso pode atingir o bloco JSON-LD.
+
+### Ação
+
+Criar serializador seguro para JSON-LD que escape pelo menos:
+- `<`
+- `>`
+- `&`
+
+e principalmente sequências que possam terminar o elemento `script`.
+
+Adicionar teste com payload contendo:
+
+`</script><script>alert(1)</script>`
+
+e verificar que o HTML servido continua com um único bloco JSON-LD válido e sem execução.
+
+---
+
+## P0-05 — Relatório `/check verify` atual está desalinhado com a spec
+
+### Evidência
+
+`docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` descreve:
+
+- AC-06 como 404/500;
+- AC-07 como rascunhos/agendados;
+- AC-10/11 como metadata/SEO;
+- AC-12 como acessibilidade.
+
+Mas na spec atual:
+
+- AC-06 = ausência de `dangerouslySetInnerHTML`;
+- AC-07 = 404;
+- AC-08 = preview;
+- AC-09 = JSON-LD;
+- AC-10 = canonical + sitemap;
+- AC-11 = RLS;
+- AC-12 = accessibility;
+- AC-13 = fontes.
+
+### Risco
+
+O relatório pode parecer uma prova da spec, mas não prova os ACs correspondentes.
+
+### Ação
+
+Invalidar esse relatório como evidência final e gerar novo `/check verify` com IDs exatos da versão atual da spec.
+
+---
+
+## P0-06 — `verify-result.json` está incompleto
+
+O arquivo atual contém apenas:
+
+- AC-01
+- AC-02
+- AC-03
+- AC-04
+- AC-12
+
+todos como `UNVERIFIABLE`.
+
+A spec possui 13 ACs.
+
+### Risco
+
+Um artefato parcial não pode ser usado como decisão final de aprovação.
+
+### Ação
+
+O resultado final precisa conter todos os ACs da revisão exata da spec, cada um com:
+
+- PASS + evidência;
+- FAIL + evidência;
+- UNVERIFIABLE + motivo;
+- BLOCKER quando aplicável.
+
+---
+
+## P0-07 — CI não corresponde ao contrato documentado
+
+`BRANCHES.md` descreve uma CI futura com quality, build, security e integration.
+
+A CI atual possui:
+
+- quality;
+- build;
+- security;
+- database.
+
+Mas não executa, no workflow atual:
+
+- Playwright E2E;
+- Lighthouse;
+- Semgrep;
+- OSV scanner;
+- gate de decisão;
+- gate final;
+- integração funcional do app.
+
+### Ação
+
+Reconciliar `BRANCHES.md` com `.github/workflows/ci.yml`.
+
+Não considerar checks "planejados" como checks ativos.
+
+---
+
+## P0-08 — Governança de GitHub está documentada como existente, mas arquivos não existem
+
+`BRANCHES.md` referencia:
+
+- `.github/CODEOWNERS`
+- `docs/BRANCH_PROTECTION.md`
+- `scripts/setup-branch-protection.sh`
+- `supabase/tests/rls_profiles_test.sql`
+
+Os arquivos não estão presentes no ZIP atual.
+
+### Ação
+
+Marcar como `PLANEJADO` ou implementar e provar.
+
+Nunca usar linguagem de "proteção ativa" sem verificação no GitHub.
+
+---
+
+## P0-09 — Estado Git atual está sujo
+
+O ZIP atual está em:
+
+`feat/md-0002-casca-editorial-home`
+
+com alterações não commitadas em:
+
+- `.husky/pre-commit`
+- `verify-result.json`
+- `workflow/STATE.md`
+
+Além disso, o bit executável de `.husky/pre-commit` mudou.
+
+### Ação
+
+Antes de qualquer nova escrita:
+1. congelar árvore;
+2. revisar diff;
+3. decidir o que pertence à branch;
+4. descartar/commit autorizado;
+5. só então executar próximo agente.
+
+---
+
+## P0-10 — Artefatos de ambiente estão dentro do pacote
+
+O ZIP contém:
+
+- `.git/`
+- `.open-next/`
+- `.kilo/`
+- `test-results/`
+- `tsconfig.tsbuildinfo`
+
+O `.gitignore` cobre vários deles, mas eles continuam presentes no pacote.
+
+### Ação
+
+Criar export limpo do projeto, sem:
+- histórico Git;
+- builds;
+- caches;
+- worktrees;
+- resultados de teste;
+- estado local de agentes.
+
+---
+
+# 3. Findings P1
+
+## P1-01 — Segurança de headers ainda incompleta
+
+`next.config.ts` possui:
+
+- X-Content-Type-Options;
+- Referrer-Policy;
+- X-Frame-Options;
+- Permissions-Policy.
+
+Não possui:
+- CSP;
+- HSTS explícito.
+
+Next.js documenta CSP e HSTS como controles disponíveis no mecanismo de headers.
+
+### Ação
+
+Criar threat model primeiro e depois aplicar:
+- CSP compatível com Next/Sentry;
+- HSTS somente quando HTTPS/canonical domain estiver definitivamente correto;
+- `frame-ancestors` na CSP.
+
+---
+
+## P1-02 — ESLint perdeu regras específicas do Next
+
+A configuração remove `eslint-config-next` para evitar uma cadeia de dependências problemática.
+
+Isso reduz o conjunto de regras específicas do Next.
+
+A documentação atual do Next.js recomenda `eslint-config-next/core-web-vitals` para projetos Next.
+
+### Ação
+
+Reavaliar o motivo do override contra a árvore de dependências atual.
+
+Se a dependência problemática tiver solução atual:
+- reinstalar o pacote oficial;
+- usar Flat Config;
+- ativar `core-web-vitals`.
+
+Se não for possível:
+- importar diretamente as regras necessárias do plugin;
+- documentar a exceção.
+
+---
+
+## P1-03 — `<img>` é usado na página de artigo
+
+A página usa:
+
+`<img>`
+
+em vez do componente de imagem do Next.
+
+Isso pode prejudicar:
+- otimização;
+- dimensionamento;
+- carregamento;
+- LCP.
+
+### Ação
+
+Decidir entre `next/image` e uma estratégia explícita de imagem externa/R2.
+
+Não mudar automaticamente: primeiro definir onde as imagens realmente serão hospedadas.
+
+---
+
+## P1-04 — Metadata global ainda é boilerplate
+
+`app/layout.tsx` descreve:
+
+> "Boilerplate profissional com Next.js 16..."
+
+Isso não é copy de produto.
+
+### Ação
+
+Substituir por:
+- descrição real do GradualInfo;
+- title;
+- OpenGraph;
+- identidade editorial;
+- locale;
+- canonical base.
+
+---
+
+## P1-05 — Sitemap ainda contém `/exemplo`
+
+O sitemap inclui:
+
+`/exemplo`
+
+Isso é claramente rota de demonstração.
+
+### Ação
+
+Remover do sitemap e da navegação antes de qualquer publicação.
+
+---
+
+## P1-06 — Sitemap limita artigos a 1000 sem paginação
+
+`getPublishedPosts(..., 1000)` coloca um teto arbitrário.
+
+Para o MVP é aceitável, mas não escala.
+
+### Ação
+
+Quando o volume chegar perto do limite, implementar sitemap index/paginação.
+
+---
+
+## P1-07 — Cache/revalidação editorial não está decidido
+
+A spec reconhece que mudança de conteúdo exige revalidação, mas o serviço atual não estabelece uma política explícita de cache/revalidation.
+
+### Ação
+
+Escolher uma estratégia:
+- conteúdo dinâmico;
+- revalidate;
+- cache tags;
+- invalidation no processo de publicação.
+
+Para o MVP, simplicidade vence.
+
+---
+
+## P1-08 — Preview usa token na query string
+
+Endpoint:
+
+`/api/preview?token=...`
+
+O token pode aparecer em:
+- histórico do navegador;
+- logs;
+- ferramentas de observabilidade;
+- analytics/referer em cenários específicos.
+
+### Ação
+
+Preferir:
+- POST;
+- token de uso único;
+- expiração;
+- ou link assinado de curta duração.
+
+Não usar senha fixa de conta de preview como mecanismo permanente.
+
+---
+
+## P1-09 — Comparação de token deve usar primitiva de tempo constante
+
+O código implementa comparação manual byte a byte.
+
+Funciona como tentativa de evitar comparação simples, mas a implementação merece ser substituída por primitiva criptográfica apropriada para o runtime suportado.
+
+### Ação
+
+Usar mecanismo equivalente a `timingSafeEqual`, com buffers de mesmo tamanho.
+
+---
+
+## P1-10 — Preview usa credencial compartilhada
+
+O endpoint faz login como:
+
+`preview@gradualinfo.dev`
+
+usando `SUPABASE_PREVIEW_TOKEN` como senha.
+
+### Risco
+
+O mesmo segredo funciona como:
+- token de acesso;
+- senha do usuário.
+
+Isso aumenta o raio de comprometimento.
+
+### Ação
+
+Separar:
+- segredo do link;
+- credencial interna;
+- sessão curta;
+- expiração.
+
+---
+
+## P1-11 — Acessibilidade ainda não está provada
+
+O relatório atual marca AC-12 como `UNVERIFIABLE`.
+
+Existe `@axe-core/playwright`, mas isso não é prova de execução.
+
+### Ação
+
+Executar:
+- Axe;
+- teclado;
+- foco;
+- mobile;
+- reduced motion;
+- contraste.
+
+E registrar evidência.
+
+---
+
+## P1-12 — E2E não entra na CI atual
+
+Existem vários testes Playwright, mas o workflow atual não executa `pnpm test:e2e`.
+
+### Ação
+
+Adicionar job de integração separado, com:
+- servidor;
+- fixtures;
+- Playwright;
+- artefatos;
+- screenshot/video apenas em falha.
+
+---
+
+## P1-13 — E2E está fora do TypeScript check
+
+`tsconfig.json` exclui `e2e/**`.
+
+Isso pode ser intencional, mas cria uma lacuna de qualidade.
+
+### Ação
+
+Criar `tsconfig.e2e.json` ou usar configuração própria do Playwright.
+
+---
+
+## P1-14 — Cobertura de testes está em 60%
+
+O piso atual é:
+
+- branches 60%;
+- functions 60%;
+- lines 60%;
+- statements 60%.
+
+Isso é aceitável para fundação, mas baixo para o caminho editorial que está prestes a publicar.
+
+### Ação
+
+Não aumentar para 80% artificialmente.
+
+Subir por domínio:
+1. serviços;
+2. autorização;
+3. parsing/renderização;
+4. rotas críticas.
+
+---
+
+## P1-15 — Existem testes duplicados
+
+Há pares em:
+
+`__tests__/components/`
+
+e:
+
+`__tests__/unit/components/`
+
+O mesmo padrão ocorre para `button`, `format` e `cn`.
+
+### Ação
+
+Eliminar duplicação ou documentar por que ambas as camadas existem.
+
+---
+
+# 4. Findings P2
+
+## P2-01 — 2.113 skills da Skills-base não devem entrar no projeto
+
+A auditoria da Skills-base encontrou milhares de skills.
+
+A solução correta não é instalar todas.
+
+Criar:
+- core;
+- especialistas aprovados;
+- catálogo externo;
+- skills sensíveis.
+
+---
+
+## P2-02 — RAG está prematuro
+
+Não existe corpus editorial suficientemente estabelecido para justificar RAG.
+
+### Ordem correta
+
+conteúdo → fontes → busca textual → corpus → avaliação → embeddings → RAG.
+
+---
+
+## P2-03 — MCP de produto está prematuro
+
+MCP deve primeiro servir engenharia.
+
+Um GradualInfo MCP de produto só faz sentido depois que existirem ferramentas reais:
+- search_articles;
+- get_article;
+- find_sources;
+- price_history etc.
+
+---
+
+## P2-04 — Histórico de preços está prematuro
+
+A arquitetura futura deve existir como decisão, não como código agora.
+
+---
+
+# 5. Dependências
+
+## Estado atual
+
+Next está em `16.3.8`.
+
+Isso é uma versão com correções de segurança de setembro de 2026, mas o release atual já é Next.js 16.4.
+
+### Decisão
+
+Não fazer upgrade cego.
+
+Criar uma tarefa de manutenção:
+
+`Next 16.4 compatibility`
+
+e executar:
+- typecheck;
+- lint;
+- unit;
+- E2E;
+- build Next;
+- OpenNext;
+- preview;
+- Cloudflare.
+
+---
+
+# 6. Arquitetura recomendada
+
+## Frontend
+
+Manter:
+
+- Next.js;
+- React;
+- TypeScript;
+- Tailwind;
+- Server Components;
+- App Router.
+
+Não trocar framework.
+
+## Backend
+
+Manter:
+
+- Supabase;
+- PostgreSQL;
+- RLS;
+- migrations.
+
+Não adicionar API pública sem necessidade.
+
+## Conteúdo
+
+Manter:
+
+- Markdown no Supabase;
+- `react-markdown`;
+- fontes estruturadas.
+
+## IA
+
+Adiar.
+
+## Automação
+
+Começar depois com:
+
+Supabase Cron → Edge Function → Queue somente quando houver necessidade real.
+
+## Design
+
+Criar Design System próprio do GradualInfo usando o template Aqua apenas como referência.
+
+---
+
+# 7. Ordem correta de correção
+
+## Fase 0 — bloquear falsas aprovações
+
+1. Corrigir AC-06/JSON-LD.
+2. Invalidar/regerar relatório de verify desalinhado.
+3. Completar `verify-result.json`.
+4. Integrar gate ao CI.
+5. Reconciliar STATE.
+6. Resolver árvore Git suja.
+
+## Fase 1 — governança
+
+7. Resolver skills instaladas vs lock.
+8. Reconciliar BRANCHES.md.
+9. Criar/verificar CODEOWNERS.
+10. Verificar branch protection no GitHub.
+11. Limpar artefatos do pacote.
+
+## Fase 2 — segurança
+
+12. Threat model.
+13. CSP.
+14. HSTS quando domínio HTTPS estiver confirmado.
+15. Preview seguro.
+16. Secrets.
+17. ASVS 5.0 como baseline.
+
+## Fase 3 — produto editorial
+
+18. Aceitar `md-0002`.
+19. Corrigir metadata.
+20. Remover `/exemplo`.
+21. Fechar home.
+22. Fechar artigo.
+23. Fontes.
+24. SEO.
+25. Acessibilidade.
+
+## Fase 4 — prova
+
+26. Unit.
+27. pgTAP.
+28. E2E.
+29. Axe.
+30. Lighthouse.
+31. Build Next.
+32. OpenNext.
+33. CI.
+
+## Fase 5 — primeira publicação
+
+34. Artigo real.
+35. Domínio real.
+36. Sitemap.
+37. Search Console.
+38. Analytics.
+39. Sentry.
+40. Monitoramento.
+
+## Fase 6 — crescimento
+
+41. Busca.
+42. clusters.
+43. newsletter.
+44. afiliados.
+45. histórico de preços.
+
+## Fase 7 — IA
+
+46. corpus.
+47. evaluation set.
+48. retrieval.
+49. grounding.
+50. RAG.
+51. MCP do GradualInfo.
+
+---
+
+# 8. Critério de saída da auditoria
+
+Eu não consideraria a primeira versão pronta até existir:
+
+```text
+Scope Accepted
+        ↓
+Spec Accepted
+        ↓
+Implementation
+        ↓
+Tests
+        ↓
+/check verify
+        ↓
+/check review
+        ↓
+CI
+        ↓
+Gate
+        ↓
+PR
+        ↓
+GitHub protection
+        ↓
+Deploy
+        ↓
+Production verification
+```
+
+E, principalmente:
+
+**cada AC precisa possuir sua própria evidência.**
+
+---
+
+# 9. Decisão arquitetural
+
+## Eu NÃO mudaria:
+
+- Next.js
+- React
+- TypeScript
+- Tailwind
+- Supabase
+- PostgreSQL
+- RLS
+- Cloudflare/OpenNext
+
+## Eu mudaria agora:
+
+- governança das skills;
+- gate de `/check`;
+- evidência dos ACs;
+- segurança do JSON-LD;
+- CI;
+- preview;
+- headers;
+- documentação de estado;
+- limpeza do template;
+- preparação editorial.
+
+## Eu adiaria:
+
+- RAG;
+- agentes;
+- MCP de produto;
+- histórico de preços;
+- Oferta Verificada;
+- comunidade;
+- painel editorial.
+
+---
+
+# 10. Referências externas usadas
+
+- Next.js 16.4 e release de segurança de setembro de 2026. 
+- Configuração ESLint oficial do Next.js 16. 
+- Checklist de produção do Next.js. 
+- Headers de segurança do Next.js. 
+- Guia de segurança de dados do Next.js. 
+- RLS e segurança do Supabase. 
+- MFA/AAL do Supabase. 
+- MCP Specification 2026-07-28. 
+- OWASP ASVS 5.0.0.
+

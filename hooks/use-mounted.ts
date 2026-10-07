@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 /**
  * hooks/use-mounted.ts — sabe se o componente já montou no cliente
+ * @fileoverview Sabe se o componente montou no cliente, evitando mismatch.
  *
  * Para que serve
  * Quando o HTML do servidor e o primeiro render do cliente não podem ser
@@ -29,6 +30,13 @@ const getClientSnapshot = () => true;
 /** No servidor, nada está montado. */
 const getServerSnapshot = () => false;
 
+/**
+ * Diz se o componente já está montado no browser.
+ *
+ * @returns `false` no servidor e no primeiro passe de hidratação; `true` a
+ *   partir do render seguinte no cliente. É o sinal para adiar decisões que
+ *   dependem do browser sem provocar mismatch de hidratação.
+ */
 export function useMounted(): boolean {
   return useSyncExternalStore(
     subscribeToNothing,

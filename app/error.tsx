@@ -11,6 +11,20 @@ import { Button } from '@/components/ui/button';
  *
  * `reset()` tenta renderizar de novo sem recarregar a página — é o que salva
  * o usuário de uma navegação desnecessária quando o erro é passageiro.
+ *
+ * @fileoverview Tela de erro de renderização dentro de um segmento.
+ * @module app/error
+ * @dependencies react (useEffect), components/ui/button.
+ */
+/**
+ * Fronteira de erro do segmento.
+ *
+ * @param props.error - Erro da renderização; `digest` é o identificador gerado
+ *   no servidor e é o que se reporte em suporte — o resto da pilha não vai para
+ *   a tela.
+ * @param props.reset - Re-renderiza o segmento sem recarregar a página.
+ * @returns Cartão com explicação, diagnóstico (só quando há `digest`) e o botão
+ *   "Tentar novamente".
  */
 export default function ErrorBoundary({
   error,

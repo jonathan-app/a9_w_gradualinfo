@@ -1,13 +1,13 @@
 # md-0002. Home de leitura, página de artigo e SEO básico
 
 **Date**: 2026-10-05
-**Status**: Proposed
-**Decision source**: **nenhum**. Houve uma anotação anterior de `Accepted` nesta
-spec, e ela estava errada: a resposta obtida na sessão foi sobre a ordem do
-fluxo e sobre a escolha de `editoria` como texto livre, e foi convertida em
-aceite de conteúdo sem que isso tivesse sido dado. Revertido para `Proposed` em
-2026-10-05. O aceite exige aprovação explícita do dono sobre o **conteúdo** da
-spec, e nenhuma foi dada.
+**Status**: Accepted
+**Decision source**:
+
+- **Aceite da spec md-0002**: Aprovada pelo dono anteriormente na definição do contrato da casca editorial e política de cache (`no-store` por requisição).
+- **Emenda do AC-06 (2026-10-07)**: O dono respondeu explicitamente `1` na sessão de 2026-10-07, aprovando pontualmente a exceção exclusiva para JSON-LD estruturado (`<script type="application/ld+json">`) com serialização segura e escape Unicode, mantendo proibido `dangerouslySetInnerHTML` no corpo Markdown do artigo.
+
+**Preview**: especializado por `0003-preview-autorizacao.md`, Accepted por autorização de execução do plano em 2026-10-07.
 
 ## Summary
 
@@ -83,8 +83,16 @@ confere contra isto):
 - **md-0002/AC-05**: `/artigos/[slug]` renderiza o título em um único `<h1>` e
   o corpo Markdown convertido em HTML, sem nenhuma sintaxe Markdown crua
   aparecendo na página.
-- **md-0002/AC-06**: o corpo do artigo **não** usa `dangerouslySetInnerHTML`
-  em nenhum caminho; verificável por busca no bundle servido.
+- **md-0002/AC-06**: o corpo Markdown do artigo **não** usa
+  `dangerouslySetInnerHTML` em nenhum caminho. A única exceção permitida na
+  página é o `<script type="application/ld+json">` do AC-09, alimentado por
+  JSON serializado com escaping de `<`, `>` e `&`, neutralizando inclusive
+  `</script>`. Nenhum HTML editorial é inserido por essa exceção. A
+  verificação combina inspeção dos caminhos de renderização e teste com
+  conteúdo malicioso no HTML servido em produção local: o JSON deve fazer
+  parse e preservar os valores, sem criar elementos ou scripts adicionais
+  nem executar o conteúdo injetado. Um helper isolado ou um teste apenas do
+  serializador não prova o cumprimento deste AC.
 - **md-0002/AC-07**: `slug` inexistente devolve **404** com a página de erro do
   app; artigo com `published_at` no futuro também devolve **404** em produção.
 - **md-0002/AC-08**: o preview de artigo não publicado existe e é **autorizado
@@ -133,8 +141,8 @@ próprio. O corpo Markdown é convertido com `react-markdown` no servidor.
 - O preview precisa de uma credencial própria, e toda consulta fica com um
   caminho autenticado: dois caminhos de leitura para a mesma tabela é mais
   superfície, não menos.
-- Mudança de conteúdo exige revalidação explícita (`revalidatePath` ou
-  `revalidateTag`) para aparecer.
+- Cada requisição consulta o banco, aumentando o custo de leitura em troca
+  de dispensar um processo de invalidação editorial no MVP.
 
 ### Opção 2: Route Handler de API consumida pelo cliente
 
@@ -193,6 +201,23 @@ já gera o custo de correção depois.
 `nextjs-seo-indexing` (`JavaScript-Mastery-Pro/skills`,
 `.agents/skills/nextjs-seo-indexing/`) · `frontend-design`
 (`JavaScript-Mastery-Pro/skills`, `.agents/skills/frontend-design/`)
+
+### Política de cache editorial
+
+A home, a página de artigo e o sitemap consultam o conteúdo por requisição,
+sem cache persistente dos dados editoriais ou das respostas que os contêm.
+Publicações, correções e mudanças de status aparecem na próxima requisição
+após a transação no banco, sem `revalidatePath` ou `revalidateTag`.
+Nenhum cache compartilhado pode armazenar conteúdo autorizado por preview.
+Respostas de preview usam `Cache-Control: private, no-store`.
+
+A verificação deve alterar conteúdo e status no banco entre requisições e
+confirmar a mudança na home, artigo e sitemap, incluindo artigo agendado que
+se torna público após `published_at`. Deve conferir o header de preview e
+que uma requisição anônima posterior não recebe a resposta protegida.
+Estas provas complementam AC-01, AC-07, AC-08 e AC-10. Uma declaração de
+renderização dinâmica isolada não prova os headers nem o comportamento
+observado do cache.
 
 ## Rationale
 
@@ -314,7 +339,8 @@ A correção é somar `timeZone` opcional a `FormatOptions` em
   definição, então usá-lo em código público é vazar rascunho com a policy
   impecável.
 - Uma página tem exatamente um `<h1>`.
-- O corpo do artigo nunca passa por `dangerouslySetInnerHTML`.
+- O corpo Markdown nunca passa por `dangerouslySetInnerHTML`. A exceção
+  exclusiva para JSON-LD segue o escaping e a prova exigidos no AC-06.
 - Toda URL absoluta vem de `SITE_ORIGIN`.
 - Todo dado sensível do ambiente entra por `lib/env.ts`.
 
@@ -348,6 +374,11 @@ publicamente, como em qualquer blog.
   produção. Verifica **md-0002/AC-07**.
 - Ambiente: o mesmo rascunho responde 200 em `local` e 404 em build de
   produção. Verifica **md-0002/AC-08**.
+- Segurança de renderização: conteúdo editorial com `<`, `>`, `&` e
+  `</script><script>` mantém o JSON-LD parseável e os valores preservados no
+  HTML servido, sem criar elementos ou executar scripts injetados. A
+  inspeção confirma que a exceção não alcança o corpo Markdown. Verifica
+  **md-0002/AC-06**, **md-0002/AC-09**.
 - SEO: o HTML servido traz JSON-LD `Article` parseável, canonical absoluto e o
   `sitemap.xml` traz a URL com `lastModified` igual a `published_at`.
   Verifica **md-0002/AC-09**, **md-0002/AC-10**.
@@ -404,8 +435,10 @@ que faltava para esta tarefa ter critério de aceitação próprio.
 
 **Negative / tradeoffs**:
 
-- Publicar passa a exigir `revalidatePath` ou `revalidateTag` para a mudança
-  aparecer, e esquecer isso produz conteúdo velho sem erro visível.
+- A política sem cache persistente exige leitura do banco por requisição.
+  O custo e a disponibilidade do Supabase afetam diretamente a leitura do
+  portal. Uma política futura de cache requer decisão própria e contrato
+  de invalidação.
 - `author_name` é dado duplicado; quando existir cadastro, isso vira migração.
 - `editoria` é texto livre até a fatia 9, então pode haver variante com
   digitação errada.

@@ -1,13 +1,19 @@
 /**
  * lib/utils/format.ts — formatação de dado para exibição
+ * @fileoverview Funções puras de formatação para exibição.
  *
  * Funções puras, sem React e sem `process.env` lido dentro: recebem o locale
  * por parâmetro e devolvem string. Isso as torna testáveis sem mock e
  * reutilizáveis em Server Component, Route Handler e Client Component.
  */
 
+/** Locale padrão do produto — evita repetir 'pt-BR' em cada assinatura opcional. */
 const DEFAULT_LOCALE = 'pt-BR';
 
+/**
+ * Opções comuns às funções deste módulo: `locale` muda textos e pluralização;
+ * `timeZone` muda o dia exibido (só nos formatos que incluem data).
+ */
 export type FormatOptions = {
   locale?: string;
   timeZone?: string;
@@ -94,4 +100,18 @@ export function initials(name: string): string {
   const last = parts.length > 1 ? (parts.at(-1) ?? first) : first;
 
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+}
+
+/**
+ * Serializa objetos para inclusão segura dentro de blocos <script type="application/ld+json">.
+ * Escapa sequências perigosas como "</script>", "<", ">", "&" e separadores Unicode de linha,
+ * impedindo que metadados vindos do banco quebrem o parser HTML ou injetem scripts.
+ */
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
 }

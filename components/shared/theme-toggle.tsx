@@ -35,6 +35,14 @@ function useMounted() {
  * cliente entra com ícone, e a hidratação falha. Por isso o porteiro real é
  * `mounted`: só vira true depois do effect, igualando a primeira renderização
  * do cliente ao HTML do servidor.
+ *
+ * @fileoverview Botão que alterna entre tema claro e escuro.
+ * @module components/shared/theme-toggle
+ * @description `'use client'` porque decide ícone e rótulo a partir do estado
+ *   do next-themes durante a hidratação — e fica como folha isolada (não no
+ *   layout) para o custo de cliente não subir para a árvore inteira.
+ * @dependencies react (useSyncExternalStore), next-themes (useTheme),
+ *   react-icons/lu, components/ui/button.
  */
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
