@@ -58,6 +58,7 @@ yarn-error.log*
 .agents/
 !.agents/mcp.json
 .kilo/
+.kilo/worktrees
 Temp_Modelos/
 
 # reports

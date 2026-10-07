@@ -1,10 +1,27 @@
 name: CI
 
 # ============================================================================
-# CI — o mesmo gate que roda na máquina, em ordem de custo crescente
+# CI — gate completo, em ordem de custo crescente
 # ============================================================================
-# A ordem importa: o que é mais rápido e pega mais erro vem primeiro, para o
-# developer receber o sinal em segundos em vez de minutos.
+# Fluxo alvo:
+#   PR
+#   ├── typecheck
+#   ├── lint
+#   ├── prettier
+#   ├── unit
+#   ├── E2E
+#   ├── build
+#   ├── RLS
+#   ├── SAST
+#   ├── dependency scan
+#   ├── secrets
+#   ├── Lighthouse
+#   └── /check gate
+#            ↓
+#         APPROVED
+#
+# O pre-commit fica leve (lint/typecheck/format). O gate de aprovação
+# fica na CI/PR, ligado a uma decisão /check aprovada.
 
 on:
   push:
@@ -12,8 +29,6 @@ on:
   pull_request:
     branches: [main]
 
-# Um workflow novo por push cancela o anterior: não faz sentido esperar duas
-# versões do mesmo commit.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -37,8 +52,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      # allowBuilds em pnpm-workspace.yaml autoriza esbuild/unrs-resolver/
-      # workerd; sem --frozen-lockfile o CI instalaria de novo a cada run.
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
 
@@ -71,18 +84,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # O build não pode depender de segredo: as variáveis ausentes caem no
-      # valor padrão local (ver lib/env.ts).
       - name: Build do Next
         run: pnpm build:next
 
-  security:
-    name: Segredos e dependências
+  e2e:
+    name: E2E (Playwright)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0 # gitleaks precisa do histórico, não só o último commit
 
       - uses: pnpm/action-setup@v4
         with:
@@ -93,19 +102,26 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
 
-      - name: Auditar dependências
-        run: pnpm audit --audit-level=high
+      - name: Instalar browsers do Playwright
+        run: pnpm exec playwright install chromium
 
-      - name: Procurar segredos no histórico
-        run: pnpm security:secrets
+      - name: Executar E2E
+        run: pnpm test:e2e
+
+      - name: Preservar relatório E2E
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: warn
 
   database:
     name: Banco local e RLS
     runs-on: ubuntu-latest
-    # 30 min, não 20: o download do stack completo do Supabase é a etapa
-    # dominante em runner frio. Ajustar depois de observar execuções reais.
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
@@ -117,8 +133,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Os wrappers existentes usam Supabase CLI via pnpm dlx.
-      # Alvo exclusivamente local; nenhuma credencial hospedada é necessária.
       - name: Iniciar stack descartável
         run: pnpm supabase:start
       - name: Aplicar migrations e seed local
@@ -139,3 +153,89 @@ jobs:
       - name: Encerrar stack local
         if: always()
         run: pnpm supabase:stop --no-backup
+
+  sast:
+    name: SAST (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+
+  dependency-scan:
+    name: Dependency scan (OSV + pnpm audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: pnpm audit
+        run: pnpm audit --audit-level=high
+      - name: OSV scan
+        uses: google/osv-scanner-action@v1
+        with:
+          scan-args: '-r ./'
+
+  lighthouse:
+    name: Lighthouse (home + artigo público)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build do Next
+        run: pnpm build:next
+      - name: Iniciar servidor
+        run: pnpm next start --port 3000 &
+        shell: bash
+      - name: Aguardar servidor
+        run: npx wait-on http://localhost:3000
+      - name: Lighthouse CI
+        run: |
+          npx lhci autorun \
+            --collect.settings.onlyCategories='performance,accessibility,best-practices,seo' \
+            --collect.url='http://localhost:3000' \
+            --collect.url='http://localhost:3000/artigos/fixture-publicado' \
+            --assert.assertions='categories:performance>=80,categories:accessibility>=90,categories:best-practices>=90,categories:seo>=90'
+
+  check-gate:
+    name: /check gate
+    needs: [quality, build, e2e, database, sast, dependency-scan, lighthouse]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verificar gate de aprovação
+        run: node scripts/check-gate.mjs verify-result.json --commit ${{ github.sha }}
+      - name: Preservar resultado do gate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-gate
+          path: verify-result.json
+          if-no-files-found: warn

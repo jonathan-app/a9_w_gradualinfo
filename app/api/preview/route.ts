@@ -2,20 +2,45 @@ import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import type { NextRequest } from 'next/server';
 import { env } from '@/lib/env';
+import { audit } from '@/lib/audit';
+
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 20;
+const attempts = new Map<string, { count: number; reset: number }>();
 
 export async function GET(request: NextRequest) {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const ip = forwardedFor
+    ? forwardedFor.split(',')[0]?.trim() || 'unknown'
+    : 'unknown';
   const { searchParams } = new URL(request.url);
   const token = searchParams.get('token');
   const slug = searchParams.get('slug');
 
+  const now = Date.now();
+  const window = attempts.get(ip);
+  if (window && now < window.reset) {
+    if (window.count >= RATE_LIMIT_MAX) {
+      audit({ type: 'preview_login', ok: false, ip });
+      return new NextResponse('Limite de requisições excedido.', {
+        status: 429,
+      });
+    }
+    window.count++;
+  } else {
+    attempts.set(ip, { count: 1, reset: now + RATE_LIMIT_WINDOW_MS });
+  }
+
   const previewToken = env.previewToken;
   if (!previewToken) {
+    audit({ type: 'preview_login', ok: false, ip });
     return new NextResponse('Preview não configurado no servidor.', {
       status: 403,
     });
   }
 
   if (!token) {
+    audit({ type: 'preview_login', ok: false, ip });
     return new NextResponse('Não autorizado', { status: 401 });
   }
 
@@ -24,6 +49,7 @@ export async function GET(request: NextRequest) {
   const expectedBuf = encoder.encode(previewToken);
 
   if (tokenBuf.length !== expectedBuf.length) {
+    audit({ type: 'preview_login', ok: false, ip });
     return new NextResponse('Não autorizado', { status: 401 });
   }
   let equal = true;
@@ -31,6 +57,7 @@ export async function GET(request: NextRequest) {
     if (tokenBuf[i] !== expectedBuf[i]) equal = false;
   }
   if (!equal) {
+    audit({ type: 'preview_login', ok: false, ip });
     return new NextResponse('Não autorizado', { status: 401 });
   }
 
@@ -65,11 +92,12 @@ export async function GET(request: NextRequest) {
   });
 
   if (error) {
-    console.error('Supabase Auth Error:', error.message);
+    audit({ type: 'preview_login', ok: false, ip });
     return new NextResponse('Falha ao autenticar o usuário de preview.', {
       status: 500,
     });
   }
 
+  audit({ type: 'preview_login', ok: true, ip });
   return response;
 }
