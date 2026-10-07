@@ -30,12 +30,35 @@ function localAdmin() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 test.describe('home editorial', () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
   let mutatedPostIds: string[] = [];
 
   test.beforeEach(async ({ request }) => {
     // Garante que o estado de falha de rede esteja limpo antes de iniciar qualquer teste
     if (process.env.E2E_NETWORK_FAULTS === '1') {
-      await setFault(request, 'none');
+      try {
+        await setFault(request, 'none');
+      } catch {
+        // Tolerância caso proxy não esteja em execução nesta rodada
+      }
+    }
+    // Garante banco íntegro antes de cada teste: recupera quaisquer posts acidentalmente arquivados
+    try {
+      const admin = localAdmin();
+      if (mutatedPostIds.length > 0) {
+        await admin
+          .from('posts')
+          .update({ status: 'publicado' })
+          .in('id', mutatedPostIds);
+        mutatedPostIds = [];
+      }
+      await admin
+        .from('posts')
+        .update({ status: 'publicado' })
+        .not('slug', 'in', '("fixture-rascunho","fixture-agendado")')
+        .eq('status', 'arquivado');
+    } catch {
+      // Tolerância se localAdmin não estiver disponível no ambiente
     }
   });
 
@@ -50,18 +73,37 @@ test.describe('home editorial', () => {
     }
     // Restauração de emergência: caso um teste com mutação de banco falhe ou sofra interrupção,
     // os posts alterados são imediatamente restaurados para evitar contaminação de outros testes
-    if (mutatedPostIds.length > 0) {
-      try {
-        const admin = localAdmin();
+    try {
+      const admin = localAdmin();
+      if (mutatedPostIds.length > 0) {
         await admin
           .from('posts')
           .update({ status: 'publicado' })
           .in('id', mutatedPostIds);
-      } catch (err) {
-        console.error('Falha na recuperação de emergência de posts:', err);
-      } finally {
-        mutatedPostIds = [];
       }
+      await admin
+        .from('posts')
+        .update({ status: 'publicado' })
+        .not('slug', 'in', '("fixture-rascunho","fixture-agendado")')
+        .eq('status', 'arquivado');
+    } catch (err) {
+      console.error('Falha na recuperação de emergência de posts:', err);
+    } finally {
+      mutatedPostIds = [];
+    }
+  });
+
+  test.afterAll(async () => {
+    // Restauração final ao encerrar a suíte inteira
+    try {
+      const admin = localAdmin();
+      await admin
+        .from('posts')
+        .update({ status: 'publicado' })
+        .not('slug', 'in', '("fixture-rascunho","fixture-agendado")')
+        .eq('status', 'arquivado');
+    } catch {
+      // Tolerância se admin não estiver disponível no encerramento
     }
   });
 

@@ -47,6 +47,7 @@ export default defineConfig([
     'scratch/**',
     '.kilo/worktrees/**',
     '.agents/**',
+    '.wrangler/**',
   ]),
 
   // --- Regras base (JS, TS, React, a11y, imports) ------------------------
