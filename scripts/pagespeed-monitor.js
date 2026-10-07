@@ -2,6 +2,7 @@
 
 /**
  * scripts/pagespeed-monitor.js — dados de campo via PageSpeed Insights
+ * @fileoverview Mede dados de campo (CrUX) via PageSpeed Insights.
  *
  * Diferença para o Lighthouse
  * O Lighthouse é medida de laboratório: reproduzível, mas sintética, porque

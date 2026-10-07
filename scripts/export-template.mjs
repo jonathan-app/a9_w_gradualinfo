@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Gera o pacote do template em `dist/` (zip + sha256), respeitando
+ *   as regras `export-ignore` de `.gitattributes`.
+ * @module scripts/export-template
+ * @description O nome do zip sai do `package.json` — muda o nome do projeto, muda
+ *   o nome do pacote, sem editar nada aqui. O zip reflete a árvore de trabalho em
+ *   vez do último commit, por isso o script monta um índice temporário, escreve uma
+ *   árvore e arquiva essa árvore: o índice real e a história não são tocados.
+ * @dependencies node:child_process, node:crypto, node:fs, node:path, node:url;
+ *   `package.json`, `.gitattributes`, binário `git`.
+ *
+ * Execução: `pnpm template:export`.
+ * Saída: `dist/<name>-v<version>.zip` e `.zip.sha256`.
+ */
 // scripts/export-template.mjs
 //
 // Gera o pacote do template em `dist/`, respeitando as regras `export-ignore`

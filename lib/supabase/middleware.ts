@@ -22,6 +22,7 @@ import { isArticleAccessible, verifyPreviewSession } from '@/lib/preview/auth';
  * Em Route Handler que decide autorização, trocar um pelo outro é bypass:
  * qualquer um pode forjar um cookie com a role que quiser.
  *
+ * @fileoverview Renova a sessão e protege rotas a cada requisição.
  * @param request - Requisição corrente: fornece cookies, pathname e a URL usada
  *   no rewrite de artigo inacessível.
  * @returns Response com a sessão reescrita nos cookies; ou rewrite para

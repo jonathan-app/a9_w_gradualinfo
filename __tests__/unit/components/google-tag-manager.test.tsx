@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
  * __tests__/unit/components/google-tag-manager.test.tsx
+ * @fileoverview Renderização condicional do GoogleTagManager por gtmId.
  *
  * Testa a renderização condicional do componente GoogleTagManager
  * baseado no valor de `env.gtmId`.

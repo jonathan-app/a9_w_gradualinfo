@@ -1,5 +1,6 @@
 /**
  * lib/env.ts — leitura única e tipada das variáveis de ambiente
+ * @fileoverview Leitura tipada de variáveis de ambiente com default local.
  *
  * Por que este arquivo existe
  * - Um lugar só para saber o nome de cada variável (o `.env.example` documenta,

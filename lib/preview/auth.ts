@@ -5,6 +5,7 @@ import { readPreviewGrant } from '@/lib/preview/session';
 
 /**
  * lib/preview/auth.ts — verificação de sessão e autorização de preview
+ * @fileoverview Sessão e autorização de preview, compartilhadas com o proxy.
  *
  * Compartilhado entre Server Components e o Proxy/Middleware.
  * Não importa `next/headers` para poder rodar de forma segura em ambos os runtimes.

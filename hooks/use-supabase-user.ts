@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 
 /**
  * hooks/use-supabase-user.ts — usuário logado, no cliente
+ * @fileoverview Usuário do Supabase no cliente, com sinal de montagem.
  *
  * Quando usar
  * Quando o estado do usuário é de fato do cliente: botão "sair", avatar,

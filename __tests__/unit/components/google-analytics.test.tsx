@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
  * __tests__/unit/components/google-analytics.test.tsx
+ * @fileoverview Renderização condicional do GoogleAnalytics por measurementId.
  *
  * Testa a renderização condicional do componente GoogleAnalytics
  * baseado no valor de `env.gaMeasurementId`.

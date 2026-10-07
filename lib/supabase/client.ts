@@ -3,6 +3,7 @@ import { env } from '@/lib/env';
 
 /**
  * lib/supabase/client.ts — cliente Supabase para o navegador
+ * @fileoverview Singleton do cliente Supabase para o navegador.
  *
  * Por que a instância é memorizada no módulo
  * `createBrowserClient` caches a sessão no cookie e dispara o refresh de token

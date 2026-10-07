@@ -3,6 +3,7 @@ import { env } from '@/lib/env';
 
 /**
  * components/shared/google-analytics.tsx — Google Analytics (GA4) via gtag.js
+ * @fileoverview Google Analytics (GA4) via gtag.js, sem bloquear o render.
  *
  * Por que este componente existe
  * - O gtag.js precisa ser carregado de forma assíncrona sem bloquear o FCP

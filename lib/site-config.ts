@@ -1,5 +1,6 @@
 /**
  * lib/site-config.ts
+ * @fileoverview Centraliza a URL pública do site e a verificação do Google.
  *
  * Normaliza a URL pública do site e centraliza a verificação do Google nos
  * metadados. Toda URL absoluta sai daqui: concatenar env solto espalha o

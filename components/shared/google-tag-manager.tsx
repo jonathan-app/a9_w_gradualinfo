@@ -3,6 +3,7 @@ import { env } from '@/lib/env';
 
 /**
  * components/shared/google-tag-manager.tsx — Google Tag Manager (GTM)
+ * @fileoverview Google Tag Manager (GTM) via gtm.js, com fallback noscript.
  *
  * Por que este componente existe
  * - O Google Tag Manager injeta a biblioteca gtm.js assincronamente e

@@ -1,5 +1,6 @@
 /**
  * hooks/useScrollEffect.ts
+ * @fileoverview Informa se a rolagem passou do limite em pixels.
  *
  * Observa a rolagem da janela e informa se ela ultrapassou o limite em pixels; remove o
  * listener ao desmontar.

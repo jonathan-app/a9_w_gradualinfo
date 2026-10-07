@@ -53,6 +53,12 @@ prova de acessibilidade da execução final. Permissões de build, banco e
 scanners continuam pendentes conforme o relatório. Não alterar specs
 Accepted nem reutilizar evidências históricas como aprovação da implementação.
 
+Complemento de 2026-10-07 (documentação): `/sync` pendente e menor —
+`AGENTS.md` ("O repositório tem zero commits. main está unborn") e o comentário
+de `scripts/export-template.mjs` ("HEAD unborn") estão desatualizados: o repo
+tem commits (`23e0d3e`, `d4f81f3`, ...). Edição cirúrgica, sem mexer no
+bastão /develop acima.
+
 ## Histórico
 
 |#|Data|Habilidade|Artefato principal|Estado|
@@ -138,6 +144,7 @@ Accepted nem reutilizar evidências históricas como aprovação da implementaç
 | 67 | 2026-10-07 | integração Google Analytics (gtag.js G-7JVZ7JS4MX) | `components/shared/google-analytics.tsx`, `app/layout.tsx`, `lib/env.ts`, `.env.example`, `next.config.ts`, `__tests__/unit/components/google-analytics.test.tsx`: componente com next/script (afterInteractive); CSP atualizado com domínios do GTM/GA; env tipado; 90 testes passam e build:next validado | concluído |
 | 68 | 2026-10-07 | integração Google Tag Manager (container GTM-TQVMR8TN) | `components/shared/google-tag-manager.tsx`, `app/layout.tsx`, `lib/env.ts`, `.env.example`, `next.config.ts`, `__tests__/unit/components/google-tag-manager.test.tsx`: componente com next/script e noscript iframe; frame-src liberado no CSP; env tipado; 92 testes passam e build:next validado | concluído |
 | 69 | 2026-10-07 | auditoria e correção do MCP do `kilo.json` | `kilo.json`: erro `Unrecognized key: mcps` vinha do HEAD (array `mcps` não existe no schema); árvore já migrava para objeto `mcp` mas ainda reprovava com `notes` ×4 — notas viraram comentários JSONC, `$SUPABASE_PROJECT_REF` virou `{env:...}` (command roda sem shell), token Supabase via `{env:}` em vez de placeholder literal, `timeout: 30000` contra os 5s padrão do npx a frio; validado contra `https://app.kilo.ai/config.json` (0 erros), prettier OK, typecheck/lint OK, 92/92 testes; `format:check` global reprovado por `scripts/pagespeed-monitor.js` (WIP de outra sessão, não alterado) | concluído; Bastão atual (/develop AC-07) preservado |
+| 70 | 2026-10-07 | documentação em lote (skill code-documenter, fora do fluxo) | 97 arquivos `.ts/.tsx/.mjs/.js` rastreados (fora `referencias/` e `.agents/`): cabeçalho `@fileoverview` em todos + JSDoc de exports e comentários de porquê em pt-BR, 6 lotes paralelos; somente adições de comentário — zero linhas de código alteradas (conferido por snapshot/lote e `git diff`); gate final: typecheck ✓, lint 0 erros, `prettier --check .` ✓, 92/92 testes; anomalias registradas sem corrigir: `AGENTS.md` e comentário de `export-template.mjs` desatualizados sobre "zero commits", `lib/audit.ts` ramos idênticos, `e2e-fault-proxy.mjs` compara Bearer com `!==`, `quarantine-skills.mjs` data fixa de destino | concluído; Bastão atual (/develop AC-07) preservado |
 
 ### Evidência da linha 01
 

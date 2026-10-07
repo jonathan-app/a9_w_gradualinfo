@@ -20,6 +20,7 @@ import { env } from '@/lib/env';
  * que chama esta função precisa de `await` — assinatura única, sem o bug
  * clássico de esquecer o await e receber `{}` em vez de cookie.
  *
+ * @fileoverview Cliente Supabase do servidor, com sessão em cookie.
  * @returns Cliente `@supabase/ssr` com `getAll`/`setAll` encaixados no cookie
  *   store desta requisição; nenhum parâmetro — tudo vem de `env` e dos cookies.
  */

@@ -15,9 +15,11 @@ import './globals.css';
  * resultado é reenviado ao browser; o que for interativo precisa virar Client
  * Component explicitamente com 'use client'.
  *
- * Por que a fonte vem por `next/font`: o arquivo é baixado no build e servido
- * pelo próprio Next, sem requisição ao Google — sem risco de bloqueio, sem
- * layout shift e com `font-display: swap` já configurado.
+ * Fontes: `app/globals.css` aponta `--font-sans`/`--font-mono` para
+ * `--font-geist-sans`/`--font-geist-mono`, mas nada no projeto define essas
+ * variáveis (não há `next/font`, `@font-face` nem import de Google Fonts), então
+ * na prática vale o fallback `ui-sans-serif, system-ui` / `ui-monospace` — sem
+ * requisição externa e sem layout shift, ao preço de não ter fonte própria.
  *
  * @fileoverview Root layout: o invólucro único de toda página do App Router.
  * @module app/layout

@@ -2,6 +2,7 @@
 
 /**
  * scripts/run-gitleaks.mjs — procura segredo no histórico e na árvore de trabalho
+ * @fileoverview Procura segredos no histórico e na árvore de trabalho.
  *
  * Por que existe
  * O `.gitignore` protege o futuro: ele impede que `.env` seja commitado agora.

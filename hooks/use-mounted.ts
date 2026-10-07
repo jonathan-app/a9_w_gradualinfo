@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 /**
  * hooks/use-mounted.ts — sabe se o componente já montou no cliente
+ * @fileoverview Sabe se o componente montou no cliente, evitando mismatch.
  *
  * Para que serve
  * Quando o HTML do servidor e o primeiro render do cliente não podem ser
