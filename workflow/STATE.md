@@ -23,16 +23,17 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: nenhuma — ciclo de validação da correção dos 5 ACs concluído: run `37688711457` verde no SHA `5726692` (E2E 100% PASS, todos os jobs SUCCESS, `/check gate` PASS após decisão do usuário de reexecutar até o flake do Lighthouse resolver). Merge e deploy continuam sob decisão exclusiva do usuário.**
+**Próxima etapa: decisão do usuário — CI 100% verde na execução remota 37696700726 (9/9 jobs SUCCESS, incluindo E2E, banco, scanners, Lighthouse e /check gate). Rastreabilidade confirmada com distinção entre SHA da branch (`c059f8da6b67dfd1e5518613e7f78482403177aa`) e SHA avaliado no gate (`208980f14e1bc819e69812600d478f40b587562e`, merge efêmero da PR #21 com a base `main`). Manutenção em `e2e/verify-md0002-tarefa4.spec.ts` aplicada (remoção de referência a `.serial` e restauração cirúrgica estrita de `mutatedPostIds`). Merge e deploy permanecem sem autorização.**
 
-Status da resolução da reprovação do `/check gate`:
-- **Auditoria de Parsing Semgrep:** 110 caminhos escaneados, 41 arquivos de aplicação (`app/`, `components/`, `lib/`, `proxy.ts`) integralmente analisados com zero erros de parsing e zero omissões (conferido: 41/41 no núcleo, `errors[]` vazio; fora do núcleo, apenas `scripts/check-portability.mjs` intencional e `vitest.config.mts` fora do alvo do Semgrep 1.179).
-- **Execução local da suíte corrigida em produção:** `pnpm test:e2e` no build turbopack + servidor `next start` HTTPS local → **34/34 PASS em 3 rodadas consecutivas** (`verify-md0002-tarefa4`: AC-01/02/04, AC-03 x2, AC-12 todos PASS; sem `skipped` em cascata). Falha isolada em `critical-flows.spec.ts` (mesmo sintoma de streaming, fora do gate) corrigida e fixada por 5/5 executando o spec isolado.
-- **Investigação dos 5 ACs da tarefa 4 (`e2e/verify-md0002-tarefa4.spec.ts`):**
-  - Causa raiz de `AC-01, AC-02, AC-04 (FAIL)`: `cards.count()` síncrono avaliado durante chunk transitório de streaming SSR gerava contagem 20 (10 + 10 nós ocultos). Corrigido com escopo em `main a[href^="/artigos/"]` e asserção com auto-waiting `await expect(cards).toHaveCount(10)`.
-  - Causa raiz de `AC-03 (UNVERIFIABLE)`: `getByText('Nenhum artigo publicado')` disparava violação de strict mode (2 nós, sendo 1 em container de streaming hidden fora de `main`). Corrigido usando `getByRole('heading', { name: 'Nenhum artigo publicado' })`.
-  - Causa raiz de `AC-12 (UNVERIFIABLE)`: Testes subsequentes marcados como `skipped` na primeira tentativa pelo `test.describe.serial` após falha do teste 1, violando o critério estrito de integridade de `ci-assess.mjs`. Corrigido com a eliminação das falhas na tentativa 0 e remoção de `.serial` (já executado sequencialmente em worker 1).
-- **Aprovação histórica (commit `2639744b`):** 13/13 ACs PASS mantidos como registro histórico no SHA avaliado.
+Rastreabilidade de Aprovação e Evidências:
+- **Execução remota no GitHub Actions:** [Run 37696700726](https://github.com/jonathan-app/a9_w_gradualinfo/actions/runs/37696700726) com aprovação integral nos 9 jobs.
+- **SHA da Branch (`feat/md-0002-casca-editorial-home`):** `c059f8da6b67dfd1e5518613e7f78482403177aa` (registrado na PR #21 e no pacote entregue).
+- **SHA avaliado pelo gate mecânico:** `208980f14e1bc819e69812600d478f40b587562e` (árvore combinada do merge de teste `refs/pull/21/merge` avaliada pela CI remota; log oficial: *"Gate mecânico aprovado para 208980f..."*).
+- **Artefato do Gate:** [check-gate-report (Artifact ID 11516266071)](https://github.com/jonathan-app/a9_w_gradualinfo/actions/runs/37696700726/artifacts/11516266071) — 13/13 ACs PASS, 0 FAIL, 0 UNVERIFIABLE, 0 BLOCKER.
+- **Ajustes de Manutenção Aplicados (`e2e/verify-md0002-tarefa4.spec.ts`):**
+  1. Comentário de cabeçalho atualizado: remove citação a `describe.serial` e documenta o isolamento via hooks e restauração explícita de IDs.
+  2. Restauração cirúrgica: consultas genéricas (`.not('slug', 'in', ...).eq('status', 'arquivado')`) removidas dos hooks; apenas os registros rastreados em `mutatedPostIds` são restaurados, evitando mutação acidental de fixtures legítimas (como `fixture-arquivado`).
+- **Validação Local:** `pnpm check:all` 100% PASS (92/92 testes unitários, typecheck, lint e prettier).
 - **Governança:** Merge e deploy continuam expressamente NÃO AUTORIZADOS.
 
 Verificação de `docs/` concluída (linha 76 do histórico): achados completos na
@@ -152,6 +153,7 @@ Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad58731
 | 84 | 2026-10-07 | /check: CI verde em tudo exceto flake do Lighthouse de performance | run `37688711457` no SHA `5726692`: E2E 100% PASS (5 ACs da tarefa 4 confirmados na CI), typecheck/lint/testes, Build, RLS, Segredos, OSV, SAST todos SUCCESS; único FAIL = Lighthouse `categories:performance` mínimo 0.8 (máx 0.77/0.78 nas 3 runs) — mesmo perfil de métricas (TBT 430-1620ms) do run `9f23ebd` que passou, app code idêntico, flake de piso pré-existente (também falhou em runs 37676017984, 37667734011, 37663851027); `/check gate` skipped por dependência | em curso; revisar decisão do piso de performance |
 | 85 | 2026-10-07 | /check: run CI totalmente verde com `/check gate` PASS | decisão do usuário de reexecutar até o flake resolver; run `37688711457` reexecutada sem alteração de config e ficou 100% green no SHA `5726692`: E2E (5 ACs da tarefa 4), Lighthouse (home + artigo), `/check gate` todos SUCCESS; ciclo de correção dos 5 ACs encerrado — causa raiz (streaming SSR + `.serial`) corrigida nos commits 5687030, 3a96e58, b9b201d, 5726692 | concluído; merge e deploy sob decisão do usuário |
 | 86 | 2026-10-07 | /check: ajuste de timeout da tarefa 8 e acompanhamento CI | `e2e/verify-md0002-tarefa8.spec.ts` (timeout de expiração real para 120s); `pnpm check:all` 92/92 PASS; publicação com acompanhamento integral dos 9 jobs da CI | concluído |
+| 87 | 2026-10-07 | /check: rastreabilidade de SHAs (branch vs merge CI) e manutenção de isolamento da tarefa 4 | `e2e/verify-md0002-tarefa4.spec.ts` (cabeçalho sem `.serial`, restauração restrita a `mutatedPostIds`); registro dos dois SHAs na CI run 37696700726 (branch `c059f8da` vs gate merge `208980f1`, 9/9 jobs SUCCESS); `pnpm check:all` 92/92 PASS; merge e deploy desautorizados | concluído; decisão do usuário |
 
 
 ### Evidência da linha 01
