@@ -14,6 +14,11 @@ import { twMerge } from 'tailwind-merge';
  *
  * Regras de uso: toda `className` condicional passa por aqui. `cn` no lugar
  * errado é a origem classic de "por que meu estilo não aplica".
+ *
+ * @param inputs - Valores no formato do `clsx`: strings, arrays, objetos e
+ *   condicionais.
+ * @returns String de classes com os conflitos do Tailwind já resolvidos — a
+ *   última ocorrência de cada propriedade vence.
  */
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));

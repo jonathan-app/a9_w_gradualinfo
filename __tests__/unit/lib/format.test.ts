@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Suíte das funções de formatação e de serialização de `lib/utils/format`.
+ * @module __tests__/unit/lib/format
+ * @description Fixa o que o usuário vê — separador por locale, escala de centavos, fuso de São
+ *   Paulo na virada da data UTC e iniciais — e a fronteira de segurança do JSON-LD: escape de
+ *   `</script>` é o que impede que um título hostil feche a tag e execute no leitor.
+ * @dependencies vitest, @/lib/utils/format.
+ *
+ * As funções são puras e recebem locale por parâmetro justamente para poderem ser testadas
+ * sem mock de módulo. O teste fixa o comportamento que o usuário vê — inclusive quando a
+ * entrada é inesperada.
+ */
 import { describe, expect, it } from 'vitest';
 import {
   formatCurrency,
@@ -6,14 +18,6 @@ import {
   initials,
   serializeJsonLd,
 } from '@/lib/utils/format';
-
-/**
- * __tests__/unit/lib/format.test.ts
- *
- * Estas funções são puras e recebem locale por parâmetro justamente para
- * poderem ser testadas sem mock de módulo. O teste fixa o comportamento que o
- * usuário vê — inclusive quando a entrada é inesperada.
- */
 describe('formatNumber', () => {
   it('usa separador de milhar do locale', () => {
     // 1234 em pt-BR é "1.234"; o ponto é separador de milhar, não decimal.
@@ -88,6 +92,8 @@ describe('initials', () => {
   });
 });
 
+// O JSON-LD é emitido como texto dentro de uma tag <script>: sem escape, um conteúdo com
+// `</script>` fecha a tag na hora e o resto do payload vira script executável no leitor.
 describe('serializeJsonLd', () => {
   it('escapa caracteres críticos e tags de fechamento de script', () => {
     const payload = {

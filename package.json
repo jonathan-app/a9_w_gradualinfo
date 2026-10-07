@@ -55,7 +55,8 @@
     "security:sast": "node scripts/run-semgrep.mjs",
     "security:secrets": "node scripts/run-gitleaks.mjs",
     "typecheck:e2e": "tsc --project tsconfig.e2e.json --noEmit",
-    "supabase:status": "pnpm dlx supabase@2.119.0 status --output json"
+    "supabase:status": "pnpm dlx supabase@2.119.0 status --output json",
+    "skills:check": "node scripts/check-skills.mjs"
   },
   "resolutions": {
     "react": "19.3.0",

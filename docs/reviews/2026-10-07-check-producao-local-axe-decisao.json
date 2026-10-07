@@ -1,4 +1,67 @@
 {
+  "acs": [
+    {
+      "id": "HTTP artigo público",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP artigo inexistente",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP rascunho sem preview",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP rascunho com preview",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Secure em Set-Cookie de produção",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "no-store no artigo protegido",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Sessão expirada (sem apagar cookies como substituto)",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Usuário autenticado sem claim",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Identidade diferente da dedicada",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Logout com falha simulada e acesso subsequente",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Axe home",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Axe artigo",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    }
+  ],
+  "findings": [],
   "approved": false,
   "verdict": "REPROVADO",
   "counts": {
@@ -11,29 +74,32 @@
     "WARNING": 0
   },
   "reasons": [
-    "AC reprovado ou não verificável: HTTP artigo público (UNVERIFIABLE)",
-    "Falta evidência para o AC: HTTP artigo público",
-    "AC reprovado ou não verificável: HTTP artigo inexistente (UNVERIFIABLE)",
-    "Falta evidência para o AC: HTTP artigo inexistente",
-    "AC reprovado ou não verificável: HTTP rascunho sem preview (UNVERIFIABLE)",
-    "Falta evidência para o AC: HTTP rascunho sem preview",
-    "AC reprovado ou não verificável: HTTP rascunho com preview (UNVERIFIABLE)",
-    "Falta evidência para o AC: HTTP rascunho com preview",
-    "AC reprovado ou não verificável: Secure em Set-Cookie de produção (UNVERIFIABLE)",
-    "Falta evidência para o AC: Secure em Set-Cookie de produção",
-    "AC reprovado ou não verificável: no-store no artigo protegido (UNVERIFIABLE)",
-    "Falta evidência para o AC: no-store no artigo protegido",
-    "AC reprovado ou não verificável: Sessão expirada (sem apagar cookies como substituto) (UNVERIFIABLE)",
-    "Falta evidência para o AC: Sessão expirada (sem apagar cookies como substituto)",
-    "AC reprovado ou não verificável: Usuário autenticado sem claim (UNVERIFIABLE)",
-    "Falta evidência para o AC: Usuário autenticado sem claim",
-    "AC reprovado ou não verificável: Identidade diferente da dedicada (UNVERIFIABLE)",
-    "Falta evidência para o AC: Identidade diferente da dedicada",
-    "AC reprovado ou não verificável: Logout com falha simulada e acesso subsequente (UNVERIFIABLE)",
-    "Falta evidência para o AC: Logout com falha simulada e acesso subsequente",
-    "AC reprovado ou não verificável: Axe home (UNVERIFIABLE)",
-    "Falta evidência para o AC: Axe home",
-    "AC reprovado ou não verificável: Axe artigo (UNVERIFIABLE)",
-    "Falta evidência para o AC: Axe artigo"
+    "Schema, commit ou árvore ausentes ou inválidos.",
+    "Spec/hash diferente do contrato esperado.",
+    "Conjunto de ACs incompleto, duplicado ou diferente da spec.",
+    "AC sem PASS: HTTP artigo público",
+    "Evidência ausente ou hash incorreto: HTTP artigo público",
+    "AC sem PASS: HTTP artigo inexistente",
+    "Evidência ausente ou hash incorreto: HTTP artigo inexistente",
+    "AC sem PASS: HTTP rascunho sem preview",
+    "Evidência ausente ou hash incorreto: HTTP rascunho sem preview",
+    "AC sem PASS: HTTP rascunho com preview",
+    "Evidência ausente ou hash incorreto: HTTP rascunho com preview",
+    "AC sem PASS: Secure em Set-Cookie de produção",
+    "Evidência ausente ou hash incorreto: Secure em Set-Cookie de produção",
+    "AC sem PASS: no-store no artigo protegido",
+    "Evidência ausente ou hash incorreto: no-store no artigo protegido",
+    "AC sem PASS: Sessão expirada (sem apagar cookies como substituto)",
+    "Evidência ausente ou hash incorreto: Sessão expirada (sem apagar cookies como substituto)",
+    "AC sem PASS: Usuário autenticado sem claim",
+    "Evidência ausente ou hash incorreto: Usuário autenticado sem claim",
+    "AC sem PASS: Identidade diferente da dedicada",
+    "Evidência ausente ou hash incorreto: Identidade diferente da dedicada",
+    "AC sem PASS: Logout com falha simulada e acesso subsequente",
+    "Evidência ausente ou hash incorreto: Logout com falha simulada e acesso subsequente",
+    "AC sem PASS: Axe home",
+    "Evidência ausente ou hash incorreto: Axe home",
+    "AC sem PASS: Axe artigo",
+    "Evidência ausente ou hash incorreto: Axe artigo"
   ]
 }

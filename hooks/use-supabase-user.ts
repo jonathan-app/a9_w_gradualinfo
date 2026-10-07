@@ -25,6 +25,13 @@ type State = {
   mounted: boolean;
 };
 
+/**
+ * Espelha a sessão do Supabase no cliente e devolve o `signOut`.
+ *
+ * @returns `{ user, isLoading, mounted, signOut }` — renderize o estado de
+ *   carregamento enquanto `mounted` for `false`; é o que evita trocar de ramo
+ *   na hidratação (premissa detalhada no cabeçalho do arquivo).
+ */
 export function useSupabaseUser() {
   const [state, setState] = useState<State>({
     user: null,

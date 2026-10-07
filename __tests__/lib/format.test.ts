@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Suíte das funções de formatação de `lib/utils/format`.
+ * @module __tests__/lib/format
+ * @description Fixa o que o usuário vê: separador de milhar por locale, escala de centavos do
+ *   formato monetário e iniciais de nome — inclusive quando a entrada é inesperada.
+ * @dependencies vitest, @/lib/utils/format.
+ *
+ * As funções são puras e recebem locale por parâmetro justamente para poderem ser testadas
+ * sem mock de módulo.
+ */
 import { describe, expect, it } from 'vitest';
 import {
   formatCurrency,
@@ -5,14 +15,6 @@ import {
   formatNumber,
   initials,
 } from '@/lib/utils/format';
-
-/**
- * __tests__/lib/format.test.ts
- *
- * Estas funções são puras e recebem locale por parâmetro justamente para
- * poderem ser testadas sem mock de módulo. O teste fixa o comportamento que o
- * usuário vê — inclusive quando a entrada é inesperada.
- */
 describe('formatNumber', () => {
   it('usa separador de milhar do locale', () => {
     // 1234 em pt-BR é "1.234"; o ponto é separador de milhar, não decimal.

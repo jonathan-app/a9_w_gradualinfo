@@ -1,16 +1,18 @@
+/**
+ * @fileoverview Suíte de componente do `Button` — trava o contrato de acessibilidade do `asChild`.
+ * @module __tests__/components/button
+ * @description Cobre renderização por papel (role), precedence da `className` do consumidor
+ *   sobre a variante e comportamento desabilitado. Asserções são por `getByRole`, nunca por
+ *   classe: é o papel que o teclado e o leitor de tela enxergam.
+ * @dependencies @testing-library/react, @testing-library/user-event, @/components/ui/button.
+ *
+ * O botão concentra a regra de acessibilidade mais fácil de quebrar: `asChild` precisa
+ * renderizar o link como <a>, e não como <button> envolvendo um <a>.
+ */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { Button } from '@/components/ui/button';
-
-/**
- * __tests__/components/button.test.tsx
- *
- * O botão concentra a regra de acessibilidade mais fácil de quebrar: `asChild`
- * precisa renderizar o link como <a>, e não como <button> envolvendo um <a>.
- * Por isso o teste afirma pelo papel (getByRole) e não pela classe — é o papel
- * que o teclado e o leitor de tela enxergam.
- */
 describe('Button', () => {
   it('renderiza como button por padrão', () => {
     render(<Button>Salvar</Button>);

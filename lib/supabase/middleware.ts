@@ -2,9 +2,11 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { env } from '@/lib/env';
 import { previewCookieOptions } from '@/lib/preview/config';
+import { PREVIEW_COOKIE } from '@/lib/preview/session';
+import { isArticleAccessible, verifyPreviewSession } from '@/lib/preview/auth';
 
 /**
- * lib/supabase/middleware.ts — renova a sessão a cada requisição
+ * lib/supabase/middleware.ts — renova a sessão a cada requisição e protege rotas
  *
  * Por que isso roda em TODAS as requisições
  * O token de acesso do Supabase é curto. Se ninguém o renovar, o usuário é
@@ -19,6 +21,11 @@ import { previewCookieOptions } from '@/lib/preview/config';
  * seja, confia em dado que o cliente controla. `getUser()` vai ao servidor.
  * Em Route Handler que decide autorização, trocar um pelo outro é bypass:
  * qualquer um pode forjar um cookie com a role que quiser.
+ *
+ * @param request - Requisição corrente: fornece cookies, pathname e a URL usada
+ *   no rewrite de artigo inacessível.
+ * @returns Response com a sessão reescrita nos cookies; ou rewrite para
+ *   `/_not-found` com status 404 quando o artigo não é acessível ao leitor.
  */
 export async function updateSession(request: NextRequest) {
   // `NextResponse.next()` carrega os cookies de request adiante; sem isso a
@@ -58,12 +65,35 @@ export async function updateSession(request: NextRequest) {
   } catch {
     /* leitura protegida falha fechada */
   }
+
   if (
     request.nextUrl.pathname.startsWith('/artigos/') ||
     request.nextUrl.pathname.startsWith('/preview') ||
     request.nextUrl.pathname.startsWith('/api/preview')
-  )
+  ) {
+    // Artigo e preview mudam conforme a sessão (rascunho visível só no
+    // preview): no-store impede CDN/browser de servir a variação errada a
+    // partir de cache compartilhado.
     response.headers.set('Cache-Control', 'private, no-store');
+  }
+
+  // Intercepta rotas de artigo dinâmico `/artigos/[slug]` para garantir que
+  // inexistente, rascunho sem preview ou data futura devolva status HTTP 404
+  // antes do streaming do layout iniciar (evitando o "soft 200" do streaming).
+  const segments = request.nextUrl.pathname.split('/').filter(Boolean);
+  if (segments.length === 2 && segments[0] === 'artigos') {
+    const slug = segments[1]!;
+    const previewCookie = request.cookies.get(PREVIEW_COOKIE)?.value;
+    const isPreview = await verifyPreviewSession(supabase, previewCookie);
+    const accessible = await isArticleAccessible(supabase, slug, isPreview);
+
+    if (!accessible) {
+      return NextResponse.rewrite(new URL('/_not-found', request.url), {
+        status: 404,
+        headers: response.headers,
+      });
+    }
+  }
 
   return response;
 }

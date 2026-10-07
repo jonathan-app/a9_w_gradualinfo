@@ -7,6 +7,17 @@ import { Button } from '@/components/ui/button';
  * Server Component. O 404 é também onde a busca decide o que indexar: uma
  * página "não encontrada" com `noindex` evita que o buscador guarde páginas de
  * erro como conteúdo do site.
+ *
+ * @fileoverview Tela de página inexistente do App Router.
+ * @module app/not-found
+ * @dependencies next/link, components/ui/button.
+ */
+/**
+ * Conteúdo do 404 (usado por qualquer rota que chame `notFound()`).
+ *
+ * @returns Explicação curta e um link de volta ao início — `asChild` mantém o
+ *   `<Link>` como link, para abrir em nova aba e copiar endereço continuarem
+ *   funcionando.
  */
 export default function NotFound() {
   return (

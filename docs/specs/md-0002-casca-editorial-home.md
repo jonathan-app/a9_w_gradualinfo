@@ -2,7 +2,8 @@
 
 **Date**: 2026-10-05
 **Status**: Accepted
-**Decision source**: 
+**Decision source**:
+
 - **Aceite da spec md-0002**: Aprovada pelo dono anteriormente na definição do contrato da casca editorial e política de cache (`no-store` por requisição).
 - **Emenda do AC-06 (2026-10-07)**: O dono respondeu explicitamente `1` na sessão de 2026-10-07, aprovando pontualmente a exceção exclusiva para JSON-LD estruturado (`<script type="application/ld+json">`) com serialização segura e escape Unicode, mantendo proibido `dangerouslySetInnerHTML` no corpo Markdown do artigo.
 

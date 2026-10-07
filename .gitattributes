@@ -20,3 +20,9 @@ ci-results export-ignore
 *.tsbuildinfo export-ignore
 verify-result.json export-ignore
 
+
+# Saídas geradas não pertencem ao template exportado.
+.next export-ignore
+coverage export-ignore
+security-reports export-ignore
+.lighthouseci export-ignore

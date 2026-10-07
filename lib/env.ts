@@ -24,6 +24,11 @@
 const PLACEHOLDER_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjo0MTAyNDQ0ODAwfQ.local-development-placeholder-signature';
 
+/**
+ * Leitura tipada de todas as variáveis do app. Cada entrada usa `??` — falta
+ * de `.env` nunca lança, cai no default documentado no cabeçalho. `as const`
+ * mantém os defaults estreitos para o type checker e impede reatribuição.
+ */
 export const env = {
   supabase: {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321',
@@ -31,11 +36,27 @@ export const env = {
   },
   sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  // Leitura no servidor ainda aceita a variável sem o prefixo NEXT_PUBLIC_;
+  // a pública é a fonte preferida porque é a única que existe no bundle do browser.
+  googleSiteVerification:
+    process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ??
+    process.env.GOOGLE_SITE_VERIFICATION ??
+    '',
   locale: process.env.NEXT_PUBLIC_LOCALE ?? 'pt-BR',
   previewToken: process.env.SUPABASE_PREVIEW_TOKEN ?? '',
   previewPassword: process.env.SUPABASE_PREVIEW_PASSWORD ?? '',
+  editorialImageBucket: process.env.SUPABASE_EDITORIAL_IMAGE_BUCKET ?? '',
   previewEmail: process.env.SUPABASE_PREVIEW_EMAIL ?? '',
   previewUserId: process.env.SUPABASE_PREVIEW_USER_ID ?? '',
+  // ID de produção embutido: um build de produção sem a variável definida
+  // continua medindo, em vez de enviar string vazia e perder o evento.
+  gaMeasurementId:
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ??
+    (process.env.NODE_ENV === 'production' ? 'G-7JVZ7JS4MX' : ''),
+  // Mesmo racional de gaMeasurementId acima: contêiner GTM de produção como fallback.
+  gtmId:
+    process.env.NEXT_PUBLIC_GTM_ID ??
+    (process.env.NODE_ENV === 'production' ? 'GTM-TQVMR8TN' : ''),
   isProduction: process.env.NODE_ENV === 'production',
 } as const;
 

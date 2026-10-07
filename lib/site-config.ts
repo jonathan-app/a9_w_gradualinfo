@@ -6,18 +6,16 @@
  * default errado por arquivo.
  */
 
+import { env } from '@/lib/env';
+
 // Tira as barras do fim para não duplicar "/" ao concatenar caminhos.
 const normalizeOrigin = (url: string) => url.replace(/\/+$/, '');
 
-export const SITE_ORIGIN = normalizeOrigin(
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-);
+// Origem canônica, sem barra final: base de toda URL absoluta do site.
+export const SITE_ORIGIN = normalizeOrigin(env.siteUrl);
 
 // Alguns metadados usam a raiz com barra final explícita.
 export const SITE_URL = `${SITE_ORIGIN}/`;
 
 // Público na frente; no servidor também aceita a variável sem prefixo.
-export const GOOGLE_SITE_VERIFICATION =
-  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
-  process.env.GOOGLE_SITE_VERIFICATION ||
-  undefined;
+export const GOOGLE_SITE_VERIFICATION = env.googleSiteVerification || undefined;

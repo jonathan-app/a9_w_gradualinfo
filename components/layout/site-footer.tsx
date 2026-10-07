@@ -3,6 +3,16 @@
  *
  * Server Component puro. Um ano corrente fixo no servidor é o suficiente: o
  * rodapé não precisa re-renderizar a cada virada de meia-noite.
+ *
+ * @fileoverview Rodapé do site.
+ * @module components/layout/site-footer
+ * @dependencies nenhum além do React (Server Component puro).
+ */
+/**
+ * Rodapé do site.
+ *
+ * @returns Faixa com o ano corrente (calculado no servidor) e a assinatura de
+ *   stack; empilhada em tela estreita e em linha a partir de `sm`.
  */
 export function SiteFooter() {
   const year = new Date().getFullYear();

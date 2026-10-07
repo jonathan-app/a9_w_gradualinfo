@@ -1,21 +1,25 @@
-import type { NextRequest } from 'next/server';
-import { updateSession } from '@/lib/supabase/middleware';
-
 /**
- * proxy.ts — o antigo `middleware.ts` (Next 16)
+ * @fileoverview Executa antes de cada requisição — o antigo `middleware.ts` (Next 16).
+ * @module proxy
+ * @description Único lugar do projeto que roda antes de rota: renova a sessão Supabase a cada
+ *   requisição (ver `lib/supabase/middleware.ts`). O Next 16 renomeou o arquivo — `proxy.ts`
+ *   substitui `middleware.ts`; o nome antigo ainda funciona, mas emite aviso de depreciação, e
+ *   os dois no mesmo projeto é erro de build.
+ * @dependencies next/server (NextRequest), @/lib/supabase/middleware (updateSession).
  *
- * O Next 16 renomeou o arquivo: `proxy.ts` substitui `middleware.ts`. O nome
- * antigo ainda funciona, mas emite aviso de depreciação. Este é o único lugar
- * do projeto que roda antes de cada rota — e o Next 16 fixa o proxy no runtime
- * Node (declarar `runtime` aqui é erro de build).
+ * O Next 16 fixa o proxy no runtime Node (declarar `runtime` aqui é erro de build); o OpenNext
+ * rotula o suporte a middleware Node como experimental e avisa no build — aviso conhecido, não
+ * bug do projeto.
  *
- * Por que o `matcher` é restrito a caminhos que precisam de sessão
- * Rodar `updateSession` em asset estático é desperdício: uma requisição de
- * `.woff2` não carrega cookie de sessão, então a renovação seria trabalho
- * inútil em cada download de fonte.
+ * Por que o `matcher` é restrito a caminhos que precisam de sessão: rodar `updateSession` em
+ * asset estático é desperdício — uma requisição de `.woff2` não carrega cookie de sessão, então
+ * a renovação seria trabalho inútil em cada download de fonte.
  *
  * Referência: https://nextjs.org/docs/app/api-reference/file-conventions/proxy
  */
+import type { NextRequest } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
+
 export async function proxy(request: NextRequest) {
   return await updateSession(request);
 }

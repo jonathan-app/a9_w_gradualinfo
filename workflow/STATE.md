@@ -23,312 +23,51 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: decisão do usuário, revisão e aceite do contrato de preview.**
-Proposta concreta: `docs/specs/0003-preview-autorizacao.md`, status Proposed.
-Decisões explícitas desta sessão em 2026-10-07: prazo absoluto de 30 minutos,
-um UUID configurado no servidor e POST sem guardar o segredo. A proposta
-consolidada recomenda configurações separadas, prazo assinado vinculado à
-sessão, erro real de logout e negativos em produção. Perguntas pendentes:
-quer revisão por outro modelo antes do aceite? Aceita bloqueio local após
-logout e prazo de 30 minutos, ou exige revogação imediata de credenciais
-copiadas mesmo se Auth falhar? Para etapa 4, aceita apenas JSON gerado pela
-CI para o SHA testado, com Markdown legado somente histórico? Não inferir
-aceite integral das três escolhas parciais.
+**Próxima etapa: /develop, reproduzir AC-07 na árvore atual antes de corrigir.**
 
-Etapa 5 inspecionada em `docs/audits/2026-10-07-skills-governanca.md` e
-manifesto associado: 90 diretórios, 9 nomes no lock, 81 extras, nenhum nome
-do lock ausente. Hash do arquivo e computedHash têm algoritmos ainda não
-comparados. Verificador/allowlist e proteção remota não implementados.
-Plano atualizado sem marcar etapas completas. Após aceite, /architect
-reconcilia md-0001/md-0002 e entrega /develop etapa 3. Etapa 4 segue depois.
-Etapa 4 inspecionada, sem implementação: `docs/audits/2026-10-07-ci-gate-etapa4.md`
-registra desvinculação entre decisão e SHA, conjunto incompleto de ACs,
-E2E sem banco e servidor compilado, ausência de gitleaks, SAST sem regras
-locais e ferramentas sem pin completo. Dependência da etapa 3 preservada.
-Também registrar em contrato aceito a origem dos ACs e da aprovação, o
-vínculo SHA/árvore/spec e o tratamento do formato legado antes da etapa 4.
-**Blocked (etapa 3, atualizado em 2026-10-07):** prazo, quantidade de
-identidades e transporte foram decididos pelo dono. Fontes, assinatura,
-renovação e erros estão detalhados na proposta 0003, ainda sem aceite
-integral. Não construir a proposta antes de Accepted nem alterar o status
-das specs anteriores para inferir aprovação.
-Inspeção desta rodada: GET lê token na query e usa o mesmo valor como senha;
-leitura verifica claim sem identidade; teste de expiração apenas apaga
-cookies e teste de logout não induz erro. Serializador e comparação
-criptográfica já existem. Não houve alteração de código ou execução de
-suítes nesta rodada. Após a decisão registrada, retomar /develop etapa 3;
-a verificação final /check segue pendente depois das correções.
-Em 2026-10-07, o dono aprovou explicitamente a spec `md-0002` (agora **Accepted**, SHA-256 `7516d71b52c986398f98c513e4270f6fc01f187b9955f16d75855ab42e65d99b`), consolidando a política de cache público `no-store`, preview `private, no-store` e a emenda de AC-06 para exceção exclusiva de JSON-LD com serialização segura.
-As correções técnicas de robustez e segurança foram validadas:
-1. `serializeJsonLd` sanitiza tags perigosas (`<`, `>`, `&`) como Unicode seguro (`\u003c`, etc.), com teste provando que `</script><script>alert(1)</script>` não fecha o script HTML e permanece íntegro para `JSON.parse`.
-2. Validação do token de preview migrada para `crypto.timingSafeEqual` com SHA-256 de tamanho fixo em `app/api/preview/route.ts` (protege a comparação dos hashes; não comprova timing de ponta a ponta).
-3. Rota `/artigos/[slug]` fixada com `export const dynamic = 'force-dynamic'` para renderização dinâmica (não comprova sozinho ausência de cache no CDN; headers reais de produção do artigo protegido mapeados na matriz).
-4. Suítes locais dev executadas: `pnpm check:all` (76/76 Vitest, typecheck, lint, prettier), pgTAP (63/63 asserções), Playwright Axe (3/3) e Playwright Tarefa 8 (7/7) no servidor dev; os 12 cenários de produção compilada com `next start` continuam mapeados com suas lacunas como `UNVERIFIABLE`.
-Evidências consolidadas em `docs/reviews/2026-10-07-check-execucao-local-axe.md`. **Merge e deploy continuam rigorosamente sem autorização.**
+Estado operacional confirmado explicitamente pelo dono nesta sessão:
+entrega REPROVADA; merge NÃO AUTORIZADO; publicação NÃO AUTORIZADA.
+Cada conclusão exige revisão, manifesto, evidência e resultado da mesma
+execução. Não transportar PASS, FAIL ou UNVERIFIABLE entre árvores.
 
-- **Plano de atualização registrado (2026-10-07):** `plano-atualizacao-auditoria.md`, com 10 entregas, dependências, responsáveis, critérios e cobertura dos P0/P1/P2. Fonte preservada em `docs/audits/2026-10-06-deep-audit-original.txt` com SHA-256. Reconcilia CI/headers/JSON-LD já presentes sem tratá-los como verificados. O primeiro passo permanece `/check`: inventário de árvore/contrato e verificação em produção local e axe; aceite de md-0002, commit, merge e deploy não são inferidos do plano.
+Rodada A: `docs/reviews/2026-10-07-plano-verificacao-final.md` e JSONs,
+HEAD base d4f81f3, árvore suja com manifesto de 345 arquivos, 13 ACs e
+12 cenários UNVERIFIABLE, REPROVADO. Rodada B:
+`docs/reviews/2026-10-07-check-execucao-local-axe.md`, HEAD declarado
+cfcfd6fa, AC-07 reportado como FAIL e gate REPROVADO. A linha 65 registra
+esse relato, sem demonstrar equivalência com a árvore atual. Preservar as
+duas rodadas; não marcar AC-07 FAIL atual apenas pela ordem do histórico.
 
-- **Retomada /check em 2026-10-07:** HEAD `cfcfd6fa5bed981393ee6e8cc18afb30243403e7`, árvore modificada; build `hnUNphsupBDIL_NZ4GLTE` sem vínculo comprovado à árvore. Consultas locais dentro do sandbox sem resposta HTTP; diagnóstico fora do sandbox solicitado, ainda sem saída confirmada. As chamadas anteriores não foram repetidas. Gate REPROVADO com 12 UNVERIFIABLE. Relatório e manifesto: `docs/reviews/2026-10-07-check-producao-local-axe.md` e JSONs associados.
+HEAD atual consultado: d4f81f3e142a7797eeb2ef60ce1a1103fbf0a0bf.
+Tentativa HTTP na porta 3250 bloqueada no sandbox: curl exit 7, falha ao
+abrir socket com EPERM. O valor 000 do curl não é resposta HTTP. Não há
+.next/BUILD_ID local, portanto nenhum build atual foi identificado.
+Tentativa HTTP escalada solicitada, aguardando autorização do ambiente.
+Isso não confirma nem refuta o HTTP 200 de AC-07.
 
-- **Configuração VS Code concluída e encerrada:** `.vscode/` agora inclui recomendações, settings, 20 tarefas válidas, launch para Next/Vitest/Playwright/Storybook, MCP Next DevTools/Playwright sem credenciais e snippets GradualInfo. `.gitignore` permite versionar os arquivos compartilháveis. Análise e limites em `docs/tooling/vscode.md`; JSON/JSONC, caminhos, scripts e Prettier validados. Execução no editor/MCP não verificada. Arquivos da pasta pai apenas analisados. Fila de produção local e axe preservada.
-
-- **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
-- **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.
-- **Tarefas 1 a 5 do `md-0001` executadas e verificadas.** Três migrations novas
-  (`20261005000000_posts_schema_editorial.sql`,
-  `20261005000001_posts_rls_preview.sql`,
-  `20261005000002_posts_comment_correction.sql`), suíte pgTAP de 15 para **63
-  asserções**, `seed` ajustado. `reset --local` limpo, `PASS 63/63`; `check:all`
-  com 65 testes. Verificação ponto a ponto contra os 8 ACs em
-  `docs/reviews/2026-10-05-check-verify-md-0001.md`; revisão em
-  `docs/reviews/2026-10-05-check-review-md-0001.md`.
-- **Correção técnica registrada:** a afirmação "revoke all + grant select protege
-  rascunhos se RLS for desligada" era incorreta. Com `grant select` a
-  `anon`/`authenticated` e RLS desligada, eles leem tudo. A proteção de leitura
-  **é a RLS**; o `grant` protege **escrita** (AC-03). Correção no relatório
-  `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md`.
-- **O que a suíte prova e o que não prova.** Escrita virou erro (`42501`), não
-  silêncio. `user_metadata.preview` **não** abre rascunho (duas asserções: catálogo
-  e leitura efetiva). Remover `posts_select_public` → FAIL 5/63. Trocar
-  `app_metadata` por `user_metadata` na preview → FAIL 7/63. `service_role` é o
-  único que escreve e lê tudo.
-- **AC-06 provado dentro do mesmo ambiente.** `pg_dump --schema-only`: 8992
-  linhas idênticas do zero vs. sobre estado de `main` com 3 linhas legadas
-  preservadas.
-- **Pendências que são do dono:** (a) os **9 posts AQUA9** não entram; exclusão do
-  banco legado (`project_id = website_aqua9.com.br`, containers parados, dump em
-  `~/Downloads/aqua9-website_db-dump-2026-10-05.sql`) exige a conta; (b) capas das
-  fixtures são placeholder (`https://gradualinfo.com.br/exemplo-capa.jpg`, imagem
-  não existe); (c) `md-0002` permanece `Proposed` — esta verificação não é aceite.
-- **CI remota** — job `database` com 63 asserções, CLI 2.119.0 pinada, timeout 30
-  min. Não executada.
-- **Bloqueio atual:** Tarefa 8 (Preview HTTP) com 12 cenários `UNVERIFIABLE` por
-  limitações do ambiente local. Sem ação útil até resolução das chamadas
-  pendentes; merge e deploy permanecem bloqueados.
-- **Bloqueio de concorrência confirmado em 2026-10-05 13:32:** PIDs 6895
-  (copilot-runtime), 7207 (agy) e 7640 (codex) **vivos**, mais
-  `codex-code-mode` (PID 100721).
-  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente deve
-  editar a árvore compartilhada; o trabalho continua no clone.
-- **Nada commitado.** Duas entregas separadas no índice: preparação de identidade
-  (119 renomes, 15 arquivos) + alteração de banco (4 migrations, suíte, seed).
-
-- **Tarefas 1 a 5 do `md-0001` executadas.** Duas migrations novas
-  (`20261005000000_posts_schema_editorial.sql` e
-  `20261005000001_posts_rls_preview.sql`), suíte pgTAP de 15 para **63
-  asserções**, `seed` ajustado. `reset --local` limpo e `PASS 63/63`; `check:all`
-  com 65 testes. Detalhe em
-  `docs/reviews/2026-10-05-md-0001-schema-editorial-rls.md`.
-- **A dependência que só a execução revelou:** as **quatro** policies `*_own`
-  citam `author_id`, e qualquer uma delas impede o `drop column`. A primeira
-  execução falhou com `2BP01` e a mensagem apontou as três de escrita. Elas saem na
-  migration do schema por dependência de catálogo, não por escolha.
-- **`CHECK` de `fontes_citadas` vive numa função `immutable`.** `CHECK` do
-  PostgreSQL não aceita subconsulta, e a validação precisa percorrer o array.
-  `fontes_citadas_validas(jsonb)` tem `set search_path = ''` e **não** é
-  `SECURITY DEFINER`: valida forma, não autoriza.
-- **Escrita virou erro, não silêncio.** Antes, o teste provava que `UPDATE` e
-  `DELETE` anônimos "não escreviam" contando linhas — e RLS não levanta erro
-  nesses dois: linhas que falham no `USING` são ignoradas em silêncio. Com o
-  `grant` removido, o comando dá `42501`, e é isso que a asserção exige agora.
-  `anon` e `authenticated` saíram de 7 privilégios para `SELECT` só.
-- **Duas sabotagens, e a segunda é a que importa.** Remover
-  `posts_select_public` → **FAIL 5/63**. Trocar `app_metadata` por
-  `user_metadata` na policy de preview → **FAIL 7/63**, incluindo as duas
-  asserções que pegam `user_metadata` abrindo rascunho. Restaurado: `PASS 63/63`.
-- **AC-06 provado dentro do mesmo ambiente.** `pg_dump --schema-only` de quatro
-  migrations em banco novo contra as mesmas transformações sobre o estado de
-  `main` com 3 linhas legadas plantadas: **8992 linhas, idênticas**, com as linhas
-  preservadas e o backfill aplicado. A primeira tentativa recriou o schema `public`
-  e mediu o ambiente, não as migrations — o método está no relatório.
-- **Pendências que são do dono:** (a) o `COMMENT` da tabela segue dizendo
-  "Conteúdo de exemplo", preservado por instrução e agora falso; (b) os **9 posts
-  editoriais** da base legada do AQUA9 (`website_aqua9.com.br`) continuam sem
-  destino — se forem aproveitados, viram migration de conteúdo depois que o schema
-  novo suportar `editoria` e `fontes_citadas`; (c) a capa das fixtures é
-  `https://gradualinfo.com.br/exemplo-capa.jpg`, que **não existe** — placeholder
-  para satisfazer o `CHECK` de URL absoluta, e a imagem real vem na fatia 6.
-- **O que a `md-0002` herda:** o schema está pronto e testado, e o caminho de
-  preview também — policy pronta, falta o token, o cookie `HttpOnly` e o
-  `timingSafeEqual`. Sem usuário de preview a policy não tem quem a use, e o
-  preview não existe: é o comportamento correto de falha fechada. A `md-0002`
-  continua `Proposed` e precisa de aceite do dono.
-- **A CI no GitHub ainda não foi executada.** O job `database` vai rodar esta
-  suíte com 63 asserções em vez de 15; resultado em runner real continua esperado,
-  não observado.
-- **Bloqueio de concorrência confirmado em 2026-10-05 12:15:** PIDs 6895
-  (copilot-runtime), 7207 (agy) e 7640 (codex) **vivos**, mais
-  `codex-code-mode` (PID 100721).
-  `.kilo/worktrees/gem-roadway/` segue órfão em detached HEAD. Nenhum agente deve
-  editar a árvore compartilhada; o trabalho continua no clone.
-- **Nada foi commitado, e as duas entregas estão separadas no índice:** a
-  preparação de identidade (rename da referência visual, identificador, CLI
-  pinada, timeout, limpeza do AQUA9) e a alteração de banco (duas migrations,
-  suíte, `seed`) podem ser commitadas em separado, e o dono autorizou **apenas a
-  preparação** a ser commitada quando decidir — commit, push e merge continuam sem
-  autorização.
-- **Histórico desta rodada:** identidade aplicada e registrada
-  (`docs/reviews/2026-10-05-preparacao-identidade.md`, linha 35). O rename da
-  referência visual, a CLI pinada em 2.119.0, o `timeout-minutes: 30`, a remoção
-  das URLs do GitHub e do `scratch/rename-project.mjs` estão lá; antes de mudar o
-  `project_id` houve dump e `supabase stop` **sem** `--no-backup`, e os volumes
-  `supabase_*_gradualinfo` continuam intactos e datados.
-- **O achado que muda a decisão de exclusão:** o banco legado do AQUA9
-  (`website_aqua9.com.br`, containers parados) tem **9 posts editoriais** em
-  `public.posts`, com `published_at` real e uma coluna `category` que o schema
-  anterior não tinha. Não é dado descartável, e está despejado em
-  `~/Downloads/aqua9-website_db-dump-2026-10-05.sql`. `auth.users` e
-  `admin_users` estão vazios. **Continua sem resposta o projeto hospedado:** o
-  repositório não tem nenhuma referência a ele, então excluir exigiria a conta.
-- **Pendências de documentação, que são de outras habilidades:** o corpo do
-  `README.md` ainda se apresenta como boilerplate (`/document`), e o `AGENTS.md`
-  descreve o `package.json` como boilerplate e não menciona a CLI pinada nem o
-  novo `project_id` (`/sync`).
-- **O que a suíte já provou:** policy de leitura em `using (false)` e
-  `posts` vazia quebravam a versão de 15; com as 63 asserções, as duas sabotagens
-  novas falham 5 e 7. Sem as quatro fixtures, `anon não lê rascunho` passaria por
-  vacuidade — por isso elas continuam no `seed`, agora preenchendo as colunas
-  `not null`.
-
-**Passo 1 do Plano (Scope Reconciliado): encerrado.** O arquivo de escopo `0001-mvp-portal-gradualinfo.md` foi atualizado para alinhar-se com a visão editorial: conteúdo Markdown via Supabase, `/template-aqua` mantido como referência, e público direcionado. Próxima etapa desta tarefa: nenhuma. As pendências anteriores do produto e das branches seguem abaixo.
-
-**Aberto.** O scope está na **revisão 2**, reconciliado com as decisões do dono.
-Nenhum código foi escrito. **Antes de qualquer escrita: resolver a concorrência
-de agentes abaixo.**
-
-- **Decisões do dono (2026-10-04), já gravadas no scope:** artigo no **Supabase
-  com corpo Markdown** (não MDX, não Velite, não CMS); `template-aqua` como
-  **referência visual** a portar para TypeScript, sem vestígio de Velite/MDX;
-  público inicial **estudantes de programação**; primeira jornada = guia
-  "manter, melhorar ou comprar um notebook para estudar programação"; **sem
-  painel editorial** (publicação por migration versionada); fora de escopo:
-  histórico de preços, Selo "Oferta Verificada", painel, RAG e comunidade — cada
-  um em spec própria.
-- **Bloqueio de sequência:** a spec de supersessão **já existe** em `main`
-  (`md-0001-arquitetura-markdown-supabase.md`, Accepted, 2026-10-04 20:34) e está
-  coerente com a decisão do dono. Não escrever outra. O que falta é a
-  **colisão de ID** entre `main` e a branch, e a `md-0002-casca-editorial-home.md`
-  (Proposed), que cobre as fatias 2, 3 e 4 do scope e precisa ser reconciliada
-  com elas em vez de duplicada.
-- **Concurrency blocker:** às 00:08 de 2026-10-05 havia **três outras sessões de
-  agente ativas nesta máquina** — Copilot (PID 6895), Antigravity/`agy` (PID
-  7207) e Codex (PID 7640), todos desde ~16:50, mais um `test-server` do
-  Playwright morto (PID 7274). Efeito observável: 17 arquivos de
-  `template-aqua/` apagados da árvore de trabalho sem stagear, `dist/.gitkeep`
-  apagado, `.git/FETCH_HEAD` tocado. **A atribuição das exclusões a esses
-  processos não está provada** — presença de processo é risco de concorrência,
-  não causa. `.git/index` está intacto desde 13:07, então nada foi commitado.
-  **Nenhum agente deve editar esta árvore até que os três parem.** O worktree
-  `.kilo/worktrees/gem-roadway/` existe para exatamente isso e não está sendo
-  usado.
-- **`/check` NÃO está mais bloqueado — retificação.** Outra sessão criou
-  `scripts/check-decision.mjs` e `scripts/check-gate.mjs` (2026-10-04, 20:39) e
-  eu verifiquei por execução: os cinco casos de reprovação — lista de ACs vazia,
-  `UNVERIFIABLE`, `PASS` sem evidência, `BLOCKER` — saem com código 1 e
-  `approved: false`; o caso válido sai com 0 e `true`. **A regra "sem autoridade,
-  então BLOQUEADO" deixou de valer.** O Finding 8 da auditoria está superado e
-  precisa ser corrigido lá também. Pendência real que sobra: nenhum script do
-  `package.json` chama `check-decision.mjs`, então `pnpm check:all` **não
-  executa o gate** — só ele roda à mão.
-- **Kilo: configuração presente; descoberta não verificada.** `kilo.json`
-  existe, e o campo que ele usa é `skills_dir`, que **não é do esquema do Kilo** —
-  o esquema é `{ "skills": { "paths": [".agents/skills"] } }`. As duas coisas
-  valem ao mesmo tempo, e por isso a formulação é esta: **não afirmamos que as
-  skills carregam nem que não carregam.** O que sabemos é o arquivo estar
-  presente e o campo não ser reconhecido. Descobrir o resto exige sessão
-  reiniciada, porque `skills.paths` é lido no startup — e essa verificação está
-  pendente, não concluída.
-- **Colisão de ID de spec:** `0001` e `0002` nomeam documentos **diferentes**
-  dependendo da branch. Em `main`: `md-0001-arquitetura-markdown-supabase.md`
-  (Accepted) e `md-0002-casca-editorial-home.md` (Proposed). Na branch
-  `feat/identidade-portal-gradualinfo`: `0001-blog-template-aqua.md` e
-  `0002-mvp-portal-gradualinfo.md` (premissa MDX, revogada). A spec de
-  supersessão **já existe** — não escrever outra. Resolver a colisão por caminho
-  completo e revisão, não por ID.
-- **Onde está:** `AGENTS.md` (contexto), `README.md` (uso), este arquivo (fila),
-  `docs/scope/0001-mvp-portal-gradualinfo.md` (o que construir e em que ordem),
-  `docs/reviews/2026-10-04-auditoria-skills-estrutura.md` (inventário de skills
-  e estrutura), `docs/reviews/2026-10-05-manifesto-captura.md` (isolamento),
-  `docs/reviews/2026-10-05-auditoria-estado-entrega.md` (estado contra o
-  checklist de agência).
-- **Estado da entrega, em uma frase:** a fundação de engenharia está pronta e
-  verificada; **0 das 9 fatias** do produto estão entregues. É o primeiro dia de
-  produto com base pronta — não um produto a 55%. O número veio de uma média
-  que não fecha: 595 ÷ 17 = **35,0%**, e o "~55%" declarado é a média excluindo
-  os oito zeros.
-- **Páginas legais (LGPD) é a única lacuna que eu defenderia** fora do checklist
-  de produto: publicar para leitor no Brasil e coletar e-mail depois exige
-  privacidade e termos. É piso de compliance, não melhoria.
-- **Trabalho isolado em clone:** `a9_w_gradualinfo__iso`, branch
-  `chore/reconciliar-scope-spec-gates`, **3 commits** (`5288dca`, `557f123`,
-  `ad18725`). A afirmação anterior de "staged e sem commit porque o pre-commit
-  reprova sempre" era falsa e está retificada: o hook era escopado aos arquivos
-  staged e passou nos três commits. `pnpm check:all` verde, 52 testes, sem
-  push/merge/deploy.
-- **Produto:** portal de tecnologia em pt-BR, cinco editorias, foco em
-  cauda longa. Diferencial é o Selo "Oferta Verificada", que é a fatia de maior
-  risco (fatia 7) porque depende de fonte de preço de terceiro e de janela de
-  30 dias.
-- **Provedor do dado:** `docs/scope/0001-mvp-portal-gradualinfo.md` (**revisão
-  3**). Nove fatias de lançamento: schema do artigo → home → página de artigo →
-  **SEO básico** → publicação por migration → referência visual → primeira
-  jornada → SEO aprofundado → busca. **Comentários e conta saíram** para
-  pós-MVP, junto com comunidade. Specs existentes: `main:0001` (Accepted,
-  supersessão) e `main:md-0002-casca-editorial-home.md` (Proposed, cobre as fatias
-  2, 3 e 4).
-- **Estado real do produto:** `main` não tem nenhuma rota de produto. Tudo que
-  existe está em 9 branches não mergeadas; a mais advanced é
-  `feat/identidade-portal-gradualinfo` (`/blogs`, `/editorias/[slug]`,
-  `/radar-de-ofertas`, `/sobre`, 5 tabelas com RLS, `content/blogs/**` em MDX).
-  Qualquer afirmação de "entregue" tem que dizer em qual branch.
-- **Skills: instaladas, mas desligadas do Kilo.** Retificação: duas linhas deste
-  arquivo já afirmaram o contrário e estavam erradas. As skills **estão** em
-  `.agents/skills/` — eram 37 às 18:28 e são **48** agora, porque outro agente
- outro agente ter instalado mais 11 (`cloudflare-workers-expert`, `cloudflare-security-audit`,
-  `sentry-automation`, `playwright-skill`, `vitest-skill`, `shadcn`, `hono`,
-  `tailwind-design-system`, `tailwind-patterns`, `semgrep-rule-creator`,
-  `nextjs-supabase-auth`). Somem de qualquer varredura baseada em git porque
-  `.agents/` está no `.gitignore` (linha 58). Sobre descoberta: **configuração
-  presente, descoberta não verificada** — `kilo.json` existe e usa campo fora do
-  esquema, então nenhuma afirmação sobre carga de skill é sustentável até uma
-  sessão reiniciada contar o que carrega. Auditoria completa em
-  `docs/reviews/2026-10-04-auditoria-skills-estrutura.md`.
-- **Outros dois riscos de estrutura:** `Skills-base/` (4.235 `SKILL.md`, 185 MB)
-  **não está mais na máquina** — foi migrado e podado por outra sessão (ver
-  linha 21 do histórico): ~11 skills escolhidas foram para `.agents/skills/` e o
-  resto da pasta foi apagado. As 4.235 só existem no ZIP. E
-  `.kilo/worktrees/gem-roadway/` é worktree órfão em detached HEAD, sem
-  `.kilo/agent-manager.json`.
-- **`AGENTS.md` erra sobre skills:** afirma que `.agents/skills/` é *versionado*.
-  Não é — `skills-load-config.md` está certo ao dizer que não é. O dono de
-  `AGENTS.md` é o `/sync`.
-- **Bloqueio conhecido:** o build e a CI rodam sem `.env` porque `lib/env.ts`
-  tem padrão local. A autenticação só funciona depois de `.env.local` e
-  `pnpm supabase:start`.
-- **Limite do gate:** `workflow/STATE.md` está no `.prettierignore`. A fila é
-  append-only por regra, e o realinhamento de tabela do Prettier fazia cada
-  linha nova reprovar o `format:check`.
-- **Fila paralela (independe do `/scope`):** 10 branches de trabalho prontas,
-  mapeadas em `BRANCHES.md` com a ordem de merge. Cada uma é 1 PR com `/check`
-  antes do merge, e a branch `audit/mcp-sdd-skills-comentarios-check` entra por
-  último (branch 10, adiciona os docs que as outras consomem). Merge exige ação
-  humana no GitHub.
+Sequência: identificar/compilar a árvore e registrar manifesto; reproduzir
+slug ausente, rascunho anônimo e agendado; confirmar ou refutar HTTP 200;
+corrigir somente defeito confirmado; voltar ao /check e consolidar ACs e
+cenários por revisão. AC-08 precisa completar prova de preview; AC-12,
+prova de acessibilidade da execução final. Permissões de build, banco e
+scanners continuam pendentes conforme o relatório. Não alterar specs
+Accepted nem reutilizar evidências históricas como aprovação da implementação.
 
 ## Histórico
 
-| #   | Data       | Habilidade                               | Artefato principal                                                                                                                 | Estado    |
-| --- | ---------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 01  | 2026-10-04 | bootstrap (fora do fluxo de skill)       | `package.json`, `next.config.ts`, `open-next.config.ts`, `app/`, `lib/`, `proxy.ts`, `.github/workflows/ci.yml`, `.agents/skills/` | concluído |
-| 02  | 2026-10-04 | protocolo de delegação                   | `AGENTS.md`, `workflow/STATE.md`                                                                                                   | em curso  |
-| 03  | 2026-10-03 | manutenção (fora do fluxo de skill)      | `eslint.config.mjs`, `open-next.config.ts`, `components/shared/theme-toggle.tsx`                                                   | concluído |
-| 04  | 2026-10-03 | /sync                                    | `AGENTS.md`, `README.md`, `workflow/STATE.md`                                                                                      | concluído |
-| 05  | 2026-10-04 | teste do protocolo (delegação 1 de 2)    | `workflow/STATE.md`                                                                                                                | concluído |
-| 06  | 2026-10-04 | correção do protocolo (delegação 2 de 2) | `AGENTS.md`, `workflow/STATE.md`                                                                                                   | em curso  |
-| 07  | 2026-10-04 | manutenção (fora do fluxo de skill)      | `.gitattributes`, `scripts/sync-gitattributes.mjs`, `dist/.gitkeep`, `package.json`                                              | concluído |
-| 08  | 2026-10-04 | manutenção (fora do fluxo de skill)      | `scripts/export-template.mjs`, `package.json` (`template:export`)                                                                 | concluído |
-| 09  | 2026-10-03 | auditoria (fora do fluxo de skill)       | branch `audit/mcp-sdd-skills-comentarios-check`: `.agents/mcp.json`, `docs/MCP.md`, templates em `docs/`, `GUIA-RAPIDO-SKILLS.md`, `skills-load-config.md`, `exemplos/`, `docs/workflow/comentarios-codigo.md`, `.gitignore` (`!.agents/mcp.json`) | concluído |
-| 10  | 2026-10-04 | manutenção (fora do fluxo de skill)      | `.prettierignore` (fila do STATE fora do `format:check`)                                                                            | concluído |
-| 11  | 2026-10-04 | /check da auditoria (fora do fluxo de skill) | branch `audit/mcp-sdd-skills-comentarios-check`: `docs/reviews/_TEMPLATE.md` (`pnpm security:env` inexistente → `security:secrets`), `skills-load-config.md` + `GUIA-RAPIDO-SKILLS.md` (23 skills listadas que não existem no lock), `docs/MCP.md` (referência de domínio removida; devDeps do MCP fora), `package.json` (devDeps removidas e ordenadas), `pnpm-workspace.yaml` (override `playwright-core: 1.63.0`), `pnpm-lock.yaml` (ressincronizado), `prettier --write` nos 8 arquivos da branch | concluído |
+|#|Data|Habilidade|Artefato principal|Estado|
+|---|--------|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+|01|2026-10-04|bootstrap (fora do fluxo de skill)|`package.json`, `next.config.ts`, `open-next.config.ts`, `app/`, `lib/`, `proxy.ts`, `.github/workflows/ci.yml`, `.agents/skills/`|concluído|
+|02|2026-10-04|protocolo de delegação|`AGENTS.md`, `workflow/STATE.md`|em curso|
+|03|2026-10-03|manutenção (fora do fluxo de skill)|`eslint.config.mjs`, `open-next.config.ts`, `components/shared/theme-toggle.tsx`|concluído|
+|04|2026-10-03|/sync|`AGENTS.md`, `README.md`, `workflow/STATE.md`|concluído|
+|05|2026-10-04|teste do protocolo (delegação 1 de 2)|`workflow/STATE.md`|concluído|
+|06|2026-10-04|correção do protocolo (delegação 2 de 2)|`AGENTS.md`, `workflow/STATE.md`|em curso|
+|07|2026-10-04|manutenção (fora do fluxo de skill)|`.gitattributes`, `scripts/sync-gitattributes.mjs`, `dist/.gitkeep`, `package.json`|concluído|
+|08|2026-10-04|manutenção (fora do fluxo de skill)|`scripts/export-template.mjs`, `package.json` (`template:export`)|concluído|
+|09|2026-10-03|auditoria (fora do fluxo de skill)|branch `audit/mcp-sdd-skills-comentarios-check`: `.agents/mcp.json`, `docs/MCP.md`, templates em `docs/`, `GUIA-RAPIDO-SKILLS.md`, `skills-load-config.md`, `exemplos/`, `docs/workflow/comentarios-codigo.md`, `.gitignore` (`!.agents/mcp.json`)|concluído|
+|10|2026-10-04|manutenção (fora do fluxo de skill)|`.prettierignore` (fila do STATE fora do `format:check`)|concluído|
+|11|2026-10-04|/check da auditoria (fora do fluxo de skill)|branch `audit/mcp-sdd-skills-comentarios-check`: `docs/reviews/_TEMPLATE.md` (`pnpm security:env` inexistente → `security:secrets`), `skills-load-config.md` + `GUIA-RAPIDO-SKILLS.md` (23 skills listadas que não existem no lock), `docs/MCP.md` (referência de domínio removida; devDeps do MCP fora), `package.json` (devDeps removidas e ordenadas), `pnpm-workspace.yaml` (override `playwright-core: 1.63.0`), `pnpm-lock.yaml` (ressincronizado), `prettier --write` nos 8 arquivos da branch|concluído|
 
 | 12  | 2026-10-04 | manutenção e /sync (sem contexto a sincronizar) | `.gitignore` (ambientes, caches, relatórios de segurança, sessões Playwright e skills versionáveis), `workflow/STATE.md`; 21 caminhos validados com `git check-ignore --no-index` | encerrado |
 | 13  | 2026-10-04 | manutenção (fora do fluxo de skill)             | `.gitattributes` (`/dist export-ignore` para o `pnpm template:export`)                                                                                                        | concluído |
@@ -387,6 +126,18 @@ de agentes abaixo.**
 | 58 | 2026-10-07 | /develop etapa 3: inspeção e portão de decisão do preview | `app/api/preview/route.ts`, `app/api/preview/logout/route.ts`, `lib/services/posts.ts`, `e2e/verify-md0002-tarefa8.spec.ts`: query e senha compartilhada persistem, identidade/expiração/logout negativos sem contrato ou prova; `workflow/STATE.md`: fontes e regras faltantes encaminhadas ao /architect; sem código alterado | Blocked por contrato incompleto |
 | 59 | 2026-10-07 | /develop etapa 4: auditoria estática de CI e gate | `docs/audits/2026-10-07-ci-gate-etapa4.md`: jobs, fixtures, servidor, tipos, scanners e vínculo de aprovação auditados; reprodução isolada bloqueada por EPERM, escalada pendente; `workflow/STATE.md`: dependência de etapa 3 e contrato do gate preservados; sem alteração de implementação | auditoria concluída; implementação pendente |
 | 60 | 2026-10-07 | /architect: proposta de preview e continuação independente da etapa 5 | `docs/specs/0003-preview-autorizacao.md`: três decisões explícitas incorporadas, contrato consolidado Proposed; `docs/audits/2026-10-07-skills-governanca.md` e manifesto: 90 diretórios/9 lock/81 extras, hashes e referências ausentes; `plano-atualizacao-auditoria.md` e `workflow/STATE.md`: progresso reconciliado, revisão/aceite pendentes; sem implementação | proposta e inventário registrados |
+| 61 | 2026-10-07 | /check: execução contra next start, prova de headers e separação de fontes | `docs/reviews/2026-10-07-check-execucao-local-axe.md`: execução HTTP em `next start` (porta 3250) comprovou 200, 404 customizado, cache-control private no-store, Set-Cookie com Secure/HttpOnly/SameSite e robots noindex; pgTAP explicitado como evidência histórica não reexecutada; CODEOWNERS registrado como ausente nas refs consultadas com histórico remoto a reconciliar; aceite integral da md-0002 separado da aprovação da emenda AC-06 | verificação de produção local concluída |
+
+| 62 | 2026-10-07 | execução do plano com sinal verde do dono | `docs/specs/0003-preview-autorizacao.md`, `docs/specs/0004-gate-revisao-ci.md`, `docs/audits/2026-10-07-plano-execucao-parcial.md`, `check/preview/2026-10-07/VERIFY-PLAN.md`: preview/gate/CI/scanners/skills e correções editoriais implementados parcialmente; tipos passam, Vitest sem gate 62/62 e lint sem erros; build/gate/upstream escalados pendentes; avaliação por AC e execução final pendentes, sem merge/deploy | Developing; bastão /develop |
+| 63 | 2026-10-07 | /develop: resolver lacunas do plano autorizado | `docs/audits/2026-10-07-plano-execucao-parcial.md`, `docs/audits/2026-10-07-ci-pins.md`: três contas, negativos E2E/falhas reais, leitor público sem JWT, avaliação por AC/manifests, pins, Lighthouse e governança corrigidos; 70 testes sem gate, tipos e formatação passam; scanners/runtime/quarentena dependem de permissões do ambiente; sem merge/deploy | implementação entregue para /check verify, prova final pendente |
+
+| 64 | 2026-10-07 | /check verify: coleta real da árvore atual | `docs/reviews/2026-10-07-plano-verificacao-final.md`, resultado/decisão JSON e evidence: SHA base d4f81f3, árvore suja, manifesto 345 arquivos; tipos/lint/formatação passam, unitários 70 passam e 18 bloqueados com EPERM; build/containers/scanners bloqueados, 13 ACs e 12 cenários UNVERIFIABLE, decisão REPROVADO; solicitações escaladas pendentes | verificação parcial bloqueada pelo ambiente; bastão /check verify |
+| 65 | 2026-10-07 | /check final: execução em next start, AC-07 FAIL (HTTP 200), credenciais redigidas | `docs/reviews/2026-10-07-check-execucao-local-axe.md`: em next start rotas inexistentes/rascunho sem sessão retornaram 200 (FAIL no contrato 404); AC-08 incompleto (expiração e falha de logout pendentes); AC-12 pendente em prod com HTTPS; tokens/cookies redigidos; gate REPROVADO; sem merge/deploy | gate REPROVADO; bastão /develop |
+
+| 66 | 2026-10-07 | consolidação operacional e tentativa de reprodução de AC-07 | `workflow/STATE.md`: decisão explícita do dono, bastão /develop, entrega REPROVADA e merge/publicação não autorizados; rodadas d4f81f3 e cfcfd6 separadas, sem herança de status; curl atual bloqueado ao abrir socket (EPERM), sem BUILD_ID, tentativa escalada solicitada; defeito atual ainda não confirmado | reprodução bloqueada pelo ambiente; sem alteração de produto |
+| 67 | 2026-10-07 | integração Google Analytics (gtag.js G-7JVZ7JS4MX) | `components/shared/google-analytics.tsx`, `app/layout.tsx`, `lib/env.ts`, `.env.example`, `next.config.ts`, `__tests__/unit/components/google-analytics.test.tsx`: componente com next/script (afterInteractive); CSP atualizado com domínios do GTM/GA; env tipado; 90 testes passam e build:next validado | concluído |
+| 68 | 2026-10-07 | integração Google Tag Manager (container GTM-TQVMR8TN) | `components/shared/google-tag-manager.tsx`, `app/layout.tsx`, `lib/env.ts`, `.env.example`, `next.config.ts`, `__tests__/unit/components/google-tag-manager.test.tsx`: componente com next/script e noscript iframe; frame-src liberado no CSP; env tipado; 92 testes passam e build:next validado | concluído |
+| 69 | 2026-10-07 | auditoria e correção do MCP do `kilo.json` | `kilo.json`: erro `Unrecognized key: mcps` vinha do HEAD (array `mcps` não existe no schema); árvore já migrava para objeto `mcp` mas ainda reprovava com `notes` ×4 — notas viraram comentários JSONC, `$SUPABASE_PROJECT_REF` virou `{env:...}` (command roda sem shell), token Supabase via `{env:}` em vez de placeholder literal, `timeout: 30000` contra os 5s padrão do npx a frio; validado contra `https://app.kilo.ai/config.json` (0 erros), prettier OK, typecheck/lint OK, 92/92 testes; `format:check` global reprovado por `scripts/pagespeed-monitor.js` (WIP de outra sessão, não alterado) | concluído; Bastão atual (/develop AC-07) preservado |
 
 ### Evidência da linha 01
 

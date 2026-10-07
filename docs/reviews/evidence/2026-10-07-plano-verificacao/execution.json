@@ -1,0 +1,75 @@
+{
+  "commands": [
+    "vitest run",
+    "tsc --noEmit",
+    "tsc --project tsconfig.e2e.json --noEmit",
+    "eslint .",
+    "prettier --check .",
+    "next build --turbopack"
+  ],
+  "results": {
+    "vitest": {
+      "chunk_id": "f8c1a2",
+      "wall_time_seconds": 9.58e-6,
+      "exit_code": 1,
+      "original_token_count": 835,
+      "output": " ❯ __tests__/unit/gates.test.ts (18 tests | 18 failed) 430ms\n   ❯ gate completo por revisão (18)\n     × aprova revisão limpa com conjunto completo e decisão recalculada 28ms\n     × rejeita missing 27ms\n     × rejeita duplicate 18ms\n     × rejeita extra 34ms\n     × rejeita fail 26ms\n     × rejeita unverifiable 10ms\n     × rejeita missing-proof 20ms\n     × rejeita bad-hash 17ms\n     × rejeita blocker 38ms\n     × rejeita malformed 43ms\n     × rejeita adulteração de commit 24ms\n     × rejeita adulteração de tree 19ms\n     × rejeita adulteração de spec 25ms\n     × rejeita adulteração de counts 24ms\n     × rejeita aprovação antiga com --commit atual após commit real 21ms\n     × rejeita árvore suja mesmo sem alterar o SHA 15ms\n     × rejeita artefato ausente, JSON inválido e Markdown legado 15ms\n     × rejeita spec Proposed mesmo com hash correspondente 16ms\n\n⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > aprova revisão limpa com conjunto completo e decisão recalculada\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita missing\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita duplicate\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita extra\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita fail\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita unverifiable\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita missing-proof\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita bad-hash\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita blocker\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita malformed\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de commit\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de tree\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de spec\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de counts\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita aprovação antiga com --commit atual após commit real\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita árvore suja mesmo sem alterar o SHA\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita artefato ausente, JSON inválido e Markdown legado\n FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita spec Proposed mesmo com hash correspondente\nError: spawnSync git EPERM\n ❯ __tests__/unit/gates.test.ts:44:3\n     42|   repo = join(root, 'repo');\n     43|   artifact = join(root, 'decision.json');\n     44|   execFileSync('git', ['init', '-q', repo]);\n       |   ^\n     45|   const spec =\n     46|     '# Fixture\\n**Status**: Accepted\\n## Requirements\\n- **fixture/AC-…\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯\n\n\n Test Files  1 failed | 11 passed (12)\n      Tests  18 failed | 70 passed (88)\n   Start at  11:31:25\n   Duration  2.62s (environment 63%, setup 18%, tests 7%, transform 6%, import 4%, worker 1%)\n\n"
+    },
+    "types": {
+      "chunk_id": "ad204d",
+      "wall_time_seconds": 8.33e-6,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "e2etypes": {
+      "chunk_id": "457dc9",
+      "wall_time_seconds": 8.19e-6,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "lint": {
+      "chunk_id": "c92bae",
+      "wall_time_seconds": 9.05e-6,
+      "exit_code": 0,
+      "original_token_count": 710,
+      "output": "\n/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.agents/hooks/antigravity-doctor.mjs\n  258:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  259:64  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  260:39  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  261:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  262:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  269:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  273:23  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n\n/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.agents/hooks/build-plugin.mjs\n  124:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  125:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n\n/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.agents/hooks/sync-mcp.mjs\n  82:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  83:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  84:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  85:32  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  86:28  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  87:24  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  93:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  95:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n\n/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.agents/hooks/validate-tool-call.mjs\n   95:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  105:3  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n\n/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/lib/audit.ts\n  10:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n  14:3  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console\n\n✖ 21 problems (0 errors, 21 warnings)\n\n"
+    },
+    "format": {
+      "chunk_id": "0aec10",
+      "wall_time_seconds": 9.77e-6,
+      "exit_code": 0,
+      "original_token_count": 11,
+      "output": "All matched files use Prettier code style!\n"
+    },
+    "build": {
+      "chunk_id": "484ca1",
+      "wall_time_seconds": 9.87e-6,
+      "exit_code": 1,
+      "original_token_count": 1055,
+      "output": "\n-----\n\u001b[1m\u001b[31mFATAL\u001b[39m\u001b[0m: An unexpected Turbopack error occurred. A panic log has been written to /tmp/next-panic-664d280f9a831e8ce6db02e142b2f913.log.\n\nTo help make Turbopack better, report this error by clicking here: https://bugs.nextjs.org/search?category=turbopack-error-report&title=Turbopack%20Error%3A%20%5Bproject%5D%2Fapp%2Fglobals.css%20%5Bapp-client%5D%20%28css%29&body=Turbopack%20version%3A%20%60b0fad0d4%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0A%5Bproject%5D%2Fapp%2Fglobals.css%20%5Bapp-client%5D%20%28css%29%0A%0ACaused%20by%3A%0A-%20creating%20new%20process%0A-%20binding%20to%20a%20port%0A-%20Operation%20not%20permitted%20%28os%20error%201%29%0A%0ADebug%20info%3A%0A-%20Execution%20of%20get_all_written_entrypoints_with_issues_operation%20failed%0A-%20Execution%20of%20EntrypointsOperation%3A%3Anew%20failed%0A-%20Execution%20of%20all_entrypoints_write_to_disk_operation%20failed%0A-%20Execution%20of%20output_assets_operation%20failed%0A-%20Execution%20of%20%3CMiddlewareEndpoint%20as%20Endpoint%3E%3A%3Aoutput%20failed%0A-%20Execution%20of%20MiddlewareEndpoint%3A%3Aoutput_assets%20failed%0A-%20Execution%20of%20MiddlewareEndpoint%3A%3Anode_chunk%20failed%0A-%20Execution%20of%20%2A%3CNodeJsChunkingContext%20as%20ChunkingContext%3E%3A%3Aentry_chunk_group%20failed%0A-%20Execution%20of%20Project%3A%3Aserver_chunking_context%20failed%0A-%20Execution%20of%20%2Aget_server_chunking_context%20failed%0A-%20Execution%20of%20Project%3A%3Amodule_ids%20failed%0A-%20Execution%20of%20whole_app_module_graph_operation%20failed%0A-%20Execution%20of%20%2AProject%3A%3Aget_all_additional_entries%20failed%0A-%20Execution%20of%20ModuleGraph%3A%3Afrom_graphs%20failed%0A-%20Execution%20of%20ModuleGraph%3A%3Afrom_graphs_inner%20failed%0A-%20Execution%20of%20SingleModuleGraph%3A%3Anew_with_entries%20failed%0A-%20%5Bproject%5D%2Fapp%2Fglobals.css%20%5Bapp-client%5D%20%28css%29%0A-%20Execution%20of%20primary_chunkable_referenced_modules%20failed%0A-%20Execution%20of%20%3CCssModule%20as%20Module%3E%3A%3Areferences%20failed%0A-%20Execution%20of%20parse_css%20failed%0A-%20Execution%20of%20%3CPostCssTransformedAsset%20as%20Asset%3E%3A%3Acontent%20failed%0A-%20Execution%20of%20PostCssTransformedAsset%3A%3Aprocess%20failed%0A-%20Execution%20of%20evaluate_webpack_loader%20failed%0A-%20creating%20new%20process%0A-%20binding%20to%20a%20port%0A-%20Operation%20not%20permitted%20%28os%20error%201%29%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace\n-----\n\n\n> Build error occurred\nError [TurbopackInternalError]: [project]/app/globals.css [app-client] (css)\n\nCaused by:\n- creating new process\n- binding to a port\n- Operation not permitted (os error 1)\n\nDebug info:\n- Execution of get_all_written_entrypoints_with_issues_operation failed\n- Execution of EntrypointsOperation::new failed\n- Execution of all_entrypoints_write_to_disk_operation failed\n- Execution of output_assets_operation failed\n- Execution of <MiddlewareEndpoint as Endpoint>::output failed\n- Execution of MiddlewareEndpoint::output_assets failed\n- Execution of MiddlewareEndpoint::node_chunk failed\n- Execution of *<NodeJsChunkingContext as ChunkingContext>::entry_chunk_group failed\n- Execution of Project::server_chunking_context failed\n- Execution of *get_server_chunking_context failed\n- Execution of Project::module_ids failed\n- Execution of whole_app_module_graph_operation failed\n- Execution of *Project::get_all_additional_entries failed\n- Execution of ModuleGraph::from_graphs failed\n- Execution of ModuleGraph::from_graphs_inner failed\n- Execution of SingleModuleGraph::new_with_entries failed\n- [project]/app/globals.css [app-client] (css)\n- Execution of primary_chunkable_referenced_modules failed\n- Execution of <CssModule as Module>::references failed\n- Execution of parse_css failed\n- Execution of <PostCssTransformedAsset as Asset>::content failed\n- Execution of PostCssTransformedAsset::process failed\n- Execution of evaluate_webpack_loader failed\n- creating new process\n- binding to a port\n- Operation not permitted (os error 1)\n    at <unknown> (TurbopackInternalError: [project]/app/globals.css [app-client] (css)) {\n  type: 'TurbopackInternalError',\n  location: undefined\n}\n"
+    }
+  },
+  "docker": {
+    "chunk_id": "b94103",
+    "wall_time_seconds": 0,
+    "exit_code": 1,
+    "original_token_count": 47,
+    "output": "Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.\nFailed to obtain podman configuration: set sticky bit on: chmod /run/user/1000/libpod: read-only file system\n"
+  },
+  "semgrep": {
+    "chunk_id": "8ba2a7",
+    "wall_time_seconds": 0.941831255,
+    "exit_code": 1,
+    "original_token_count": 6,
+    "output": "spawnSync semgrep EPERM\n"
+  },
+  "evaluatedCommit": "d4f81f3e142a7797eeb2ef60ce1a1103fbf0a0bf",
+  "evaluatedTree": "b0f22fc7a8eac71245f7803d1cc7fbfc778b921e",
+  "dirty": true,
+  "audit": {
+    "exit_code": 1,
+    "output": "pnpm: failed to prepare pnpm@12.5.1: ERR_PNPM_PNPM_ENGINE_IDENTITY_UNVERIFIABLE. Registry requests to registry.npmjs.org failed; package manager identity could not be verified. pnpm audit did not start. Verification was not disabled."
+  }
+}

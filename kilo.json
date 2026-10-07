@@ -1,36 +1,51 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "mcps": [
-    {
-      "name": "playwright",
-      "description": "Playwright MCP para automação e E2E quando necessário.",
+  // MCPs de engenharia. Schema só aceita type, command, cwd, environment,
+  // enabled e timeout — qualquer outra chave rejeita o arquivo inteiro.
+  // Substituição de variável é {env:VAR}; $VAR não funciona porque o
+  // command é spawnado sem shell.
+  "mcp": {
+    // Habilitado por padrão para E2E e diagnóstico de browser; adiciona
+    // tools ao contexto do modelo enquanto estiver ligado.
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
       "enabled": true,
-      "required_env": [],
-      "notes": "Usar apenas para diagnósticos de browser/E2E; não habilitado por padrão."
+      // npx a frio baixa o pacote e passa dos 5s de timeout padrão.
+      "timeout": 30000
     },
-    {
-      "name": "next-devtools",
-      "description": "Next DevTools MCP para inspeção local do App Router.",
+    // Ligar apenas durante investigação de runtime/build do App Router.
+    "next-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "next-devtools-mcp@latest"],
       "enabled": false,
-      "required_env": [],
-      "notes": "Habilitar apenas durante investigação de runtime/build."
+      "timeout": 30000
     },
-    {
-      "name": "supabase",
-      "description": "Supabase MCP oficial; uso restrito a ambiente de desenvolvimento.",
-      "enabled": false,
-      "required_env": [
-        "NEXT_PUBLIC_SUPABASE_URL",
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    // Nunca apontar para produção: agente → MCP Supabase → dev, nunca
+    // agente → produção → database. Exige SUPABASE_PROJECT_REF e
+    // SUPABASE_ACCESS_TOKEN no ambiente de quem habilitar.
+    "supabase": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref={env:SUPABASE_PROJECT_REF}"
       ],
-      "notes": "Nunca apontar para produção. Agente → MCP Supabase → dev, nunca agente → produção → database."
-    },
-    {
-      "name": "fetch",
-      "description": "Fetch MCP para requisições HTTP externas quando necessário.",
       "enabled": false,
-      "required_env": [],
-      "notes": "Usar com cautela; preferir libs do projeto quando disponíveis."
+      "environment": {
+        "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
+      },
+      "timeout": 30000
+    },
+    // PyPI mcp-server-fetch não publica no npm (issue #3800); usamos a
+    // imagem oficial via Docker. Preferir libs do projeto quando houver.
+    "fetch": {
+      "type": "local",
+      "command": ["docker", "run", "-i", "--rm", "mcp/fetch"],
+      "enabled": false,
+      "timeout": 30000
     }
-  ]
+  }
 }

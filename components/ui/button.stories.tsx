@@ -7,6 +7,10 @@ import { Button } from './button';
  * Story é documentação executável: ele roda no Storybook, no teste visual e no
  * review. Por isso o objeto `args` declara o contrato do componente (props
  * obrigatórias e padrões) uma única vez, e as stories só variam o que muda.
+ *
+ * @fileoverview Stories do botão (catálogo do Storybook).
+ * @module components/ui/button.stories
+ * @dependencies @storybook/nextjs-vite (Meta, StoryObj), components/ui/button.
  */
 const meta = {
   title: 'UI/Button',

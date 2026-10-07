@@ -1,14 +1,14 @@
 # Plano de atualização após auditoria
 
-Data: 2026-10-07 · Estado: contrato de preview proposto; auditorias das etapas 4 e 5 registradas; implementação e prova em produção pendentes.
+Data: 2026-10-07 · Estado: execução autorizada pelo dono; implementação parcial; prova em produção e CI pendentes.
 Base: HEAD `cfcfd6fa5bed981393ee6e8cc18afb30243403e7` com alterações locais; não representa sozinho a árvore atual.
 Fonte: [auditoria original](docs/audits/2026-10-06-deep-audit-original.txt), SHA-256 `a02c7b9ce8a49e26105110fdff66129a6155102194e33048670ce0a1ab3babbc`.
 
-Objetivo: fechar lacunas da entrega editorial com contrato e prova por AC, mantendo Next/React/Tailwind, Supabase/RLS e Cloudflare/OpenNext. Este plano autoriza apenas o registro: não aprova specs, commit, descarte, merge ou deploy.
+Objetivo: fechar lacunas da entrega editorial com contrato e prova por AC, mantendo Next/React/Tailwind, Supabase/RLS e Cloudflare/OpenNext. O dono deu sinal verde em 2026-10-07 para executar o plano e as recomendações apresentadas, incluindo os contratos 0003 e 0004. Merge e deploy dependem da decisão final da etapa 10.
 
 ## Reconciliação com a árvore atual
 
-O serializador JSON-LD e seu teste unitário já existem. A exceção exclusiva de JSON-LD em AC-06 e a política de cache foram aprovadas nesta sessão; a md-0002 está registrada como Accepted na árvore, sem que isso prove funcionamento. O dono decidiu preview com 30 minutos absolutos, um UUID configurado e POST sem guardar o segredo. O contrato consolidado está Proposed em [0003-preview-autorizacao](docs/specs/0003-preview-autorizacao.md), aguardando revisão e aceite, inclusive do limite de revogação em falha remota.
+O serializador JSON-LD e seu teste unitário já existem. A exceção exclusiva de JSON-LD em AC-06 e a política de cache foram aprovadas nesta sessão; a md-0002 está registrada como Accepted na árvore, sem que isso prove funcionamento. O dono decidiu preview com 30 minutos absolutos, um UUID configurado e POST sem guardar o segredo. O contrato consolidado está Accepted em [0003-preview-autorizacao](docs/specs/0003-preview-autorizacao.md), com o aceite e seu limite registrados. Implementação e revisão são estados distintos.
 
 CI e gate foram inspecionados em [auditoria da etapa 4](docs/audits/2026-10-07-ci-gate-etapa4.md), com falhas de vínculo SHA/árvore, completude de ACs, banco/fixtures no E2E, servidor compilado, typecheck E2E e scanners. A implementação depende da etapa 3 e do contrato do gate. [Inventário da etapa 5](docs/audits/2026-10-07-skills-governanca.md) registra 90 diretórios de skills, 9 no lock, 81 extras e referências locais ausentes; allowlist e prova de versão permanecem pendentes.
 
@@ -36,3 +36,41 @@ Cada linha vira uma entrega separada; registrar artefato e prova no STATE antes 
 ## Saída
 
 A atualização técnica termina em 9 com contratos aceitos, evidências completas e gates/CI confirmados. Build verde não prova HTTP, auth ou acessibilidade; timeout permanece UNVERIFIABLE. O passo 10 é uma decisão futura, não tarefa de deploy autorizada. Relatórios antigos são preservados como históricos e não contam como aprovação da revisão atual.
+
+## Execução autorizada em 2026-10-07
+
+Preview implementado com POST, credenciais distintas, UUID único e prazo
+assinado de 30 minutos vinculado à sessão verificada. Gate estrito compara
+conjuntos de ACs, spec, SHA, árvore e hashes das evidências. CI provisiona
+banco local e fixtures, compila servidor E2E com HTTPS, inclui typecheck E2E
+e scanners locais. A matriz gerada preserva UNVERIFIABLE até avaliação por
+AC, portanto não há aprovação de entrega.
+
+Permanecem pendentes: negativos E2E completos de identidade e claim, falha
+real de leitura, pin de actions por SHA confirmado upstream, execução de
+scanners, banco, E2E, Lighthouse e CI; integração de avaliação completa do
+/check com o artefato gerado; governança remota, reconciliação dos 81 extras
+de skills e evidência de origem das imagens reais. Sem remoção de skills,
+merge ou deploy nesta execução. Verificação detalhada em
+`docs/audits/2026-10-07-plano-execucao-parcial.md`.
+
+### Continuação para resolver problemas
+
+Negativos E2E, três contas e stress do limite de dez implementados. Proxy
+local de falhas e banco descartável de JWT curto ficam fora da aplicação e
+do checkout avaliado. Gate agora deriva avaliação mecânica de casos
+específicos e manifests, com negação de provas incompletas. Actions foram
+pinadas por SHA confirmado; Lighthouse recebeu configuração válida.
+Quarentena de 81 extras preparada sem apagar conteúdo, pendente de permissão
+na pasta protegida. Implementação não substitui execução: próxima etapa é
+/check verify após liberar processos, containers e scanners solicitados.
+
+### /check verify executado parcialmente
+
+Registro em `docs/reviews/2026-10-07-plano-verificacao-final.md`. SHA base
+`d4f81f3e142a7797eeb2ef60ce1a1103fbf0a0bf`, checkout sujo e manifesto de
+345 arquivos. Tipos/lint/formatação passam, unitários completos mostram
+70 PASS e 18 falhas de preparação por EPERM. Build, containers e scanners
+bloqueados pelo ambiente; 13 ACs e 12 cenários continuam UNVERIFIABLE,
+decisão real REPROVADO. Aguardar as execuções escaladas e retomar a prova;
+nenhuma etapa recebe conclusão por essa execução parcial.

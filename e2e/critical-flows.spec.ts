@@ -1,8 +1,13 @@
 /**
- * e2e/critical-flows.spec.ts
+ * @fileoverview Fluxos críticos — o que, se quebrar, o usuário percebe na hora.
+ * @module e2e/critical-flows
+ * @description Navegação da home para o artigo, alternância de tema, 404 útil e sonda de
+ *   saúde: só comportamento observável no browser real (bundle, hidratação e servidor de
+ *   verdade), sem asserção sobre detalhe de implementação.
+ * @dependencies @playwright/test, fixtures do seed (`fixture-publicado`).
  *
- * Fluxos críticos: as rotas e interações que, se quebrarem, o usuário percebe
- * na hora. Aqui não vai detalhe de estilo — só comportamento observável.
+ * Os servidores vêm do `webServer` em playwright.config.ts — ver e2e/home.spec.ts para o
+ * mesmo fluxo com comentários de hidratação.
  */
 
 import { expect, test } from '@playwright/test';
@@ -15,22 +20,16 @@ test.describe('Fluxos críticos', () => {
       page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole('link', { name: 'Ver página de exemplo' }),
+      page.getByRole('link', { name: 'Início', exact: true }),
     ).toBeVisible();
   });
 
-  test('exemplo abre e volta para a home', async ({ page }) => {
+  test('artigo publicado abre a partir da home', async ({ page }) => {
     await page.goto('/');
-
-    await page.getByRole('link', { name: 'Ver página de exemplo' }).click();
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Exemplo' }),
-    ).toBeVisible();
-
-    await page.getByRole('link', { name: 'Voltar para o início' }).click();
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
-    ).toBeVisible();
+    await page.locator('a[href="/artigos/fixture-publicado"]').first().click();
+    await expect(page.locator('h1')).toContainText('Fixture publicado');
+    await page.getByRole('link', { name: 'Início', exact: true }).click();
+    await expect(page.locator('h1')).toContainText('Gradualinfo');
   });
 
   test('alternância de tema altera a classe do html', async ({ page }) => {

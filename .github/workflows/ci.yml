@@ -40,14 +40,15 @@ jobs:
   quality:
     name: Tipos, lint, formatação e testes
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -55,29 +56,23 @@ jobs:
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Formatação
-        run: pnpm format:check
-
-      - name: Testes unitários
-        run: pnpm test:run
+      - name: Checks locais completos
+        run: pnpm check:all
+      - name: Typecheck E2E
+        run: pnpm typecheck:e2e
 
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -88,16 +83,19 @@ jobs:
         run: pnpm build:next
 
   e2e:
+    env:
+      E2E_NETWORK_FAULTS: '1'
     name: E2E (Playwright)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -108,27 +106,59 @@ jobs:
       - name: Instalar browsers do Playwright
         run: pnpm exec playwright install chromium
 
-      - name: Executar E2E
+      - name: Iniciar banco descartável e aplicar seed
+        run: |
+          node scripts/prepare-e2e-db.mjs
+          pnpm supabase:start --workdir "$RUNNER_TEMP/e2e-db"
+          pnpm supabase:reset --local --workdir "$RUNNER_TEMP/e2e-db"
+          pnpm --silent supabase:status --workdir "$RUNNER_TEMP/e2e-db" > "$RUNNER_TEMP/supabase-status.json"
+      - name: Provisionar preview e artigos de teste
+        run: node scripts/ci-fixtures.mjs "$RUNNER_TEMP/supabase-status.json"
+      - name: Certificado HTTPS local para provar cookies Secure
+        run: |
+          openssl req -x509 -newkey rsa:2048 -nodes -keyout "$RUNNER_TEMP/e2e.key" -out "$RUNNER_TEMP/e2e.crt" -days 1 -subj '/CN=localhost' -addext 'subjectAltName=DNS:localhost'
+          echo "E2E_TLS_KEY=$RUNNER_TEMP/e2e.key" >> "$GITHUB_ENV"
+          echo "E2E_TLS_CERT=$RUNNER_TEMP/e2e.crt" >> "$GITHUB_ENV"
+      - name: Build e tipos E2E
+        run: |
+          pnpm typecheck:e2e
+          pnpm build:next
+      - name: Registrar revisão E2E
+        run: |
+          mkdir -p test-results
+          node scripts/ci-revision.mjs "$RUNNER_TEMP/e2e-revision.json"
+      - name: Executar E2E no servidor compilado com HTTPS
         run: pnpm test:e2e
+      - name: Preservar revisão após limpeza do Playwright
+        if: always()
+        run: |
+          mkdir -p test-results
+          cp "$RUNNER_TEMP/e2e-revision.json" test-results/e2e-revision.json
+      - name: Encerrar banco descartável
+        if: always()
+        run: pnpm supabase:stop --no-backup --workdir "$RUNNER_TEMP/e2e-db"
 
       - name: Preservar relatório E2E
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            playwright-report/
+            test-results/results.json
+            test-results/e2e-revision.json
           if-no-files-found: warn
 
   database:
     name: Banco local e RLS
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -142,13 +172,16 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-results
+          node scripts/ci-revision.mjs ci-results/database-revision.json
           pnpm supabase:test 2>&1 | tee ci-results/pgtap.log
       - name: Preservar resultado do pgTAP
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: database-pgtap
-          path: ci-results/pgtap.log
+          path: |
+            ci-results/pgtap.log
+            ci-results/database-revision.json
           if-no-files-found: warn
       - name: Encerrar stack local
         if: always()
@@ -157,24 +190,62 @@ jobs:
   sast:
     name: SAST (Semgrep)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: semgrep/semgrep-action@v1
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          config: >-
-            p/security-audit
-            p/secrets
-            p/owasp-top-ten
+          python-version: '3.12.9'
+      - name: Instalar scanner pinado
+        run: python3 -m pip install semgrep==1.179.0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: SAST com regras locais
+        run: pnpm security:sast
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: semgrep-report
+          path: security-reports/semgrep.json
+          if-no-files-found: error
+
+  secrets:
+    name: Segredos no histórico e árvore
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 12.5.1
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Gitleaks pinado e relatórios redigidos
+        run: pnpm security:secrets
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: gitleaks-report
+          path: security-reports/gitleaks.json
+          if-no-files-found: error
 
   dependency-scan:
     name: Dependency scan (OSV + pnpm audit)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -182,60 +253,102 @@ jobs:
       - name: pnpm audit
         run: pnpm audit --audit-level=high
       - name: OSV scan
-        uses: google/osv-scanner-action@v1
+        uses: google/osv-scanner-action@764c91816374ff2d8fc2095dab36eecd42d61638 # v1.9.2
         with:
           scan-args: '-r ./'
 
   lighthouse:
+    env:
+      CI_FIXTURE_ORIGIN: http://localhost:3000
     name: Lighthouse (home + artigo público)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Preparar banco e fixtures no runner
+        run: |
+          pnpm supabase:start
+          pnpm supabase:reset --local
+          pnpm --silent supabase:status > "$RUNNER_TEMP/supabase-status.json"
+          node scripts/ci-fixtures.mjs "$RUNNER_TEMP/supabase-status.json"
       - name: Build do Next
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
         run: pnpm build:next
       - name: Iniciar servidor
         run: pnpm next start --port 3000 &
         shell: bash
       - name: Aguardar servidor
-        run: npx wait-on http://localhost:3000
+        run: node scripts/wait-http.mjs http://localhost:3000/api/health
       - name: Lighthouse CI
-        run: |
-          npx lhci autorun \
-            --collect.settings.onlyCategories='performance,accessibility,best-practices,seo' \
-            --collect.url='http://localhost:3000' \
-            --collect.url='http://localhost:3000/artigos/fixture-publicado' \
-            --assert.assertions='categories:performance>=80,categories:accessibility>=90,categories:best-practices>=90,categories:seo>=90'
+        run: pnpm dlx @lhci/cli@0.15.1 autorun --config=lighthouserc.cjs
+      - name: Preservar relatório Lighthouse
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Encerrar banco descartável
+        if: always()
+        run: pnpm supabase:stop --no-backup
 
   check-gate:
     name: /check gate
-    needs: [quality, build, e2e, database, sast, dependency-scan, lighthouse]
+    needs:
+      [
+        quality,
+        build,
+        e2e,
+        database,
+        sast,
+        secrets,
+        dependency-scan,
+        lighthouse,
+      ]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 12.5.1
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Obter evidências desta execução
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: '*'
+          merge-multiple: true
+          path: ${{ runner.temp }}/check-evidence
+      - name: Gerar matriz para o SHA avaliado
+        run: node scripts/ci-check-results.mjs "$RUNNER_TEMP/verify-result.json" "$RUNNER_TEMP/check-evidence"
       - name: Verificar gate de aprovação
-        run: node scripts/check-gate.mjs verify-result.json --commit ${{ github.sha }}
+        env:
+          EVALUATED_SHA: ${{ github.sha }}
+        run: |
+          node scripts/check-decision.mjs "$RUNNER_TEMP/verify-result.json" > "$RUNNER_TEMP/check-decision.json"
+          node scripts/check-gate.mjs "$RUNNER_TEMP/check-decision.json" --commit "$EVALUATED_SHA"
       - name: Preservar resultado do gate
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: check-gate
-          path: verify-result.json
+          path: |
+            ${{ runner.temp }}/verify-result.json
+            ${{ runner.temp }}/check-decision.json
           if-no-files-found: warn

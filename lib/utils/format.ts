@@ -6,8 +6,13 @@
  * reutilizáveis em Server Component, Route Handler e Client Component.
  */
 
+/** Locale padrão do produto — evita repetir 'pt-BR' em cada assinatura opcional. */
 const DEFAULT_LOCALE = 'pt-BR';
 
+/**
+ * Opções comuns às funções deste módulo: `locale` muda textos e pluralização;
+ * `timeZone` muda o dia exibido (só nos formatos que incluem data).
+ */
 export type FormatOptions = {
   locale?: string;
   timeZone?: string;

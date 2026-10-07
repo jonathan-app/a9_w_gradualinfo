@@ -82,36 +82,36 @@ A execução de 7 testes de preview e 3 testes de axe ocorreu no servidor local 
 
 ## 3. Matriz Consolidada de Critérios de Aceite (md-0002)
 
-| AC                | Requisito                                                | Status Empírico | Evidência                                                             |
-| :---------------- | :------------------------------------------------------- | :-------------- | :-------------------------------------------------------------------- |
-| **md-0002/AC-01** | Home lista no máximo 10 artigos publicados sem rascunhos | PASS            | `app/page.tsx`, `lib/services/posts.ts`, verificado via banco semeado |
-| **md-0002/AC-02** | Cards exibem capa, editoria, título, resumo e data       | PASS            | `components/shared/post-card.tsx`                                     |
-| **md-0002/AC-03** | Estado vazio vs. estado de erro distintos                | PASS            | `app/page.tsx` com `error.tsx` nativo do App Router                   |
-| **md-0002/AC-04** | Artigo em destaque no topo + grade                       | PASS            | Estrutura semântica com `<section aria-label="Artigo em Destaque">`   |
-| **md-0002/AC-05** | Renderização semântica de Markdown                       | PASS            | `react-markdown` com remap de `h1` para `h2`                          |
-| **md-0002/AC-06** | Sem `dangerouslySetInnerHTML` no corpo do artigo         | PASS            | Artigo renderizado via AST sem injeção HTML crua                      |
-| **md-0002/AC-07** | Artigo inexistente ou futuro devolve 404                 | PASS            | `notFound()` invocado em `page.tsx` e `generateMetadata`              |
-| **md-0002/AC-08** | Preview protegido por token/credencial                   | PASS            | `e2e/verify-md0002-tarefa8.spec.ts` (7/7 PASS)                        |
-| **md-0002/AC-09** | JSON-LD Article estruturado e sanitizado                 | PASS            | `serializeJsonLd` + `__tests__/unit/lib/format.test.ts` (PASS)        |
-| **md-0002/AC-10** | Canonical absoluto e sitemap dinâmico                    | PASS            | `app/sitemap.ts` e `generateMetadata`                                 |
-| **md-0002/AC-11** | RLS e proibição de `service_role` em leituras públicas   | PASS (Histórico)| pgTAP em 2026-10-05 (63/63 PASS; não reexecutado nesta rodada)       |
-| **md-0002/AC-12** | Acessibilidade WCAG AA (Axe Playwright)                  | PASS (Dev)      | `e2e/verify-md0002-acessibilidade.spec.ts` (3/3 PASS em servidor dev) |
-| **md-0002/AC-13** | Exibição de fontes citadas no final do corpo             | PASS            | Seção `<section>` com lista de fontes e `rel="noopener noreferrer"`   |
+| AC                | Requisito                                                | Status Empírico  | Evidência                                                                                                     |
+| :---------------- | :------------------------------------------------------- | :--------------- | :------------------------------------------------------------------------------------------------------------ |
+| **md-0002/AC-01** | Home lista no máximo 10 artigos publicados sem rascunhos | PASS             | `app/page.tsx`, `lib/services/posts.ts`, verificado via banco semeado                                         |
+| **md-0002/AC-02** | Cards exibem capa, editoria, título, resumo e data       | PASS             | `components/shared/post-card.tsx`                                                                             |
+| **md-0002/AC-03** | Estado vazio vs. estado de erro distintos                | PASS             | `app/page.tsx` com `error.tsx` nativo do App Router                                                           |
+| **md-0002/AC-04** | Artigo em destaque no topo + grade                       | PASS             | Estrutura semântica com `<section aria-label="Artigo em Destaque">`                                           |
+| **md-0002/AC-05** | Renderização semântica de Markdown                       | PASS             | `react-markdown` com remap de `h1` para `h2`                                                                  |
+| **md-0002/AC-06** | Sem `dangerouslySetInnerHTML` no corpo do artigo         | PASS             | Artigo renderizado via AST sem injeção HTML crua                                                              |
+| **md-0002/AC-07** | Artigo inexistente ou futuro devolve 404                 | FAIL             | Retornou HTTP 200 em `next start` (renderiza página de erro customizada mas status HTTP é 200 em vez de 404)  |
+| **md-0002/AC-08** | Preview protegido por token/credencial                   | UNVERIFIABLE     | Incompleto: fluxo 200/redirect funciona; expiração real e logout com falha simulada permanecem incompletos    |
+| **md-0002/AC-09** | JSON-LD Article estruturado e sanitizado                 | PASS             | `serializeJsonLd` + `__tests__/unit/lib/format.test.ts` (12/12 PASS)                                          |
+| **md-0002/AC-10** | Canonical absoluto e sitemap dinâmico                    | PASS             | `app/sitemap.ts` e `generateMetadata` + Vitest PASS                                                           |
+| **md-0002/AC-11** | RLS e proibição de `service_role` em leituras públicas   | PASS (Histórico) | pgTAP em 2026-10-05 (63/63 PASS; não reexecutado nesta rodada)                                                |
+| **md-0002/AC-12** | Acessibilidade WCAG AA (Axe Playwright)                  | UNVERIFIABLE     | Evidência parcial em dev (3/3 PASS em `e2e/verify-md0002-acessibilidade.spec.ts`); pendente em prod com HTTPS |
+| **md-0002/AC-13** | Exibição de fontes citadas no final do corpo             | PASS             | Seção `<section>` com lista de fontes e `rel="noopener noreferrer"`                                           |
 
 ---
 
 ## 4. Conclusão e Governança
 
-- **Suítes em Ambiente Local Dev:** As suítes técnicas locais (`vitest`, `playwright` com servidor dev) executam com sucesso.
-- **Evidência de RLS / pgTAP:** A prova do AC-11 é mantida como evidência histórica do banco obtida em 2026-10-05 (63/63 asserções).
-- **Provas de Produção Compilada (`next start`):**
+- **Status do Gate:** **REPROVADO**. O AC-07 falhou (status HTTP retornado é 200 em vez de 404 para artigo inexistente, rascunho sem sessão e agendado), o AC-08 permanece incompleto (faltam testes de expiração real de token e falha GoTrue em logout) e o AC-12 não foi demonstrado em servidor de produção real com HTTPS.
+- **Redação de Credenciais:** Tokens e cookies literais foram devidamente redigidos nos arquivos e relatórios do workspace atual (`[REDACTED]`, preservando apenas atributos como flags `Secure; HttpOnly; SameSite=lax`). **Isso não comprova remoção de valores no histórico anterior de commits do Git** (uma eventual purga do Git histórico requer procedimento próprio de auditoria com ferramentas como `git-filter-repo` / `gitleaks`).
+- **Evidência de RLS / pgTAP:** A prova do AC-11 é mantida estritamente como evidência histórica do banco obtida em 2026-10-05 (63/63 asserções).
+- **Provas de Produção Compilada (`next start` na porta 3250):**
   - O bundle de produção foi compilado com Turbopack com sucesso via `pnpm build:next`.
-  - Execução HTTP contra `next start` na porta 3250 confirmou:
+  - Execução HTTP contra `next start` (porta 3250; os testes em desenvolvimento usaram a porta 3000) confirmou:
     - `/artigos/fixture-publicado`: 200 OK, `Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate`, renderização do `<h1>` e script estruturado `<script type="application/ld+json">`.
-    - `/artigos/inexistente-12345`: 200 OK com renderização da página 404 customizada ("Página não encontrada").
-    - `/artigos/fixture-rascunho`: sem sessão de preview, renderiza a página de não encontrado ("Página não encontrada").
-    - `/api/preview`: redirecionamento 307 com cookie de sessão emitido com flags `Secure; HttpOnly; SameSite=lax` e header explícito `cache-control: no-store`.
+    - `/artigos/inexistente-12345`: **FAIL** — retornou HTTP 200 (renderizou corpo com texto "Página não encontrada", mas status HTTP é 200 em vez de 404).
+    - `/artigos/fixture-rascunho`: **FAIL** — sem sessão de preview, retornou HTTP 200 (em vez de 404).
+    - `/api/preview`: redirecionamento 307 com cookie de sessão contendo flags `Secure; HttpOnly; SameSite=lax` e header explícito `cache-control: no-store`.
     - `/artigos/fixture-rascunho` (com cookie): 200 OK, exibe título "Fixture rascunho" e `<meta name="robots" content="noindex, nofollow"/>`.
-- **Lacunas de Produção Remanescentes:** Cenários envolvendo expiração real de token GoTrue (sem limpar cookies) e injeção de falha GoTrue permanecem como `UNVERIFIABLE`.
-- **Estado da Spec:** A spec `md-0002` encontra-se formalmente no estado **Accepted** (SHA-256 `218e3429832b64205a0b1a7d21fa660bf13a743af9561c1eae5e5737f03bada7`).
+- **Estado da Spec:** A spec `md-0002` encontra-se formalmente no estado **Accepted** (SHA-256 `266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564`).
 - **Restrição de Governança:** Conforme determinação do usuário, **merge e deploy permanecem terminantemente desautorizados**.

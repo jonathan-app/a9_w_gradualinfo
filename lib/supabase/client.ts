@@ -16,6 +16,12 @@ import { env } from '@/lib/env';
  */
 let browserClient: ReturnType<typeof createBrowserClient> | undefined;
 
+/**
+ * Devolve o singleton do cliente Supabase de browser.
+ *
+ * @returns A instância memorizada no módulo — a primeira chamada a cria, as
+ *   seguintes devolvem a mesma; ver cabeçalho do arquivo para o porquê.
+ */
 export function createClient() {
   if (!browserClient) {
     browserClient = createBrowserClient(env.supabase.url, env.supabase.anonKey);

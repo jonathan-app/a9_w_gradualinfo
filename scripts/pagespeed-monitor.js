@@ -21,7 +21,12 @@
  * código.
  */
 
-const DEFAULT_PATHS = ['/', '/exemplo'];
+const DEFAULT_PATHS = [
+  '/',
+  '/artigos/o-que-e-ram',
+  '/artigos/como-escolher-ssd',
+  '/exemplo',
+];
 
 /** Achata o resultado do PSI nos quatro Core Web Vitals. */
 function toCoreWebVitals(result) {

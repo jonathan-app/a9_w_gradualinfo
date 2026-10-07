@@ -32,16 +32,18 @@ rules:
           - pattern: process.env['SUPABASE_SERVICE_ROLE_KEY']
           - pattern: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
 
-  # --- HTML cru em markdown ----------------------------------------------
-  - id: react-markdown-skip-html
+  # JSON-LD é a única exceção autorizada; skipHtml bloqueia HTML, não injeta.
+  - id: unsafe-html-injection
     message: >-
-      react-markdown com `skipHtml`: o conteúdo não passa por sanitização. Se
-      a origem for dado do usuário, é XSS com um clique. Ou remova o `skipHtml`,
-      ou garanta que o HTML foi sanitizado no servidor antes de chegar aqui.
+      Injeção HTML fora do serializador autorizado de JSON-LD.
+      O corpo Markdown deve ser renderizado como árvore React.
     severity: ERROR
     languages: [typescript, javascript]
-    pattern: |
-      <ReactMarkdown ... skipHtml ... >
+    patterns:
+      - pattern: |
+          <$TAG ... dangerouslySetInnerHTML={{ __html: $HTML }} ... />
+      - pattern-not: |
+          <script ... type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(...) }} ... />
 
   # --- proxy.ts sem matcher ----------------------------------------------
   - id: proxy-without-matcher
@@ -54,10 +56,7 @@ rules:
       include:
         - '**/proxy.ts'
         - '**/middleware.ts'
-    pattern: |
-      export async function $F(...)
-    pattern-not: |
-      export const config = { ... matcher: ..., ... }
+    pattern-regex: '(?s)\A(?!.*export\s+const\s+config\s*=.*matcher).*export\s+async\s+function\s+'
 
   # --- Consulta a dado no cliente quando dá para ser no servidor ----------
   - id: supabase-query-inside-use-effect

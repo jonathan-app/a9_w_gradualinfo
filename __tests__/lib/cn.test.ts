@@ -1,14 +1,17 @@
+/**
+ * @fileoverview Suíte de `cn` — o merge de classes do Tailwind usado no app inteiro.
+ * @module __tests__/lib/cn
+ * @description Trava concatenação, descarte de valores falsy vindos de condição e, sobretudo,
+ *   a resolução de conflito entre utilitários: é o comportamento que decide se o estilo
+ *   pedido chega ou não à tela.
+ * @dependencies vitest, @/lib/utils/cn.
+ *
+ * `cn` é a função mais chamada do projeto e o motivo número um de "meu estilo não aplicou".
+ * O comportamento que vale travar é o conflito de utilitários do Tailwind: é exatamente aí
+ * que um erro passa despercebido.
+ */
 import { describe, expect, it } from 'vitest';
 import { cn } from '@/lib/utils/cn';
-
-/**
- * __tests__/lib/cn.test.ts
- *
- * Por que testar esta função
- * `cn` é a função mais chamada do projeto e o motivo número um de "meu estilo
- * não aplicou". O comportamento que vale travar é o conflito de utilitários do
- * Tailwind: é exatamente aí que um erro passa despercebido.
- */
 describe('cn', () => {
   it('concatena classes simples', () => {
     expect(cn('flex', 'items-center')).toBe('flex items-center');

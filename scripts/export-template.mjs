@@ -56,6 +56,8 @@ try {
   const tree = git(['write-tree']);
 
   if (existsSync(zipPath)) rmSync(zipPath);
+  // `--worktree-attributes`: o `.gitattributes` aplicado é o da árvore de trabalho, não o de
+  // um commit antigo — o export-ignore em vigor é sempre o que está salvo agora.
   execFileSync(
     'git',
     [

@@ -11,6 +11,18 @@ import { Button } from '@/components/ui/button';
  *
  * `<nav aria-label>` nomeia a região de navegação para quem navega por leitor
  * de tela; sem isso o leitor anuncia "navigation" sem dizer de quê.
+ *
+ * @fileoverview Cabeçalho fixo do site.
+ * @module components/layout/site-header
+ * @dependencies next/link, components/shared/theme-toggle (folha client),
+ *   components/ui/button.
+ */
+/**
+ * Cabeçalho sticky do site.
+ *
+ * @returns Barra com marca, navegação principal e alternador de tema. Sticky
+ *   `z-40` de propósito: o skip-link do layout usa `z-50` e precisa passar por
+ *   cima desta barra quando recebe o primeiro Tab.
  */
 export function SiteHeader() {
   return (
@@ -25,9 +37,6 @@ export function SiteHeader() {
           className="flex items-center gap-1">
           <Button asChild variant="ghost" size="sm">
             <Link href="/">Início</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/exemplo">Exemplo</Link>
           </Button>
         </nav>
 

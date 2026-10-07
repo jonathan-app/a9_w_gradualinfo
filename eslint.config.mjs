@@ -1,3 +1,19 @@
+/**
+ * @fileoverview ESLint 9 (flat config) — regras e exceções por contexto do projeto.
+ * @module eslint.config
+ * @description Um array de configs exportado de `eslint.config.mjs`: o `.eslintrc.js` não é
+ *   mais lido pelo ESLint 9. A ordem importa — o array é aplicado de cima para baixo e o
+ *   último que casar o arquivo vence, por isso as exceções (`files` + regras desligadas) vêm
+ *   depois das regras gerais.
+ * @dependencies plugins JS/TS/React/hooks/a11y/import montados manualmente.
+ *
+ * Este projeto montava a config em `eslint-config-next`, removido porque
+ * `@next/eslint-plugin-next` → `fast-glob → micromatch → braces` e `braces`
+ * (GHSA-vfj7-8cjw-p6xm) não tem versão corrigida: o gate de audit sem
+ * exceções exige tirar o pacote fora. A montagem abaixo reusa os plugins que
+ * o eslint-config-next empacotaria, sem ele. Trade-off aceito: perdemos as
+ * regras `next/*`; ganhamos uma cadeia de auditoria zerada.
+ */
 import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import globals from 'globals';
@@ -6,21 +22,6 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
-
-// ============================================================================
-// eslint.config.mjs — ESLint 9 (flat config)
-// ============================================================================
-// O `.eslintrc.js` não é mais lido pelo ESLint 9: tudo agora é um array de
-// configs exportado de `eslint.config.mjs`. A ordem importa — o array é
-// aplicado de cima para baixo, e o último que casar o arquivo vence.
-//
-// Este projeto montava a config em `eslint-config-next`, removido porque
-// `@next/eslint-plugin-next` → `fast-glob → micromatch → braces` e `braces`
-// (GHSA-vfj7-8cjw-p6xm) não tem versão corrigida: o gate de audit sem
-// exceções exige tirar o pacote fora. A montagem abaixo reusa os plugins que
-// o eslint-config-next empacotaria, sem ele. Trade-off aceito: perdemos as
-// regras `next/*`; ganhamos uma cadeia de auditoria zerada.
-// ============================================================================
 
 export default defineConfig([
   // --- Ignorados globais -------------------------------------------------
