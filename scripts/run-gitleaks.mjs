@@ -153,7 +153,6 @@ export async function runGitleaksScan() {
         'dir',
         '.',
         '--redact',
-        '--no-git',
         '--report-format',
         'json',
         '--report-path',
