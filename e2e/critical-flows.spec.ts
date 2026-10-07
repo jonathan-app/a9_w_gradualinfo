@@ -27,9 +27,15 @@ test.describe('Fluxos críticos', () => {
   test('artigo publicado abre a partir da home', async ({ page }) => {
     await page.goto('/');
     await page.locator('a[href="/artigos/fixture-publicado"]').first().click();
-    await expect(page.locator('h1')).toContainText('Fixture publicado');
+    // `getByRole` com nível e nome resolve para um único nó (a árvore de acessibilidade ignora
+    // duplicatas transitórias do streaming do App Router), e o `toHaveText` aguarda a troca.
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Fixture publicado' }),
+    ).toHaveText('Fixture publicado');
     await page.getByRole('link', { name: 'Início', exact: true }).click();
-    await expect(page.locator('h1')).toContainText('Gradualinfo');
+    await expect(
+      page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
+    ).toContainText('Gradualinfo');
   });
 
   test('alternância de tema altera a classe do html', async ({ page }) => {
