@@ -58,7 +58,7 @@ export function PostCard({ post, isFeatured = false }: PostCardProps) {
             fill
             unoptimized
             sizes="(min-width: 768px) 50vw, 100vw"
-            loading="eager"
+            priority
           />
         </div>
         <div className="w-full md:w-1/2 flex flex-col justify-center">
