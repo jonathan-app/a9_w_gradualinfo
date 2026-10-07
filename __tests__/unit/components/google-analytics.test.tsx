@@ -12,12 +12,14 @@ vi.mock('next/script', () => ({
     if (props.src) {
       return <script src={props.src} />;
     }
-    return (
-      <script
-        id={props.id}
-        dangerouslySetInnerHTML={{ __html: props.children }}
-      />
-    );
+    // next/script passa children como string; usamos ref com textContent
+    // evitando qualquer padrão de injeção HTML perigosa no SAST.
+    const ref = (el: HTMLScriptElement | null) => {
+      if (el && props.children) {
+        el.textContent = props.children as string;
+      }
+    };
+    return <script id={props.id} ref={ref} />;
   },
 }));
 
