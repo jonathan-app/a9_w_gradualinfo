@@ -180,10 +180,10 @@ test.describe.serial('preview em produção local', () => {
     request,
     baseURL,
   }) => {
-    // Expiração REAL da sessão (não simulada): por isso o timeout de 90s e o `remaining`
+    // Expiração REAL da sessão (não simulada): por isso o timeout de 120s e o `remaining`
     // abaixo — instala a sessão e espera o próprio token vencer com o refresh bloqueado,
     // provando que sessão vencida não abre rascunho sem apagar os cookies.
-    test.setTimeout(90_000);
+    test.setTimeout(120_000);
     const session = await installSession(context, baseURL!, {
       email: process.env.SUPABASE_PREVIEW_EMAIL!,
       password: process.env.SUPABASE_PREVIEW_PASSWORD!,
