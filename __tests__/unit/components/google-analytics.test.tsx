@@ -1,6 +1,26 @@
 import { render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('next/script', () => ({
+  __esModule: true,
+  default: function MockScript(
+    props: React.DetailedHTMLProps<
+      React.ScriptHTMLAttributes<HTMLScriptElement>,
+      HTMLScriptElement
+    >,
+  ) {
+    if (props.src) {
+      return <script src={props.src} />;
+    }
+    return (
+      <script
+        id={props.id}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
+}));
+
 /**
  * __tests__/unit/components/google-analytics.test.tsx
  * @fileoverview Renderização condicional do GoogleAnalytics por measurementId.
