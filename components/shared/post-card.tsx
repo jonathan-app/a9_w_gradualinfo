@@ -35,7 +35,7 @@ export function PostCard({ post, isFeatured = false }: PostCardProps) {
         <div className="w-full md:w-1/2 flex flex-col justify-center">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary" className="text-brand-600 bg-brand-50">
+              <Badge variant="secondary" className="text-brand-700 bg-brand-50">
                 {post.editoria}
               </Badge>
               {publishedAt && (
@@ -77,7 +77,7 @@ export function PostCard({ post, isFeatured = false }: PostCardProps) {
       </div>
       <CardHeader className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant="secondary" className="text-brand-600 bg-brand-50">
+          <Badge variant="secondary" className="text-brand-700 bg-brand-50">
             {post.editoria}
           </Badge>
         </div>

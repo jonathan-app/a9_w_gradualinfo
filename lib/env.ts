@@ -33,6 +33,10 @@ export const env = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   locale: process.env.NEXT_PUBLIC_LOCALE ?? 'pt-BR',
   previewToken: process.env.SUPABASE_PREVIEW_TOKEN ?? '',
+  previewPassword: process.env.SUPABASE_PREVIEW_PASSWORD ?? '',
+  previewEmail: process.env.SUPABASE_PREVIEW_EMAIL ?? '',
+  previewUserId: process.env.SUPABASE_PREVIEW_USER_ID ?? '',
+  isProduction: process.env.NODE_ENV === 'production',
 } as const;
 
 /**

@@ -1,0 +1,44 @@
+{
+  "Contexto de arquivo": {
+    "prefix": "fileheader",
+    "body": [
+      "/**",
+      " * ${1:Por que este arquivo existe e que problema resolve.}",
+      " */",
+      "$0",
+    ],
+    "scope": "javascript,javascriptreact,typescript,typescriptreact",
+    "description": "Documenta o porquê sem repetir os tipos nem inventar autoria",
+  },
+  "Documentação de função": {
+    "prefix": "jsdocfn",
+    "body": [
+      "/**",
+      " * ${1:Contrato ou restrição que não é evidente pelos tipos.}",
+      " *",
+      " * @param ${2:param} - ${3:Significado ou unidade do valor.}",
+      " * @returns ${4:Significado do resultado.}",
+      " */",
+      "$0",
+    ],
+    "scope": "javascript,javascriptreact,typescript,typescriptreact",
+    "description": "Documenta o porquê sem repetir os tipos nem inventar autoria",
+  },
+  "Decisão técnica": {
+    "prefix": "decisao",
+    "body": ["// ${1:Por que esta escolha evita um problema concreto.}", "$0"],
+    "scope": "javascript,javascriptreact,typescript,typescriptreact",
+    "description": "Documenta o porquê sem repetir os tipos nem inventar autoria",
+  },
+  "Pendência com contexto": {
+    "prefix": "todocontext",
+    "body": [
+      "// TODO: ${1:Ação necessária.}",
+      "// Contexto: ${2:O que impede a ação hoje.}",
+      "// Quando: ${3:Condição observável para retomar.}",
+      "$0",
+    ],
+    "scope": "javascript,javascriptreact,typescript,typescriptreact",
+    "description": "Documenta o porquê sem repetir os tipos nem inventar autoria",
+  },
+}

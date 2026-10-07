@@ -23,7 +23,54 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: `/check` — verificação autorizada; causa dos timeouts ainda não isolada.** `pnpm test:run` passou 74/74 (não revalida pgTAP, páginas ou sitemap). Os 12 cenários da Tarefa 8 permanecem `UNVERIFIABLE`. Registrado separadamente: `listen EPERM` observado em tentativa de build/servidor de produção local; timeouts de navegação em E2E com causa não isolada. Merge e deploy seguem sem autorização.
+**Próxima etapa: decisão do usuário, revisão e aceite do contrato de preview.**
+Proposta concreta: `docs/specs/0003-preview-autorizacao.md`, status Proposed.
+Decisões explícitas desta sessão em 2026-10-07: prazo absoluto de 30 minutos,
+um UUID configurado no servidor e POST sem guardar o segredo. A proposta
+consolidada recomenda configurações separadas, prazo assinado vinculado à
+sessão, erro real de logout e negativos em produção. Perguntas pendentes:
+quer revisão por outro modelo antes do aceite? Aceita bloqueio local após
+logout e prazo de 30 minutos, ou exige revogação imediata de credenciais
+copiadas mesmo se Auth falhar? Para etapa 4, aceita apenas JSON gerado pela
+CI para o SHA testado, com Markdown legado somente histórico? Não inferir
+aceite integral das três escolhas parciais.
+
+Etapa 5 inspecionada em `docs/audits/2026-10-07-skills-governanca.md` e
+manifesto associado: 90 diretórios, 9 nomes no lock, 81 extras, nenhum nome
+do lock ausente. Hash do arquivo e computedHash têm algoritmos ainda não
+comparados. Verificador/allowlist e proteção remota não implementados.
+Plano atualizado sem marcar etapas completas. Após aceite, /architect
+reconcilia md-0001/md-0002 e entrega /develop etapa 3. Etapa 4 segue depois.
+Etapa 4 inspecionada, sem implementação: `docs/audits/2026-10-07-ci-gate-etapa4.md`
+registra desvinculação entre decisão e SHA, conjunto incompleto de ACs,
+E2E sem banco e servidor compilado, ausência de gitleaks, SAST sem regras
+locais e ferramentas sem pin completo. Dependência da etapa 3 preservada.
+Também registrar em contrato aceito a origem dos ACs e da aprovação, o
+vínculo SHA/árvore/spec e o tratamento do formato legado antes da etapa 4.
+**Blocked (etapa 3, atualizado em 2026-10-07):** prazo, quantidade de
+identidades e transporte foram decididos pelo dono. Fontes, assinatura,
+renovação e erros estão detalhados na proposta 0003, ainda sem aceite
+integral. Não construir a proposta antes de Accepted nem alterar o status
+das specs anteriores para inferir aprovação.
+Inspeção desta rodada: GET lê token na query e usa o mesmo valor como senha;
+leitura verifica claim sem identidade; teste de expiração apenas apaga
+cookies e teste de logout não induz erro. Serializador e comparação
+criptográfica já existem. Não houve alteração de código ou execução de
+suítes nesta rodada. Após a decisão registrada, retomar /develop etapa 3;
+a verificação final /check segue pendente depois das correções.
+Em 2026-10-07, o dono aprovou explicitamente a spec `md-0002` (agora **Accepted**, SHA-256 `7516d71b52c986398f98c513e4270f6fc01f187b9955f16d75855ab42e65d99b`), consolidando a política de cache público `no-store`, preview `private, no-store` e a emenda de AC-06 para exceção exclusiva de JSON-LD com serialização segura.
+As correções técnicas de robustez e segurança foram validadas:
+1. `serializeJsonLd` sanitiza tags perigosas (`<`, `>`, `&`) como Unicode seguro (`\u003c`, etc.), com teste provando que `</script><script>alert(1)</script>` não fecha o script HTML e permanece íntegro para `JSON.parse`.
+2. Validação do token de preview migrada para `crypto.timingSafeEqual` com SHA-256 de tamanho fixo em `app/api/preview/route.ts` (protege a comparação dos hashes; não comprova timing de ponta a ponta).
+3. Rota `/artigos/[slug]` fixada com `export const dynamic = 'force-dynamic'` para renderização dinâmica (não comprova sozinho ausência de cache no CDN; headers reais de produção do artigo protegido mapeados na matriz).
+4. Suítes locais dev executadas: `pnpm check:all` (76/76 Vitest, typecheck, lint, prettier), pgTAP (63/63 asserções), Playwright Axe (3/3) e Playwright Tarefa 8 (7/7) no servidor dev; os 12 cenários de produção compilada com `next start` continuam mapeados com suas lacunas como `UNVERIFIABLE`.
+Evidências consolidadas em `docs/reviews/2026-10-07-check-execucao-local-axe.md`. **Merge e deploy continuam rigorosamente sem autorização.**
+
+- **Plano de atualização registrado (2026-10-07):** `plano-atualizacao-auditoria.md`, com 10 entregas, dependências, responsáveis, critérios e cobertura dos P0/P1/P2. Fonte preservada em `docs/audits/2026-10-06-deep-audit-original.txt` com SHA-256. Reconcilia CI/headers/JSON-LD já presentes sem tratá-los como verificados. O primeiro passo permanece `/check`: inventário de árvore/contrato e verificação em produção local e axe; aceite de md-0002, commit, merge e deploy não são inferidos do plano.
+
+- **Retomada /check em 2026-10-07:** HEAD `cfcfd6fa5bed981393ee6e8cc18afb30243403e7`, árvore modificada; build `hnUNphsupBDIL_NZ4GLTE` sem vínculo comprovado à árvore. Consultas locais dentro do sandbox sem resposta HTTP; diagnóstico fora do sandbox solicitado, ainda sem saída confirmada. As chamadas anteriores não foram repetidas. Gate REPROVADO com 12 UNVERIFIABLE. Relatório e manifesto: `docs/reviews/2026-10-07-check-producao-local-axe.md` e JSONs associados.
+
+- **Configuração VS Code concluída e encerrada:** `.vscode/` agora inclui recomendações, settings, 20 tarefas válidas, launch para Next/Vitest/Playwright/Storybook, MCP Next DevTools/Playwright sem credenciais e snippets GradualInfo. `.gitignore` permite versionar os arquivos compartilháveis. Análise e limites em `docs/tooling/vscode.md`; JSON/JSONC, caminhos, scripts e Prettier validados. Execução no editor/MCP não verificada. Arquivos da pasta pai apenas analisados. Fila de produção local e axe preservada.
 
 - **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
 - **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.
@@ -321,6 +368,25 @@ de agentes abaixo.**
 | 45 | 2026-10-06 | /check verify: retificação do bastão e evidência pendente | `docs/reviews/2026-10-06-check-producao-local-axe.md`, `workflow/STATE.md`: SHA registrado, produção bloqueada por EPERM; cenários sem confirmação UNVERIFIABLE; próxima etapa produção local e axe; sem autorização de merge/deploy | verificação incompleta |
 
 | 46 | 2026-10-06 | /check verify: retomada de produção local autorizada | `docs/reviews/2026-10-06-check-producao-local-axe.md`: build atual exit 1 por restrição de porta do sandbox; recompilação e servidor solicitados via require_escalated; HEAD inalterado; nenhum cenário confirmado, 12 UNVERIFIABLE | verificação incompleta, bloqueio técnico |
+| 47 | 2026-10-07 | manutenção / segurança | `lib/utils/format.ts` (`serializeJsonLd`), `app/artigos/[slug]/page.tsx` (sanitização de JSON-LD contra quebra de tag script e XSS), `__tests__/unit/lib/format.test.ts` (testes unitários 75/75 passando), `.gitattributes` recriado com export-ignore e normalizado com `pnpm gitattributes:sync` | concluído |
+
+| 48 | 2026-10-07 | configuração de workspace VS Code | `.vscode/extensions.json`, `.vscode/settings.json`: recomendações, Prettier/ESLint, TypeScript local, Tailwind 4 e pt-BR; JSON e Prettier validados; configuração encerrada, fila de /check produção local e axe preservada | concluído |
+
+| 49 | 2026-10-07 | análise e adaptação das configurações VS Code compartilhadas | `.vscode/`, `.gitignore`, `docs/tooling/vscode.md`: tarefas reais, depuração atual, snippets GradualInfo, MCP sem tokens; validação estrutural e Prettier PASS; execução no editor não verificada; fila de /check preservada | configuração encerrada |
+
+| 50 | 2026-10-07 | /check verify retomado | `docs/reviews/2026-10-07-check-producao-local-axe.md` e JSONs: HEAD atual e manifesto registrados; consultas sem resposta no sandbox, diagnóstico require_escalated pendente; 12 UNVERIFIABLE, gate REPROVADO | incompleto por ambiente |
+
+| 51 | 2026-10-07 | plano de atualização após auditoria profunda | `plano-atualizacao-auditoria.md`, `docs/audits/2026-10-06-deep-audit-original.txt`: 10 entregas com dependências/provas, findings reconciliados; bastão /check preservado; nenhuma implementação ou publicação autorizada pelo registro | plano registrado |
+
+| 52 | 2026-10-07 | /check etapa 1: inventário e matriz de evidência | `docs/reviews/2026-10-07-md0002-inventario.md`, manifesto/diff/resultado/decisão associados; SHA e hash da spec, 301 arquivos, 13 ACs + 12 cenários, diff classificado sem descarte; gate REPROVADO, runtime pendente; plano atualizado | inventário concluído; etapa 1 incompleta |
+| 53 | 2026-10-07 | /check verify: execução local de suítes e acessibilidade | `docs/reviews/2026-10-07-check-execucao-local-axe.md`: pgTAP 63/63 PASS, Vitest 75/75 PASS (com serializeJsonLd XSS test), Playwright Axe 3/3 PASS (Home, Artigo, Preview), Playwright Preview HTTP 7/7 PASS; contraste WCAG AA ajustado no Badge; spec md-0002 segue Proposed; merge e deploy desautorizados | verificação local concluída |
+| 54 | 2026-10-07 | /architect: emenda parcial AC-06 aprovada pelo dono com resposta `1` | `docs/specs/md-0002-casca-editorial-home.md`: exceção exclusiva de JSON-LD, escaping e teste no HTML servido; `workflow/STATE.md`: cache, imagens e aceite integral pendentes; sem declaração de PASS ou aceite integral | decisão parcial registrada |
+| 55 | 2026-10-07 | endurecimento de segurança: timing-safe, escape JSON-LD, cache dinâmico | `app/api/preview/route.ts` (crypto.timingSafeEqual SHA-256), `lib/utils/format.ts` & `__tests__/unit/lib/format.test.ts` (escape Unicode e teste payload de injeção), `app/artigos/[slug]/page.tsx` (export dynamic force-dynamic); `pnpm check:all` 76/76 PASS; merge e deploy desautorizados | correções técnicas concluídas |
+| 56 | 2026-10-07 | /architect: política de cache aprovada pelo dono com resposta `sim` ao item 2 | `docs/specs/md-0002-casca-editorial-home.md`: leitura por requisição, sem cache persistente, preview private/no-store e provas de atualização; `workflow/STATE.md`: imagens e aceite integral pendentes; status Proposed preservado | decisão parcial registrada |
+| 57 | 2026-10-07 | consolidação de aceite integral md-0002 e refinamento de evidências | `docs/specs/md-0002-casca-editorial-home.md` atualizada para Accepted (SHA-256 `7516d71b...`); conclusões técnicas ajustadas (timingSafeEqual protege hashes na CPU, force-dynamic controla Next.js sem provar CDN sozinho, mapeamento de S01-S12 com UNVERIFIABLE em prod); merge e deploy desautorizados | aceite integral e governança atualizados |
+| 58 | 2026-10-07 | /develop etapa 3: inspeção e portão de decisão do preview | `app/api/preview/route.ts`, `app/api/preview/logout/route.ts`, `lib/services/posts.ts`, `e2e/verify-md0002-tarefa8.spec.ts`: query e senha compartilhada persistem, identidade/expiração/logout negativos sem contrato ou prova; `workflow/STATE.md`: fontes e regras faltantes encaminhadas ao /architect; sem código alterado | Blocked por contrato incompleto |
+| 59 | 2026-10-07 | /develop etapa 4: auditoria estática de CI e gate | `docs/audits/2026-10-07-ci-gate-etapa4.md`: jobs, fixtures, servidor, tipos, scanners e vínculo de aprovação auditados; reprodução isolada bloqueada por EPERM, escalada pendente; `workflow/STATE.md`: dependência de etapa 3 e contrato do gate preservados; sem alteração de implementação | auditoria concluída; implementação pendente |
+| 60 | 2026-10-07 | /architect: proposta de preview e continuação independente da etapa 5 | `docs/specs/0003-preview-autorizacao.md`: três decisões explícitas incorporadas, contrato consolidado Proposed; `docs/audits/2026-10-07-skills-governanca.md` e manifesto: 90 diretórios/9 lock/81 extras, hashes e referências ausentes; `plano-atualizacao-auditoria.md` e `workflow/STATE.md`: progresso reconciliado, revisão/aceite pendentes; sem implementação | proposta e inventário registrados |
 
 ### Evidência da linha 01
 

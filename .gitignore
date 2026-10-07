@@ -52,6 +52,10 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/mcp.json
+!.vscode/gradualinfo*.code-snippets
 .idea/
 
 # agents

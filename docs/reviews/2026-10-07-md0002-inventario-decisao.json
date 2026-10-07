@@ -1,0 +1,43 @@
+{
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 13,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNVERIFIABLE": 13,
+    "missingEvidence": 13,
+    "BLOCKER": 2,
+    "WARNING": 0
+  },
+  "reasons": [
+    "AC reprovado ou não verificável: md-0002/AC-01 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-01",
+    "AC reprovado ou não verificável: md-0002/AC-02 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-02",
+    "AC reprovado ou não verificável: md-0002/AC-03 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-03",
+    "AC reprovado ou não verificável: md-0002/AC-04 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-04",
+    "AC reprovado ou não verificável: md-0002/AC-05 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-05",
+    "AC reprovado ou não verificável: md-0002/AC-06 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-06",
+    "AC reprovado ou não verificável: md-0002/AC-07 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-07",
+    "AC reprovado ou não verificável: md-0002/AC-08 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-08",
+    "AC reprovado ou não verificável: md-0002/AC-09 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-09",
+    "AC reprovado ou não verificável: md-0002/AC-10 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-10",
+    "AC reprovado ou não verificável: md-0002/AC-11 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-11",
+    "AC reprovado ou não verificável: md-0002/AC-12 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-12",
+    "AC reprovado ou não verificável: md-0002/AC-13 (UNVERIFIABLE)",
+    "Falta evidência para o AC: md-0002/AC-13",
+    "Encontrado achado bloqueante (BLOCKER): E2E de AC-08 aceita [200,404], limpa cookies em vez de expirar sessão e não simula falha de logout; não comprova os cenários exigidos.",
+    "Encontrado achado bloqueante (BLOCKER): Spec md-0002 continua Proposed; conflito AC-06/JSON-LD requer resolução contratual e aceite explícito, sem inferir aprovação da autorização de verificar."
+  ]
+}

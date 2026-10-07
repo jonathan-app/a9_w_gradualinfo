@@ -95,3 +95,17 @@ export function initials(name: string): string {
 
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 }
+
+/**
+ * Serializa objetos para inclusão segura dentro de blocos <script type="application/ld+json">.
+ * Escapa sequências perigosas como "</script>", "<", ">", "&" e separadores Unicode de linha,
+ * impedindo que metadados vindos do banco quebrem o parser HTML ou injetem scripts.
+ */
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}

@@ -1,0 +1,812 @@
+{
+  "date": "2026-10-07",
+  "lockedCount": 9,
+  "installedDirectoryCount": 90,
+  "extraDirectories": [
+    "api-patterns",
+    "api-security-best-practices",
+    "app-builder",
+    "architecture",
+    "architecture-decision-records",
+    "auth-implementation-patterns",
+    "bash-linux",
+    "batch-operations",
+    "behavioral-modes",
+    "brainstorming",
+    "clean-code",
+    "cloudflare-security-audit",
+    "cloudflare-workers-expert",
+    "code-documenter",
+    "code-review-checklist",
+    "code-review-excellence",
+    "code-review-graph",
+    "composition-patterns",
+    "context-compression",
+    "coordinator-mode",
+    "database-design",
+    "deployment-procedures",
+    "design-spec",
+    "documentation-templates",
+    "frontend-architecture",
+    "frontend-design",
+    "game-development",
+    "geo-fundamentals",
+    "github-actions",
+    "github-governance",
+    "github-pr",
+    "hono",
+    "i18n-localization",
+    "intelligent-routing",
+    "lint-and-validate",
+    "mcp-builder",
+    "memory-system",
+    "mobile-design",
+    "nextjs-app-router-patterns",
+    "nextjs-best-practices",
+    "nextjs-react-expert",
+    "nextjs-seo-indexing",
+    "nextjs-supabase-auth",
+    "nodejs-best-practices",
+    "parallel-agents",
+    "performance-optimization",
+    "performance-profiling",
+    "plan-writing",
+    "playwright-skill",
+    "powershell-windows",
+    "python-patterns",
+    "react-component-performance",
+    "react-patterns",
+    "red-team-tactics",
+    "rust-pro",
+    "security",
+    "security-and-hardening",
+    "semgrep-rule-creator",
+    "sentry-automation",
+    "seo-fundamentals",
+    "server-management",
+    "shadcn",
+    "simplify-code",
+    "skillify",
+    "supabase",
+    "supabase-postgres-best-practices",
+    "systematic-debugging",
+    "tailwind-design-system",
+    "tailwind-patterns",
+    "tdd",
+    "tdd-workflow",
+    "testing-patterns",
+    "testing-qa",
+    "typescript-expert",
+    "ui-a11y",
+    "verification-before-completion",
+    "verify-changes",
+    "vitest-skill",
+    "vulnerability-scanner",
+    "web-design-guidelines",
+    "webapp-testing"
+  ],
+  "missingLockedDirectories": [],
+  "allowlistFound": false,
+  "skills": [
+    {
+      "name": "api-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "b9f16c4cb87d14f0ad9407556481e25b63312eb86602520f6533776d8ad19550",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "api-security-best-practices",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "0dec00d4fab4a9aa37a16aacc2ac05b9650154391b22e17ff1776d395a56c1cd",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "app-builder",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "1e720200afacfe30024a76ad1b7d9952530583abef0f595a09baf878891945d6",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "architect",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "bff76aeae80474f80e363ff274e4dbc0dea6e5d551fdaa76dd982d4689122dda",
+      "lockComputedHash": "ff57c65a06ca4047420113d1eaa18e5002bc657224688b9350a1f06d77204327",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "architecture",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "e07339f434caca281c697308775f2f21b77f819a74160a03b6b2e4cc3ac743c3",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "architecture-decision-records",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "d03a253f3d6b89a6a43937765901ba7d45cd4f11ccefb131e85893b6318fb8b4",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "audit",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "f9c5b84c31e78fdfa723c1814876c40b1a674228a48aa33b746250129abc54f8",
+      "lockComputedHash": "a8d524118ce6d60911840ef31509f1f5551ce1099cb8fd8a241ed0859e5c62ed",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "auth-implementation-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "103485ba2761ad961dd55a09fc42ff9dca6fde6831b95675f7a756d958d57fd5",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "bash-linux",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "63885db9a511e5975d5323a74a661d134528486400a11100bec5775d9ef79784",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "batch-operations",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "da8b913ac1f900e84baf4edb8767b5cb6be15786a71f16ccfd4fb15ca91d9ad2",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "behavioral-modes",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "b7c314b48af3e7f38ca0ad4ebb870f721e94778caea207996601896ccc66f47b",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "brainstorming",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2094bb5967e78a296698057fc0634cd0146ac75ffc1a7b180f6065e009483542",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "check",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "612ba9aa2e1e5ff4f017b0e9cbc4d881237d893b59a6ace8970fa58075d32b70",
+      "lockComputedHash": "3f21e5cf83a65be1c0fd07fa9f4a75ae31f4f2d169d862be6aec6e6e7adb0382",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "clean-code",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2c47d421d96da0346cc1add091c7538f41e494c08ba86d6dbba103a68256f8e4",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "cloudflare-security-audit",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "b7743eb9955bd7618870b915109f4a04382ea32905def7564b6e1d3f2619f8bc",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "cloudflare-workers-expert",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "294f98fa11b3fe5ca8e43819a7b378ceb701fa2a9215daf3257ebe797f1fd16d",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "code-documenter",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2997ff178b1cf4bfe8ace2bb764ea752d464c82b3c95695138d8a2aca482b208",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "code-review-checklist",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "07b20413aa0d000202b6582c6050121cd8520bef701cc050a636651900de4838",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "code-review-excellence",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "935c13bb07cd09b73f8af345db82a435bd09f9f9c34c7c595623e65a40ca3cf5",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "code-review-graph",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "9e59161bbd8b251f4bc2076299192f8e0d7d89c9e54a12e3c33057e7e8dcf63d",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "composition-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "bc4eb9273a980806dd8dabb8e4929d6e7296e19f7b32687f8c7bafb5e6bd614f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "context-compression",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "1165b2a4192249ce6597fbbeb61853f6e699f5de5f37addb75fa87326d5197b9",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "coordinator-mode",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "a3c074d5e87655cf34703f19fa7a8eefaeb4498e8017df4c73554d717d3ffc14",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "database-design",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "f1561bf94e3605673d4d5985012c8df94c5658b6f3852824847aa546c9c2c050",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "debug",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "65d1796b883ed013cf6c61afc02d5062291f8ca5b4fd3b9a00a916e7fcd9f77a",
+      "lockComputedHash": "bc5bffa19310d272abc205966b85f5f80d562ccfa16c39b1b92701026e676e30",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "deployment-procedures",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "cddf606b695ef344537072860a524e6d59dbb7e8d430fec620689b31372d4931",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "design-spec",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "ca2d60c173c15622baab0fdde86a9437a462234809e0d40a08a1d86fc8927ee9",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "develop",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "9bcb06194fa66d0206a6d01a7751faca12903119c512c925599df9cafe5b19a2",
+      "lockComputedHash": "42dc998560097e8fe95e78f08df574ef4e5110b9ceacdd5ae3fdf68808f51c59",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "document",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "9aced992d4a3d8fb3fcc9fd0195d8947ebfb1460b0cfcaee68264a1ffa625aa7",
+      "lockComputedHash": "90933443f204d2ed29c84730be87b7b5470f6819fccde6129aedad1df517fb92",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "documentation-templates",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "7bd982463b301a37286a8ee7fd8761904898e8b91b9974d70fabe28b34464587",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "frontend-architecture",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "59e1b096240f3f6b9a0f4347ea042fb72e8c06870ee06cb2f6e83d7edcd014f1",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "frontend-design",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "31a274e91615b324329a51462b7c39fa1e360d357b6d3996db436a6c85e54d5f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "game-development",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "a6f0f9e1b4eec46282f20e0c2c60cf22fbfac96c87e5b3e28c5cc88869a98625",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "geo-fundamentals",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "d4ca6f9c889408bf5e35ae3f39377dbf60502bc754053623b6ea7f42190e4125",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "github-actions",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "4318896946583f64f6b8a7ed2207d501cd7e06c30c7032b08160cd8441aa122a",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "github-governance",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "92b535893febd75133eb35a1cff0324d4c5608180c3f26b9aea01eb9d1657e04",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "github-pr",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "9d68a232dcd9bc436a2d8fcdcab27bdc802aeb2395c78b591ff50a37ad369d1f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "hono",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "4df675e996fce9e6a0b059231db36b0b53eeb937201c447ccccceaeb561748e5",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "i18n-localization",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "356847a4d612633c2531b0c49367cc82ac6d88546b97a3fe4aea05dc515a017f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "intelligent-routing",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "d0ad66b14912955ed6c74f25db17c440b839d9ea1be058f0f698fc111d27f0ea",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "lint-and-validate",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "f56e3bc04bd64e01c23e451ce4523ec7ae4c3efc56476c22bf97f4bcec21d947",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "mcp-builder",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "28a677abc684028d02453a17c459940eb3a2e2580d619439bb9c7ceb8a96af2f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "memory-system",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "40ffe215156b4f2a9c799fd2abde3934defee4dc3c82a891798fb18c150bda50",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "mobile-design",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "8ecbbfe0b7db716c750210fa2ca9476eadc39d15d0bab57c57ed2546cdb28745",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nextjs-app-router-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "97e5b5fb345e1a7a506fb796783b595ce13ab4a9b53582e2b1d77aea688ff864",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nextjs-best-practices",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "dc446acb01f65ee348f57010808272f16c0e1bb654394fd8c8c8040ebe165643",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nextjs-react-expert",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "1db0736663af55a5df009b0e937576fee5cba166b48d98cfcd8b2010fada1d28",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nextjs-seo-indexing",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "4d376c0d4eb429586788d7bf22753b70973e385a5414d80cffab38d23c5cb67a",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nextjs-supabase-auth",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "82bbd17e1a3179f86172a438c6ef4b7b69e653cb2af1532c6fbaf957ff7b3edf",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "nodejs-best-practices",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "da0e84eb6dd2f9784860209ce451725d32a5743a685084bd077d69503aa7e706",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "parallel-agents",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "f61769e3ba2298d8311bdf75b2a69c0138640422255ed9449286c10e224e7892",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "performance-optimization",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "0aa51d8976aab41d3b2c8e004757c99e5ba81c88cd8b73d3429a26bc818440c0",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "performance-profiling",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "91bd2041ab8447ad6fc6fa16d4e0e414adc2ee38e4df6fd27f1810e4e982ca0c",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "plan-writing",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2698f0dcae134d9ef587d4a2e00bc6901a251b24691f393faf581917bf80b248",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "playwright-skill",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "43b105448b5820bea74c52ebf6393e3d62811573b8c64906a2c84965237bdde7",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "powershell-windows",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "a2e47e73f225ca24627e2d7109a9805acfeb4b59e8ac4c683ef8994dea8e432f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "python-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "bab8eb299ef8f97bfdf8dc9d68a19ab1f84b9a1e86a852a84b7fa943d97cc2f6",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "react-component-performance",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "6224e53a58fad97b1d37164794b92e944af574c72883e2d9207477526bf99c0d",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "react-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "0fe46037e97072884d5d72d6e4493992501ebedbda2210c6e6618480c27b62e0",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "red-team-tactics",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "fc3e8f0fe1f6d569b4d6633def69a1d117708774038f487783fed6e4e41a30b7",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "rust-pro",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "924138d4a20304953c55b02c1bd2467752b8076da5945952b8e9275bbfdd036f",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "scope",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "204b20fafb8f5d8753520117e4a74db4499ecedb8f5fe8fa16c931a29c8666d2",
+      "lockComputedHash": "cc3683a45b96c1b0ecb23f9aba64263be096cb3ef2487662c0fe7e7c3200fb70",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "security",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2467052567a15b221399afe3f70f022e81cc22053dd9b64850b9fe68e42f22cc",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "security-and-hardening",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "12d2806d9ec0267a110403861c035ce8db7ff81bff3460d6bbd4e10dd4c4852e",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "semgrep-rule-creator",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "b2d5c89801acd080bca6bf06c720979c0cd00a749bd09f045f466c7623784cd0",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "sentry-automation",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "e096141a912e9016537939d745f2c14ca617c309dff2b558644fa410f435bcc5",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "seo-fundamentals",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "4ab2efde333caa34a75efe7a8bf76b49d7e39abd0ecc6ceef6a1c8042141f2af",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "server-management",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "4f2e4243a8e1e45482479dd033f654f59c56ada89ebf87ec561f86f79f54662d",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "shadcn",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "faa5fb30df1f79a4e70d98ace24acd183ab7a5feabbeeba73ce1e9ba007f2ea8",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "simplify-code",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "1e2ab8d06593f6f95381f6b7a7d18e0fa998bb0147fd823c56f4158023d0164b",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "skillify",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "e95a98f0baba2687c9cf73dbacc89c1abccc572f1ce1f095b7834bc7da99158a",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "supabase",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "697e0e949f97621c6fc1784169eb3ccbf673747d6bb8299a52962d3d84d93dc6",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "supabase-postgres-best-practices",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "ad65e776f45e761bafc609d3f506c77c1032225aa65e0c4c02f241b8071e5855",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "sync",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "d0654b5f8a59170995e089c42b3664452e6b159b567aeab46124d46781162d8d",
+      "lockComputedHash": "005f989b25192d3dbb4bf4e89630a3c31da8ea45dd77939102f263052309e409",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "systematic-debugging",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "bd12a556cfde29b997512dec23a33145b6a3535adbb522811665a4ad25f67b9d",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "tailwind-design-system",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2d2852085d419997ec8a75d798666afe20ff265e99602fc4ad78e6353c0f3746",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "tailwind-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "fa017d7869f1ed81d98e2da3d8036c36bbf35af2e66d25168207c7e8a609355c",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "tdd",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "cee09d3b55bd3c417d58fb6475d2a8d5d48cfe8010bd06a17bff938686f4736a",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "tdd-workflow",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "c758378bc135150af5cc5fc990c1612a19541631c064d69388397ef9e514323a",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "test",
+      "inLock": true,
+      "skillFileExists": true,
+      "skillFileSha256": "470868dd97701549aa29a81fef4f97f3e305d7bcee864cd1e2cfc9a92a3937db",
+      "lockComputedHash": "87dd379cca618d8cb2ca3d5073ffa8be6755e5822e7834a3c0ebe06bd3853f1f",
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "testing-patterns",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "72f7e12eff41c4bad55b37fbcd734be23420e4e4473cf7a90876487477aecfc7",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "testing-qa",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "b911a6596e691394aedca62e4f898d69370c58599d468b30d8461218009a04da",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "typescript-expert",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "1ca599669223fa220a312728102bca14fa816294a886de5448e8b1d3c2432626",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "ui-a11y",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "6054a8e1ce47deedf1bec39584dc8657c5adf7d4378089a591b256015f51d30b",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "verification-before-completion",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "42c2329ecb6c3d36b56eeea156fd243289c81a7f6928e2a4175b6a9f9132dddf",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "verify-changes",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "a4ab56f9b3e8f4dce5295fd8497a97a7e82e16036eaf93fff2a25f1e0ef9b495",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "vitest-skill",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "c8b79517c60ae8009c5461f819cbd79b2bf79c119783edf898e93884f9ffeefd",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "vulnerability-scanner",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "8c0d6ad513e2e03d43aea5286253478b794e1432d8b577159cc11226a29189a0",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "web-design-guidelines",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "515bb9b8c62e1e301674c5dc8b2c4a1ebc76722d5f798b27f7e179170dcda110",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    },
+    {
+      "name": "webapp-testing",
+      "inLock": false,
+      "skillFileExists": true,
+      "skillFileSha256": "2a0dd4918f666a5dddfabe2e227a1f0870f076b5158ea5d0fd90ce9456d666d3",
+      "lockComputedHash": null,
+      "versionMatch": "UNVERIFIABLE, computedHash algorithm not established"
+    }
+  ]
+}

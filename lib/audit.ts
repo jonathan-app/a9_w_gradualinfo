@@ -2,7 +2,7 @@ import { env } from '@/lib/env';
 
 export type AuditEvent =
   | { type: 'preview_login'; ok: boolean; ip?: string }
-  | { type: 'preview_logout'; ip?: string }
+  | { type: 'preview_logout'; ok: boolean; ip?: string }
   | { type: 'rlss_block'; table: string; operation: string; ip?: string };
 
 export function audit(event: AuditEvent) {

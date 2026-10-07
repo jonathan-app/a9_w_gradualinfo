@@ -4,6 +4,7 @@ import {
   formatDate,
   formatNumber,
   initials,
+  serializeJsonLd,
 } from '@/lib/utils/format';
 
 /**
@@ -84,5 +85,43 @@ describe('initials', () => {
 
   it('não quebra com nome vazio', () => {
     expect(initials('')).toBe('');
+  });
+});
+
+describe('serializeJsonLd', () => {
+  it('escapa caracteres críticos e tags de fechamento de script', () => {
+    const payload = {
+      title: '</script><script>alert("xss")</script>',
+      bio: 'Guia <programador> & "estudante"',
+    };
+    const serialized = serializeJsonLd(payload);
+
+    // Não deve conter a tag de fechamento literal </script> nem < ou > puros
+    expect(serialized).not.toContain('</script>');
+    expect(serialized).not.toContain('<script>');
+    expect(serialized).toContain('\\u003c/script\\u003e');
+    expect(serialized).toContain('\\u003cscript\\u003e');
+    expect(serialized).toContain('\\u0026');
+
+    // Ao fazer JSON.parse, o dado original deve ser recuperado com perfeição
+    const parsed = JSON.parse(serialized);
+    expect(parsed.title).toBe('</script><script>alert("xss")</script>');
+    expect(parsed.bio).toBe('Guia <programador> & "estudante"');
+  });
+
+  it('escapa o payload de teste específico </script><script>alert(1)</script> mantendo JSON válido', () => {
+    const payload = {
+      headline: '</script><script>alert(1)</script>',
+    };
+    const serialized = serializeJsonLd(payload);
+
+    expect(serialized).not.toContain('</script>');
+    expect(serialized).not.toContain('<script>');
+    expect(serialized).toBe(
+      '{"headline":"\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e"}',
+    );
+
+    const parsed = JSON.parse(serialized);
+    expect(parsed.headline).toBe('</script><script>alert(1)</script>');
   });
 });

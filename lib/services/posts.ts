@@ -1,3 +1,7 @@
+import { cookies } from 'next/headers';
+import { env } from '@/lib/env';
+import { isPreviewConfigured } from '@/lib/preview/config';
+import { PREVIEW_COOKIE, readPreviewGrant } from '@/lib/preview/session';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface Post {
@@ -19,13 +23,33 @@ export interface Post {
 export async function isPreviewSession(
   supabase: SupabaseClient,
 ): Promise<boolean> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return (
-    user?.app_metadata?.preview === true ||
-    user?.app_metadata?.preview === 'true'
+  if (!isPreviewConfigured()) return false;
+  const grant = readPreviewGrant(
+    (await cookies()).get(PREVIEW_COOKIE)?.value,
+    env.previewToken,
   );
+  if (!grant || grant.sub !== env.previewUserId) return false;
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+    if (
+      error ||
+      !user ||
+      user.id !== grant.sub ||
+      ![true, 'true'].includes(user.app_metadata.preview)
+    )
+      return false;
+    const { data, error: claimsError } = await supabase.auth.getClaims();
+    return (
+      !claimsError &&
+      data?.claims.sub === user.id &&
+      data.claims.session_id === grant.session_id
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function getPublishedPosts(

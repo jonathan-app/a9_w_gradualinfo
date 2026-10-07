@@ -6,8 +6,10 @@ import remarkGfm from 'remark-gfm';
 import { createClient } from '@/lib/supabase/server';
 import { getPostBySlug } from '@/lib/services/posts';
 import { SITE_ORIGIN } from '@/lib/site-config';
-import { formatDate } from '@/lib/utils/format';
+import { formatDate, serializeJsonLd } from '@/lib/utils/format';
 import { Badge } from '@/components/ui/badge';
+
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -22,9 +24,7 @@ export async function generateMetadata(
   const post = await getPostBySlug(supabase, params.slug);
 
   if (!post) {
-    return {
-      title: 'Artigo não encontrado',
-    };
+    notFound();
   }
 
   const url = `${SITE_ORIGIN}/artigos/${post.slug}`;
@@ -91,11 +91,11 @@ export default async function ArticlePage(props: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
         <header className="mb-8 flex flex-col items-start gap-4">
-          <Badge variant="secondary" className="text-brand-600 bg-brand-50">
+          <Badge variant="secondary" className="text-brand-700 bg-brand-50">
             {post.editoria}
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">

@@ -277,6 +277,12 @@ definiu. O preço é admitir variante com erro de digitação até a fatia 9.
 
 ### Preview: credencial não é papel, e esta é a parte que exige desenho
 
+**Emenda autorizada em 2026-10-07**: entrada, identidade, prazo e logout
+seguem `0003-preview-autorizacao.md`, Accepted pelo sinal verde do dono.
+O segredo é trocado via POST e não fica em cookie; sessão Supabase e
+autorização assinada ficam em cookies HttpOnly. O fluxo abaixo é histórico
+e é especializado por esse contrato.
+
 Uma versão anterior desta spec escrevia "papel `preview`" e tratava
 `SUPABASE_PREVIEW_TOKEN` como se a variável criasse o papel. **Não cria.** No
 Supabase os papéis do Postgres são `anon`, `authenticated`, `service_role` e os

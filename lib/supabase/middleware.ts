@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { env } from '@/lib/env';
+import { previewCookieOptions } from '@/lib/preview/config';
 
 /**
  * lib/supabase/middleware.ts — renova a sessão a cada requisição
@@ -40,7 +41,10 @@ export async function updateSession(request: NextRequest) {
         //    token novo morre com a resposta.
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
+          response.cookies.set(name, value, {
+            ...options,
+            ...previewCookieOptions,
+          }),
         );
       },
     },
@@ -48,7 +52,18 @@ export async function updateSession(request: NextRequest) {
 
   // A chamada em si é o que dispara o refresh. O retorno é descartado de
   // propósito: o objetivo aqui não é o usuário, é o cookie renovado.
-  await supabase.auth.getUser();
+  // As rotas públicas não dependem de Auth disponível para filtrar publicados.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    /* leitura protegida falha fechada */
+  }
+  if (
+    request.nextUrl.pathname.startsWith('/artigos/') ||
+    request.nextUrl.pathname.startsWith('/preview') ||
+    request.nextUrl.pathname.startsWith('/api/preview')
+  )
+    response.headers.set('Cache-Control', 'private, no-store');
 
   return response;
 }

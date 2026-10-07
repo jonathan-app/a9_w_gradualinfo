@@ -12,7 +12,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
-const baseURL = `http://127.0.0.1:${PORT}`;
+const baseURL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
+const production = process.env.E2E_PRODUCTION === '1';
 
 export default defineConfig({
   // Roda os arquivos .spec.ts da pasta e2e/.
@@ -24,10 +25,20 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI
     ? [['github'], ['html', { open: 'never' }]]
-    : [['list']],
+    : [
+        ['list'],
+        [
+          'json',
+          {
+            outputFile:
+              process.env.E2E_RESULTS_FILE ?? 'test-results/results.json',
+          },
+        ],
+      ],
 
   use: {
     baseURL,
+    ignoreHTTPSErrors: baseURL.startsWith('https://localhost:'),
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -38,9 +49,11 @@ export default defineConfig({
   // Sobe o app antes do primeiro teste e derruba ao terminar.
   // `reuseExistingServer` evita subir dois servidores na máquina local.
   webServer: {
-    command: `pnpm dev --port ${PORT}`,
+    command: production
+      ? 'node scripts/e2e-server.mjs'
+      : `pnpm dev --port ${PORT}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI && !production,
     timeout: 120_000,
   },
 });

@@ -1,0 +1,65 @@
+{
+  "acs": [
+    {
+      "id": "HTTP artigo público",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP artigo inexistente",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP rascunho sem preview",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "HTTP rascunho com preview",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Secure em Set-Cookie de produção",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "no-store no artigo protegido",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Sessão expirada (sem apagar cookies como substituto)",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Usuário autenticado sem claim",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Identidade diferente da dedicada",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Logout com falha simulada e acesso subsequente",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Axe home",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    },
+    {
+      "id": "Axe artigo",
+      "status": "UNVERIFIABLE",
+      "note": "Nenhuma resposta HTTP ou execução de axe confirmada; diagnósticos fora do sandbox pendentes."
+    }
+  ],
+  "findings": []
+}

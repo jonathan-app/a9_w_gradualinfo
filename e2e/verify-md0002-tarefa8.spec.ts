@@ -1,87 +1,90 @@
 import { test, expect } from '@playwright/test';
-
-test.describe('md-0002 Tarefa 8 - Preview HTTP', () => {
-  const PREVIEW_TOKEN =
-    process.env.SUPABASE_PREVIEW_TOKEN || 'senha-de-teste-123';
-
+import { loginPreview, logoutPreview } from './support/preview';
+import { issuePreviewGrant, PREVIEW_COOKIE } from '../lib/preview/session';
+test.describe('preview em produção local', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
-
-  test('AC-08: Rascunho responde 404 sem sessão', async ({ page }) => {
-    const response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(404);
-
-    await expect(page.locator('text=Página não encontrada')).toBeVisible();
+  test('rascunho anônimo retorna HTTP 404', async ({ page }) => {
+    expect((await page.goto('/artigos/fixture-rascunho'))?.status()).toBe(404);
   });
-
-  test('AC-08: Configuração ausente falha fechada com 401', async ({
+  test('GET antigo não autentica e POST inválido falha', async ({
     request,
+    baseURL,
   }) => {
-    const response = await request.get(`/api/preview`);
-    expect(response.status()).toBe(401);
-  });
-
-  test('AC-08: Token inválido falha com 401', async ({ request }) => {
-    const response = await request.get(`/api/preview?token=invalido`);
-    expect(response.status()).toBe(401);
-  });
-
-  test('AC-08: Com sessão de preview válida, rascunho responde 200', async ({
-    page,
-  }) => {
-    const response = await page.goto(
-      `/api/preview?token=${PREVIEW_TOKEN}&slug=fixture-rascunho`,
+    expect((await request.get('/api/preview?token=invalid')).status()).toBe(
+      405,
     );
-
-    expect(response?.status()).toBe(200);
-
-    await expect(page.locator('h1')).toContainText('Rascunho a Caminho');
-
-    const robots = await page
-      .locator('meta[name="robots"]')
-      .getAttribute('content');
-    expect(robots).toContain('noindex');
+    expect(
+      (
+        await request.post('/api/preview', {
+          headers: { Origin: baseURL! },
+          form: { token: 'invalid' },
+        })
+      ).status(),
+    ).toBe(401);
   });
-
-  test('AC-08: Logout limpa a sessão e falha fechada em erro', async ({
+  test('sessão válida lê rascunho, sem indexação e sem cache', async ({
     page,
   }) => {
-    await page.goto(`/api/preview?token=${PREVIEW_TOKEN}`);
-
-    let response = await page.goto('/artigos/fixture-rascunho');
+    await loginPreview(page);
+    const response = await page.goto('/artigos/fixture-rascunho');
     expect(response?.status()).toBe(200);
-
-    await page.goto('/api/preview/logout');
-
-    response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(404);
+    expect(response?.headers()['cache-control']).toContain('no-store');
+    expect(response?.headers()['cache-control']).toContain('private');
+    await expect(page.locator('h1')).toContainText('Fixture rascunho');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      /noindex/,
+    );
   });
-
-  test('AC-08: Sessão expirada retorna 404 para rascunho', async ({
+  test('autorização vencida nega rascunho mantendo a sessão Supabase', async ({
     page,
     context,
   }) => {
-    await page.goto(
-      `/api/preview?token=${PREVIEW_TOKEN}&slug=fixture-rascunho`,
+    await loginPreview(page);
+    const cookies = await context.cookies();
+    const current = cookies.find((cookie) => cookie.name === PREVIEW_COOKIE)!;
+    const payload = JSON.parse(
+      Buffer.from(current.value.split('.')[0]!, 'base64url').toString('utf8'),
     );
-
-    let response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(200);
-
-    await context.clearCookies();
-
-    response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(404);
+    const expired = issuePreviewGrant(
+      payload.sub,
+      payload.session_id,
+      process.env.SUPABASE_PREVIEW_TOKEN!,
+      Date.now() - 1800_000,
+    );
+    await context.addCookies([{ ...current, value: expired }]);
+    expect(
+      (await context.cookies()).some((cookie) => cookie.name.startsWith('sb-')),
+    ).toBe(true);
+    expect((await page.goto('/artigos/fixture-rascunho'))?.status()).toBe(404);
   });
-
-  test('AC-08: Logout remove cookies e bloqueia rascunho', async ({ page }) => {
-    await page.goto(`/api/preview?token=${PREVIEW_TOKEN}`);
-
-    let response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(200);
-
-    await page.goto('/api/preview/logout');
-
-    response = await page.goto('/artigos/fixture-rascunho');
-    expect(response?.status()).toBe(404);
+  test('logout remove cookies e nega leitura', async ({ page, context }) => {
+    await loginPreview(page);
+    await logoutPreview(page);
+    expect(
+      (await context.cookies()).filter(
+        (cookie) =>
+          cookie.name === PREVIEW_COOKIE || cookie.name.startsWith('sb-'),
+      ),
+    ).toEqual([]);
+    expect((await page.goto('/artigos/fixture-rascunho'))?.status()).toBe(404);
+  });
+  test('cookies preservam HttpOnly, Secure e prazo em HTTPS', async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    expect(baseURL).toMatch(/^https:/);
+    await loginPreview(page);
+    const cookies = (await context.cookies()).filter(
+      (cookie) =>
+        cookie.name === PREVIEW_COOKIE || cookie.name.startsWith('sb-'),
+    );
+    expect(cookies.length).toBeGreaterThan(1);
+    for (const cookie of cookies) {
+      expect(cookie.httpOnly).toBe(true);
+      expect(cookie.secure).toBe(true);
+      expect(cookie.sameSite).toBe('Lax');
+    }
   });
 });

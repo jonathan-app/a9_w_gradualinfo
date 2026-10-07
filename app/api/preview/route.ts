@@ -1,103 +1,128 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import type { NextRequest } from 'next/server';
 import { env } from '@/lib/env';
+import { SITE_ORIGIN } from '@/lib/site-config';
 import { audit } from '@/lib/audit';
+import {
+  isPreviewConfigured,
+  previewCookieOptions,
+} from '@/lib/preview/config';
+import {
+  equalSecret,
+  issuePreviewGrant,
+  PREVIEW_COOKIE,
+  PREVIEW_TTL,
+  UUID_PATTERN,
+} from '@/lib/preview/session';
 
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 20;
-const attempts = new Map<string, { count: number; reset: number }>();
-
-export async function GET(request: NextRequest) {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  const ip = forwardedFor
-    ? forwardedFor.split(',')[0]?.trim() || 'unknown'
-    : 'unknown';
-  const { searchParams } = new URL(request.url);
-  const token = searchParams.get('token');
-  const slug = searchParams.get('slug');
-
+const attempts = new Map<string, { count: number; until: number }>();
+function limited(request: NextRequest): boolean {
   const now = Date.now();
-  const window = attempts.get(ip);
-  if (window && now < window.reset) {
-    if (window.count >= RATE_LIMIT_MAX) {
-      audit({ type: 'preview_login', ok: false, ip });
-      return new NextResponse('Limite de requisições excedido.', {
-        status: 429,
-      });
-    }
-    window.count++;
-  } else {
-    attempts.set(ip, { count: 1, reset: now + RATE_LIMIT_WINDOW_MS });
+  for (const [key, value] of attempts)
+    if (value.until <= now) attempts.delete(key);
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const value = attempts.get(ip);
+  if (!value) {
+    if (attempts.size >= 1000) return true;
+    attempts.set(ip, { count: 1, until: now + 60_000 });
+    return false;
   }
+  return ++value.count > 20;
+}
 
-  const previewToken = env.previewToken;
-  if (!previewToken) {
-    audit({ type: 'preview_login', ok: false, ip });
-    return new NextResponse('Preview não configurado no servidor.', {
-      status: 403,
-    });
+function failure(message: string, status: number) {
+  return new NextResponse(message, {
+    status,
+    headers: { 'Cache-Control': 'private, no-store' },
+  });
+}
+
+export async function POST(request: NextRequest) {
+  if (request.headers.get('origin') !== SITE_ORIGIN)
+    return failure('Origem não autorizada.', 403);
+  if (limited(request)) return failure('Limite de tentativas excedido.', 429);
+  if (!isPreviewConfigured()) return failure('Preview não configurado.', 503);
+  if (
+    !request.headers
+      .get('content-type')
+      ?.startsWith('application/x-www-form-urlencoded')
+  )
+    return failure('Formato inválido.', 400);
+  // O limite do corpo evita aceitar entradas enormes no comparador e no parser.
+  const body = await request.text();
+  if (Buffer.byteLength(body) > 4096) return failure('Corpo inválido.', 400);
+  const form = new URLSearchParams(body);
+  const token = form.get('token');
+  const slug = form.get('slug');
+  if (
+    (slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) ||
+    form.getAll('token').length > 1 ||
+    form.getAll('slug').length > 1
+  )
+    return failure('Entrada inválida.', 400);
+  if (!token || !equalSecret(token, env.previewToken)) {
+    audit({ type: 'preview_login', ok: false });
+    return failure('Não autorizado.', 401);
   }
-
-  if (!token) {
-    audit({ type: 'preview_login', ok: false, ip });
-    return new NextResponse('Não autorizado', { status: 401 });
-  }
-
-  const encoder = new TextEncoder();
-  const tokenBuf = encoder.encode(token);
-  const expectedBuf = encoder.encode(previewToken);
-
-  if (tokenBuf.length !== expectedBuf.length) {
-    audit({ type: 'preview_login', ok: false, ip });
-    return new NextResponse('Não autorizado', { status: 401 });
-  }
-  let equal = true;
-  for (let i = 0; i < tokenBuf.length; i++) {
-    if (tokenBuf[i] !== expectedBuf[i]) equal = false;
-  }
-  if (!equal) {
-    audit({ type: 'preview_login', ok: false, ip });
-    return new NextResponse('Não autorizado', { status: 401 });
-  }
-
-  const isProduction = process.env.NODE_ENV === 'production';
-
   const response = NextResponse.redirect(
-    new URL(slug ? `/artigos/${slug}` : '/', request.url),
+    new URL(slug ? `/artigos/${slug}` : '/', SITE_ORIGIN),
+    303,
   );
-  response.headers.set('Cache-Control', 'no-store');
-
+  response.headers.set('Cache-Control', 'private, no-store');
   const supabase = createServerClient(env.supabase.url, env.supabase.anonKey, {
     cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
+      // Login deliberadamente isolado da sessão anterior do navegador.
+      getAll: () => response.cookies.getAll(),
+      setAll: (values) =>
+        values.forEach(({ name, value, options }) =>
           response.cookies.set(name, value, {
             ...options,
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: 'lax',
-          });
-        });
-      },
+            ...previewCookieOptions,
+          }),
+        ),
     },
   });
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: 'preview@gradualinfo.dev',
-    password: previewToken,
-  });
-
-  if (error) {
-    audit({ type: 'preview_login', ok: false, ip });
-    return new NextResponse('Falha ao autenticar o usuário de preview.', {
-      status: 500,
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: env.previewEmail,
+      password: env.previewPassword,
     });
+    if (error || !data.user) return failure('Falha de autenticação.', 503);
+    const { data: verified, error: userError } = await supabase.auth.getUser();
+    const user = verified.user;
+    if (
+      userError ||
+      !user ||
+      user.id !== env.previewUserId ||
+      ![true, 'true'].includes(user.app_metadata.preview)
+    )
+      return failure('Identidade não autorizada.', 403);
+    const { data: claims, error: claimsError } =
+      await supabase.auth.getClaims();
+    const sessionId = claims?.claims.session_id;
+    if (
+      claimsError ||
+      typeof sessionId !== 'string' ||
+      !UUID_PATTERN.test(sessionId) ||
+      claims?.claims.sub !== user.id
+    )
+      return failure('Sessão inválida.', 403);
+    response.cookies.set(
+      PREVIEW_COOKIE,
+      issuePreviewGrant(user.id, sessionId, env.previewToken),
+      { ...previewCookieOptions, maxAge: PREVIEW_TTL },
+    );
+    audit({ type: 'preview_login', ok: true });
+    return response;
+  } catch {
+    audit({ type: 'preview_login', ok: false });
+    return failure('Autenticação indisponível.', 503);
   }
+}
 
-  audit({ type: 'preview_login', ok: true, ip });
+export function GET() {
+  const response = failure('Use o formulário de preview.', 405);
+  response.headers.set('Allow', 'POST');
   return response;
 }

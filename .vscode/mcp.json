@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "next-devtools": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["exec", "next-devtools-mcp"],
+      "cwd": "${workspaceFolder}"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["exec", "playwright-mcp", "--isolated"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

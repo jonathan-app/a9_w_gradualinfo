@@ -1,0 +1,14 @@
+{
+  "head": "cfcfd6fa5bed981393ee6e8cc18afb30243403e7",
+  "build_id": "hnUNphsupBDIL_NZ4GLTE",
+  "build_matches_tree": "UNVERIFIABLE",
+  "files": {
+    "app/api/preview/route.ts": "55cfb45baf9b6c3faa249be85a2c27e2ef1451f7060e81b5bab9c06b057ab2a3",
+    "app/api/preview/logout/route.ts": "f485aed98c663f8501f6589aed4abcb2ad95296974d273bb23153f3bbfc60d4a",
+    "app/artigos/[slug]/page.tsx": "ba002e932e28276cd6bf8f6c406047a5035445b87d9f7a1a817c6e6a6804c012",
+    "lib/services/posts.ts": "7eca307d70d943356efef8b1536057faa55b805871b476a2168c1f5411d49960",
+    "lib/supabase/middleware.ts": "d52a907e353e5f0887c85ba53e1bef32953e7be22f765f958bfa1f2e2dff5a3f",
+    "lib/env.ts": "10db2c57163360f21c63632cdbdfb339cf4436f638ec55fe567a5c075c52ec77",
+    "proxy.ts": "8f56d915c5c54585e117186260e23146c63b07cc882dcc7f41db1a2301ece4ea"
+  }
+}
