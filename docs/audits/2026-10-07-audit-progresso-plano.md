@@ -84,14 +84,14 @@ Fonte: plano-atualizacao-auditoria.md (etapas 1-10) + docs/audits/*
 
 - [x] 10 arquivos Vitest, 62 testes + 92/92 com google-analytics
 - [x] E2E: 34 casos reconhecidos (7 arquivos)
-- [ ] Coverage — 18 falhas de preparação por EPERM
-- [ ] Export real — **Not run** (sandbox)
+- [ ] Export real — **pendente** (sandbox bloqueia escrita em dist/)
+- [ ] Coverage — 16 falhas de preparação por EPERM (sandbox limita filesystem)
 
 ### Etapa 9 — Verificação final (todos P0/P1)
 
 - [x] check:all em árvore completa — 92/92 testes, typecheck, lint, prettier
 - [x] pgTAP (63 asserções) — PASS (63/63 asserções executadas no banco Supabase local)
-- [x] E2E compilado — PASS (21/21 testes em servidor HTTPS de produção local na porta 3100)
+- [x] E2E compilado — PASS (21/21 testes em `https://localhost:3100`, incluindo AC-03 fault proxy e AC-07 404)
 - [x] Build Next Turbopack — COMPILADO (11 workers, 7/7 estáticas, proxy funcionando)
 - [x] Build OpenNext (`pnpm build`) — exit 0, worker.js gerado
 - [x] Dev server (`pnpm dev`) — respondeu GET / 200, GET /artigos/fixture-publicado 200, 404 customizado, POST /api/preview 403, GET /api/preview?token=invalid 405
