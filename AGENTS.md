@@ -65,6 +65,7 @@ security/       Regras de SAST do Semgrep.
 .github/        A CI em `workflows/ci.yml`: quality, build e security.
 next.config.ts, open-next.config.ts, wrangler.jsonc
                 Next, adaptação para o Worker e o worker em si.
+DESIGN.md       O design system do produto (tokens em oklch, tipografia); build de UI segue ele.
 ```
 
 ## Convenções que este projeto já decidiu
@@ -177,11 +178,12 @@ Formato obrigatório do bloco final:
 - **O proxy roda no runtime Node, e a Cloudflare avisa.** O Next 16 fixa o proxy
   em Node e proíbe declarar `runtime` no arquivo; o OpenNext rotula o suporte
   a middleware Node como experimental. Aviso conhecido, não bug do projeto.
-- **O repositório tem zero commits.** `main` está unborn, então até o primeiro
-  commit uma mudança de outra sessão é indistinguível da sua: `git status`
-  mostra a árvore inteira como untracked, sem autoria nem hora. A única forma
-  de detectar colisão é comparar o mtime e o conteúdo de um arquivo que você
-  leu antes de escrever nele — por isso o `stat` antes do `edit`.
+- **Sessões paralelas se escrevem por cima umas das outras.** `main` já tem
+  história, mas mudanças ainda não commitadas de outra sessão são
+  indistinguíveis das suas, e duas sessões escrevendo ao mesmo tempo se
+  sobrescrevem. A única forma de detectar colisão é comparar o mtime e o
+  conteúdo de um arquivo que você leu antes de escrever nele, por isso o `stat`
+  antes do `edit`.
 
 ## Portão de qualidade
 

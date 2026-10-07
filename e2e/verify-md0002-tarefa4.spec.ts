@@ -29,19 +29,54 @@ function localAdmin() {
     );
   return createClient(url, key, { auth: { persistSession: false } });
 }
-test.describe.serial('home editorial', () => {
+test.describe('home editorial', () => {
+  let mutatedPostIds: string[] = [];
+
+  test.beforeEach(async ({ request }) => {
+    // Garante que o estado de falha de rede esteja limpo antes de iniciar qualquer teste
+    if (process.env.E2E_NETWORK_FAULTS === '1') {
+      await setFault(request, 'none');
+    }
+  });
+
+  test.afterEach(async ({ request }) => {
+    // Restaura o proxy de falhas de transporte independentemente do resultado
+    if (process.env.E2E_NETWORK_FAULTS === '1') {
+      try {
+        await setFault(request, 'none');
+      } catch {
+        // Tolerância caso proxy não esteja em execução nesta rodada
+      }
+    }
+    // Restauração de emergência: caso um teste com mutação de banco falhe ou sofra interrupção,
+    // os posts alterados são imediatamente restaurados para evitar contaminação de outros testes
+    if (mutatedPostIds.length > 0) {
+      try {
+        const admin = localAdmin();
+        await admin
+          .from('posts')
+          .update({ status: 'publicado' })
+          .in('id', mutatedPostIds);
+      } catch (err) {
+        console.error('Falha na recuperação de emergência de posts:', err);
+      } finally {
+        mutatedPostIds = [];
+      }
+    }
+  });
+
   test('md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite', async ({
     page,
   }) => {
     await page.goto('/');
-    const cards = page.locator('a[href^="/artigos/"]');
-    expect(await cards.count()).toBeGreaterThan(0);
-    // Limite de 10 por página: acima disso a home deixa de ser homepage e vira arquivo.
-    expect(await cards.count()).toBe(10);
+    const cards = page.locator('main a[href^="/artigos/"]');
+    // Limite de 10 por página: `toHaveCount` aguarda a estabilização do DOM (auto-waiting),
+    // eliminando leituras transitórias de nós duplicados durante o streaming do SSR.
+    await expect(cards).toHaveCount(10);
     // Ordenação conferida sobre os atributos <time>: mais novo primeiro é o contrato
     // editorial que o card em destaque também pressupõe.
     const dates = await page
-      .locator('time[datetime]')
+      .locator('main time[datetime]')
       .evaluateAll((elements) =>
         elements.map((element) => element.getAttribute('datetime')!),
       );
@@ -50,10 +85,10 @@ test.describe.serial('home editorial', () => {
       page.locator('section[aria-label="Artigo em Destaque"]'),
     ).toBeVisible();
     await expect(
-      page.locator('a[href="/artigos/fixture-rascunho"]'),
+      page.locator('main a[href="/artigos/fixture-rascunho"]'),
     ).toHaveCount(0);
     await expect(
-      page.locator('a[href="/artigos/fixture-agendado"]'),
+      page.locator('main a[href="/artigos/fixture-agendado"]'),
     ).toHaveCount(0);
     await expect(
       page.locator('[data-slot="post-card-featured"] img'),
@@ -71,6 +106,7 @@ test.describe.serial('home editorial', () => {
       .select('id,status')
       .eq('status', 'publicado');
     if (error || !rows) throw new Error('Falha na preparação do estado vazio.');
+    mutatedPostIds = rows.map((row) => row.id);
     const restoreErrors: unknown[] = [];
     // Mutação destrutiva com restauração garantida em `finally`: se a asserção falhar, os
     // posts ainda voltam ao estado original e o resto da suíte não herda banco vazio.
@@ -84,7 +120,11 @@ test.describe.serial('home editorial', () => {
         );
       if (result.error) throw result.error;
       await page.goto('/');
-      await expect(page.getByText('Nenhum artigo publicado')).toBeVisible();
+      // `getByRole` resolve sobre a árvore de acessibilidade (ignorando nós ocultos de streaming
+      // marcados com hidden fora de main) e aguarda a visibilidade de forma estrita.
+      await expect(
+        page.getByRole('heading', { name: 'Nenhum artigo publicado' }),
+      ).toBeVisible();
       await expect(
         page.getByRole('heading', { name: 'Algo deu errado' }),
       ).toHaveCount(0);
@@ -96,6 +136,7 @@ test.describe.serial('home editorial', () => {
           .eq('id', row.id);
         if (restored.error) restoreErrors.push(restored.error);
       }
+      mutatedPostIds = [];
     }
     expect(restoreErrors).toEqual([]);
   });
@@ -112,7 +153,9 @@ test.describe.serial('home editorial', () => {
       await expect(
         page.getByRole('heading', { name: 'Algo deu errado' }),
       ).toBeVisible();
-      await expect(page.getByText('Nenhum artigo publicado')).toHaveCount(0);
+      await expect(
+        page.getByRole('heading', { name: 'Nenhum artigo publicado' }),
+      ).toHaveCount(0);
     } finally {
       await setFault(request, 'none');
     }

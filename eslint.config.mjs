@@ -46,7 +46,7 @@ export default defineConfig([
     'referencias/template-editorial/**',
     'scratch/**',
     '.kilo/worktrees/**',
-    '.agents/skills/**',
+    '.agents/**',
   ]),
 
   // --- Regras base (JS, TS, React, a11y, imports) ------------------------
