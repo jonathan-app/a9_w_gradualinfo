@@ -1,0 +1,65 @@
+{
+  "acs": [
+    {
+      "id": "HTTP artigo público",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "HTTP artigo inexistente",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "HTTP rascunho sem preview",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "HTTP rascunho com preview",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Secure em Set-Cookie de produção",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "no-store no artigo protegido",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Sessão expirada (sem apagar cookies como substituto)",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Usuário autenticado sem claim",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Identidade diferente da dedicada",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Logout com falha simulada e acesso subsequente",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Axe home",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    },
+    {
+      "id": "Axe artigo",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução confirmada em produção local nesta rodada."
+    }
+  ],
+  "findings": []
+}

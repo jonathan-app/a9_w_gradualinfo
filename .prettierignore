@@ -54,3 +54,6 @@ public/**
 *.min.js
 *.min.css
 *.svg
+
+# Artefatos de verificação.
+verify-result.json

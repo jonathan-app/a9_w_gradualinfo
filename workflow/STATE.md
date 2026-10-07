@@ -23,9 +23,7 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próximo passo: decisão do dono.** O `md-0001` está **implementado, verificado por execução e revisado**. O `COMMENT` da tabela foi corrigido. Os **9 posts da base legada do AQUA9** não entram (orientação confirmada); a exclusão do banco antigo exige ação do dono na conta Supabase. `md-0002` segue `Proposed` e precisa de aceite.
-
-**Desenvolvimento md-0002 (em curso).** Tarefa 8 (Preview HTTP) iniciada. As verificações da Tarefa 5 registraram pendências que devem ser resolvidas futuramente no build de produção: a validação de status HTTP (404/500) mascara-se em ambiente local de dev com Turbopack, e a acessibilidade (AC-12) exige execução com axe-core/playwright. A reconciliação documental da PR #5 também encontra-se na fila para registro separado. O merge e o deploy continuam estritamente bloqueados até nova ordem.
+**Próxima etapa: nenhuma.** Verificação permanece bloqueada pelo ambiente; os 12 cenários da Tarefa 8 continuam `UNVERIFIABLE` até resolução das chamadas pendentes. Merge e deploy seguem sem autorização.
 
 - **Relatório de verificação da Tarefa 5 criado:** Registrado em `docs/reviews/2026-10-06-check-verify-md0002-tarefa5.md` com os cenários avaliados e pendências mapeadas.
 - **Tarefa 5, 6, 7 e 10 (Parte) do `md-0002` validadas:** Testes E2E rodaram com sucesso cobrindo renderização de Markdown, segurança, SEO, JSON-LD, Sitemap e Fontes Condicionais.
@@ -57,6 +55,9 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
   não existe); (c) `md-0002` permanece `Proposed` — esta verificação não é aceite.
 - **CI remota** — job `database` com 63 asserções, CLI 2.119.0 pinada, timeout 30
   min. Não executada.
+- **Bloqueio atual:** Tarefa 8 (Preview HTTP) com 12 cenários `UNVERIFIABLE` por
+  limitações do ambiente local. Sem ação útil até resolução das chamadas
+  pendentes; merge e deploy permanecem bloqueados.
 - **Bloqueio de concorrência confirmado em 2026-10-05 13:32:** PIDs 6895
   (copilot-runtime), 7207 (agy) e 7640 (codex) **vivos**, mais
   `codex-code-mode` (PID 100721).
@@ -316,6 +317,10 @@ de agentes abaixo.**
 | 42 | 2026-10-06 | /develop | `md-0002` Tarefas 2 e 3: verificação do schema (`posts`), RLS e índice, criação de `lib/services/posts.ts` com auth de preview via `app_metadata.preview`. Backup cron `a9_w_gradualinfo__iso` restaurado e verificado. | concluído |
 | 43 | 2026-10-06 | /develop | `md-0002` Tarefa 4: Componentização visual (`post-card.tsx`) e home page (`page.tsx`) com Server Components consumindo `getPublishedPosts`. Tratamento de empty state e loading. Criação do artefato de design `DESIGN.md` exigido pelo TIER 2 design gate. Testes `pnpm check:all` executados. | concluído |
 | 44 | 2026-10-06 | /develop | `md-0002` Tarefa 5: Rota `/artigos/[slug]` usando `getPostBySlug`, formatação com `react-markdown`, estado de loading com skeletons, fallback para `notFound()`, inclusão de `generateMetadata`, JSON-LD `Article` explícito, sitemap dinâmico e renderização condicional de `fontes_citadas` no final do conteúdo. | concluído |
+
+| 45 | 2026-10-06 | /check verify: retificação do bastão e evidência pendente | `docs/reviews/2026-10-06-check-producao-local-axe.md`, `workflow/STATE.md`: SHA registrado, produção bloqueada por EPERM; cenários sem confirmação UNVERIFIABLE; próxima etapa produção local e axe; sem autorização de merge/deploy | verificação incompleta |
+
+| 46 | 2026-10-06 | /check verify: retomada de produção local autorizada | `docs/reviews/2026-10-06-check-producao-local-axe.md`: build atual exit 1 por restrição de porta do sandbox; recompilação e servidor solicitados via require_escalated; HEAD inalterado; nenhum cenário confirmado, 12 UNVERIFIABLE | verificação incompleta, bloqueio técnico |
 
 ### Evidência da linha 01
 

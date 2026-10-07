@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { createClient } from '@/lib/supabase/server';
-import { getPostBySlug } from '@/lib/services/posts';
+import { getPostBySlug, isPreviewSession } from '@/lib/services/posts';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { formatDate } from '@/lib/utils/format';
 import { Badge } from '@/components/ui/badge';
@@ -13,14 +13,6 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-/**
- * Gera os metadados SEO e Open Graph do artigo.
- *
- * Busca o artigo no banco (respeitando preview via RLS) e constrói o objeto
- * Metadata com title, description, canonical e tags article do Open Graph.
- * Se o artigo não existir, devolve title de fallback para que o 404 tenha
- * metadados coerentes.
- */
 export async function generateMetadata(
   props: Props,
   _parent: ResolvingMetadata,
@@ -36,10 +28,15 @@ export async function generateMetadata(
   }
 
   const url = `${SITE_ORIGIN}/artigos/${post.slug}`;
+  const isPublic =
+    post.status === 'publicado' &&
+    post.published_at &&
+    new Date(post.published_at) <= new Date();
 
   return {
     title: post.title,
     description: post.excerpt,
+    robots: isPublic ? undefined : { index: false, follow: false },
     alternates: {
       canonical: url,
     },
@@ -62,33 +59,21 @@ export async function generateMetadata(
   };
 }
 
-/**
- * Página do artigo (Server Component).
- *
- * - Busca o artigo via getPostBySlug (já aplica RLS e lógica de preview).
- * - Se não encontrado, delega para notFound() do Next (renderiza app/not-found.tsx).
- * - Formata a data no fuso de São Paulo.
- * - Injeta JSON-LD Article para SEO estruturado.
- * - Renderiza markdown via ReactMarkdown (sem dangerouslySetInnerHTML).
- * - Lista fontes citadas com links externos seguros (noopener noreferrer).
- */
 export default async function ArticlePage(props: Props) {
   const params = await props.params;
   const supabase = await createClient();
 
-  // A service call can throw DB errors (handled by app/error.tsx).
-  // If the post is not found or not accessible due to RLS/preview, it returns null.
   const post = await getPostBySlug(supabase, params.slug);
 
   if (!post) {
     notFound();
   }
 
+  const isPreview = await isPreviewSession(supabase);
   const publishedAt = post.published_at
     ? formatDate(post.published_at, { timeZone: 'America/Sao_Paulo' })
     : null;
 
-  // JSON-LD for the article
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -140,7 +125,6 @@ export default async function ArticlePage(props: Props) {
         )}
 
         <article className="prose prose-slate prose-lg dark:prose-invert max-w-none mb-12">
-          {/* O conteúdo markdown não usa dangerouslySetInnerHTML por restrição do spec (AC-06). */}
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{

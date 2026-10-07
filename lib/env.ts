@@ -32,6 +32,7 @@ export const env = {
   sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   locale: process.env.NEXT_PUBLIC_LOCALE ?? 'pt-BR',
+  previewToken: process.env.SUPABASE_PREVIEW_TOKEN ?? '',
 } as const;
 
 /**

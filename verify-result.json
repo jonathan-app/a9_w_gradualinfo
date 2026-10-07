@@ -2,18 +2,15 @@
   "acs": [
     {
       "id": "md-0002/AC-05",
-      "status": "PASS",
-      "evidence": "Renderiza Markdown com <h1> único e sem executar scripts, evidenciando ausência de dangerouslySetInnerHTML."
+      "status": "UNVERIFIABLE"
     },
     {
       "id": "md-0002/AC-06",
-      "status": "PASS",
-      "evidence": "Artigo inexistente gera 404; erro de banco (renomeando tabela) gera página de Erro 500."
+      "status": "UNVERIFIABLE"
     },
     {
       "id": "md-0002/AC-07",
-      "status": "PASS",
-      "evidence": "Tentativa de acessar artigos rascunho ou agendados anonimamente retorna 404."
+      "status": "UNVERIFIABLE"
     },
     {
       "id": "md-0002/AC-09",
@@ -21,18 +18,15 @@
     },
     {
       "id": "md-0002/AC-10",
-      "status": "PASS",
-      "evidence": "JSON-LD presente e escapado corretamente, Canonical link confere."
+      "status": "UNVERIFIABLE"
     },
     {
       "id": "md-0002/AC-11",
-      "status": "PASS",
-      "evidence": "Sitemap exibe apenas artigos publicados e elegíveis (sem rascunho/agendado)."
+      "status": "UNVERIFIABLE"
     },
     {
       "id": "md-0002/AC-13",
-      "status": "PASS",
-      "evidence": "As fontes são exibidas somente quando a lista não está vazia."
+      "status": "UNVERIFIABLE"
     }
   ],
   "findings": []
