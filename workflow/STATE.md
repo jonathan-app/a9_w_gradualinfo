@@ -23,7 +23,19 @@ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
 
 ## Bastão atual
 
-**Próxima etapa: decisão do usuário (gate mecânico 100% APROVADO; merge e deploy retidos aguardando autorização).**
+**Próxima etapa: resolver os três jobs e verificar a CI no novo SHA (merge e deploy continuam sem autorização).**
+
+Status da resolução dos 3 jobs no CI:
+- **Lighthouse (Home + Artigo):** APROVADO (100% dos critérios passaram, sem redução do threshold 0.80).
+- **Semgrep (SAST):** APROVADO (0 findings ERROR no código do app após isolamento e correção do mock de teste).
+- **OSV (Dependency scan):** Corrigido o caminho para o subdiretório `google/osv-scanner-action/osv-scanner-action@v2.6.0` e delimitado o scan a `--lockfile=pnpm-lock.yaml` (eliminando falsos positivos de `referencias/`).
+- **Aprovação histórica (commit `2639744b`):** 13/13 ACs PASS mantidos como registro histórico no SHA avaliado.
+- **Governança:** Merge e deploy continuam expressamente NÃO AUTORIZADOS.
+
+Verificação de `docs/` concluída (linha 76 do histórico): achados completos na
+seção 14 de `docs/audits/2026-10-07-auditoria-completa.md`. Ordem definida
+pelo dono: `/sync` primeiro (status/índice/follow-ups), `/architect` em
+seguida (conteúdo da `md-0001`).
 
 Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad5873182`:
 - **AC-07 (HTTP 404):** Corrigido via interceptação no `middleware.ts` antes do streaming do App Router; validado com 404 exato em `next start` para rascunho sem sessão, artigo futuro e inexistente (`verify-md0002-tarefa5.spec.ts`).
@@ -126,6 +138,8 @@ Estado operacional da revisão no commit `2639744b44b82cb7e659e941f60c460ad58731
 | 73 | 2026-10-07 | isolamento de jwt_expiry=3600 e fix gitleaks | `supabase/config.toml`, `scripts/run-gitleaks.mjs`: restaura baseline 3600s para auth local e documenta isolamento em `scripts/prepare-e2e-db.mjs`; remove `--no-git` inválido de gitleaks dir; gate 13/13 preservado no SHA 2639744b | concluído; decisão do usuário |
 | 74 | 2026-10-07 | auditoria completa exportada para /docs | `docs/audits/2026-10-07-auditoria-completa.md` (novo): HEAD 3fd3e50, 354 arquivos/9664 LOC, check:all 0, build:next 0, audit 0, gitleaks 0, cobertura linhas 80.86% (piso 60%); SAST VERMELHO por regra local `supabase-query-inside-use-effect` que o semgrep 1.179 não parseia + 4 findings ERROR em referencias/template-editorial; E2E inconclusivo (:3100 e :3000 ocupadas por outras sessões, 17 passou/5 falhou/12 skip por ambiente); INDICE.md × md-0002 (Proposed × Accepted) como achado novo; skills:check 81 extras (conhecido); kilo.json válido; worktrees com 2 prunables; Bastão atual (decisão do usuário, merge/deploy retidos) preservado | concluído; nenhuma autorização dada |
 | 75 | 2026-10-07 | correção de 3 jobs de CI falhando no SHA 3fd3e50 (OSV, Semgrep, Lighthouse) | `.github/workflows/ci.yml` (OSV action SHA → v2.6.0), `.semgrepignore` (exclui `referencias/` e `scripts/check-portability.mjs`), `components/shared/google-analytics.tsx` + `app/layout.tsx` (strategy `afterInteractive` → `lazyOnload` + preconnect para GTM), `__tests__/unit/components/google-analytics.test.tsx` (mock `next/script`); 92/92 testes passam; commits 62eaa67 + ac2bb18 pushed; CI em fila | concluído; CI pendente |
+| 76 | 2026-10-07 | verificação de `docs/` (erros e inconsistências) + delegação /sync e /architect | `docs/audits/2026-10-07-auditoria-completa.md` (seção 14 nova com os achados; correções próprias: 6 jobs da CI, status `0003`/`0004` Accepted, worktrees, drift pós-captura do HEAD `ac2bb18`): INDICE × md-0002 (Proposed × Accepted), INDICE sem `0003`/`0004`, scope/0001 com "48 skills"/`kilo.json` inválido desatualizados, contradições internas da md-0001 (AC-01 2 vs 3 status, CHECK retirado vs invariante, linha 142), matriz de autorização com papel `preview` e `service_role` em admin, secrets-policy vs `.agents/mcp.json`, backup-restore com flag inexistente, MCP.md @ `percy`/@mcp-server legado, jsdoc inexistente, editorial skills instaladas marcadas "não instaladas", follow-ups `[ ]` já resolvidos (md-0002:466/471/477, 0003:214); `workflow/STATE.md` (Bastão atual = delegação); decisão do dono: encaminhar a /sync (status/índice/follow-ups) e /architect (conteúdo da md-0001); merge e deploy seguem retidos | concluído; delegação emitida |
+| 77 | 2026-10-07 | resolução de 3 jobs CI (Semgrep PASS, Lighthouse PASS, OSV corrigido) | `.github/workflows/ci.yml` (corrige action path para `google/osv-scanner-action/osv-scanner-action@v2.6.0` e restringe scan-args a `--lockfile=pnpm-lock.yaml`), `components/shared/post-card.tsx` (`priority` na imagem do hero/destaque), `__tests__/unit/components/google-analytics.test.tsx` (`textContent` no mock de script); Lighthouse e Semgrep 100% PASS na CI; aprovação histórica 2639744b preservada; merge/deploy retidos | em curso; verificar CI no novo SHA |
 
 ### Evidência da linha 01
 
