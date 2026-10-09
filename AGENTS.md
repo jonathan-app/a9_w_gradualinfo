@@ -118,6 +118,10 @@ DESIGN.md       O design system do produto (tokens em oklch, tipografia); build 
     a skill `code-documenter` e o exemplo `scripts/check-env-leak.mjs`;
     `referencias/` e `.agents/` ficam de fora. Baseline: 97 arquivos rastreados
     cobertos em 2026-10-07 (linha 70 de `workflow/STATE.md`).
+11. **Nunca expor tokens ou segredos.** Regra permanente para todos os agentes:
+    nunca expor tokens ou segredos em chat, comandos visíveis, logs,
+    relatórios, testes, commits ou PRs. Usar apenas nomes das variáveis e
+    `[REDACTED]`; conferir saídas antes de compartilhá-las.
 
 ## Regra Universal de Delegação (handoff entre agentes)
 

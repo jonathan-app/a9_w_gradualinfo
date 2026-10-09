@@ -80,6 +80,8 @@
   //   referencias/template-editorial/ → referência visual versionada; a camada
   //                   Velite/MDX foi descartada e nada do app importa de lá
   //   scratch/      → rascunho de trabalho, não código de produto
+  //   cloudflare-worker.ts → wrapper de runtime do Cloudflare Worker; importa
+  //                   .open-next/worker.js gerado apenas após o build do Next
   "exclude": [
     "node_modules",
     ".agents/**",
@@ -91,6 +93,7 @@
     "referencias/template-admin-dashboard/**",
     "referencias/**",
     "scratch/**",
+    "cloudflare-worker.ts",
     ".next/**"
   ]
 }
