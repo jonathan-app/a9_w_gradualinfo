@@ -3,11 +3,10 @@
  * @module e2e/admin-dashboard
  * @description Cobre os estados autenticados que o spec de painel não exercita: escada de MFA
  *   obrigatória (matrícula, desafio, AAL2), negação por UUID divergente, preview autorizado,
- *   logout a partir do dashboard e fluxo real contra o Supabase local (gotrue + TOTP) quando
- *   `E2E_REAL_SUPABASE=1`. Sessões são simuladas com o cookie `__e2e_session_role` do mock de
- *   `lib/supabase/server.ts` (ativo quando `E2E_TEST=1`); o cookie precisa do domínio de
- *   produção (`E2E_BASE_URL`) e as chamadas de API usam `page.request`, que compartilha o
- *   cookie do contexto — o Playwright não permite injetar header `Cookie` manualmente.
+ *   logout a partir do dashboard usando MOCK de sessão via cookie `__e2e_session_role`
+ *   (ativo APENAS quando NODE_ENV !== 'production' em `lib/supabase/server.ts`).
+ *   Fluxo real contra Supabase local (gotrue + TOTP) requer `E2E_REAL_SUPABASE=1` e
+ *   stack Supabase local ativa — delimitado e opcional.
  * @dependencies @axe-core/playwright, @playwright/test, node:child_process, node:crypto
  */
 
@@ -271,8 +270,12 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
       .fill(totpCode(secret));
     await page.getByRole('button', { name: /Confirmar e Acessar/i }).click();
     await expect(page).toHaveURL(/\/admin-dashboard$/, { timeout: 15_000 });
-    await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();
-    await expect(page.getByText(/Nível AAL2 Ativo/i)).toBeVisible();
+    // O badge de sessão renderiza também no header responsivo (oculto no viewport
+    // do teste); `.first()` evita o strict-mode violation com o elemento escondido.
+    await expect(
+      page.getByText(/Sessão AAL2 Protegida/i).first(),
+    ).toBeVisible();
+    await expect(page.getByText(/Nível AAL2 Ativo/i).first()).toBeVisible();
 
     const preview = await page.request.post('/api/admin/preview', {
       data: { slug: 'artigo-aprovado' },

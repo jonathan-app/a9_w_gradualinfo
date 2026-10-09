@@ -27,12 +27,12 @@ import { env } from '@/lib/env';
 export async function createClient() {
   const cookieStore = await cookies();
 
-  // A simulação por cookie é instrumento de teste: ativa sob `E2E_TEST=1` (opt-in
-  // explícito de infra/CI) ou fora de produção. Sem o opt-in, deploy real permanece
-  // fail-closed — o cookie `__e2e_session_role` é terminantemente ignorado.
-  const isDevOrTest =
-    process.env.NODE_ENV !== 'production' || process.env.E2E_TEST === '1';
-  const e2eRole = isDevOrTest
+  // A simulação por cookie é instrumento de teste: ativa APENAS em desenvolvimento
+  // (NODE_ENV !== 'production'). Em produção, o deploy real permanece
+  // fail-closed — o cookie `__e2e_session_role` é terminantemente ignorado,
+  // mesmo que E2E_TEST=1 seja configurado (evita acidentes em produção).
+  const isDev = process.env.NODE_ENV !== 'production';
+  const e2eRole = isDev
     ? cookieStore.get('__e2e_session_role')?.value
     : undefined;
 
