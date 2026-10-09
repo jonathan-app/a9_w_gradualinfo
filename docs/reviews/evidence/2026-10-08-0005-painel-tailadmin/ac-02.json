@@ -1,0 +1,14 @@
+{
+  "ac": "admin/AC-02",
+  "title": "UUID administrativo obrigatório no servidor (fail-closed) e rejeição de UUID divergente",
+  "generatedAt": "2026-10-08T18:25:15.451Z",
+  "status": "PASS",
+  "targetFile": "lib/admin/auth.ts",
+  "testsExecuted": [
+    "cenário: falha fechada absoluta quando ADMIN_USER_ID está ausente no servidor (config_missing)",
+    "cenário: usuário autenticado com UUID divergente retorna unauthorized",
+    "E2E: layout protegido retorna 404 (notFound) para outro UUID — oculta existência da rota",
+    "E2E: API administrativa retorna 403 Forbidden para outro UUID — rejeição explícita"
+  ],
+  "note": "checkAdminUser exige user.id === ADMIN_USER_ID; ausência de config resulta em config_missing. Layout usa notFound() (404) para não vazar existência; APIs usam assertAdminApiAuth → 403. Comportamento intencional e testado."
+}
