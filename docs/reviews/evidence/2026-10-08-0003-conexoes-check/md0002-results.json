@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "2bcea1ddb429c1988b211923a17eb25df9dbaa48",
+  "evaluatedTree": "2ac9eb05cda26c90dd25f7925799a1c175bb9bff",
+  "workingTreeDirty": true,
+  "spec": {
+    "path": "docs/specs/md-0002-casca-editorial-home.md",
+    "sha256": "266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564"
+  },
+  "acs": [
+    {
+      "id": "md-0002/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-10",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-11",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-12",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "md-0002/AC-13",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "scripts/run-gitleaks.mjs:146: filtro pode descartar achados em caminhos Unicode ou escapados; usar git ls-files -z e divisão por NUL."
+    },
+    {
+      "severity": "BLOCKER",
+      "description": "package.json: ESLint 10.12.0 falha com eslint-plugin-react 7.37.5; corrigir compatibilidade e repetir lint completo."
+    }
+  ]
+}

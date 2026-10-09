@@ -88,6 +88,8 @@
     "__tests__/**",
     "scripts/**",
     "referencias/template-editorial/**",
+    "referencias/template-admin-dashboard/**",
+    "referencias/**",
     "scratch/**",
     ".next/**"
   ]

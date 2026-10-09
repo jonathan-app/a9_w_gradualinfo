@@ -1,0 +1,118 @@
+=== RE-RUN FINAL 2026-10-08T10:32:27-03:00 (árvore pós-bump deps 09:58) ===
+$ pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
+$ tsc --noEmit
+$ eslint .
+
+Oops! Something went wrong! :(
+
+ESLint: 10.12.0
+
+TypeError: Error while loading rule 'react/display-name': contextOrFilename.getFilename is not a function
+Occurred while linting /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.storybook/main.ts
+    at resolveBasedir (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/version.js:31:100)
+    at detectReactVersion (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/version.js:85:19)
+    at getReactVersionFromContext (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/version.js:116:25)
+    at testReactVersion (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/version.js:181:28)
+    at usedPropTypesInstructions (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/usedPropTypes.js:307:36)
+    at Components.componentRule (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2_/node_modules/eslint-plugin-react/lib/util/Components.js:940:37)
+    at createRuleListeners (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2/node_modules/eslint/lib/linter/linter.js:502:15)
+    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2/node_modules/eslint/lib/linter/linter.js:628:7
+    at Array.forEach (<anonymous>)
+    at runRules (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/.pnpm/eslint@10.12.0_jiti@2.7.0_supports-color@10.2.2/node_modules/eslint/lib/linter/linter.js:562:31)
+[ELIFECYCLE] Command failed with exit code 2.
+[ELIFECYCLE] Command failed with exit code 2.
+check:all exit=2
+=== build ===
+$ opennextjs-cloudflare build
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+App directory: /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+Next.js version : 16.4.0
+@opennextjs/cloudflare version: 1.20.9
+@opennextjs/aws version: 4.1.8
+WARN workerd compatibility_date: 2026-01-01, consider updating your wrangler config to a more recent date to benefit from the latest features and fixes.
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+$ next build --turbopack
+▲ Next.js 16.4.0 (Turbopack)
+- Environments: .env.production.local, .env.local
+The Next Bundle Analyzer is not compatible with Turbopack builds, no report will be generated.
+
+Consider trying the new Turbopack analyzer via `next analyze`.
+
+See https://nextjs.org/docs/app/guides/package-bundling for more information
+
+To run this analysis pass the `--webpack` flag to `next build`
+✓ Running next.config.ts took 28ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1385ms
+  Running TypeScript ...
+  Finished TypeScript in 3.2s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/7) ...
+  Generating static pages using 11 workers (1/7) 
+  Generating static pages using 11 workers (3/7) 
+  Generating static pages using 11 workers (5/7) 
+✓ Generating static pages using 11 workers (7/7) in 280ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/health
+├ ƒ /api/preview
+├ ƒ /api/preview/logout
+├ ƒ /artigos/[slug]
+├ ○ /exemplo
+├ ƒ /preview
+├ ○ /robots.txt
+└ ƒ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+WARN Node.js middleware support is experimental in cloudflare, and not officially maintained by OpenNext maintainers. Use at your own risk.
+
+┌──────────────────────────────┐
+│ OpenNext — Generating bundle │
+└──────────────────────────────┘
+
+Bundling middleware function...
+Bundling Node.js middleware...
+Bundling static assets...
+Bundling cache assets...
+Building server function: default...
+Applying code patches: 3.054s
+# copyPackageTemplateFiles
+[35m⚙️ Bundling the OpenNext server...
+[0m
+[35mWorker saved in `.open-next/worker.js` 🚀
+[0m
+OpenNext build complete.
+build exit=0
+=== wrangler dry-run ===
+
+ ⛅️ wrangler 4.148.0
+────────────────────
+
+Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+✨ Read 22 files from the assets directory /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/assets
+Total Upload: 16392.69 KiB / gzip: 3724.30 KiB
+Your Worker has access to the following bindings:
+Binding                                                                        Resource                  
+env.ASSETS                                                                     Assets                    
+env.NEXT_PUBLIC_SUPABASE_URL ("https://sjngngsjvotagwctzpde.supabase...")      Environment Variable      
+env.NEXT_PUBLIC_SITE_URL ("https://gradualinfo-editorial.a3qua96...")          Environment Variable      
+
+--dry-run: exiting now.
+wrangler exit=0

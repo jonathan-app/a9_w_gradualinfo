@@ -11,18 +11,43 @@
   // Referência: https://developers.cloudflare.com/workers/wrangler/configuration/
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "gradualinfo-editorial",
-  "main": ".open-next/worker.js",
+  "main": "cloudflare-worker.ts",
   "compatibility_date": "2026-01-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": {
     "enabled": true,
   },
+  // Evita apagar variáveis configuradas no painel ao publicar uma nova versão.
+  "keep_vars": true,
   // `pnpm deploy` sobrescreve este worker; `pnpm build` gera a pasta .open-next.
   "assets": {
     "binding": "ASSETS",
     "directory": ".open-next/assets",
   },
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.pages.dev",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://sjngngsjvotagwctzpde.supabase.co",
+    "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.com.br",
+    "NEXT_PUBLIC_SANITY_DATASET": "production",
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PREVIEW_SESSION_DO",
+        "class_name": "PreviewSessionDO",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PreviewSessionDO"],
+    },
+  ],
+  "routes": [
+    { "pattern": "gradualinfo.com.br/*", "zone_name": "gradualinfo.com.br" },
+    {
+      "pattern": "www.gradualinfo.com.br/*",
+      "zone_name": "gradualinfo.com.br",
+    },
+  ],
 }

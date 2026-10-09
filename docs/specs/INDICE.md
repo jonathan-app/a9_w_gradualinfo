@@ -19,10 +19,14 @@ ser ambíguo quando alguém comparar `main` com uma branch histórica.
 
 ## Specs vigentes
 
-| ID        | Arquivo                                    | Status   | Revisão | Origem da fatia             |
-| --------- | ------------------------------------------ | -------- | ------- | --------------------------- |
-| `md-0001` | `md-0001-arquitetura-markdown-supabase.md` | Accepted | 2       | fundação + fatia 1 (schema) |
-| `md-0002` | `md-0002-casca-editorial-home.md`          | Proposed | 2       | fatias 2, 3 e 4 do scope    |
+| ID        | Arquivo                                                 | Status   | Revisão | Origem da fatia                                              |
+| --------- | ------------------------------------------------------- | -------- | ------- | ------------------------------------------------------------ |
+| `md-0001` | `md-0001-arquitetura-markdown-supabase.md`              | Accepted | 2       | fundação + fatia 1 (schema)                                  |
+| `md-0002` | `md-0002-casca-editorial-home.md`                       | Proposed | 2       | fatias 2, 3 e 4 do scope                                     |
+| `0005`    | `0005-diretriz-arquitetura-evolucao-sanity-supabase.md` | Accepted | 1       | diretriz de evolução (Fase 1 Supabase / Fase 2 Sanity)       |
+| `0006`    | `0006-transicao-editorial-sanity.md`                    | Accepted | 2       | transição editorial para Sanity na entrega online atual      |
+| `0007`    | `0007-painel-administrativo-tailadmin.md`               | Accepted | 1       | painel administrativo /admin-dashboard adaptado do TailAdmin |
+| `0008`    | `0008-ai-security-checklist.md`                         | Accepted | 1       | checklist de vulnerabilidades IA 2026 (Cycode) + mitigações  |
 
 `md-0003` não existe, e não deve ser escrito. Uma versão anterior deste índice
 reservava `md-0003` para a fatia 1 (schema do artigo), o que punha duas specs
@@ -41,11 +45,12 @@ repete — transformar explicação de processo em aceite de conteúdo.
 
 ## Tabela de supersessão
 
-| Documento superseded                                                  | Linha      | Substituído por              | Por quê                                                                                                     |
-| --------------------------------------------------------------------- | ---------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `feat/identidade-portal-gradualinfo`:`0001-blog-template-aqua.md`     | MDX/Velite | `main`:`md-0001`             | Artigo em MDX compilado pelo Velite; a decisão do dono fixa Markdown no Supabase                            |
+| Documento superseded                                              | Linha      | Substituído por  | Por quê                                                                          |
+| ----------------------------------------------------------------- | ---------- | ---------------- | -------------------------------------------------------------------------------- |
+| `feat/identidade-portal-gradualinfo`:`0001-blog-template-aqua.md` | MDX/Velite | `main`:`md-0001` | Artigo em MDX compilado pelo Velite; a decisão do dono fixa Markdown no Supabase |
+
 | `feat/identidade-portal-gradualinfo`:`0002-mvp-portal-gradualinfo.md` | MDX/Velite | `main`:`md-0001` e `md-0002` | Mesmo motivo, e inclui painel editorial, RAG e Selo no mesmo escopo — todos fora do MVP por decisão do dono |
-| `feat/blog/template-aqua-velite`:`0001-blog-template-aqua.md`         | MDX/Velite | `main`:`md-0001`             | Cópia da spec da branch de identidade, na branch do blog                                                    |
+| `feat/blog/template-aqua-velite`:`0001-blog-template-aqua.md` | MDX/Velite | `main`:`md-0001` | Cópia da spec da branch de identidade, na branch do blog |
 
 As três specs revogadas **permanecem nas branches**. Não foram apagadas e as
 branches não foram descartadas: elas são o registro do que foi decidido e

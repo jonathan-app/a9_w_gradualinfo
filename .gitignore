@@ -35,8 +35,10 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
-.env
-.env*.local
+# `.env*` e não `.env*.local`: o padrão antigo não casava com backups como
+# `.env.local.bak`, que não terminam em `.local` — foi assim que três
+# backups com credenciais reais entraram no commit 10eecbc.
+.env*
 !.env.example
 .vercel
 *.tsbuildinfo

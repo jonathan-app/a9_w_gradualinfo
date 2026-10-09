@@ -1,0 +1,15 @@
+{
+  "ac": "admin/AC-04",
+  "title": "Exigência de MFA em camadas (setup, desafio AAL1, liberação AAL2)",
+  "generatedAt": "2026-10-08T22:20:00.000Z",
+  "status": "PASS",
+  "targetFile": "app/admin-dashboard/mfa/setup/page.tsx",
+  "testsExecuted": [
+    "cenário: administrador sem nenhum fator TOTP cadastrado exige matrícula (mfa_enrollment_required)",
+    "cenário: administrador com TOTP cadastrado mas sessão AAL1 exige desafio (mfa_challenge_required)",
+    "cenário: administrador com sessão em AAL2 autoriza com sucesso",
+    "rejeita emissão de preview se sessão do administrador estiver apenas em AAL1",
+    "E2E Playwright: sem TOTP redireciona para setup; AAL1 redireciona para desafio; AAL2 libera dashboard e preview"
+  ],
+  "note": "A lógica da escada MFA no servidor (lib/admin/auth.ts) e os fluxos de interface foram comprovados de ponta a ponta com simulação de papéis da sessão. A validação do desafio TOTP real contra infraestrutura remota do Supabase Cloud permanece delimitada como dependente de ambiente conectado com chaves de produção."
+}

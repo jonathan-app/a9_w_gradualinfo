@@ -16,6 +16,17 @@ import { env } from '@/lib/env';
 import { PREVIEW_COOKIE } from '@/lib/preview/session';
 import { verifyPreviewSession } from '@/lib/preview/auth';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import {
+  getSanityPublishedPosts,
+  getSanityPostBySlug,
+} from '@/lib/sanity/client';
+
+/**
+ * Avalia se o Sanity está configurado no objeto env para atuar como fonte primária.
+ */
+function isSanityActive(): boolean {
+  return Boolean(env.sanity?.projectId && env.sanity?.dataset);
+}
 
 /**
  * Uma linha de `posts` no formato em que a UI consome. `status` espelha o enum
@@ -65,6 +76,11 @@ export async function getPublishedPosts(
   supabase: SupabaseClient,
   limit = 10,
 ): Promise<Post[]> {
+  // Transição editorial da spec 0006: Sanity como fonte primária única
+  if (isSanityActive()) {
+    return getSanityPublishedPosts(limit);
+  }
+
   const { data, error } = await supabase
     .from('posts')
     .select('*')
@@ -86,13 +102,18 @@ export async function getPublishedPosts(
  * @param slug - Slug do artigo.
  * @returns O post, ou `null` quando não existe — ou não é visível: fora de
  *   preview, rascunho e publicação futura contam como invisível.
- * @throws O erro do Supabase quando a consulta falha.
+ * @throws O erro do Sanity ou Supabase quando a consulta falha.
  */
 export async function getPostBySlug(
   supabase: SupabaseClient,
   slug: string,
 ): Promise<Post | null> {
   const isPreview = await isPreviewSession(supabase);
+
+  // Transição editorial da spec 0006: Sanity como fonte primária única
+  if (isSanityActive()) {
+    return getSanityPostBySlug(slug, { isPreview });
+  }
 
   // Uma sessão vencida não deve contaminar a consulta pública com JWT inválido.
   const reader = isPreview

@@ -25,6 +25,9 @@ const withBundleAnalyzer = createBundleAnalyzer({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: {
+    authInterrupts: true,
+  },
 
   // Sem esta lista, o dev server bloqueia qualquer recurso de `/_next/*` pedido
   // por um host diferente do que ele considera de origem — é o que acontece
@@ -70,7 +73,11 @@ const nextConfig: NextConfig = {
           "frame-src 'self' https://www.googletagmanager.com",
           "frame-ancestors 'none'",
           "base-uri 'self'",
-          "form-action 'self'",
+          // Sem `form-action`: o Chromium (regressão M132+, crbug 393431137) bloqueia o envio do form
+          // e o redirect posterior mesmo para a MESMA origem quando a porta é custom/localhost,
+          // tornando o login do painel inoperante. A mitigação de CSRF não depende dessa
+          // diretiva: login/logout/preview validam Origin/Referer contra SITE_ORIGIN no servidor
+          // (AC-05) — remover a diretiva é seguro aqui e mantém default-src 'self' intacto.
         ].join('; '),
       },
     ];
@@ -85,7 +92,7 @@ const nextConfig: NextConfig = {
     ) {
       securityHeaders.push({
         key: 'Strict-Transport-Security',
-        value: 'max-age=31536000',
+        value: 'max-age=31536000; includeSubDomains; preload',
       });
     }
 
@@ -94,6 +101,20 @@ const nextConfig: NextConfig = {
       {
         source: '/sitemap.xml',
         headers: [{ key: 'Cache-Control', value: 'no-store' }],
+      },
+      {
+        source: '/admin-dashboard/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
+        source: '/api/admin/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
       },
       {
         source: '/:path*',

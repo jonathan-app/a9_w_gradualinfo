@@ -1,0 +1,1252 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node-22",
+      "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/@playwright/test/cli.js",
+      "test",
+      "e2e/admin-panel.spec.ts",
+      "e2e/admin-dashboard.spec.ts"
+    ],
+    "configFile": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/playwright.config.ts",
+    "rootDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      ["list", null],
+      [
+        "json",
+        {
+          "outputFile": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/run3/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "node scripts/e2e-server.mjs",
+      "url": "https://localhost:3100",
+      "ignoreHTTPSErrors": true,
+      "reuseExistingServer": false,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "admin-dashboard.spec.ts",
+      "file": "admin-dashboard.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Painel Administrativo — Fluxos autenticados (Spec 0007)",
+          "file": "admin-dashboard.spec.ts",
+          "line": 77,
+          "column": 6,
+          "specs": [
+            {
+              "title": "acesso anônimo a /admin-dashboard/mfa/* é interceptado e redirecionado para login (AC-04)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 782,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:03.187Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-dc1242431c68075eaf48",
+              "file": "admin-dashboard.spec.ts",
+              "line": 78,
+              "column": 7
+            },
+            {
+              "title": "administrador autenticado sem TOTP é forçado para matrícula MFA, com axe e teclado no formulário (AC-04, AC-13)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5446,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:94:24",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 94
+                        },
+                        "snippet": "  92 |     await page.goto('/admin-dashboard');\n  93 |\n> 94 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/setup/);\n     |                        ^\n  95 |     await expect(\n  96 |       page.getByRole('heading', {\n  97 |         level: 1,"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 94
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n\n  92 |     await page.goto('/admin-dashboard');\n  93 |\n> 94 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/setup/);\n     |                        ^\n  95 |     await expect(\n  96 |       page.getByRole('heading', {\n  97 |         level: 1,\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:94:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:04.154Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-c9349--no-formulário-AC-04-AC-13--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-c9349--no-formulário-AC-04-AC-13--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-c9349--no-formulário-AC-04-AC-13--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 94
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-95b1f7204d15adfdd7b5",
+              "file": "admin-dashboard.spec.ts",
+              "line": 88,
+              "column": 7
+            },
+            {
+              "title": "sessão AAL1 (fator pendente) é forçada ao desafio TOTP, bloqueia preview e passa no axe/teclado (AC-04, AC-10, AC-13)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5507,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/verify/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/verify/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:126:24",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 126
+                        },
+                        "snippet": "  124 |     await page.goto('/admin-dashboard');\n  125 |\n> 126 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/verify/);\n      |                        ^\n  127 |     await expect(\n  128 |       page.getByRole('heading', {\n  129 |         level: 1,"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 126
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/verify/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\u001b[2m    14 × locator resolved to <html lang=\"pt-BR\" class=\"light\">…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n\n  124 |     await page.goto('/admin-dashboard');\n  125 |\n> 126 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/verify/);\n      |                        ^\n  127 |     await expect(\n  128 |       page.getByRole('heading', {\n  129 |         level: 1,\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:126:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:10.233Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-5722d--teclado-AC-04-AC-10-AC-13--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-5722d--teclado-AC-04-AC-10-AC-13--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-5722d--teclado-AC-04-AC-10-AC-13--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 126
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-50cdbbe4ca700e5fd007",
+              "file": "admin-dashboard.spec.ts",
+              "line": 120,
+              "column": 7
+            },
+            {
+              "title": "sessão AAL2 acessa dashboard, renderiza identidade e links, passa no axe/teclado e autoriza preview (AC-04, AC-10, AC-13)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5524,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:163:60",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 60,
+                          "line": 163
+                        },
+                        "snippet": "  161 |     expect(response?.status()).toBe(200);\n  162 |\n> 163 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();\n      |                                                            ^\n  164 |     await expect(page.getByText(E2E_ADMIN_EMAIL)).toBeVisible();\n  165 |\n  166 |     const sanityLink = page.getByRole('link', { name: /CMS Sanity Studio/i });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 60,
+                            "line": 163
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n\n  161 |     expect(response?.status()).toBe(200);\n  162 |\n> 163 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();\n      |                                                            ^\n  164 |     await expect(page.getByText(E2E_ADMIN_EMAIL)).toBeVisible();\n  165 |\n  166 |     const sanityLink = page.getByRole('link', { name: /CMS Sanity Studio/i });\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:163:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:16.490Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-b8b44--preview-AC-04-AC-10-AC-13--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-b8b44--preview-AC-04-AC-10-AC-13--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-b8b44--preview-AC-04-AC-10-AC-13--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 60,
+                        "line": 163
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-ba44e3914b224f2e9ecd",
+              "file": "admin-dashboard.spec.ts",
+              "line": 156,
+              "column": 7
+            },
+            {
+              "title": "usuário autenticado com UUID divergente tem acesso negado com status HTTP 403 no layout e nas APIs (AC-02, AC-03)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5510,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: /Acesso Não Autorizado/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: /Acesso Não Autorizado/i }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: /Acesso Não Autorizado/i })\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: /Acesso Não Autorizado/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: /Acesso Não Autorizado/i }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: /Acesso Não Autorizado/i })\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:202:7",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 7,
+                          "line": 202
+                        },
+                        "snippet": "  200 |     await expect(\n  201 |       page.getByRole('heading', { name: /Acesso Não Autorizado/i }),\n> 202 |     ).toBeVisible();\n      |       ^\n  203 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toHaveCount(0);\n  204 |\n  205 |     const preview = await page.request.post('/api/admin/preview', {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 7,
+                            "line": 202
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: /Acesso Não Autorizado/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: /Acesso Não Autorizado/i }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: /Acesso Não Autorizado/i })\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n\n  200 |     await expect(\n  201 |       page.getByRole('heading', { name: /Acesso Não Autorizado/i }),\n> 202 |     ).toBeVisible();\n      |       ^\n  203 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toHaveCount(0);\n  204 |\n  205 |     const preview = await page.request.post('/api/admin/preview', {\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:202:7"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:22.792Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-3cdb9-out-e-nas-APIs-AC-02-AC-03--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-3cdb9-out-e-nas-APIs-AC-02-AC-03--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-3cdb9-out-e-nas-APIs-AC-02-AC-03--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 7,
+                        "line": 202
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-fb0d6c12697ce4589c26",
+              "file": "admin-dashboard.spec.ts",
+              "line": 194,
+              "column": 7
+            },
+            {
+              "title": "logout a partir do dashboard encerra a sessão e bloqueia acessos subsequentes (AC-12)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5486,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:217:60",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 60,
+                          "line": 217
+                        },
+                        "snippet": "  215 |     await seedE2eRole(page, 'admin_aal2');\n  216 |     await page.goto('/admin-dashboard');\n> 217 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();\n      |                                                            ^\n  218 |\n  219 |     const logout = await page.request.post('/api/admin/auth/logout', {\n  220 |       headers: { Origin: BASE_URL },"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 60,
+                            "line": 217
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Sessão AAL2 Protegida/i)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Sessão AAL2 Protegida/i) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Sessão AAL2 Protegida/i)\u001b[22m\n\u001b[2m    - waiting for \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://localhost:3100/admin-dashboard/login?redirectTo=%2Fadmin-dashboard\"\u001b[22m\n\n\n  215 |     await seedE2eRole(page, 'admin_aal2');\n  216 |     await page.goto('/admin-dashboard');\n> 217 |     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();\n      |                                                            ^\n  218 |\n  219 |     const logout = await page.request.post('/api/admin/auth/logout', {\n  220 |       headers: { Origin: BASE_URL },\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:217:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:29.067Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-aaffb-acessos-subsequentes-AC-12--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-aaffb-acessos-subsequentes-AC-12--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-aaffb-acessos-subsequentes-AC-12--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 60,
+                        "line": 217
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-4e7d2c89a01cf478cac4",
+              "file": "admin-dashboard.spec.ts",
+              "line": 212,
+              "column": 7
+            },
+            {
+              "title": "formulário de login não expõe nenhum link de cadastro de usuário (AC-06)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 610,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:35.314Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-d4d4626910edeb3a5f8c",
+              "file": "admin-dashboard.spec.ts",
+              "line": 232,
+              "column": 7
+            },
+            {
+              "title": "fluxo real no Supabase local: login → matrícula TOTP → desafio AAL1 → dashboard AAL2 → preview → logout (AC-04, AC-10, AC-12)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 31562,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/api/admin/auth/login\"\u001b[39m\nTimeout: 30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 30000ms\u001b[22m\n\u001b[2m    64 × locator resolved to <html>…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/api/admin/auth/login\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/api/admin/auth/login\"\u001b[39m\nTimeout: 30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 30000ms\u001b[22m\n\u001b[2m    64 × locator resolved to <html>…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/api/admin/auth/login\"\u001b[22m\n\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:257:24",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 257
+                        },
+                        "snippet": "  255 |     await page.getByRole('button', { name: /Entrar no Painel/i }).click();\n  256 |\n> 257 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/setup/, {\n      |                        ^\n  258 |       timeout: 30_000,\n  259 |     });\n  260 |     const secret ="
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 257
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/admin-dashboard\\/mfa\\/setup/\u001b[39m\nReceived string:  \u001b[31m\"https://localhost:3100/api/admin/auth/login\"\u001b[39m\nTimeout: 30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 30000ms\u001b[22m\n\u001b[2m    64 × locator resolved to <html>…</html>\u001b[22m\n\u001b[2m       - unexpected value \"https://localhost:3100/api/admin/auth/login\"\u001b[22m\n\n\n  255 |     await page.getByRole('button', { name: /Entrar no Painel/i }).click();\n  256 |\n> 257 |     await expect(page).toHaveURL(/\\/admin-dashboard\\/mfa\\/setup/, {\n      |                        ^\n  258 |       timeout: 30_000,\n  259 |     });\n  260 |     const secret =\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts:257:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:22:36.119Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-9b488-→-logout-AC-04-AC-10-AC-12--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-9b488-→-logout-AC-04-AC-10-AC-12--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-dashboard-Painel-Adm-9b488-→-logout-AC-04-AC-10-AC-12--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 257
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d4e698b37550954495f8-4844a6fd2056551366cd",
+              "file": "admin-dashboard.spec.ts",
+              "line": 243,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "admin-panel.spec.ts",
+      "file": "admin-panel.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Painel Administrativo — Cabeçalhos HTTP e Proteção",
+          "file": "admin-panel.spec.ts",
+          "line": 16,
+          "column": 6,
+          "specs": [
+            {
+              "title": "rota protegida anônima redireciona para login (admin/AC-01)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 181,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:08.259Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-cf193f2e8b82cb2c6c9b",
+              "file": "admin-panel.spec.ts",
+              "line": 17,
+              "column": 7
+            },
+            {
+              "title": "página de login acessível anonimamente (200)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 945,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:08.539Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-05813129a35fa07c7207",
+              "file": "admin-panel.spec.ts",
+              "line": 41,
+              "column": 7
+            },
+            {
+              "title": "cabeçalhos de proteção em rota protegida (admin/AC-11)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 913,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:09.496Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-72695881ef519051e9dc",
+              "file": "admin-panel.spec.ts",
+              "line": 46,
+              "column": 7
+            },
+            {
+              "title": "robots.ts bloqueia /admin-dashboard/",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 620,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:10.418Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-077e8b9a9e90b6dc6e8d",
+              "file": "admin-panel.spec.ts",
+              "line": 58,
+              "column": 7
+            },
+            {
+              "title": "cabeçalhos de proteção em todas as rotas /admin-dashboard/* (admin/AC-11)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 200,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:11.049Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-b1d653362864ad8df640",
+              "file": "admin-panel.spec.ts",
+              "line": 66,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Painel Administrativo — Login: Validação de Origem, Rate Limit e Redirect",
+          "file": "admin-panel.spec.ts",
+          "line": 84,
+          "column": 6,
+          "specs": [
+            {
+              "title": "POST login com Origin inválido retorna 403 (admin/AC-05)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 852,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:11.257Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-a0edc51ef0b247f63a4d",
+              "file": "admin-panel.spec.ts",
+              "line": 85,
+              "column": 7
+            },
+            {
+              "title": "POST login com redirect externo é sanitizado para /admin-dashboard (admin/AC-05)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 876,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:126:31",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                          "column": 31,
+                          "line": 126
+                        },
+                        "snippet": "  124 |     // Login falha (credenciais inválidas) -> redirect 303 para login com error=invalid_credentials\n  125 |     // Mas o redirectTo externo deve ser sanitizado no location\n> 126 |     expect(response.status()).toBe(303);\n      |                               ^\n  127 |     const location = response.headers()['location'] || '';\n  128 |     expect(location).not.toContain('evil.com');\n  129 |     expect(location).toContain('/admin-dashboard/login');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                            "column": 31,
+                            "line": 126
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n\n  124 |     // Login falha (credenciais inválidas) -> redirect 303 para login com error=invalid_credentials\n  125 |     // Mas o redirectTo externo deve ser sanitizado no location\n> 126 |     expect(response.status()).toBe(303);\n      |                               ^\n  127 |     const location = response.headers()['location'] || '';\n  128 |     expect(location).not.toContain('evil.com');\n  129 |     expect(location).toContain('/admin-dashboard/login');\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:126:31"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:12.117Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-d4289-dmin-dashboard-admin-AC-05--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-d4289-dmin-dashboard-admin-AC-05--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-d4289-dmin-dashboard-admin-AC-05--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                        "column": 31,
+                        "line": 126
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-82ecab1db5080e850654",
+              "file": "admin-panel.spec.ts",
+              "line": 106,
+              "column": 7
+            },
+            {
+              "title": "POST login com prefixo colidente /admin-dashboard-falso é rejeitado (admin/AC-05)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1074,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:150:31",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                          "column": 31,
+                          "line": 150
+                        },
+                        "snippet": "  148 |     );\n  149 |\n> 150 |     expect(response.status()).toBe(303);\n      |                               ^\n  151 |     const location = response.headers()['location'] || '';\n  152 |     expect(location).not.toContain('/admin-dashboard-falso');\n  153 |     expect(location).toContain('/admin-dashboard/login');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                            "column": 31,
+                            "line": 150
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m303\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n\n  148 |     );\n  149 |\n> 150 |     expect(response.status()).toBe(303);\n      |                               ^\n  151 |     const location = response.headers()['location'] || '';\n  152 |     expect(location).not.toContain('/admin-dashboard-falso');\n  153 |     expect(location).toContain('/admin-dashboard/login');\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:150:31"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:13.564Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-0867e-so-é-rejeitado-admin-AC-05--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-0867e-so-é-rejeitado-admin-AC-05--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-0867e-so-é-rejeitado-admin-AC-05--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                        "column": 31,
+                        "line": 150
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-2c59ec8a3ff7a7a33000",
+              "file": "admin-panel.spec.ts",
+              "line": 132,
+              "column": 7
+            },
+            {
+              "title": "rate limiting: múltiplos POSTs de login falhos retornam redirect com error=rate_limited (admin/AC-05)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1153,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:190:25",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                          "column": 25,
+                          "line": 190
+                        },
+                        "snippet": "  188 |     }\n  189 |\n> 190 |     expect(rateLimited).toBeTruthy();\n      |                         ^\n  191 |   });\n  192 | });\n  193 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                            "column": 25,
+                            "line": 190
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n\n  188 |     }\n  189 |\n> 190 |     expect(rateLimited).toBeTruthy();\n      |                         ^\n  191 |   });\n  192 | });\n  193 |\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:190:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:15.318Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-fa20a-r-rate-limited-admin-AC-05--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-fa20a-r-rate-limited-admin-AC-05--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-fa20a-r-rate-limited-admin-AC-05--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                        "column": 25,
+                        "line": 190
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-a8e96482510a855f35ce",
+              "file": "admin-panel.spec.ts",
+              "line": 156,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Painel Administrativo — API direta e Logout (AC-03, AC-12)",
+          "file": "admin-panel.spec.ts",
+          "line": 194,
+          "column": 6,
+          "specs": [
+            {
+              "title": "API admin direta sem sessão retorna 401 (admin/AC-03)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1081,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m403\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:207:31",
+                        "location": {
+                          "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                          "column": 31,
+                          "line": 207
+                        },
+                        "snippet": "  205 |\n  206 |     // Guarda assertAdminApiAuth: sem sessão autenticada o endpoint é blindado antes da lógica.\n> 207 |     expect(response.status()).toBe(401);\n      |                               ^\n  208 |   });\n  209 |\n  210 |   test('POST logout com Origin inválido retorna 403 (admin/AC-12)', async ({"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                            "column": 31,
+                            "line": 207
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n\n  205 |\n  206 |     // Guarda assertAdminApiAuth: sem sessão autenticada o endpoint é blindado antes da lógica.\n> 207 |     expect(response.status()).toBe(401);\n      |                               ^\n  208 |   });\n  209 |\n  210 |   test('POST logout com Origin inválido retorna 403 (admin/AC-12)', async ({\n    at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts:207:31"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:17.132Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-b5c34-ão-retorna-401-admin-AC-03--chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-b5c34-ão-retorna-401-admin-AC-03--chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results/admin-panel-Painel-Adminis-b5c34-ão-retorna-401-admin-AC-03--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/admin-panel.spec.ts",
+                        "column": 31,
+                        "line": 207
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-779ca0af51ba415e9e41",
+              "file": "admin-panel.spec.ts",
+              "line": 195,
+              "column": 7
+            },
+            {
+              "title": "POST logout com Origin inválido retorna 403 (admin/AC-12)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1089,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:18.869Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-f9a90a3b9f3c5e0e3c7d",
+              "file": "admin-panel.spec.ts",
+              "line": 210,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Painel Administrativo — Acessibilidade WCAG AA (admin/AC-13)",
+          "file": "admin-panel.spec.ts",
+          "line": 227,
+          "column": 6,
+          "specs": [
+            {
+              "title": "página de login sem violações WCAG 2.1 AA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1315,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:20.054Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-4e50f4f43bd7a8e353e0",
+              "file": "admin-panel.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "navegação por teclado: formulário de login focável e submissível",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6070,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T01:23:21.384Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "399d6696af02825fcc54-a977a3a8e7d2d8e885fe",
+              "file": "admin-panel.spec.ts",
+              "line": 238,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-09T01:22:01.492Z",
+    "duration": 86037.377,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 10,
+    "flaky": 0
+  }
+}

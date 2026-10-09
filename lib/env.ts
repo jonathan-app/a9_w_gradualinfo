@@ -49,6 +49,26 @@ export const env = {
   editorialImageBucket: process.env.SUPABASE_EDITORIAL_IMAGE_BUCKET ?? '',
   previewEmail: process.env.SUPABASE_PREVIEW_EMAIL ?? '',
   previewUserId: process.env.SUPABASE_PREVIEW_USER_ID ?? '',
+  // Contrato de preview spec 0006 (segredo e chave de assinatura HMAC-SHA256)
+  previewSecret:
+    process.env.PREVIEW_SECRET ?? process.env.SUPABASE_PREVIEW_TOKEN ?? '',
+  previewSigningKey:
+    process.env.PREVIEW_SIGNING_KEY ??
+    process.env.PREVIEW_SECRET ??
+    'local-development-preview-signing-key-placeholder',
+  // Configurações do Sanity (armazenamento editorial único na entrega online)
+  sanity: {
+    projectId:
+      process.env.SANITY_PROJECT_ID ??
+      process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+      '',
+    dataset:
+      process.env.SANITY_DATASET ??
+      process.env.NEXT_PUBLIC_SANITY_DATASET ??
+      'production',
+    apiVersion: process.env.SANITY_API_VERSION ?? '2024-01-01',
+    readToken: process.env.SANITY_API_READ_TOKEN ?? '',
+  },
   // ID de produção embutido: um build de produção sem a variável definida
   // continua medindo, em vez de enviar string vazia e perder o evento.
   gaMeasurementId:
@@ -58,6 +78,12 @@ export const env = {
   gtmId:
     process.env.NEXT_PUBLIC_GTM_ID ??
     (process.env.NODE_ENV === 'production' ? 'GTM-TQVMR8TN' : ''),
+  // Administração e Controle de Acesso (spec 0007)
+  adminUserId: process.env.ADMIN_USER_ID ?? '',
+  adminEmail: process.env.ADMIN_EMAIL ?? 'a3qua96@gmail.com',
+  sanityStudioUrl:
+    process.env.NEXT_PUBLIC_SANITY_STUDIO_URL ??
+    'https://gradualinfo.sanity.studio',
   isProduction: process.env.NODE_ENV === 'production',
 } as const;
 
@@ -69,4 +95,13 @@ export const env = {
 export const isSupabaseConfigured = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
+
+/**
+ * `true` quando o Sanity está configurado para leitura editorial.
+ */
+export const isSanityConfigured = Boolean(
+  (process.env.SANITY_PROJECT_ID ||
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) &&
+  (process.env.SANITY_DATASET || process.env.NEXT_PUBLIC_SANITY_DATASET),
 );

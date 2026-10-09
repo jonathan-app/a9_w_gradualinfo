@@ -54,8 +54,10 @@ rules:
     languages: [typescript, javascript]
     paths:
       include:
-        - '**/proxy.ts'
-        - '**/middleware.ts'
+        - '/proxy.ts'
+        - '/middleware.ts'
+        - '/src/proxy.ts'
+        - '/src/middleware.ts'
     pattern-regex: '(?s)\A(?!.*export\s+const\s+config\s*=.*matcher).*export\s+async\s+function\s+'
 
   # --- Consulta a dado no cliente quando dá para ser no servidor ----------
@@ -67,8 +69,7 @@ rules:
       Component, a versão no servidor é mais rápida e mais segura.
     severity: INFO
     languages: [typescript, javascript]
-    pattern-either:
-      - pattern: |
-          useEffect(() => { ... $SUPABASE.from(...) ... }, [])
-      - pattern: |
-          useEffect(async () => { ... $SUPABASE.from(...) ... }, [])
+    patterns:
+      - pattern-inside: |
+          useEffect(...)
+      - pattern: $SUPABASE.from(...)

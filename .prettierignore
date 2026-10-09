@@ -39,6 +39,7 @@ next-env.d.ts
 # separada, para o diff mostrar causa e efeito.
 # ---------------------------------------------------------------------------
 referencias/template-editorial/**
+referencias/template-admin-dashboard/**
 
 # `scratch/` é rascunho de trabalho. Também não é código ativo, e por isso
 # segue a mesma regra do template.

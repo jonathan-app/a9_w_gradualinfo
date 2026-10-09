@@ -44,6 +44,8 @@ export default defineConfig([
     // template de terceiro faz o lint do projeto depender do estilo de outro.
     // Mesma decisão e mesmo motivo que no `.prettierignore`.
     'referencias/template-editorial/**',
+    'referencias/template-admin-dashboard/**',
+    'referencias/**',
     'scratch/**',
     '.kilo/worktrees/**',
     '.agents/**',
@@ -67,7 +69,7 @@ export default defineConfig([
   },
   {
     settings: {
-      react: { version: 'detect' },
+      react: { version: '19.3.0' },
       'import/resolver': {
         typescript: true,
         node: true,

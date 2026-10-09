@@ -1,19 +1,17 @@
 /**
- * @fileoverview Encerramento da sessão de preview editorial.
+ * @fileoverview Encerramento de sessão de preview editorial e revogação no Cloudflare Durable Object e Supabase.
  * @module app/api/preview/logout
- * @description Route handler que encerra a sessão Supabase do preview e
- *   zera os cookies de sessão no caminho da resposta. Contrato HTTP: POST único;
- *   303 com redirect para `/` quando dá certo, 503 quando a revogação falha
- *   (os cookies locais são zerados de qualquer forma, para o browser não ficar
- *   com sessão órfã), 403 para `origin` que não seja a do site e 405 com
- *   `Allow: POST` no GET.
- *   Autorização: aqui não se apresenta segredo — sair é livre; o que se valida é
- *   o `origin`, que impede formulário montado em outro domínio de encerrar (ou
- *   de forçar) sessão alheia (CSRF de formulário).
- * @dependencies next/server (NextResponse/NextRequest), @supabase/ssr
- *   (createServerClient + signOut), lib/env, lib/site-config (SITE_ORIGIN),
- *   lib/audit (evento `preview_logout`), lib/preview/config e
- *   lib/preview/session (opções de cookie e nome do cookie de preview).
+ * @description Route handler que revoga a sessão persistente com consistência forte no
+ *   Cloudflare Durable Object (`PreviewSessionDO`), finaliza a sessão no Supabase e limpa os cookies
+ *   no cliente.
+ *   Contrato HTTP: POST exclusivo; status 303 com redirect para `/` confirmado apenas
+ *   após a persistência síncrona da revogação; 503 quando a gravação da revogação ou do provedor
+ *   falha (com zeramento de cookies locais de contingência); 403 para origem divergente
+ *   de SITE_ORIGIN; e 405 com `Allow: POST` para requisições GET.
+ * @dependencies next/server (NextResponse/NextRequest), @supabase/ssr (createServerClient),
+ *   lib/env, lib/site-config (SITE_ORIGIN), lib/audit (evento `preview_logout`),
+ *   lib/preview/config (previewCookieOptions), lib/preview/session (readPreviewGrant, PREVIEW_COOKIE),
+ *   lib/preview/durable-object (getPreviewSessionStore).
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
@@ -21,30 +19,41 @@ import { env } from '@/lib/env';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { audit } from '@/lib/audit';
 import { previewCookieOptions } from '@/lib/preview/config';
-import { PREVIEW_COOKIE } from '@/lib/preview/session';
+import { readPreviewGrant, PREVIEW_COOKIE } from '@/lib/preview/session';
+import { getPreviewSessionStore } from '@/lib/preview/durable-object';
 
 /**
- * Encerra a sessão de preview e limpa os cookies associados.
+ * Encerra a sessão de preview e revoga imediatamente no Durable Object e Supabase.
  *
- * `changed` reúne todo cookie que será zerado na resposta: os que o Supabase
- * tenta redefinir durante o `signOut` (via `setAll`) mais o cookie de preview e
- * os `sb-*` já presentes na requisição — o sweep manual cobre o caso em que o
- * `signOut` falha antes de tocar em qualquer cookie, que é justamente quando a
- * resposta vira 503.
- *
- * @param request - Requisição POST vinda do formulário da página `/preview`.
- * @returns 303 redirect para a home no sucesso; 503 quando a chamada ao Supabase
- *   falha; 403 quando o `origin` não é `SITE_ORIGIN`. Toda resposta sai com
- *   `Cache-Control: private, no-store`.
+ * @param request - Requisição POST vinda do formulário ou cliente autorizado.
+ * @returns 303 redirect para a home no sucesso; 503 quando a chamada de revogação falha.
  */
 export async function POST(request: NextRequest) {
-  if (request.headers.get('origin') !== SITE_ORIGIN)
+  if (request.headers.get('origin') !== SITE_ORIGIN) {
     return new NextResponse('Origem não autorizada.', {
       status: 403,
       headers: { 'Cache-Control': 'private, no-store' },
     });
-  const changed = new Set<string>();
+  }
+
+  const cookieValue = request.cookies.get(PREVIEW_COOKIE)?.value;
+  const grant = readPreviewGrant(cookieValue, env.previewSigningKey);
   let failed = false;
+
+  // 1. Revogação persistida no Durable Object com consistência forte
+  if (grant?.session_id) {
+    try {
+      const store = getPreviewSessionStore();
+      const revoked = await store.revokeSession(grant.session_id);
+      if (!revoked) {
+        failed = true;
+      }
+    } catch {
+      failed = true;
+    }
+  }
+
+  // 2. Encerramento de sessão no Supabase Auth (preservado como camada de contingência)
   try {
     const supabase = createServerClient(
       env.supabase.url,
@@ -52,45 +61,51 @@ export async function POST(request: NextRequest) {
       {
         cookies: {
           getAll: () => request.cookies.getAll(),
-          setAll: (values) => values.forEach(({ name }) => changed.add(name)),
+          setAll: () => {},
         },
       },
     );
     const { error } = await supabase.auth.signOut();
-    failed = Boolean(error);
+    if (error) {
+      failed = true;
+    }
   } catch {
     failed = true;
   }
+
+  // Logout só confirmado após persistir a revogação
   const response = failed
     ? new NextResponse(
         'Sessão local encerrada; revogação remota indisponível.',
-        { status: 503 },
+        {
+          status: 503,
+        },
       )
     : NextResponse.redirect(new URL('/', SITE_ORIGIN), 303);
+
   response.headers.set('Cache-Control', 'private, no-store');
-  changed.add(PREVIEW_COOKIE);
-  // Sweep final: os `sb-*` entram mesmo quando o signOut não rodou — cookie de
-  // sessão esquecido no browser manteria o preview utilizável após o logout.
+
+  // Limpeza de cookies de preview e auxiliares no cliente
+  const cookiesToClear = new Set<string>([PREVIEW_COOKIE]);
   request.cookies
     .getAll()
-    .filter(({ name }) => name.startsWith('sb-'))
-    .forEach(({ name }) => changed.add(name));
-  changed.forEach((name) =>
+    .filter(({ name }) => name.startsWith('sb-') || name === PREVIEW_COOKIE)
+    .forEach(({ name }) => cookiesToClear.add(name));
+
+  cookiesToClear.forEach((name) =>
     response.cookies.set(name, '', {
       ...previewCookieOptions,
       maxAge: 0,
       expires: new Date(0),
     }),
   );
+
   audit({ type: 'preview_logout', ok: !failed });
   return response;
 }
 
 /**
  * Recusa GET com 405 e cabeçalho `Allow: POST`.
- *
- * Logout é mutação: atingir por link, `<img src>` ou prefetch não só faria nada
- * de útil, como deixaria a intenção do usuário fora do controle dele.
  *
  * @returns Resposta 405 em texto, sem cache.
  */

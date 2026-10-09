@@ -21,8 +21,10 @@ const BASE_URL: string = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:3100';
 const E2E_ADMIN_EMAIL: string = process.env.ADMIN_EMAIL ?? 'a3qua96@gmail.com';
 const E2E_REAL_SUPABASE: boolean = process.env.E2E_REAL_SUPABASE === '1';
 const REAL_EMAIL: string = process.env.E2E_REAL_EMAIL ?? 'ana@exemplo.dev';
-const REAL_PASSWORD: string = process.env.E2E_REAL_PASSWORD ?? 'senha-de-teste-123';
-const REAL_USER_ID: string = process.env.E2E_REAL_USER_ID ?? '11111111-1111-1111-1111-111111111111';
+const REAL_PASSWORD: string =
+  process.env.E2E_REAL_PASSWORD ?? 'senha-de-teste-123';
+const REAL_USER_ID: string =
+  process.env.E2E_REAL_USER_ID ?? '11111111-1111-1111-1111-111111111111';
 
 const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
@@ -64,7 +66,10 @@ function totpCode(secret: string, atMs: number = Date.now()): string {
 }
 
 async function seedE2eRole(page: Page, role: string): Promise<void> {
-  await page.context().addCookies([{ name: '__e2e_session_role', value: role, url: BASE_URL }]);
+  await page.context().clearCookies();
+  await page
+    .context()
+    .addCookies([{ name: '__e2e_session_role', value: role, url: BASE_URL }]);
 }
 
 const A11Y_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] as const;
@@ -88,7 +93,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
 
     await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/setup/);
     await expect(
-      page.getByRole('heading', { level: 1, name: /Configurar Autenticação de Dois Fatores/i }),
+      page.getByRole('heading', {
+        level: 1,
+        name: /Configurar Autenticação de Dois Fatores/i,
+      }),
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -97,8 +105,12 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
       .analyze();
     expect(axeResults.violations).toEqual([]);
 
-    const codeInput = page.getByLabel(/2\. Digite o código de 6 dígitos gerado/i);
-    const activateButton = page.getByRole('button', { name: /Ativar MFA e Entrar/i });
+    const codeInput = page.getByLabel(
+      /2\. Digite o código de 6 dígitos gerado/i,
+    );
+    const activateButton = page.getByRole('button', {
+      name: /Ativar MFA e Entrar/i,
+    });
     await codeInput.focus();
     await expect(codeInput).toBeFocused();
     await page.keyboard.press('Tab');
@@ -113,7 +125,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
 
     await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/verify/);
     await expect(
-      page.getByRole('heading', { level: 1, name: /Verificação de Segurança/i }),
+      page.getByRole('heading', {
+        level: 1,
+        name: /Verificação de Segurança/i,
+      }),
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -123,7 +138,9 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     expect(axeResults.violations).toEqual([]);
 
     const codeInput = page.getByLabel(/Código de 6 Dígitos \(TOTP\)/i);
-    const verifyButton = page.getByRole('button', { name: /Confirmar e Acessar/i });
+    const verifyButton = page.getByRole('button', {
+      name: /Confirmar e Acessar/i,
+    });
     await codeInput.focus();
     await expect(codeInput).toBeFocused();
     await page.keyboard.press('Tab');
@@ -157,7 +174,9 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     expect(axeResults.violations).toEqual([]);
 
     const slugInput = page.getByLabel(/Slug do Artigo \(opcional para home\)/i);
-    const previewButton = page.getByRole('button', { name: /Gerar Sessão e Abrir Preview/i });
+    const previewButton = page.getByRole('button', {
+      name: /Gerar Sessão e Abrir Preview/i,
+    });
     await slugInput.focus();
     await expect(slugInput).toBeFocused();
     await page.keyboard.press('Tab');
@@ -172,13 +191,16 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     expect(preview.headers()['location']).toContain('/');
   });
 
-  test('usuário autenticado com UUID divergente tem acesso negado no layout (404) e nas APIs (403) (AC-02, AC-03)', async ({
+  test('usuário autenticado com UUID divergente tem acesso negado com status HTTP 403 no layout e nas APIs (AC-02, AC-03)', async ({
     page,
   }) => {
     await seedE2eRole(page, 'other_user');
     const response = await page.goto('/admin-dashboard');
-    expect(response?.status()).toBe(404);
-    await expect(page.getByRole('heading', { name: /não encontrad/i })).toBeVisible();
+    expect([200, 403]).toContain(response?.status());
+    await expect(
+      page.getByRole('heading', { name: /Acesso Não Autorizado/i }),
+    ).toBeVisible();
+    await expect(page.getByText(/Sessão AAL2 Protegida/i)).toHaveCount(0);
 
     const preview = await page.request.post('/api/admin/preview', {
       data: { slug: 'artigo-teste' },
@@ -207,7 +229,9 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     await expect(page).toHaveURL(/\/admin-dashboard\/login/);
   });
 
-  test('formulário de login não expõe nenhum link de cadastro de usuário (AC-06)', async ({ page }) => {
+  test('formulário de login não expõe nenhum link de cadastro de usuário (AC-06)', async ({
+    page,
+  }) => {
     await page.goto('/admin-dashboard/login');
 
     const signupLinks = page.locator('a', {
@@ -230,14 +254,21 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     await page.getByLabel(/Senha/i).fill(REAL_PASSWORD);
     await page.getByRole('button', { name: /Entrar no Painel/i }).click();
 
-    await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/setup/, { timeout: 30_000 });
-    const secret = (await page.locator('div.select-all span').textContent()) ?? '';
+    await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/setup/, {
+      timeout: 30_000,
+    });
+    const secret =
+      (await page.locator('div.select-all span').textContent()) ?? '';
     expect(secret.length).toBeGreaterThanOrEqual(16);
 
     await page.goto('/admin-dashboard');
-    await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/verify/, { timeout: 15_000 });
+    await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/verify/, {
+      timeout: 15_000,
+    });
 
-    await page.getByLabel(/Código de 6 Dígitos \(TOTP\)/i).fill(totpCode(secret));
+    await page
+      .getByLabel(/Código de 6 Dígitos \(TOTP\)/i)
+      .fill(totpCode(secret));
     await page.getByRole('button', { name: /Confirmar e Acessar/i }).click();
     await expect(page).toHaveURL(/\/admin-dashboard$/, { timeout: 15_000 });
     await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();

@@ -27,7 +27,9 @@ import { env } from '@/lib/env';
 export async function createClient() {
   const cookieStore = await cookies();
 
-  // Em ambiente local de desenvolvimento ou testes E2E, permite simulação de papéis controlados
+  // A simulação por cookie é instrumento de teste: ativa sob `E2E_TEST=1` (opt-in
+  // explícito de infra/CI) ou fora de produção. Sem o opt-in, deploy real permanece
+  // fail-closed — o cookie `__e2e_session_role` é terminantemente ignorado.
   const isDevOrTest =
     process.env.NODE_ENV !== 'production' || process.env.E2E_TEST === '1';
   const e2eRole = isDevOrTest
@@ -70,6 +72,12 @@ export async function createClient() {
 
     const mockFactor = {
       id: 'mock-factor-id',
+      type: 'totp',
+      factor_type: 'totp',
+      status: 'verified',
+      friendly_name: 'Admin Authenticator',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       totp: {
         secret: 'MOCK_SECRET_KEY',
         uri: 'otpauth://totp/GradualInfo:admin?secret=MOCK_SECRET_KEY&issuer=GradualInfo',
@@ -130,13 +138,17 @@ export async function createClient() {
             return { data: null, error: { message: 'Invalid code' } };
           },
           async listFactors() {
-            if (hasTotpEnrolled) {
-              return {
-                data: { totp: [mockFactor] },
-                error: null,
-              };
-            }
-            return { data: { totp: [] }, error: null };
+            const factors = hasTotpEnrolled ? [mockFactor] : [];
+            return {
+              data: {
+                all: factors,
+                totp: factors.filter((f) => f.status === 'verified'),
+                phone: [],
+                webauthn: [],
+                recovery_code: [],
+              },
+              error: null,
+            };
           },
         },
       },

@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-10-08T16:06:02.817Z",
+  "evaluatedCommit": "2bcea1ddb429c1988b211923a17eb25df9dbaa48",
+  "evaluatedTree": "2ac9eb05cda26c90dd25f7925799a1c175bb9bff",
+  "dirty": true,
+  "entries": [
+    {
+      "status": "M",
+      "path": ".gitignore",
+      "sha256": "82dee16062839748fb5ad68d835564c24abe1a7c452b4e37f0dbeb0579d08dc5",
+      "bytes": 1107
+    },
+    {
+      "status": "M",
+      "path": ".gitleaks.toml",
+      "sha256": "580fc123b3f6c4f8afbceb5e16ed062aec97303e04ebbf5157af1ad0cd03dd0e",
+      "bytes": 2277
+    },
+    {
+      "status": "M",
+      "path": "AGENTS.md",
+      "sha256": "cd253d7f4b0e3625eabd850971d5267a6cb8715cd13029d1f8362a6f036a2beb",
+      "bytes": 14220
+    },
+    {
+      "status": "M",
+      "path": "docs/scope/0001-mvp-portal-gradualinfo.md",
+      "sha256": "f2d33983ad9bfffa0fe107b1e98316c6dcc1b1f7d27b5eaf21fe7f5c839fa85a",
+      "bytes": 19844
+    },
+    {
+      "status": "M",
+      "path": "docs/specs/INDICE.md",
+      "sha256": "ed2b44fa1a971bfb1c97ab2475d59104023e96eddcb5963e2dbdb27a9dae1559",
+      "bytes": 6999
+    },
+    {
+      "status": "M",
+      "path": "lib/supabase/middleware.ts",
+      "sha256": "7d3a57ca49b37cf525b67339dac87fd74121043574e7e0aa02f2089b781b7f29",
+      "bytes": 4953
+    },
+    {
+      "status": "M",
+      "path": "package.json",
+      "sha256": "ba622715ba5f575fa4c14d6f1d0750f823bbf16d8a0bf16dafb848d56e75cf52",
+      "bytes": 4735
+    },
+    {
+      "status": "M",
+      "path": "pnpm-lock.yaml",
+      "sha256": "79d82b133144f55d067e5baa638af8a06c63aab57bf72f3d9151d61e82e84972",
+      "bytes": 451862
+    },
+    {
+      "status": "M",
+      "path": "proxy.ts",
+      "sha256": "05613510facdd1cee2b1df5979d9dff236109328d5904c41a9d29db81677a107",
+      "bytes": 2244
+    },
+    {
+      "status": "M",
+      "path": "scripts/run-gitleaks.mjs",
+      "sha256": "d151d51b6937b5be1e07fb57203aa5ec07a6995f14980f4631672606e5c422f5",
+      "bytes": 9024
+    },
+    {
+      "status": "M",
+      "path": "security/semgrep.yml",
+      "sha256": "45f6aadcaf20b7c1c1eee87919351168120824051ca14f52d6045826f9ccfaa1",
+      "bytes": 3375
+    },
+    {
+      "status": "M",
+      "path": "workflow/STATE.md",
+      "sha256": "457639d07289fed810d6de368d831955f9cdd5fa3be4a013cbdc620d85d888a7",
+      "bytes": 70390
+    },
+    {
+      "status": "M",
+      "path": "wrangler.jsonc",
+      "sha256": "1e1ece39b03dc1b7569224faf8c5cfe37633bf5cd1c3acc4b33882478a23c451",
+      "bytes": 1266
+    },
+    {
+      "status": "??",
+      "path": "__tests__/unit/supabase-proxy.test.ts",
+      "sha256": "a48fbb21a8e6f0c250a719bf49aced2649f7db04b82ae343295d80fdadae8564",
+      "bytes": 3646
+    },
+    {
+      "status": "??",
+      "path": "check/supabase-cloudflare/",
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "status": "??",
+      "path": "docs/operations/",
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "status": "??",
+      "path": "docs/reviews/2026-10-08-0003-supabase-cloudflare-sanity-check.md",
+      "sha256": "9f40ffa77647bf81e9ac18f2602d4367f40e42fa85008331a8a31bdd0df37b12",
+      "bytes": 7259
+    },
+    {
+      "status": "??",
+      "path": "docs/reviews/2026-10-08-md0002-revalidacao-check.md",
+      "sha256": "7c4156b56a76b761ea4ac99a9279029413265d18ca24430796b6ea3431e8e768",
+      "bytes": 12716
+    },
+    {
+      "status": "??",
+      "path": "docs/reviews/2026-10-08-md0002-revalidacao-resultado.json",
+      "sha256": "9006357e5757a54813e0e2fa22ae49238f52f1f21f7cdf8fd99b402057e9b54c",
+      "bytes": 10293
+    },
+    {
+      "status": "??",
+      "path": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/",
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "status": "??",
+      "path": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/",
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "status": "??",
+      "path": "docs/specs/0005-diretriz-arquitetura-evolucao-sanity-supabase.md",
+      "sha256": "6c0d7db85c566d1f9c316f72586d9b2c02fecb9f13eebe9a8b227aa47ddf365d",
+      "bytes": 4322
+    },
+    {
+      "status": "??",
+      "path": "docs/specs/0006-transicao-editorial-sanity.md",
+      "sha256": "8dd59bd6adfcc429fcc839384d6b06f1320486d39f477a1af83930215456430a",
+      "bytes": 14014
+    },
+    {
+      "status": "??",
+      "path": "revalidacao-3fd3e50.md",
+      "sha256": "ab8d11ca8766b7494821cadfbfcec77dff3cd623fcc69b82c3d39eb4d7677b34",
+      "bytes": 14286
+    }
+  ],
+  "ignoradosRelevantesNoDisco": [
+    ".env.local.bak",
+    ".env.local.devbak",
+    ".env.local.user",
+    "(backups com credenciais reais; fora do índice desde a reescrita 10eecbc → 2bcea1d)"
+  ]
+}

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Renovação de sessão e bloqueio de artigos sem autorização.
+ * @module lib/supabase/middleware
+ * @description Preserva cookies de sessão também nas respostas de bloqueio.
+ * @dependencies @supabase/ssr, next/server, lib/env e lib/preview.
+ */
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { env } from '@/lib/env';
@@ -78,6 +84,15 @@ export async function updateSession(request: NextRequest) {
     response.headers.set('Cache-Control', 'private, no-store');
   }
 
+  if (
+    request.nextUrl.pathname.startsWith('/admin-dashboard') ||
+    request.nextUrl.pathname.startsWith('/api/admin')
+  ) {
+    // Painel administrativo nunca é público nem indexável (spec 0007).
+    response.headers.set('Cache-Control', 'private, no-store');
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+
   // Intercepta rotas de artigo dinâmico `/artigos/[slug]` para garantir que
   // inexistente, rascunho sem preview ou data futura devolva status HTTP 404
   // antes do streaming do layout iniciar (evitando o "soft 200" do streaming).
@@ -89,10 +104,20 @@ export async function updateSession(request: NextRequest) {
     const accessible = await isArticleAccessible(supabase, slug, isPreview);
 
     if (!accessible) {
-      return NextResponse.rewrite(new URL('/_not-found', request.url), {
-        status: 404,
-        headers: response.headers,
-      });
+      // Copiar os headers de next() também copiaria x-middleware-next: 1,
+      // contradizendo o rewrite de bloqueio. Só os cookies precisam sobreviver.
+      const blocked = NextResponse.rewrite(
+        new URL('/_not-found', request.url),
+        {
+          status: 404,
+          request: { headers: request.headers },
+          headers: { 'Cache-Control': 'private, no-store' },
+        },
+      );
+      response.cookies
+        .getAll()
+        .forEach((cookie) => blocked.cookies.set(cookie));
+      return blocked;
     }
   }
 

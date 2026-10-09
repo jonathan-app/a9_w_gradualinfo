@@ -1,0 +1,47 @@
+$ vitest run
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 21ms
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 23ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 85ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 72ms
+ ✓ __tests__/unit/lib/format.test.ts (12 tests) 71ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 273ms
+ ✓ __tests__/lib/format.test.ts (7 tests) 83ms
+stderr | __tests__/unit/components/google-analytics.test.tsx > GoogleAnalytics > renderiza os scripts quando measurementId estiver configurado
+Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 166ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 580ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 443ms
+ ✓ __tests__/components/button.test.tsx (5 tests) 597ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 468ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (11 tests) 25ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 19ms
+ ✓ __tests__/lib/cn.test.ts (6 tests) 14ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 8ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 6841ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 774ms
+     ✓ rejeita missing 787ms
+     ✓ rejeita duplicate 809ms
+     ✓ rejeita extra 511ms
+     ✓ rejeita fail 317ms
+     ✓ rejeita unverifiable 344ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 410ms
+
+ Test Files  15 passed (15)
+      Tests  104 passed (104)
+   Start at  10:10:45
+   Duration  7.82s (environment 49%, tests 26%, setup 14%, import 6%, transform 4%, worker 1%)
+
+Environment  jsdom was created 15 times · 16.84s total, 49% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

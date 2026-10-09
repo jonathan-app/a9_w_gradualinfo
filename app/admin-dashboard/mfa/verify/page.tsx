@@ -7,7 +7,7 @@
  * @dependencies react, next/link, next/navigation, @/lib/admin/auth, @/lib/env, @/lib/supabase/server
  */
 
-import { sanitizeAdminRedirect } from '@/lib/admin/auth';
+import { resolveAdminMfaLadder, sanitizeAdminRedirect } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
@@ -47,21 +47,20 @@ export default async function AdminMfaVerifyPage({
   }
 
   // Verifica status atual de MFA
-  const { data: aalData } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  const currentAal = aalData?.currentLevel || 'aal1';
-  const nextAal = aalData?.nextLevel || 'aal1';
+  const ladder = await resolveAdminMfaLadder(supabase);
 
-  // Se o usuário ainda não possui nenhum fator cadastrado, envia para setup
-  if (nextAal !== 'aal2') {
+  // Sessão já em AAL2: redireciona diretamente ao destino
+  if (ladder.action === 'ok') {
+    redirect(safeRedirect);
+  }
+
+  // Sem nenhum fator TOTP: o lugar é o setup, não o desafio. Fator pendente de
+  // verificação legítimo cai em `verify` (a escada não volta ao setup para não
+  // re-enrollar e travar com conflito no gotrue).
+  if (ladder.action === 'setup') {
     redirect(
       `/admin-dashboard/mfa/setup?redirectTo=${encodeURIComponent(safeRedirect)}`,
     );
-  }
-
-  // Se a sessão já estiver em AAL2, redireciona diretamente ao destino
-  if (currentAal === 'aal2') {
-    redirect(safeRedirect);
   }
 
   let errorMessage = '';

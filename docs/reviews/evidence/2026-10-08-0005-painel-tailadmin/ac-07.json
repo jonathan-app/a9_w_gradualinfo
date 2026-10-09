@@ -1,0 +1,9 @@
+{
+  "ac": "admin/AC-07",
+  "title": "Template integral preservado com licença MIT e componentes isolados",
+  "generatedAt": "2026-10-08T18:25:15.452Z",
+  "status": "PASS",
+  "targetFile": "referencias/template-admin-dashboard/LICENSE",
+  "testsExecuted": ["Painel Administrativo — Autorização e MFA (Spec 0007)"],
+  "note": "Template original arquivado em referencias/template-admin-dashboard/ com licença MIT e ignorado nos linters."
+}

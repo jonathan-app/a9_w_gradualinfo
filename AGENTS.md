@@ -9,6 +9,21 @@
 Boilerplate de aplicação Next.js hospedada na Cloudflare Workers, com Supabase
 como backend. É ponto de partida para produto novo, não um app com domínio.
 
+## Arquitetura editorial
+
+**Estado atual do MVP:**
+
+- Posts editoriais permanecem em Supabase/PostgreSQL.
+- Corpo editorial em Markdown.
+- Preview e publicação seguem os contratos atuais.
+
+**Arquitetura-alvo aprovada:**
+
+- Sanity será a fonte editorial única após migração autorizada (artigos, autores, editorias, fontes, mídia).
+- Supabase permanecerá responsável pela camada de aplicação/autenticação.
+- A migração exige spec própria, validação e rollback.
+- Não manter duas fontes editoriais ativas após a transição.
+
 ## Stack (versão real, não aproximada)
 
 | Peça         | Versão                    | Por quê importa                                                      |
@@ -25,6 +40,10 @@ como backend. É ponto de partida para produto novo, não um app com domínio.
 | Playwright   | 1.63                      | Ponta a ponta, em Chromium                                           |
 | Node         | 22 (`.nvmrc`)             | `engines.node >= 22`                                                 |
 | pnpm         | 12.5.1 (`packageManager`) | Lockfile e `overrides` dependem disso                                |
+
+## Build approach
+
+Tracer Bullet — vertical end to end slices, thin but complete through every layer
 
 ## Comandos que importam
 
@@ -220,7 +239,7 @@ estados; a presença de um arquivo não comprova aprovação ou execução.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

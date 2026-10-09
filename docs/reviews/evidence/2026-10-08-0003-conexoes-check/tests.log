@@ -1,0 +1,68 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ❯ __tests__/unit/gates.test.ts (18 tests | 18 failed) 526ms
+   ❯ gate completo por revisão (18)
+     × aprova revisão limpa com conjunto completo e decisão recalculada 66ms
+     × rejeita missing 34ms
+     × rejeita duplicate 48ms
+     × rejeita extra 22ms
+     × rejeita fail 10ms
+     × rejeita unverifiable 13ms
+     × rejeita missing-proof 21ms
+     × rejeita bad-hash 21ms
+     × rejeita blocker 22ms
+     × rejeita malformed 30ms
+     × rejeita adulteração de commit 36ms
+     × rejeita adulteração de tree 22ms
+     × rejeita adulteração de spec 21ms
+     × rejeita adulteração de counts 30ms
+     × rejeita aprovação antiga com --commit atual após commit real 28ms
+     × rejeita árvore suja mesmo sem alterar o SHA 21ms
+     × rejeita artefato ausente, JSON inválido e Markdown legado 46ms
+     × rejeita spec Proposed mesmo com hash correspondente 21ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > aprova revisão limpa com conjunto completo e decisão recalculada
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita missing
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita duplicate
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita extra
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita fail
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita unverifiable
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita missing-proof
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita bad-hash
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita blocker
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita malformed
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de commit
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de tree
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de spec
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita adulteração de counts
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita aprovação antiga com --commit atual após commit real
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita árvore suja mesmo sem alterar o SHA
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita artefato ausente, JSON inválido e Markdown legado
+ FAIL  __tests__/unit/gates.test.ts > gate completo por revisão > rejeita spec Proposed mesmo com hash correspondente
+Error: spawnSync git EPERM
+ ❯ __tests__/unit/gates.test.ts:62:3
+     60|   repo = join(root, 'repo');
+     61|   artifact = join(root, 'decision.json');
+     62|   execFileSync('git', ['init', '-q', repo]);
+       |   ^
+     63|   const spec =
+     64|     '# Fixture\n**Status**: Accepted\n## Requirements\n- **fixture/AC-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+
+ Test Files  1 failed | 14 passed (15)
+      Tests  18 failed | 86 passed (104)
+   Start at  10:06:51
+   Duration  4.51s (environment 60%, setup 17%, import 7%, tests 7%, transform 6%, worker 2%)
+
+Environment  jsdom was created 15 times · 18.57s total, 60% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

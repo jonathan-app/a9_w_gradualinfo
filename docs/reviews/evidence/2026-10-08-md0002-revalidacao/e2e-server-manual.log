@@ -1,0 +1,13 @@
+▲ Next.js 16.4.0
+- Local:         http://localhost:3101
+- Network:       http://192.168.7.9:3101
+✓ Ready in 163ms
+✓ Running next.config.ts took 34ms
+⨯ Error: {"message":""}
+    at ignore-listed frames {
+  digest: '2210165350'
+}
+⨯ Error: {"message":""}
+    at ignore-listed frames {
+  digest: '2210165350'
+}

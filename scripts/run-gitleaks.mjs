@@ -124,6 +124,45 @@ const OUTPUT_DIR = 'security-reports';
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'gitleaks.json');
 
 /**
+ * Lista os arquivos que o git aceitaria no próximo commit.
+ *
+ * Por que existe
+ * O `gitleaks dir` varre o diretório cru e não lê `.gitignore`: ele acendia
+ * para `.env.local` e afins — arquivos que o git descarta e que nunca vão
+ * para o repositório. A inversão aqui é proposital: quem decide o escopo do
+ * scan de árvore é o `.gitignore`, não uma allowlist no `.gitleaks.toml`,
+ * porque allowlistar `.env*` lá também silenciaria o scan de histórico — e o
+ * histórico é exatamente onde o vazamento já aconteceu.
+ *
+ * `ls-files -co --exclude-standard` cobre o par que importa: `-c` (rastreado
+ * ou staged — inclusive forçado com `add -f`, que continua no índice) e `-o`
+ * não-ignorado (candidato a próximo commit). O que está em ambos os lados
+ * some da conta; o que só existe ignorado no disco fica de fora.
+ *
+ * O delimitador é NUL (`-z`), não newline: com `core.quotepath` ligado, o
+ * git embrulha nomes não-ASCII entre aspas com escapes C (`"\303\251…"`) e
+ * um nome com newline literal partiria a linha no meio — nos dois casos o
+ * caminho resultante não existe no disco, o gitleaks ignora o arquivo em
+ * silêncio e um segredo vivo sairia do escopo do scan de árvore.
+ *
+ * @returns {Set<string>} Caminhos relativos (sem `./`) dos arquivos elegíveis.
+ * @throws {Error} Quando o git falha — escopo incerto não pode virar scan verde.
+ */
+function gitVisibleFiles() {
+  const result = spawnSync(
+    'git',
+    ['ls-files', '-z', '-co', '--exclude-standard'],
+    {
+      encoding: 'utf8',
+    },
+  );
+  if (result.error) throw result.error;
+  if (result.status !== 0)
+    throw new Error('git ls-files falhou; escopo do scan indeterminado.');
+  return new Set(result.stdout.split('\0').filter(Boolean));
+}
+
+/**
  * Executa os dois scans do gitleaks e devolve os findings consolidados.
  *
  * @returns {Promise<Array>} Lista de findings (pode estar vazia). Lança em qualquer anomalia
@@ -149,6 +188,9 @@ export async function runGitleaksScan() {
     },
     {
       label: 'arquivos atuais',
+      // Só este scan recebe o filtro de escopo: o de histórico precisa ver
+      // tudo que já entrou no git, inclusive o que foi apagado depois.
+      scopeToGit: true,
       args: [
         'dir',
         '.',
@@ -179,7 +221,12 @@ export async function runGitleaksScan() {
       throw new Error('Relatório gitleaks inválido.');
     if (result.status === 1 && current.length === 0)
       throw new Error('Gitleaks retornou falha sem findings.');
-    findings.push(...current);
+    if (run.scopeToGit) {
+      const visible = gitVisibleFiles();
+      findings.push(...current.filter((finding) => visible.has(finding.File)));
+    } else {
+      findings.push(...current);
+    }
   }
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(findings, null, 2));

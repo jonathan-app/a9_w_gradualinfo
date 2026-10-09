@@ -1,0 +1,63 @@
+{
+  "ac": "md-0002/AC-12",
+  "generatedAt": "2026-10-08T16:06:02.809Z",
+  "source": {
+    "run": "E2E produção local (playwright, E2E_PRODUCTION=1, jwt_expiry=60, fault proxy)",
+    "stats": {
+      "startTime": "2026-10-08T13:28:18.843Z",
+      "duration": 114925.231,
+      "expected": 34,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "resultsFile": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/e2e-results.json",
+    "log": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/e2e.log"
+  },
+  "tests": [
+    {
+      "file": "verify-md0002-tarefa4.spec.ts",
+      "describe": "home editorial",
+      "title": "md-0002/AC-12: teclado chega ao conteúdo com foco visível",
+      "status": "passed",
+      "duration": 327
+    },
+    {
+      "file": "verify-md0002-acessibilidade.spec.ts",
+      "describe": "md-0002 Tarefa 8 - Acessibilidade (axe)",
+      "title": "AC-12: Página de rascunho com sessão de preview não tem violations",
+      "status": "passed",
+      "duration": 2038
+    },
+    {
+      "file": "verify-md0002-acessibilidade.spec.ts",
+      "describe": "md-0002 Tarefa 8 - Acessibilidade (axe)",
+      "title": "AC-12: Página de artigo publicado não tem violations",
+      "status": "passed",
+      "duration": 679
+    },
+    {
+      "file": "verify-md0002-acessibilidade.spec.ts",
+      "describe": "md-0002 Tarefa 8 - Acessibilidade (axe)",
+      "title": "AC-12: Página inicial não tem violations",
+      "status": "passed",
+      "duration": 875
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "describe": "Acessibilidade",
+      "title": "página inicial",
+      "status": "passed",
+      "duration": 1528
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "describe": "Acessibilidade",
+      "title": "artigo publicado",
+      "status": "passed",
+      "duration": 1286
+    }
+  ],
+  "supplementary": null,
+  "note": "axe 0 violações (home, artigo publicado, rascunho com sessão) + navegação por teclado com foco visível — 6/6 PASS."
+}

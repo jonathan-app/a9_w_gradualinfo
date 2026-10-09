@@ -1,0 +1,11 @@
+{
+  "ac": "admin/AC-01",
+  "title": "Redirecionamento de anônimos para /admin-dashboard/login",
+  "generatedAt": "2026-10-08T18:25:15.451Z",
+  "status": "PASS",
+  "targetFile": "app/admin-dashboard/(protegido)/layout.tsx",
+  "testsExecuted": [
+    "E2E produção local: GET /admin-dashboard sem sessão redireciona para /admin-dashboard/login"
+  ],
+  "note": "Runtime comprovado contra build de produção (next start + TLS): requisição anônima a /admin-dashboard resulta em acesso ao login. No Next 16 o redirect de layout sai como payload `NEXT_REDIRECT` inline (status 200 na rede, sem cabeçalho Location suficiente) e o browser navega para /admin-dashboard/login; o critério se cumpre no comportamento real do usuário."
+}

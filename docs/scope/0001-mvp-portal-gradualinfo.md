@@ -33,11 +33,26 @@
 4. **Primeira jornada:** o guia "manter, melhorar ou comprar um notebook para
    estudar programação" — uma decisão prática, com critério explícito, que leva o
    leitor a um próximo passo fundamentado.
-5. **Sem painel editorial no MVP.** A publicação acontece por migration
-   versionada no repositório. Painel é spec própria, depois.
+5. **Painel administrativo adaptado do TailAdmin sob `/admin-dashboard` (spec 0007).**
+   Adotado exclusivamente para o administrador único (`a3qua96@gmail.com`), sem cadastro
+   público de leitores, para navegação operacional, atalhos do Sanity Studio e disparo de
+   preview seguro. A edição de artigos permanece no Sanity Studio (spec 0006), sem criar
+   segundo editor na aplicação.
 6. **Fora deste scope, por decisão explícita:** histórico de preços, Selo
-   "Oferta Verificada", painel editorial, RAG/busca semântica e comunidade.
+   "Oferta Verificada", segundo editor de conteúdo, RAG/busca semântica e comunidade.
    Cada um em spec própria, não em fatia.
+
+## Evolução arquitetural
+
+O MVP permanece baseado em posts no Supabase com corpo em Markdown.
+
+A arquitetura futura aprovada prevê a adoção do Sanity como fonte editorial
+única para artigos, autores, editorias, fontes e mídia.
+
+Essa evolução não faz parte da implementação corrente do MVP e somente será
+iniciada mediante uma spec de migração aprovada, contemplando leitura,
+publicação, Markdown, preview, imagens, cache, transferência de conteúdo,
+preservação de slugs/SEO, validação e rollback.
 
 **O que já existe e é reaproveitado.**
 

@@ -20,12 +20,22 @@
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
+/**
+ * Renova a sessão e aplica a visibilidade antes do streaming da rota.
+ * @param request - Requisição recebida pelo Next.
+ * @returns Resposta de continuidade ou bloqueio com os cookies atualizados.
+ */
 export async function proxy(request: NextRequest) {
   return await updateSession(request);
 }
 
+/** Seleciona caminhos que exigem sessão, incluindo os protegidos com extensão. */
 export const config = {
   matcher: [
+    // Caminhos protegidos não podem escapar da verificação por parecerem assets.
+    '/artigos/:path*',
+    '/preview/:path*',
+    '/api/preview/:path*',
     /*
      * Tudo, exceto:
      *   _next/static   → build do Next

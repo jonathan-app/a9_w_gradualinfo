@@ -7,7 +7,7 @@
  * @dependencies react, next/link, next/navigation, @/lib/admin/auth, @/lib/env, @/lib/supabase/server
  */
 
-import { sanitizeAdminRedirect } from '@/lib/admin/auth';
+import { resolveAdminMfaLadder, sanitizeAdminRedirect } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
@@ -47,13 +47,18 @@ export default async function AdminMfaSetupPage({
   }
 
   // Verifica status atual de MFA
-  const { data: aalData } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  const currentAal = aalData?.currentLevel || 'aal1';
-  const nextAal = aalData?.nextLevel || 'aal1';
+  const ladder = await resolveAdminMfaLadder(supabase);
 
-  // Se já possui fator cadastrado e já está em AAL2, não precisa forçar setup
-  const alreadyConfigured = nextAal === 'aal2' && currentAal === 'aal2';
+  // Já em AAL2 comprovado: não forçar setup
+  const alreadyConfigured = ladder.action === 'ok';
+
+  if (ladder.action === 'verify') {
+    // Existe fator TOTP (verificado ou pendente) — matricular de novo geraria
+    // conflito no gotrue e travaria o fluxo; o caminho correto é completar o desafio.
+    redirect(
+      `/admin-dashboard/mfa/verify?redirectTo=${encodeURIComponent(safeRedirect)}`,
+    );
+  }
 
   let factorId = '';
   let secret = '';
