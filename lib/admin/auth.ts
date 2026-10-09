@@ -169,35 +169,39 @@ export function validateAdminRequestOrigin(request: Request): boolean {
  * Resolve a URL base segura para redirecionamentos no painel administrativo,
  * mitigando vulnerabilidades de Host Header Injection e Open Redirect.
  *
- * Valida o host recebido contra SITE_ORIGIN ou origens locais autorizadas (localhost, 127.0.0.1).
- * O host recebido na requisição NUNCA define livremente o destino do redirecionamento.
- * Se o cabeçalho Host for desconhecido, malicioso ou ausente, recorre estritamente a SITE_ORIGIN.
+ * Em produção (env.isProduction), os redirecionamentos utilizam exclusivamente
+ * a origem canônica configurada e validada (SITE_ORIGIN).
+ * Apenas em desenvolvimento e testes locais (!env.isProduction) é permitida
+ * a exceção para hosts locais controlados (localhost e 127.0.0.1).
  *
  * @param request - Requisição HTTP recebida.
  * @returns Origem base segura validada para construção de URLs de redirecionamento.
  */
 export function resolveSafeRedirectBase(request: Request): string {
+  const allowedSiteUrl = new URL(SITE_ORIGIN);
   const host = request.headers.get('host')?.trim();
   const proto = request.headers.get('x-forwarded-proto')?.trim() || 'http';
 
   // Se não houver cabeçalho Host explícito, usa a origem da própria requisição se válida, ou SITE_ORIGIN
   if (!host) {
-    try {
-      const reqUrl = new URL(request.url);
-      if (reqUrl.origin && reqUrl.origin !== 'null') {
-        const isLocal = ['localhost', '127.0.0.1'].includes(
-          reqUrl.hostname.toLowerCase(),
-        );
-        const allowedSite = new URL(SITE_ORIGIN);
-        if (
-          isLocal ||
-          reqUrl.hostname.toLowerCase() === allowedSite.hostname.toLowerCase()
-        ) {
-          return reqUrl.origin;
+    if (!env.isProduction) {
+      try {
+        const reqUrl = new URL(request.url);
+        if (reqUrl.origin && reqUrl.origin !== 'null') {
+          const isLocal = ['localhost', '127.0.0.1'].includes(
+            reqUrl.hostname.toLowerCase(),
+          );
+          if (
+            isLocal ||
+            reqUrl.hostname.toLowerCase() ===
+              allowedSiteUrl.hostname.toLowerCase()
+          ) {
+            return reqUrl.origin;
+          }
         }
+      } catch {
+        // Ignora erro de parsing
       }
-    } catch {
-      // Ignora erro de parsing
     }
     return SITE_ORIGIN;
   }
@@ -205,7 +209,6 @@ export function resolveSafeRedirectBase(request: Request): string {
   try {
     const candidateUrl = new URL(`${proto}://${host}`);
     const candidateHostname = candidateUrl.hostname.toLowerCase();
-    const allowedSiteUrl = new URL(SITE_ORIGIN);
 
     // 1. Host corresponde ao domínio oficial do portal (SITE_ORIGIN)
     if (
@@ -216,8 +219,11 @@ export function resolveSafeRedirectBase(request: Request): string {
       return candidateUrl.origin;
     }
 
-    // 2. Host corresponde a ambiente local de desenvolvimento/teste E a requisição também é local
-    if (['localhost', '127.0.0.1'].includes(candidateHostname)) {
+    // 2. Exceção de localhost e 127.0.0.1 estritamente restrita a desenvolvimento e teste
+    if (
+      !env.isProduction &&
+      ['localhost', '127.0.0.1'].includes(candidateHostname)
+    ) {
       try {
         const reqUrl = new URL(request.url);
         if (
@@ -234,7 +240,7 @@ export function resolveSafeRedirectBase(request: Request): string {
     // Falha ao parsear host recebido
   }
 
-  // Fallback seguro incondicional: impede que host arbitrário manipule a base
+  // Em produção, ou quando o host não for validado: fallback estrito para SITE_ORIGIN
   return SITE_ORIGIN;
 }
 

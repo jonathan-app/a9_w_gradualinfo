@@ -80,6 +80,7 @@ vi.mock('@/lib/preview/durable-object', () => ({
   }),
 }));
 
+import { env } from '@/lib/env';
 import {
   checkAdminUser,
   resolveSafeRedirectBase,
@@ -184,6 +185,28 @@ describe('Painel Administrativo — Autorização e MFA (Spec 0007)', () => {
       expect(resolveSafeRedirectBase(evilReq)).toBe(
         'https://gradualinfo.com.br',
       );
+    });
+
+    it('bloqueia localhost em ambiente de produção e recorre exclusivamente a SITE_ORIGIN', () => {
+      // Simula ambiente de produção temporariamente
+      const prevIsProd = (env as unknown as { isProduction: boolean })
+        .isProduction;
+      try {
+        (env as unknown as { isProduction: boolean }).isProduction = true;
+
+        const prodLocalReq = new Request(
+          'https://gradualinfo.com.br/api/admin/auth/login',
+          {
+            headers: { host: 'localhost:3000' },
+          },
+        );
+        // Em produção, localhost NÃO é aceito e cai estritamente no SITE_ORIGIN
+        expect(resolveSafeRedirectBase(prodLocalReq)).toBe(
+          'https://gradualinfo.com.br',
+        );
+      } finally {
+        (env as unknown as { isProduction: boolean }).isProduction = prevIsProd;
+      }
     });
 
     it('retorna fallback seguro quando o cabeçalho host está ausente', () => {
