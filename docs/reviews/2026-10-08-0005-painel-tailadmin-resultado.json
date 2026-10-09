@@ -114,7 +114,7 @@
     },
     {
       "severity": "BLOCKER",
-      "description": "11 achados históricos de segredos (gitleaks) exigem rotação imediata de credenciais expostas antes de limpeza de histórico. Force-push não revoga credenciais."
+      "description": "11 achados históricos no commit 10eecbc (gitleaks) auditados como credenciais locais de demo/template (sem chaves de produção); mantidos como bloqueador no gate da CI até saneamento do histórico e confirmação de não reutilização de credenciais."
     },
     {
       "severity": "INFO",

@@ -140,8 +140,14 @@ export async function executeSanityQuery<T = unknown>(
  * @returns Lista de posts publicados ordenados por data decrescente.
  */
 export async function getSanityPublishedPosts(limit = 10): Promise<Post[]> {
-  const query = `*[_type in ["post", "artigo"] && !(_id in path("drafts.**")) && defined(slug.current)] | order(publishedAt desc, _createdAt desc)[0...${limit}]`;
-  const docs = await executeSanityQuery<SanityPostDocument>(query, {}, false);
+  const now = new Date().toISOString();
+  // Exclui rascunhos, posts agendados no futuro e posts com status diferente de publicado
+  const query = `*[_type in ["post", "artigo"] && !(_id in path("drafts.**")) && (!defined(status) || status == "publicado") && (!defined(publishedAt) || publishedAt <= $now) && defined(slug.current)] | order(publishedAt desc, _createdAt desc)[0...${limit}]`;
+  const docs = await executeSanityQuery<SanityPostDocument>(
+    query,
+    { now },
+    false,
+  );
   return docs.map(mapSanityDocumentToPost);
 }
 
@@ -149,7 +155,7 @@ export async function getSanityPublishedPosts(limit = 10): Promise<Post[]> {
  * Busca um artigo pelo slug no Sanity.
  *
  * @param slug - Slug do artigo desejado.
- * @param options - Se `isPreview: true`, busca também rascunhos correspondentes.
+ * @param options - Se `isPreview: true`, busca também rascunhos correspondentes e publicações futuras.
  * @returns O post encontrado ou `null`.
  */
 export async function getSanityPostBySlug(
@@ -157,15 +163,17 @@ export async function getSanityPostBySlug(
   options: { isPreview?: boolean } = {},
 ): Promise<Post | null> {
   const isPreview = Boolean(options.isPreview);
+  const now = new Date().toISOString();
 
-  // Se em preview, permite buscar drafts (preferindo draft se existir sobre o publicado)
+  // Em preview: permite drafts e posts agendados, priorizando versão rascunho se existir
+  // Em público: restrito a posts não-draft, com status publicado e data passada
   const query = isPreview
     ? `*[_type in ["post", "artigo"] && slug.current == $slug] | order(_id match "drafts.*" desc)[0]`
-    : `*[_type in ["post", "artigo"] && slug.current == $slug && !(_id in path("drafts.**"))][0]`;
+    : `*[_type in ["post", "artigo"] && slug.current == $slug && !(_id in path("drafts.**")) && (!defined(status) || status == "publicado") && (!defined(publishedAt) || publishedAt <= $now)][0]`;
 
   const docs = await executeSanityQuery<SanityPostDocument>(
     query,
-    { slug },
+    isPreview ? { slug } : { slug, now },
     isPreview,
   );
 

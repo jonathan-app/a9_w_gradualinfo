@@ -3,8 +3,9 @@
  * @fileoverview Testes unitários do cliente Sanity Content Lake (spec 0006).
  * @module __tests__/unit/sanity-client.test
  * @description Comprova o mapeamento seguro de documentos do Sanity para a interface Post,
- *   a filtragem estrita de rascunhos para leitores públicos e a autorização de rascunhos
- *   apenas sob flag de preview no servidor, garantindo isolamento total de tokens.
+ *   a filtragem estrita de rascunhos e posts agendados para leitores públicos,
+ *   a liberação autorizada de rascunhos e agendados sob flag de preview no servidor,
+ *   o isolamento total de tokens e a distinção estrita entre 404 e erros de infraestrutura.
  * @dependencies vitest, lib/sanity/client, lib/sanity/types.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -27,7 +28,7 @@ vi.mock('@/lib/env', () => ({
   isSanityConfigured: true,
 }));
 
-describe('Cliente Sanity Server-Side (spec 0006)', () => {
+describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -89,8 +90,8 @@ describe('Cliente Sanity Server-Side (spec 0006)', () => {
     });
   });
 
-  describe('2. Consultas HTTP e Isolamento de Tokens', () => {
-    it('executa consulta pública sem enviar token de autorização', async () => {
+  describe('2. Listagem Pública e Corte Temporal', () => {
+    it('executa consulta pública sem enviar token de autorização e aplica filtro temporal', async () => {
       const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(
           JSON.stringify({
@@ -120,15 +121,68 @@ describe('Cliente Sanity Server-Side (spec 0006)', () => {
       const calledUrl = new URL(callArgs[0] as string);
       const callOptions = callArgs[1] as RequestInit;
 
-      // Confirma que a URL busca apenas publicados (excluindo drafts)
-      expect(calledUrl.searchParams.get('query')).toContain(
-        '!(_id in path("drafts.**"))',
-      );
+      // Confirma exclusão de drafts e corte por status/data
+      const query = calledUrl.searchParams.get('query') ?? '';
+      expect(query).toContain('!(_id in path("drafts.**"))');
+      expect(query).toContain('publishedAt <= $now');
+      expect(query).toContain('status == "publicado"');
+
       // Confirma que NÃO enviou cabeçalho Authorization em consulta pública
       expect(callOptions.headers).not.toHaveProperty('Authorization');
     });
+  });
 
-    it('inclui token de autorização apenas quando isPreview for verdadeiro', async () => {
+  describe('3. Artigos por Slug: Rascunhos, Agendados e Preview', () => {
+    it('consulta pública por slug inclui filtros de publicação e data passada', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            result: [
+              {
+                _id: 'pub-slug-1',
+                _type: 'post',
+                title: 'Post Público',
+                slug: { current: 'post-publico' },
+                status: 'publicado',
+                publishedAt: '2026-10-01T00:00:00Z',
+              },
+            ],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+
+      const post = await getSanityPostBySlug('post-publico', {
+        isPreview: false,
+      });
+
+      expect(post).not.toBeNull();
+      expect(post?.slug).toBe('post-publico');
+
+      const calledUrl = new URL(fetchSpy.mock.calls[0]![0] as string);
+      const query = calledUrl.searchParams.get('query') ?? '';
+      expect(query).toContain('!(_id in path("drafts.**"))');
+      expect(query).toContain('publishedAt <= $now');
+
+      const headers = fetchSpy.mock.calls[0]![1]?.headers;
+      expect(headers).not.toHaveProperty('Authorization');
+    });
+
+    it('retorna null quando artigo não é encontrado na consulta pública', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ result: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+
+      const post = await getSanityPostBySlug('slug-inexistente', {
+        isPreview: false,
+      });
+      expect(post).toBeNull();
+    });
+
+    it('em preview inclui token de autorização e permite acesso a rascunho', async () => {
       const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(
           JSON.stringify({
@@ -160,6 +214,64 @@ describe('Cliente Sanity Server-Side (spec 0006)', () => {
       expect(callOptions.headers).toHaveProperty(
         'Authorization',
         'Bearer token-privado-leitura-sanity',
+      );
+
+      // Confirma ordenação priorizando versão rascunho
+      const calledUrl = new URL(callArgs[0] as string);
+      const query = calledUrl.searchParams.get('query') ?? '';
+      expect(query).toContain('order(_id match "drafts.*" desc)[0]');
+    });
+
+    it('em preview permite visualizar artigo agendado com data futura', async () => {
+      const futureDate = new Date(Date.now() + 86400000).toISOString();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            result: [
+              {
+                _id: 'artigo-agendado-1',
+                _type: 'post',
+                title: 'Artigo do Futuro',
+                slug: { current: 'artigo-futuro' },
+                status: 'publicado',
+                publishedAt: futureDate,
+              },
+            ],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+
+      const post = await getSanityPostBySlug('artigo-futuro', {
+        isPreview: true,
+      });
+
+      expect(post).not.toBeNull();
+      expect(post?.published_at).toBe(futureDate);
+    });
+  });
+
+  describe('4. Distinção de Erros de Infraestrutura vs 404', () => {
+    it('propaga exceção com status HTTP quando o Sanity responde erro 500/503 (não mascara como 404)', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('Service Unavailable', {
+          status: 503,
+          statusText: 'Service Unavailable',
+        }),
+      );
+
+      await expect(
+        getSanityPostBySlug('qualquer-slug', { isPreview: false }),
+      ).rejects.toThrow('Falha na consulta ao Sanity (HTTP 503)');
+    });
+
+    it('propaga erro de rede ou DNS quando o fetch falha', async () => {
+      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(
+        new Error('Network error / connection refused'),
+      );
+
+      await expect(getSanityPublishedPosts(10)).rejects.toThrow(
+        'Network error / connection refused',
       );
     });
   });
