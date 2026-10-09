@@ -1,0 +1,18 @@
+{
+  "ac": "admin/AC-13",
+  "title": "Acessibilidade WCAG AA e navegação por teclado",
+  "generatedAt": "2026-10-08T23:45:00.000Z",
+  "status": "PASS",
+  "targetFile": "app/admin-dashboard/login/page.tsx",
+  "testsExecuted": [
+    "E2E axe-core: 0 violações WCAG 2.1 AA em /admin-dashboard/login",
+    "E2E navegação por teclado: foco sequencial email → senha → botão Entrar no Painel",
+    "E2E axe-core: 0 violações WCAG 2.1 AA em /admin-dashboard/mfa/setup",
+    "E2E navegação por teclado: foco sequencial código → botão Ativar MFA",
+    "E2E axe-core: 0 violações WCAG 2.1 AA em /admin-dashboard/mfa/verify",
+    "E2E navegação por teclado: foco sequencial código → botão Confirmar",
+    "E2E axe-core: 0 violações WCAG 2.1 AA em /admin-dashboard (dashboard operacional)",
+    "E2E navegação por teclado: foco sequencial slug → botão Gerar Preview"
+  ],
+  "note": "E2E empírico comprova login page, telas MFA (setup e verify) e dashboard operacional: Axe 0 violações + navegação por teclado em todas as telas do painel administrativo."
+}

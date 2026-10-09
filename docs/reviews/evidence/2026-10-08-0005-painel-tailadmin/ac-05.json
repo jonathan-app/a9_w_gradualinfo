@@ -1,0 +1,17 @@
+{
+  "ac": "admin/AC-05",
+  "title": "Login/logout POST com validação de origem, rate limit e redirect estrito",
+  "generatedAt": "2026-10-08T23:45:00.000Z",
+  "status": "PASS",
+  "targetFile": "app/api/admin/auth/login/route.ts",
+  "testsExecuted": [
+    "sanitização de redirect: destino interno legítimo preservado",
+    "sanitização de redirect: prefixo colidente /admin-dashboard-falso neutralizado",
+    "sanitização de redirect: open redirect absoluto externo neutralizado",
+    "validação de origem: Origin malicioso bloqueado com HTTP 403 (login e logout)",
+    "rate limiting: 6ª tentativa com mesmo IP bloqueada com HTTP 429 e error=rate_limited",
+    "logout via POST: redireciona 303 para login e limpa sessão",
+    "acesso pós-logout: tentativas subsequentes a /admin-dashboard redirecionam para login"
+  ],
+  "note": "E2E empírico em build de produção (Playwright/Chromium) comprova sanitização estrita, CSRF (403), rate limiting (429), logout seguro (303) e bloqueio de acesso pós-logout."
+}

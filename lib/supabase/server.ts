@@ -27,6 +27,122 @@ import { env } from '@/lib/env';
 export async function createClient() {
   const cookieStore = await cookies();
 
+  // Em ambiente local de desenvolvimento ou testes E2E, permite simulação de papéis controlados
+  const isDevOrTest =
+    process.env.NODE_ENV !== 'production' || process.env.E2E_TEST === '1';
+  const e2eRole = isDevOrTest
+    ? cookieStore.get('__e2e_session_role')?.value
+    : undefined;
+
+  if (e2eRole) {
+    const isOtherUser = e2eRole === 'other_user';
+    const userId = isOtherUser
+      ? '00000000-0000-0000-0000-999999999999'
+      : env.adminUserId || '00000000-0000-0000-0000-000000000001';
+    const userEmail = isOtherUser ? 'invasor@externo.com' : env.adminEmail;
+
+    let currentLevel = 'aal1';
+    let nextLevel = 'aal1';
+    let hasTotpEnrolled = false;
+
+    if (e2eRole === 'admin_no_mfa') {
+      currentLevel = 'aal1';
+      nextLevel = 'aal1';
+      hasTotpEnrolled = false;
+    } else if (e2eRole === 'admin_aal1') {
+      currentLevel = 'aal1';
+      nextLevel = 'aal2';
+      hasTotpEnrolled = true;
+    } else if (e2eRole === 'admin_aal2') {
+      currentLevel = 'aal2';
+      nextLevel = 'aal2';
+      hasTotpEnrolled = true;
+    }
+
+    const mockUser = {
+      id: userId,
+      email: userEmail,
+      app_metadata: {},
+      user_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+    };
+
+    const mockFactor = {
+      id: 'mock-factor-id',
+      totp: {
+        secret: 'MOCK_SECRET_KEY',
+        uri: 'otpauth://totp/GradualInfo:admin?secret=MOCK_SECRET_KEY&issuer=GradualInfo',
+      },
+    };
+
+    const baseClient = createServerClient(
+      env.supabase.url,
+      env.supabase.anonKey,
+      {
+        cookies: {
+          getAll: () => cookieStore.getAll(),
+          setAll: () => {},
+        },
+      },
+    );
+
+    return {
+      ...baseClient,
+      auth: {
+        ...baseClient.auth,
+        async getUser() {
+          return { data: { user: mockUser }, error: null };
+        },
+        async signOut() {
+          try {
+            cookieStore.delete('__e2e_session_role');
+          } catch {
+            // Server Component ignore
+          }
+          return { error: null };
+        },
+        mfa: {
+          ...baseClient.auth.mfa,
+          async getAuthenticatorAssuranceLevel() {
+            return {
+              data: {
+                currentLevel,
+                nextLevel,
+                currentAuthenticationMethods: hasTotpEnrolled ? ['totp'] : [],
+              },
+              error: null,
+            };
+          },
+          async enroll() {
+            if (!hasTotpEnrolled) {
+              return {
+                data: { id: mockFactor.id, totp: mockFactor.totp },
+                error: null,
+              };
+            }
+            return { data: null, error: { message: 'Already enrolled' } };
+          },
+          async challengeAndVerify({ code }: { code: string }) {
+            if (e2eRole === 'admin_aal1' && code === '123456') {
+              return { data: null, error: null };
+            }
+            return { data: null, error: { message: 'Invalid code' } };
+          },
+          async listFactors() {
+            if (hasTotpEnrolled) {
+              return {
+                data: { totp: [mockFactor] },
+                error: null,
+              };
+            }
+            return { data: { totp: [] }, error: null };
+          },
+        },
+      },
+    } as unknown as ReturnType<typeof createServerClient>;
+  }
+
   return createServerClient(env.supabase.url, env.supabase.anonKey, {
     cookies: {
       getAll() {
