@@ -77,7 +77,7 @@ describe('Blindagem de Segurança: Mock __e2e_session_role', () => {
     expect(userRes.data.user).toBeNull();
   });
 
-  it('permite a simulação em produção somente sob opt-in explícito E2E_TEST=1', async () => {
+  it('ignora categoricamente o cookie __e2e_session_role em produção MESMO com E2E_TEST=1', async () => {
     process.env.NODE_ENV = 'production';
     process.env.E2E_TEST = '1';
     mockCookiesStore.get.mockReturnValue({ value: 'admin_aal2' });
@@ -85,9 +85,9 @@ describe('Blindagem de Segurança: Mock __e2e_session_role', () => {
     const { createClient } = await import('@/lib/supabase/server');
     const client = await createClient();
 
+    // Em produção, o mock NUNCA é ativado — fail-closed total.
     const userRes = await client.auth.getUser();
-    expect(userRes.data.user?.id).toBe('11111111-1111-4111-8111-111111111111');
-    expect(userRes.data.user?.email).toBe('admin@gradualinfo.dev');
+    expect(userRes.data.user).toBeNull();
   });
 
   it('permite a simulação em ambiente não-produtivo quando o cookie está presente', async () => {
