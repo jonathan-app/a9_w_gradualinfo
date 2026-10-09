@@ -166,6 +166,79 @@ export function validateAdminRequestOrigin(request: Request): boolean {
 }
 
 /**
+ * Resolve a URL base segura para redirecionamentos no painel administrativo,
+ * mitigando vulnerabilidades de Host Header Injection e Open Redirect.
+ *
+ * Valida o host recebido contra SITE_ORIGIN ou origens locais autorizadas (localhost, 127.0.0.1).
+ * O host recebido na requisição NUNCA define livremente o destino do redirecionamento.
+ * Se o cabeçalho Host for desconhecido, malicioso ou ausente, recorre estritamente a SITE_ORIGIN.
+ *
+ * @param request - Requisição HTTP recebida.
+ * @returns Origem base segura validada para construção de URLs de redirecionamento.
+ */
+export function resolveSafeRedirectBase(request: Request): string {
+  const host = request.headers.get('host')?.trim();
+  const proto = request.headers.get('x-forwarded-proto')?.trim() || 'http';
+
+  // Se não houver cabeçalho Host explícito, usa a origem da própria requisição se válida, ou SITE_ORIGIN
+  if (!host) {
+    try {
+      const reqUrl = new URL(request.url);
+      if (reqUrl.origin && reqUrl.origin !== 'null') {
+        const isLocal = ['localhost', '127.0.0.1'].includes(
+          reqUrl.hostname.toLowerCase(),
+        );
+        const allowedSite = new URL(SITE_ORIGIN);
+        if (
+          isLocal ||
+          reqUrl.hostname.toLowerCase() === allowedSite.hostname.toLowerCase()
+        ) {
+          return reqUrl.origin;
+        }
+      }
+    } catch {
+      // Ignora erro de parsing
+    }
+    return SITE_ORIGIN;
+  }
+
+  try {
+    const candidateUrl = new URL(`${proto}://${host}`);
+    const candidateHostname = candidateUrl.hostname.toLowerCase();
+    const allowedSiteUrl = new URL(SITE_ORIGIN);
+
+    // 1. Host corresponde ao domínio oficial do portal (SITE_ORIGIN)
+    if (
+      candidateHostname === allowedSiteUrl.hostname.toLowerCase() &&
+      (candidateUrl.port === allowedSiteUrl.port ||
+        (!candidateUrl.port && !allowedSiteUrl.port))
+    ) {
+      return candidateUrl.origin;
+    }
+
+    // 2. Host corresponde a ambiente local de desenvolvimento/teste E a requisição também é local
+    if (['localhost', '127.0.0.1'].includes(candidateHostname)) {
+      try {
+        const reqUrl = new URL(request.url);
+        if (
+          ['localhost', '127.0.0.1'].includes(reqUrl.hostname.toLowerCase())
+        ) {
+          return candidateUrl.origin;
+        }
+      } catch {
+        // Fallback local se a requisição não puder ser parseada
+        return candidateUrl.origin;
+      }
+    }
+  } catch {
+    // Falha ao parsear host recebido
+  }
+
+  // Fallback seguro incondicional: impede que host arbitrário manipule a base
+  return SITE_ORIGIN;
+}
+
+/**
  * Verifica no servidor o usuário autenticado e a exigência de MFA para o painel.
  *
  * Regras estritas (spec 0007):

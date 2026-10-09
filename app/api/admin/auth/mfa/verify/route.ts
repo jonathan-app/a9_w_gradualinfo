@@ -8,6 +8,7 @@
  */
 
 import {
+  resolveSafeRedirectBase,
   sanitizeAdminRedirect,
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
@@ -95,9 +96,7 @@ export async function POST(request: Request) {
     return new NextResponse('Formato não suportado.', { status: 415 });
   }
 
-  const host = request.headers.get('host');
-  const proto = request.headers.get('x-forwarded-proto') || 'http';
-  const baseUrl = host ? `${proto}://${host}` : request.url;
+  const baseUrl = resolveSafeRedirectBase(request);
 
   const safeRedirect = sanitizeAdminRedirect(redirectToRaw);
 

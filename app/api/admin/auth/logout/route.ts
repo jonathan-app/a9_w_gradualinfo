@@ -6,7 +6,10 @@
  * @dependencies next/server, @/lib/admin/auth, @/lib/supabase/server
  */
 
-import { validateAdminRequestOrigin } from '@/lib/admin/auth';
+import {
+  resolveSafeRedirectBase,
+  validateAdminRequestOrigin,
+} from '@/lib/admin/auth';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -24,9 +27,7 @@ export async function POST(request: Request) {
     request.headers.get('accept')?.includes('application/json') ||
     request.headers.get('sec-fetch-mode') === 'cors';
 
-  const host = request.headers.get('host');
-  const proto = request.headers.get('x-forwarded-proto') || 'http';
-  const baseUrl = host ? `${proto}://${host}` : request.url;
+  const baseUrl = resolveSafeRedirectBase(request);
 
   let response: NextResponse;
   if (isApiRequest) {

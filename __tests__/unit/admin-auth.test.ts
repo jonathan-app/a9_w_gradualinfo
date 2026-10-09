@@ -82,6 +82,7 @@ vi.mock('@/lib/preview/durable-object', () => ({
 
 import {
   checkAdminUser,
+  resolveSafeRedirectBase,
   sanitizeAdminRedirect,
   validateAdminRequestOrigin,
   assertAdminApiAuth,
@@ -135,6 +136,63 @@ describe('Painel Administrativo — Autorização e MFA (Spec 0007)', () => {
       expect(sanitizeAdminRedirect(undefined)).toBe('/admin-dashboard');
       expect(sanitizeAdminRedirect('')).toBe('/admin-dashboard');
       expect(sanitizeAdminRedirect('   ')).toBe('/admin-dashboard');
+    });
+  });
+
+  describe('1.1 Resolução segura de URL base (mitigação de Host Header Injection)', () => {
+    it('mantém o host do portal quando coincide com SITE_ORIGIN', () => {
+      const req = new Request(
+        'https://gradualinfo.com.br/api/admin/auth/login',
+        {
+          headers: {
+            host: 'gradualinfo.com.br',
+            'x-forwarded-proto': 'https',
+          },
+        },
+      );
+      expect(resolveSafeRedirectBase(req)).toBe('https://gradualinfo.com.br');
+    });
+
+    it('permite origens locais legítimas (localhost e 127.0.0.1) em ambiente de teste', () => {
+      const localReq1 = new Request(
+        'http://localhost:3000/api/admin/auth/login',
+        {
+          headers: { host: 'localhost:3000' },
+        },
+      );
+      expect(resolveSafeRedirectBase(localReq1)).toBe('http://localhost:3000');
+
+      const localReq2 = new Request(
+        'http://127.0.0.1:3000/api/admin/auth/login',
+        {
+          headers: { host: '127.0.0.1:3000' },
+        },
+      );
+      expect(resolveSafeRedirectBase(localReq2)).toBe('http://127.0.0.1:3000');
+    });
+
+    it('bloqueia host arbitrário forjado (Host Header Injection) e faz fallback para SITE_ORIGIN', () => {
+      const evilReq = new Request(
+        'https://gradualinfo.com.br/api/admin/auth/login',
+        {
+          headers: {
+            host: 'evil-attacker.com',
+            'x-forwarded-proto': 'https',
+          },
+        },
+      );
+      expect(resolveSafeRedirectBase(evilReq)).toBe(
+        'https://gradualinfo.com.br',
+      );
+    });
+
+    it('retorna fallback seguro quando o cabeçalho host está ausente', () => {
+      const noHostReq = new Request(
+        'https://gradualinfo.com.br/api/admin/auth/login',
+      );
+      expect(resolveSafeRedirectBase(noHostReq)).toBe(
+        'https://gradualinfo.com.br',
+      );
     });
   });
 
