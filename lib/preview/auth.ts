@@ -13,6 +13,7 @@ import { env } from '@/lib/env';
 import { isPreviewConfigured } from '@/lib/preview/config';
 import { readPreviewGrant } from '@/lib/preview/session';
 import { getPreviewSessionStore } from '@/lib/preview/durable-object';
+import { getSanityPostBySlug } from '@/lib/sanity/client';
 
 /**
  * Resultado da avaliação de autorização de preview.
@@ -158,6 +159,17 @@ export async function isArticleAccessible(
   slug: string,
   isPreview: boolean,
 ): Promise<boolean> {
+  // Transição editorial da spec 0006: Sanity como fonte primária única
+  if (env.sanity?.projectId && env.sanity?.dataset) {
+    try {
+      const post = await getSanityPostBySlug(slug, { isPreview });
+      return Boolean(post);
+    } catch {
+      // Erros de infraestrutura transitória não devem gerar falso 404; deixa fluir para a página
+      return true;
+    }
+  }
+
   const reader = isPreview
     ? supabase
     : createClient(env.supabase.url, env.supabase.anonKey, {
