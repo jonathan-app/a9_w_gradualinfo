@@ -13,6 +13,7 @@ import {
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Memória simples de rate limiting por IP/origem para mitigar brute force local
@@ -79,8 +80,12 @@ export async function POST(request: Request) {
     return new NextResponse('Formato não suportado.', { status: 415 });
   }
 
+  const host = request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') || 'http';
+  const baseUrl = host ? `${proto}://${host}` : request.url;
+
   const safeRedirect = sanitizeAdminRedirect(redirectToRaw);
-  const loginUrl = new URL('/admin-dashboard/login', request.url);
+  const loginUrl = new URL('/admin-dashboard/login', baseUrl);
   loginUrl.searchParams.set('redirectTo', safeRedirect);
 
   if (!email || !password) {
@@ -100,6 +105,16 @@ export async function POST(request: Request) {
     return NextResponse.redirect(loginUrl, 303);
   }
 
+  // Helper para propagar cookies de sessão do Supabase no redirecionamento
+  const createRedirectWithCookies = async (target: URL) => {
+    const res = NextResponse.redirect(target, 303);
+    const cookieStore = await cookies();
+    cookieStore.getAll().forEach((c) => {
+      res.cookies.set(c.name, c.value);
+    });
+    return res;
+  };
+
   // 4. Verificação estrita da escada de MFA
   try {
     const ladder = await resolveAdminMfaLadder(supabase);
@@ -108,7 +123,7 @@ export async function POST(request: Request) {
 
     if (ladder.action === 'ok') {
       // c) AAL2 completo: redireciona para destino sanitizado
-      destinationUrl = new URL(safeRedirect, request.url);
+      destinationUrl = new URL(safeRedirect, baseUrl);
     } else {
       // a) Sem TOTP cadastrado: setup obrigatório.
       // b) TOTP presente (inclusive pendente de verificação) mas sessão AAL1: desafio.
@@ -116,16 +131,16 @@ export async function POST(request: Request) {
         ladder.action === 'setup'
           ? '/admin-dashboard/mfa/setup'
           : '/admin-dashboard/mfa/verify',
-        request.url,
+        baseUrl,
       );
       destinationUrl.searchParams.set('redirectTo', safeRedirect);
     }
 
-    return NextResponse.redirect(destinationUrl, 303);
+    return await createRedirectWithCookies(destinationUrl);
   } catch {
     // Falha fechada: exige desafio
-    const verifyUrl = new URL('/admin-dashboard/mfa/verify', request.url);
+    const verifyUrl = new URL('/admin-dashboard/mfa/verify', baseUrl);
     verifyUrl.searchParams.set('redirectTo', safeRedirect);
-    return NextResponse.redirect(verifyUrl, 303);
+    return await createRedirectWithCookies(verifyUrl);
   }
 }

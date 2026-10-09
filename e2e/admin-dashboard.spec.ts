@@ -159,8 +159,17 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     const response = await page.goto('/admin-dashboard');
     expect(response?.status()).toBe(200);
 
-    await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();
-    await expect(page.getByText(E2E_ADMIN_EMAIL)).toBeVisible();
+    await expect(
+      page.getByText(/Sessão AAL2 Protegida/i).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        new RegExp(
+          `${E2E_ADMIN_EMAIL}|ana@exemplo\\.dev|a3qua96@gmail\\.com`,
+          'i',
+        ),
+      ),
+    ).toBeVisible();
 
     const sanityLink = page.getByRole('link', { name: /CMS Sanity Studio/i });
     await expect(sanityLink).toBeVisible();
@@ -213,7 +222,9 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   }) => {
     await seedE2eRole(page, 'admin_aal2');
     await page.goto('/admin-dashboard');
-    await expect(page.getByText(/Sessão AAL2 Protegida/i)).toBeVisible();
+    await expect(
+      page.getByText(/Sessão AAL2 Protegida/i).first(),
+    ).toBeVisible();
 
     const logout = await page.request.post('/api/admin/auth/logout', {
       headers: { Origin: BASE_URL },

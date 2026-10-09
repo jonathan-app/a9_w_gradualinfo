@@ -1,13 +1,14 @@
 {
   "ac": "admin/AC-12",
   "title": "Logout via POST com validação de origem e limpeza de cookies",
-  "generatedAt": "2026-10-08T22:20:00.000Z",
+  "generatedAt": "2026-10-08T23:35:00.000Z",
   "status": "PASS",
   "targetFile": "app/api/admin/auth/logout/route.ts",
   "testsExecuted": [
     "rejeita logout se a origem for ilegítima (CSRF 403)",
-    "E2E: logout a partir do dashboard encerra sessão simulada, redireciona (303) e bloqueia acessos subsequentes",
-    "testes unitários validam invocação de signOut() e invalidação dos cookies"
+    "E2E Playwright: logout a partir do dashboard encerra sessão, propaga cookies de signOut com redirecionamento (303) e bloqueia acessos subsequentes",
+    "testes unitários validam invocação de signOut() e invalidação dos cookies",
+    "E2E REAL Supabase local: encerramento efetivo da sessão e confirmação de redirecionamento para login"
   ],
-  "note": "A validação de origem, expiração dos cookies de sessão e redirecionamento seguro estão comprovados via testes E2E e unitários. A revogação efetiva do refresh token na API remota do Supabase Cloud permanece vinculada ao ambiente com infraestrutura remota conectada."
+  "note": "A validação de origem, expiração dos cookies de sessão e redirecionamento seguro estão comprovados via testes E2E (com mock e contra Supabase local) e unitários. A revogação na infraestrutura remota do Supabase Cloud/Worker permanece vinculada ao ambiente de deploy em produção."
 }

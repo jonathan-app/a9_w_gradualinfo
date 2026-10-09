@@ -8,6 +8,7 @@
 
 import { validateAdminRequestOrigin } from '@/lib/admin/auth';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -23,13 +24,22 @@ export async function POST(request: Request) {
     request.headers.get('accept')?.includes('application/json') ||
     request.headers.get('sec-fetch-mode') === 'cors';
 
+  const host = request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') || 'http';
+  const baseUrl = host ? `${proto}://${host}` : request.url;
+
   let response: NextResponse;
   if (isApiRequest) {
     response = NextResponse.json({ ok: true });
   } else {
-    const loginUrl = new URL('/admin-dashboard/login', request.url);
+    const loginUrl = new URL('/admin-dashboard/login', baseUrl);
     response = NextResponse.redirect(loginUrl, 303);
   }
+
+  const cookieStore = await cookies();
+  cookieStore.getAll().forEach((c) => {
+    response.cookies.set(c.name, c.value);
+  });
 
   response.cookies.delete('__e2e_session_role');
   return response;

@@ -13,6 +13,7 @@ import {
 } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Rate limiting em memória para proteger contra força bruta em códigos TOTP de 6 dígitos
@@ -94,20 +95,33 @@ export async function POST(request: Request) {
     return new NextResponse('Formato não suportado.', { status: 415 });
   }
 
+  const host = request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') || 'http';
+  const baseUrl = host ? `${proto}://${host}` : request.url;
+
   const safeRedirect = sanitizeAdminRedirect(redirectToRaw);
 
   const fallbackUrl = new URL(
     source === 'setup'
       ? '/admin-dashboard/mfa/setup'
       : '/admin-dashboard/mfa/verify',
-    request.url,
+    baseUrl,
   );
   fallbackUrl.searchParams.set('redirectTo', safeRedirect);
+
+  const createRedirectWithCookies = async (target: URL) => {
+    const res = NextResponse.redirect(target, 303);
+    const cookieStore = await cookies();
+    cookieStore.getAll().forEach((c) => {
+      res.cookies.set(c.name, c.value);
+    });
+    return res;
+  };
 
   if (!code || !/^\d{6}$/.test(code)) {
     if (isForm) {
       fallbackUrl.searchParams.set('error', 'invalid_code_format');
-      return NextResponse.redirect(fallbackUrl, 303);
+      return await createRedirectWithCookies(fallbackUrl);
     }
     return NextResponse.json(
       { ok: false, error: 'invalid_code_format' },
@@ -123,7 +137,7 @@ export async function POST(request: Request) {
     if (factorsError || !factors) {
       if (isForm) {
         fallbackUrl.searchParams.set('error', 'no_factors');
-        return NextResponse.redirect(fallbackUrl, 303);
+        return await createRedirectWithCookies(fallbackUrl);
       }
       return NextResponse.json(
         { ok: false, error: 'no_factors' },
@@ -144,7 +158,7 @@ export async function POST(request: Request) {
     if (!matchedFactor) {
       if (isForm) {
         fallbackUrl.searchParams.set('error', 'no_factors');
-        return NextResponse.redirect(fallbackUrl, 303);
+        return await createRedirectWithCookies(fallbackUrl);
       }
       return NextResponse.json(
         { ok: false, error: 'no_factors' },
@@ -164,7 +178,7 @@ export async function POST(request: Request) {
   if (verifyError) {
     if (isForm) {
       fallbackUrl.searchParams.set('error', 'invalid_code');
-      return NextResponse.redirect(fallbackUrl, 303);
+      return await createRedirectWithCookies(fallbackUrl);
     }
     return NextResponse.json(
       { ok: false, error: 'invalid_code' },
@@ -174,8 +188,8 @@ export async function POST(request: Request) {
 
   // 6. Sucesso: redireciona para destino sanitizado
   if (isForm) {
-    const targetUrl = new URL(safeRedirect, request.url);
-    return NextResponse.redirect(targetUrl, 303);
+    const targetUrl = new URL(safeRedirect, baseUrl);
+    return await createRedirectWithCookies(targetUrl);
   }
 
   return NextResponse.json(
