@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "evaluatedCommit": "2bcea1ddb429c1988b211923a17eb25df9dbaa48",
-  "evaluatedTree": "2ac9eb05cda26c90dd25f7925799a1c175bb9bff",
-  "dirty": true,
+  "evaluatedCommit": "74def8999625e6e80d95fd51e08e74c822a52ba7",
+  "evaluatedTree": "9c743e8209745fac003d7cd0f20ae96696b76763",
+  "dirty": false,
   "spec": {
     "path": "docs/specs/0007-painel-administrativo-tailadmin.md",
     "sha256": "0f0714e462dfb8866d5dec4d9084a45d74f22e1cc431de5ff8d44a028fe8b9f6"
