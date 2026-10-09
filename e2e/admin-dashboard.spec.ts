@@ -238,7 +238,9 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     });
     await expect(signupLinks).toHaveCount(0);
   });
+});
 
+test.describe('Painel Administrativo — Fluxo REAL no Supabase local (opcional, requer E2E_REAL_SUPABASE=1)', () => {
   test('fluxo real no Supabase local: login → matrícula TOTP → desafio AAL1 → dashboard AAL2 → preview → logout (AC-04, AC-10, AC-12)', async ({
     page,
   }) => {
