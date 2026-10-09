@@ -62,3 +62,15 @@ Tentativa de verificação externa das rotas do Worker em produção (`https://g
 - **Análise técnica**: Bloqueios de borda (WAF/WAF 1010/timeout) ocorrem antes de a requisição atingir o runtime do Next.js/OpenNext no Worker. Portanto, as respostas **não comprovam o comportamento real das rotas da aplicação nem o status da conectividade com o Supabase de produção**.
 - **Veredito formal desta rodada**: **UNVERIFIABLE**.
 - **Direcionamento**: A validação das rotas e do runtime precisará ser realizada através de um cliente/ambiente autorizado a transpor a borda de segurança da Cloudflare (preservando todas as proteções perimetrais), sem mascarar bloqueios de rede como testes bem-sucedidos. Arquivos, configurações e deploy permanecem inalterados. Implementação do Sanity e novo preview (spec 0006) permanecem pendentes.
+
+## Validação Conectada (2026-10-09, spec 0006 — após revogação confirmada)
+
+Seguindo a confirmação do dono de que o token anterior foi revogado e o novo foi configurado, a verificação conectada foi executada com as credenciais reais lidas por NOME de variável (nenhum valor em chat/comando/relatório):
+
+- **Autenticação Cloudflare/Wrangler**: `wrangler whoami` exit 0 com OAuth válido — capacidade técnica de deploy preservada; nenhum novo deploy executado.
+- **Sanity Content Lake (leitura editorial real)**: consulta GROQ autenticada (`SANITY_API_READ_TOKEN` + projeto/dataset de `.env.local`) → **HTTP 200 PASS**, `countPosts=0` (projeto provisionado, sem conteúdo de post ainda).
+- **Supabase remoto (`sjngngsjvotagwctzpde`)**: REST autenticado respondeu PGRST205 (`Could not find the table 'public.posts'`) — conectividade e anon key válidas; tabela `posts` ausente no remoto (coerente com a desoneração editorial prevista na spec 0006).
+- **`e2e/editorial-sanity.spec.ts` CONECTADO** (build de produção `next start` local na 3100 + terminação TLS, com as vars Sanity reais no runtime): **4/4 PASS** (`/tmp/opencode/e2e-sanity-connected.json`, run 2026-10-09T04:18:43Z) — 404 real na rede para slug inexistente, 404 real para rascunho sem preview, `Cache-Control` no-store nos erros e home 200 com headers; o caminho de leitura realmente executa GROQ contra o Content Lake (token inválido geraria 500 e falharia a suíte).
+- **Worker publicado (baseline, sem redeploy)**: `/` → 200; `/artigos/artigo-inexistente` → 200 (soft-200 de build antigo); `/sitemap.xml` → 500 — build publicado não reflete a spec 0006; permanece **UNVERIFIABLE** contra o código atual sem autorização de deploy.
+
+Veredito registrado: Sanity-Worker conectado → **leituras editoriais reais PASS**; publicação de código novo no Worker segue pendente de autorização de deploy.
