@@ -1,0 +1,33 @@
+=== 2026-10-10-0646 — AC-01 fonte exclusiva Sanity ===
+--- lib/services/posts.ts: gate isSanityActive ---
+20:  getSanityPublishedPosts,
+27:function isSanityActive(): boolean {
+80:  if (isSanityActive()) {
+81:    return getSanityPublishedPosts(limit);
+85:    .from('posts')
+112:  if (isSanityActive()) {
+133:  let query = reader.from('posts').select('*').eq('slug', slug);
+--- probe no middleware (lib/supabase/middleware.ts:131-144) ---
+  // Sonda de disponibilidade editorial da Home (`/`) antes do streaming iniciar (Spec 0006, 3.C).
+  // Só executa quando o Sanity está configurado/ativo; com rollback para Supabase, a sonda é pulada.
+  if (request.nextUrl.pathname === '/') {
+    if (isSanityConfigured) {
+      try {
+        await probeSanityAvailability();
+      } catch (error) {
+        if (error instanceof ContentUnavailableError) {
+          return unavailableResponse(response);
+        }
+        throw error;
+      }
+    }
+  }
+--- indução de falha mostra 503 na home (sem cair para Supabase) ---
+=== 2026-10-10-0646 — falha induzida (SANITY_DATASET inexistente no next start) ===
+--- GET / (probe) ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+--- corpo home (traços de indisponibilidade vs 404) ---
+      1 indisponível
+      1 Serviço temporariamente indisponível

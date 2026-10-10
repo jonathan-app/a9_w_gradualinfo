@@ -1,0 +1,47 @@
+{
+  "sourceArchive": "20261010-07:16 - a9_w_gradualinfo.zip",
+  "archiveSHA256": "b23acf79710ca6f667b25458b6e3adc7415b6982fc8c715d461cf925283520a0",
+  "provenance": "Extração sem .git; ZIP e manifestos identificam a revisão, não um commit inferido.",
+  "sourceFiles": 212,
+  "sourceChangesFromArchive": 0,
+  "versions": {
+    "node": "24.19.0",
+    "pnpm": "12.5.1",
+    "next": "16.4.0",
+    "opennextCloudflare": "1.20.9",
+    "wrangler": "4.148.0"
+  },
+  "commands": [
+    {
+      "command": "pnpm install --frozen-lockfile --ignore-scripts",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm build",
+      "exitCode": 0,
+      "result": "Next compilado e OpenNext build complete"
+    },
+    {
+      "command": "pnpm exec wrangler deploy --dry-run",
+      "exitCode": 0,
+      "result": "dry-run: exiting now, sem publicação"
+    },
+    {
+      "command": "pnpm check:all",
+      "exitCode": 0,
+      "testsPassed": 339,
+      "testFilesPassed": 35
+    }
+  ],
+  "packaging": {
+    "assets": 24,
+    "uploadKiB": 18864.77,
+    "gzipKiB": 4250.93,
+    "bindings": ["PREVIEW_SESSION_DO", "ADMIN_RATE_LIMIT_DO", "ASSETS"],
+    "opennextFiles": 1666
+  },
+  "accessCriteria": "13 UNVERIFIABLE, sem provas remotas nesta rodada",
+  "remoteChanges": false,
+  "merge": false,
+  "deploy": false
+}

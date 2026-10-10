@@ -1,0 +1,21 @@
+=== 2026-10-10-0646 — AC-07 domínio oficial e resíduos ===
+--- wrangler.jsonc NEXT_PUBLIC_SITE_URL e rotas ---
+13:  "name": "gradualinfo",
+31:    "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.com.br",
+57:    { "pattern": "gradualinfo.com.br/*", "zone_name": "gradualinfo.com.br" },
+59:      "pattern": "www.gradualinfo.com.br/*",
+60:      "zone_name": "gradualinfo.com.br",
+--- resíduo pages.dev em .next/static e .open-next ---
+.next/static: 0 arquivos
+.open-next: 0 arquivos
+--- canonical/OG no código (artigo usa SITE_ORIGIN) ---
+app/layout.tsx:33: * `metadataBase` resolve os URLs relativos (canonical e OG) contra o domínio de
+app/layout.tsx:39:  metadataBase: new URL(env.siteUrl),
+app/artigos/[slug]/page.tsx:7: *   o que mostrar. Entrega SEO de artigo completo: metadata com canonical
+app/artigos/[slug]/page.tsx:25:import { SITE_ORIGIN } from '@/lib/site-config';
+app/artigos/[slug]/page.tsx:44: * @returns Title/description do post, canonical único e Open Graph de artigo;
+app/artigos/[slug]/page.tsx:64:      alternates: { canonical: `${SITE_ORIGIN}/artigos/${params.slug}` },
+app/artigos/[slug]/page.tsx:68:  const url = `${SITE_ORIGIN}/artigos/${post.slug}`;
+app/artigos/[slug]/page.tsx:79:      canonical: url,
+--- WARNING mantido: home não emite link rel=canonical (débito de SEO, não bloqueia AC) ---
+ocorrências de rel="canonical" no HTML da home: 0

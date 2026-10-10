@@ -1,0 +1,3 @@
+=== 2026-10-10-0646 — AC-02 sem artigo publicado ===
+dataset remoto vazio para anon; home responde 'Nenhum artigo publicado'; /artigos/<slug> 404.
+Sem página de artigo renderizada não há canonical nem og:url na rede para comparar.

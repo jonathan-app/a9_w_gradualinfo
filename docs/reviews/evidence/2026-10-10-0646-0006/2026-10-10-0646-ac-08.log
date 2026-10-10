@@ -1,0 +1,3 @@
+=== 2026-10-10-0646 — AC-08 condicionada a gate 100% PASS ===
+Spec seção 4: retirada do Supabase só após validação 100% PASS do Sanity.
+Gate atual ainda reprovado por AC-02/05/08 sem PASS; ramo de rollback permanece por decisão da spec (seção 6).

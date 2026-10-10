@@ -3,11 +3,12 @@
  * @module cloudflare-worker
  * @description Exporta o handler principal gerado pelo OpenNext para o Next.js e expõe
  *   a classe PreviewSessionDO para atendimento aos bindings de Durable Object da Cloudflare.
- * @dependencies .open-next/worker.js, lib/preview/durable-object.
+ * @dependencies ../.open-next/worker.js, ../lib/admin/access-worker,
+ *   ../lib/preview/durable-object, ../lib/admin/rate-limit-do.
  */
-export * from './.open-next/worker.js';
-import openNextWorker from './.open-next/worker.js';
-import { dispatchWithAdminAccess } from './lib/admin/access-worker';
+export * from '../.open-next/worker.js';
+import openNextWorker from '../.open-next/worker.js';
+import { dispatchWithAdminAccess } from '../lib/admin/access-worker';
 
 /** Primeira barreira, anterior ao adaptador e suas respostas automáticas. */
 export default {
@@ -27,5 +28,5 @@ export default {
     );
   },
 };
-export { PreviewSessionDO } from './lib/preview/durable-object';
-export { AdminRateLimitDO } from './lib/admin/rate-limit-do';
+export { PreviewSessionDO } from '../lib/preview/durable-object';
+export { AdminRateLimitDO } from '../lib/admin/rate-limit-do';

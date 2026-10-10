@@ -97,6 +97,42 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
 
       expect(onToggle).toHaveBeenCalledTimes(1);
     });
+
+    it('não renderiza botão de toggle sem onToggleSidebar', () => {
+      render(<AdminHeader userEmail="a3qua96@gmail.com" />);
+      expect(
+        screen.queryByRole('button', { name: 'Alternar menu lateral' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('faz fetch POST no logout ao enviar o formulário', async () => {
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(new Response(null, { status: 200 }));
+
+      render(<AdminHeader userEmail="a3qua96@gmail.com" />);
+      await userEvent.click(screen.getByRole('button', { name: 'Sair' }));
+
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/admin/auth/logout',
+        expect.objectContaining({ method: 'POST' }),
+      );
+
+      fetchSpy.mockRestore();
+    });
+
+    it('ignora erro de rede no logout', async () => {
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockRejectedValue(new Error('rede'));
+
+      render(<AdminHeader userEmail="a3qua96@gmail.com" />);
+      // Não deve lançar: o catch engole o erro de rede
+      await userEvent.click(screen.getByRole('button', { name: 'Sair' }));
+
+      expect(fetchSpy).toHaveBeenCalled();
+      fetchSpy.mockRestore();
+    });
   });
 
   describe('2. AdminSidebar', () => {
@@ -150,6 +186,29 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
       expect(screen.getByTestId('conteudo-operacional')).toBeInTheDocument();
       expect(screen.getByText('Painel Editorial')).toBeInTheDocument();
       expect(screen.getByText('Sessão AAL2 Protegida')).toBeInTheDocument();
+    });
+
+    it('alterna o estado do sidebar ao clicar no botão mobile', async () => {
+      render(
+        <AdminShell userEmail="a3qua96@gmail.com">
+          <div>conteúdo</div>
+        </AdminShell>,
+      );
+
+      const toggle = screen.getByRole('button', {
+        name: 'Alternar menu lateral',
+      });
+
+      // Inicialmente fechado: sem backdrop
+      expect(document.querySelector('.bg-black\\/50')).not.toBeInTheDocument();
+
+      await userEvent.click(toggle);
+      // Aberto: backdrop visível
+      expect(document.querySelector('.bg-black\\/50')).toBeInTheDocument();
+
+      await userEvent.click(toggle);
+      // Fechado de novo: backdrop some
+      expect(document.querySelector('.bg-black\\/50')).not.toBeInTheDocument();
     });
   });
 

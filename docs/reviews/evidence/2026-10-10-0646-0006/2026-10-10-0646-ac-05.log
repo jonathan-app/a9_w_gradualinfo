@@ -1,0 +1,3 @@
+=== 2026-10-10-0646 — AC-05 sem binding do Durable Object ===
+next start local não tem binding PreviewSessionDO; DO em memória não simula indisponibilidade real.
+Unidade cobre createSession/revoke/verify; rede exige DO publicado.

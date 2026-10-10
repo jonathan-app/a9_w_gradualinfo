@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { createPublicClient } from '@/lib/supabase/server';
 import { getPublishedPosts } from '@/lib/services/posts';
+import { ContentUnavailableError } from '@/lib/errors/content';
 
 /**
  * app/sitemap.ts
@@ -12,9 +13,11 @@ import { getPublishedPosts } from '@/lib/services/posts';
  * @fileoverview Conteúdo de `/sitemap.xml`.
  * @module app/sitemap
  * @description `force-dynamic` porque a lista vem do banco: artigo publicado
- *   hoje precisa aparecer no sitemap sem um novo deploy.
+ *   hoje precisa aparecer no sitemap sem um novo deploy. Sob falha da fonte
+ *   editorial, degrada para só a home em vez de devolver 500.
  * @dependencies lib/supabase/server (cliente público), lib/services/posts
- *   (consulta dos publicados), lib/site-config (SITE_ORIGIN).
+ *   (consulta dos publicados), lib/site-config (SITE_ORIGIN), lib/errors/content
+ *   (ContentUnavailableError).
  */
 export const dynamic = 'force-dynamic';
 
@@ -29,9 +32,18 @@ export const dynamic = 'force-dynamic';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createPublicClient();
 
-  // Busca os artigos publicados (limite de 1000 para um sitemap razoável)
-  // No futuro, se houver muitos artigos, a paginação do sitemap pode ser necessária.
-  const posts = await getPublishedPosts(supabase, 1000);
+  let posts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+  try {
+    // Busca os artigos publicados (limite de 1000 para um sitemap razoável)
+    posts = await getPublishedPosts(supabase, 1000);
+  } catch (error) {
+    // Fonte indisponível: o sitemap degrada para só a home em vez de
+    // devolver 500. O buscador re-entra mais tarde; um 500 permanente
+    // faria o Google retirar o sitemap do índice.
+    if (!(error instanceof ContentUnavailableError)) {
+      throw error;
+    }
+  }
 
   const postsSitemap: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${SITE_ORIGIN}/artigos/${post.slug}`,

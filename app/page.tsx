@@ -9,8 +9,10 @@
  * @dependencies lib/services/posts (consulta), lib/supabase/server (cliente
  *   público), components/shared/editorial-story, app/artigos-vazios.
  */
+import type { Metadata } from 'next';
 import { getPublishedPosts, type Post } from '@/lib/services/posts';
 import { createPublicClient } from '@/lib/supabase/server';
+import { SITE_ORIGIN } from '@/lib/site-config';
 import { EditorialStory } from '@/components/shared/editorial-story';
 import { ArtigosVazios } from './artigos-vazios';
 import { EditorialIndisponivel } from './editorial-indisponivel';
@@ -20,6 +22,16 @@ import * as Sentry from '@sentry/nextjs';
 // No ar a cada requisição: a home não pode congelar no build com a lista da
 // hora do deploy — publicado um artigo, ele tem que aparecer sem novo build.
 export const dynamic = 'force-dynamic';
+
+/**
+ * Metadados da home: canonical aponta para o apex do site.
+ *
+ * Sem canonical, o buscador pode indexar a home por qualquer variação de URL
+ * (com ou sem www, com query string), dividindo a autoridade da página.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_ORIGIN },
+};
 
 /**
  * Página inicial.

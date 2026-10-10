@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "307141daa8ab8bc059cf3e6fa9893949bf0f541f",
+  "evaluatedTree": "52ded399cd2a63a648c83d3ace2a81a0f6c35af7",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-01.log",
+      "evidenceSha256": "3618b60ef1c7dd25d795720d01dec3089806805df74bc3a75d1c61f84e53a6b2"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-02.log",
+      "evidenceSha256": "19416ac99fc42582d9f8909c3c2b9f0103d2cdad4bc46d4af62965e0289ff2df"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-03.log",
+      "evidenceSha256": "8978dc0ceead13a8a106d82e872c71c13c0b2d44fe2025104422395aceb4977a"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-06-e-ac-04-saudavel.log",
+      "evidenceSha256": "bd72a14dd09980d7af17538d5b2972c8d95f3dc5b8c9f2b3b51fb6ad56437565"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-05.log",
+      "evidenceSha256": "e33a2dd85af0ef190adebe55d27b76dd35ad078269726f6a9a3f4cd29dec2ed9"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-06.log",
+      "evidenceSha256": "dce3cfaec2113df65c0150100458914fcd8f38b037c09973cb666d87cfc04236"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-07.log",
+      "evidenceSha256": "fd4dbde61ef015254ac485f74c72d1e7894ce8a1ca4a39503696e6503d8d5578"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0646-0006/2026-10-10-0646-ac-08.log",
+      "evidenceSha256": "5ec69a74ab3b9b6c38077f622eb28f381a414a185a4230f37494c86f58c64acd"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "sanity/AC-03: os nomes das variáveis privadas SANITY_API_READ_TOKEN e SANITY_API_VERSION ainda aparecem no chunk cliente (shim de env do edge em .next/static/chunks/32ev0pvo51kjo.js, vindo de lib/env.ts). O valor do token não vaza (0 ocorrências do valor no bundle). Mesmo débito da rodada anterior, não bloqueia."
+    },
+    {
+      "severity": "WARNING",
+      "description": "sanity/AC-07: a home ainda não emite <link rel=\"canonical\"> (0 ocorrências no HTML), apesar de app/layout.tsx declarar metadataBase e de app/artigos/[slug]/page.tsx construir canonical com SITE_ORIGIN. Débito de SEO da home, não da rota de artigo; sitemap e wrangler.jsonc usam https://gradualinfo.com.br e nenhum resíduo de gradualinfo.pages.dev existe no build."
+    },
+    {
+      "severity": "INFO",
+      "description": "sanity/AC-08: o ramo de contingência Supabase em lib/services/posts.ts permanece por decisão da própria spec (seção 6, rollback), não por esquecimento. A retirada exige gate 100% PASS antes."
+    },
+    {
+      "severity": "INFO",
+      "description": "sanity/AC-04: nesta rodada a restrição de destino foi provada sem o segredo real de preview, porque a validação de slug (route.ts:115) roda antes da comparação do token (route.ts:120). Slugs ../admin, https://evil.com, foo/bar, UPPER e 'a b' responderam 400 com origem válida e token errado no corpo."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 8,
+    "PASS": 5,
+    "FAIL": 0,
+    "UNVERIFIABLE": 3,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 2
+  },
+  "reasons": [
+    "AC sem PASS: sanity/AC-02",
+    "AC sem PASS: sanity/AC-05",
+    "AC sem PASS: sanity/AC-08"
+  ]
+}

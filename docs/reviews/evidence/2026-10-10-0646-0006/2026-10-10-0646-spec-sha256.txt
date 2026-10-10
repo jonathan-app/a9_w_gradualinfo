@@ -1,0 +1,1 @@
+50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38  docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md
