@@ -128,6 +128,7 @@ A versão publicada `b04f70c0-1f16-49fc-96c3-d0aa6139f9f9`, subiu às 11:38:47Z,
 **Correção aplicada:** `pnpm patch @opennextjs/cloudflare@1.20.9` em `dist/cli/build/patches/plugins/load-manifest.js`, adicionando `preview-props` à alternância do glob, exatamente o que o upstream faz no PR #1356 (ainda não lançado; 1.20.10 não inclui). A changeset do upstream confirma que é o único caminho certo — o `return {}` do PR #1151 não serve, porque o arquivo é opcional e carrega as chaves de draft mode.
 
 **Verificação pós-correção (mesmo ambiente local):**
+
 - `HEAD /api/health` → 200, `{"status":"ok","runtime":"cloudflare-workers","timestamp":...}`.
 - `GET /` → 200, página inicial com `link rel=canonical href="https://gradualinfo.com.br"`.
 - `GET /artigos/guia-notebook` → 404, rota dinâmica já responde (nenhum artigo publicado, comportamento esperado).
