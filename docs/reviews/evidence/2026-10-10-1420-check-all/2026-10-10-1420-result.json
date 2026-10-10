@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "evaluatedCommit": "4c2bc60e389e4a616448a6b157cdc3c3dd0c6390",
+  "evaluatedTree": "d054fea72ecea80fa45b364a2ec2b28a60ab0081",
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-1420-check-all/2026-10-10-1420-execution.json",
+      "evidenceSha256": "f74425284c06cd049e6b89aa1efaa4595c0d69b494c8e98709c0d48c0ba88cf1"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "Sensitive generated next-env.mjs remains staged in the Git index; remove before any commit."
+    },
+    {
+      "severity": "WARNING",
+      "description": "Current checks are blocked before typecheck by pnpm signature verification; build, dry-run and runtime were not executed in this round."
+    }
+  ]
+}

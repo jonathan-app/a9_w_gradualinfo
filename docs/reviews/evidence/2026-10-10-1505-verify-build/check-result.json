@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "FAIL",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1505-verify-build-secrets.md",
+      "evidenceSha256": "6607e553476a03d2d24504b0cda39c6d4af48ae6f8251d2c7fd664e8e5aa688e"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "SANITY_API_READ_TOKEN secret embedded in plain text in .open-next/cloudflare/next-env.mjs (server bundle). Secrets must be provided via Cloudflare Worker secrets at runtime, not baked into the build output."
+    },
+    {
+      "severity": "WARNING",
+      "description": "ADMIN_USER_ID, ADMIN_EMAIL, SANITY_PROJECT_ID, SANITY_ORGANIZATION_ID also appear in next-env.mjs server bundle. These should be runtime Worker secrets/vars, not build-time constants."
+    },
+    {
+      "severity": "WARNING",
+      "description": "Build variable scope not reviewed: .env.local values are being inlined into next-env.mjs instead of being declared as Worker secrets. This violates the principle that secrets never enter build artifacts."
+    }
+  ],
+  "baseCommit": "4c2bc60e389e4a616448a6b157cdc3c3dd0c6390",
+  "provenance": "evaluatedCommit/evaluatedTree identificam somente a base preparada para o gate; build executado na árvore principal com diff não congelado, sem prova de correspondência ao snapshot",
+  "evaluatedCommit": "4c2bc60e389e4a616448a6b157cdc3c3dd0c6390",
+  "evaluatedTree": "d054fea72ecea80fa45b364a2ec2b28a60ab0081"
+}

@@ -50,6 +50,8 @@ export default defineConfig([
     '.kilo/worktrees/**',
     '.agents/**',
     '.wrangler/**',
+    // Artefatos de verificação gerados pelo /check
+    'docs/reviews/evidence/**',
   ]),
 
   // --- Regras base (JS, TS, React, a11y, imports) ------------------------
