@@ -38,36 +38,36 @@ Duas travas que não são enfeite:
 - React e `playwright-core` são fixados por `overrides` no `pnpm-workspace.yaml`. Duas cópias de React quebram hooks, e um alpha do Playwright satisfaz peer dep frouxa.
 - `pnpm-workspace.yaml` é a fonte única desses ajustes. O campo `pnpm` do `package.json` é ignorado pelo pnpm 10 em diante.
 
-## Estado das specs (2026-10-09)
+## Estado das specs (2026-10-10)
 
-| Spec      | Status         | O que cobre                                                  |
-| --------- | -------------- | ------------------------------------------------------------ |
-| `md-0001` | Accepted       | Schema editorial, RLS com preview, pgTAP 63 asserções        |
-| `md-0002` | Accepted       | Home, página de artigo e SEO básico (entregue)               |
-| `0003`    | Accepted       | Autorização e prazo do preview                               |
-| `0004`    | Accepted       | Gate mecânico vinculado à revisão                            |
-| `0005`    | Accepted       | Diretriz de evolução Sanity + Supabase (documentação)        |
-| `0006`    | Accepted       | Transição editorial para Sanity; AC-06 ainda FAIL (soft 200) |
-| `0007`    | Accepted       | Painel `/admin-dashboard`, Supabase Auth e MFA               |
-| `0008`    | Accepted       | Checklist de segurança de IA (referência)                    |
-| `0842`    | Accepted       | Endurecimento do login, origem, cookies e matrícula MFA      |
-| `0009`    | Accepted       | Admissão pelo Cloudflare Access antes das quotas             |
-| `0852`    | **Superseded** | Rate limiting administrativo, substituída pela `0009`        |
+| Spec      | Status         | O que cobre                                                                     |
+| --------- | -------------- | ------------------------------------------------------------------------------- |
+| `md-0001` | Accepted       | Schema editorial, RLS com preview, pgTAP 63 asserções                           |
+| `md-0002` | Accepted       | Home, página de artigo e SEO básico (entregue)                                  |
+| `0003`    | Accepted       | Autorização e prazo do preview                                                  |
+| `0004`    | Accepted       | Gate mecânico vinculado à revisão                                               |
+| `0005`    | Accepted       | Diretriz de evolução Sanity + Supabase (documentação)                           |
+| `0006`    | Accepted       | Transição editorial para Sanity; AC-06 PASS (resposta real 503 + bloco honesto) |
+| `0007`    | Accepted       | Painel `/admin-dashboard`, Supabase Auth e MFA                                  |
+| `0008`    | Accepted       | Checklist de segurança de IA (referência)                                       |
+| `0842`    | Accepted       | Endurecimento do login, origem, cookies e matrícula MFA                         |
+| `0009`    | Accepted       | Admissão pelo Cloudflare Access antes das quotas                                |
+| `0852`    | **Superseded** | Rate limiting administrativo, substituída pela `0009`                           |
 
 O índice completo está em `docs/specs/2026-10-08-2228-INDICE.md`.
 
-## Gates locais (medido em 2026-10-09, HEAD `ed00c4b`)
+## Gates locais (medido em 2026-10-10, HEAD `62adba6`)
 
 | Comando                     | Resultado                                                      |
 | --------------------------- | -------------------------------------------------------------- |
-| `pnpm check:all`            | **exit 0**: typecheck, lint, formatação, 319 testes            |
+| `pnpm check:all`            | **exit 0**: typecheck, lint, formatação, 510 testes            |
 | `pnpm build:next`           | exit 0, 18 rotas                                               |
 | `pnpm build` (OpenNext)     | exit 0, gera `.open-next/worker.js`                            |
 | `wrangler deploy --dry-run` | exit 0, bindings `PREVIEW_SESSION_DO` e `ADMIN_RATE_LIMIT_DO`  |
 | `pnpm security:sast`        | exit 0, zero findings ERROR (regras em `security/semgrep.yml`) |
 | `pnpm security:secrets`     | exit 0, zero findings (gitleaks, histórico e árvore)           |
 
-Detalhes dessa rodada: linha 152 de `workflow/STATE.md`.
+Detalhes dessa rodada: linhas 186 a 191 de `workflow/STATE.md`.
 
 O que **não** está coberto por esses gates: E2E conectado, as provas reais de Cloudflare Access e de MFA no Supabase controlado, e a validação do Worker publicado.
 
@@ -177,7 +177,7 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_GTM_ID`                   | Opcional    | Padrão `GTM-TQVMR8TN`                                          |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Opcional    | Search Console                                                 |
 
-As variáveis do Sanity ainda não estão no `.env.example`; elas precisam ser acrescentadas à mão enquanto isso.
+As variáveis do Sanity já estão no `.env.example` (linhas 167 a 169). A nota de que precisavam ser acrescentadas à mão foi retirada em 2026-10-10.
 
 Nunca coloque valor de segredo em chat, log, relatório ou commit. Use o nome da variável e, se precisar marcar um valor, `[REDACTED]`.
 
@@ -204,5 +204,35 @@ Nunca coloque valor de segredo em chat, log, relatório ou commit. Use o nome da
 
 1. `/check verify` da spec `0009`, com decisão única amarrada ao hash da árvore testada.
 2. Provas conectadas: Cloudflare Access e MFA no Supabase controlado (as sete ACs de MFA seguem `UNVERIFIABLE`).
-3. Corrigir a AC-06 da spec `0006`: falha de infraestrutura de conteúdo responde soft 200 com UI de 404, e o contrato pede 503.
-4. Validar o Worker publicado, que ainda serve um build antigo.
+3. Validar o Worker publicado, que ainda serve um build antigo.
+
+## Estado do deploy (2026-10-10)
+
+A versão publicada é `b04f70c0-1f16-49fc-96c3-d0aa6139f9f9`, lançada em 11:38:47Z.
+Ela 500 em `/`, `/api/health`, `/robots.txt` e `/favicon.ico` com `error code: 1101`
+e corpo `Unexpected loadManifest(/.next/server/preview-props.json) call!`.
+
+**Causa:** o adaptador OpenNext 1.20.9 inlina `loadManifest()` no bundle em tempo de
+build, e o glob que coleta os manifests é `**/{*-manifest,required-server-files,prefetch-hints}.json`.
+O arquivo `preview-props.json` não termina em `-manifest`, então nunca é coletado, e a função
+joga o erro em toda requisição. O Next.js 16.4 moveu os dados de draft mode para esse arquivo e
+chama `getPreviewProps()` de forma incondicional na construção do `NextNodeServer`, antes de
+qualquer rota. O upstream resolve o mesmo defeito no PR #1356, ainda não lançado.
+
+**Correção:** `pnpm patch @opennextjs/cloudflare@1.20.9` adicionando `preview-props` ao glob,
+em `patches/@opennextjs__cloudflare@1.20.9.patch` e `pnpm-lock.yaml` via `patchedDependencies`.
+Verificada localmente com `wrangler dev` no mesmo ambiente: `HEAD /api/health` 200 JSON,
+`GET /` 200 com `link rel=canonical`, `GET /artigos/guia-notebook` 404.
+
+**Por que o deploy ainda não tem a correção:** a versão `b04f70c0` foi publicada antes do
+commit `c3af31a` que traz o patch. O remote não rebuildou. O dry-run local passou, mas o
+dry-run empacota o Worker sem executá-lo em runtime, então não detecta o problema.
+
+**Bloqueio de atualização:** `pnpm update -r` falha com `ERR_PNPM_UNUSED_PATCH` porque o
+registry configurado no ambiente (npm público) não publica `@opennextjs/cloudflare@1.20.9`
+— `pnpm view` mostra que o público vai até `1.9.2`. A versão 1.20.9 vem de um registry interno
+ao qual este sandbox não tem acesso. O `pnpm-lock.yaml` não foi alterado pela falha e
+`pnpm install --frozen-lockfile` passa, então o repositório continua estável. Qualquer
+atualização que troque o adaptador por uma versão pública perde a patch e o app volta a 500.
+A correção entra em produção quando o upstream lançar uma versão pública ou quando houver
+acesso ao registry interno para rodar o build.
