@@ -28,14 +28,14 @@ como backend. É ponto de partida para produto novo, não um app com domínio.
 
 | Peça         | Versão                    | Por quê importa                                                      |
 | ------------ | ------------------------- | -------------------------------------------------------------------- |
-| Next.js      | 16.3                      | App Router, `proxy.ts` no lugar de `middleware.ts`, build Turbopack  |
+| Next.js      | 16.4                      | App Router, `proxy.ts` no lugar de `middleware.ts`, build Turbopack  |
 | React        | 19.3.0 (fixo)             | Ver `overrides` em `pnpm-workspace.yaml` — duas cópias quebram hooks |
 | TypeScript   | 6.0.3                     | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`           |
 | Tailwind CSS | 4.3                       | Configuração em CSS (`@theme`), não em `tailwind.config.js`          |
 | Supabase     | ssr 0.12 + js 2.117       | Sessão em cookie, renovada no `proxy.ts`                             |
-| OpenNext     | 1.20                      | Adapta a saída do Next para o runtime de Workers                     |
-| Sentry       | 11.4                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
-| Vitest       | 4.1                       | Unidade e componente, em jsdom                                       |
+| OpenNext     | 1.20.9                    | Adapta a saída do Next para o runtime de Workers                     |
+| Sentry       | 11.5                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
+| Vitest       | 5.0.3                     | Unidade e componente, em jsdom                                       |
 | next-themes  | 1.0.0-beta.0              | A 0.4.x injeta `<script>` no provider e o React 19 não executa       |
 | Playwright   | 1.63                      | Ponta a ponta, em Chromium                                           |
 | Node         | 22 (`.nvmrc`)             | `engines.node >= 22`                                                 |
@@ -225,7 +225,9 @@ commit não pode custar minutos. O build é job separado na CI, e um terceiro
 job roda `pnpm audit --audit-level=high` e o gitleaks sobre o histórico inteiro.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
-60% hoje, para virar gate real a cobertura precisa passar de 80% primeiro.
+Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
+ficam em 60. Medido em 2026-10-10: 94.31% lines, 92.53% statements,
+91.58% functions, 87.99% branches, 510 testes em 49 suites.
 Subir o piso acima do que o projeto mede esconde o número em vez de avisar.
 
 ## Skills de Engenharia Agêntica
