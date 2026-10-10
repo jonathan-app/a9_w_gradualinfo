@@ -43,12 +43,20 @@ paths = [
   # O gitleaks lê o valor hexadecimal como token Sentry — falso positivo,
   # não é credencial.
   '''security/skills-quarantine\.json''',
+  # Fixture de teste: o valor do previewSecret é um placeholder de teste,
+  # não uma credencial real. O histórico contém a versão antiga com entropia
+  # alta (commit a7f5eec); allowlistar o caminho cobre histórico e árvore.
+  '''__tests__/unit/preview-route\.test\.ts''',
   # Manifesto de evidência com o sha256 do conteúdo de cada arquivo avaliado,
   # usado pelo /check para amarrar resultado ao código testado. Os valores são
   # hashes de fonte, não credencial: a regra generic-api-key acende para dois
   # deles por entropia. Só o nome de manifesto é allowlistado, o resto de
   # docs/reviews/evidence segue sendo varrido.
   '''source-hashes\.json''',
+  # Manifestos de evidência de build e execução: contêm sha256 de artefatos,
+  # não credenciais. A regra generic-api-key acende por entropia do hash.
+  '''docs/reviews/evidence/.*-manifest\.json''',
+  '''docs/reviews/evidence/.*-execution\.json''',
 ]
 
 regexTarget = "match"

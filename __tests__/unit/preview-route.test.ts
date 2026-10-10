@@ -12,8 +12,8 @@ vi.mock('server-only', () => ({}));
 vi.mock('@/lib/env', () => ({
   env: {
     siteUrl: 'https://gradualinfo.com.br',
-    previewSecret: 'segredo-teste-12345678901234567890',
-    previewSigningKey: 'chave-assinatura-teste-1234567890123456',
+    previewSecret: 'token-de-teste-preview',
+    previewSigningKey: 'chave-de-teste-preview',
     previewUserId: '11111111-1111-4111-8111-111111111111',
     supabase: { url: 'https://xyz.supabase.co', anonKey: 'fake' },
   },
@@ -159,7 +159,7 @@ describe('POST', () => {
         origin: 'https://gradualinfo.com.br',
         contentType: 'application/json',
         body: JSON.stringify({
-          token: 'segredo-teste-12345678901234567890',
+          token: 'token-de-teste-preview',
           slug: 'meu-artigo',
         }),
       }),
@@ -177,7 +177,7 @@ describe('POST', () => {
       makeRequest({
         origin: 'https://gradualinfo.com.br',
         contentType: 'application/json',
-        body: JSON.stringify({ token: 'segredo-teste-12345678901234567890' }),
+        body: JSON.stringify({ token: 'token-de-teste-preview' }),
       }),
     );
     expect(res.status).toBe(303);
@@ -189,7 +189,7 @@ describe('POST', () => {
       makeRequest({
         origin: 'https://gradualinfo.com.br',
         contentType: 'application/x-www-form-urlencoded',
-        body: 'token=segredo-teste-12345678901234567890&slug=artigo-ok',
+        body: 'token=token-de-teste-preview&slug=artigo-ok',
       }),
     );
     expect(res.status).toBe(303);
@@ -201,7 +201,7 @@ describe('POST', () => {
         origin: 'https://gradualinfo.com.br',
         contentType: 'application/json',
         body: JSON.stringify({
-          token: 'segredo-teste-12345678901234567890',
+          token: 'token-de-teste-preview',
           slug: 'guia-notebook-2026',
         }),
       }),
