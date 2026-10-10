@@ -9,10 +9,13 @@
  * @dependencies lib/services/posts (consulta), lib/supabase/server (cliente
  *   público), components/shared/editorial-story, app/artigos-vazios.
  */
-import { getPublishedPosts } from '@/lib/services/posts';
+import { getPublishedPosts, type Post } from '@/lib/services/posts';
 import { createPublicClient } from '@/lib/supabase/server';
 import { EditorialStory } from '@/components/shared/editorial-story';
 import { ArtigosVazios } from './artigos-vazios';
+import { EditorialIndisponivel } from './editorial-indisponivel';
+import { ContentUnavailableError } from '@/lib/errors/content';
+import * as Sentry from '@sentry/nextjs';
 
 // No ar a cada requisição: a home não pode congelar no build com a lista da
 // hora do deploy — publicado um artigo, ele tem que aparecer sem novo build.
@@ -21,14 +24,26 @@ export const dynamic = 'force-dynamic';
 /**
  * Página inicial.
  *
- * @returns H1 institucional + destaque + grade; com o banco vazio, o mesmo H1
- *   com o estado vazio — a home diz o que é o site nos dois casos.
+ * @returns H1 institucional + destaque + grade; com falha de infraestrutura,
+ *   exibe o bloco honesto de indisponibilidade; com o banco vazio, o estado vazio.
  */
 export default async function HomePage() {
   const supabase = createPublicClient();
 
-  // O limite na querie é de 10 artigos, como exigido na spec (1 destaque + 9 grade)
-  const posts = await getPublishedPosts(supabase, 10);
+  let posts: Post[] = [];
+  let isUnavailable = false;
+
+  try {
+    // O limite na querie é de 10 artigos, como exigido na spec (1 destaque + 9 grade)
+    posts = await getPublishedPosts(supabase, 10);
+  } catch (error) {
+    if (error instanceof ContentUnavailableError) {
+      isUnavailable = true;
+      Sentry.captureException(error);
+    } else {
+      throw error;
+    }
+  }
 
   const lead = posts[0];
   const secondary = posts.slice(1, 3);
@@ -39,7 +54,9 @@ export default async function HomePage() {
       <h1 className="border-b border-border pb-6 text-xl font-semibold tracking-tight">
         Gradualinfo, tecnologia para estudar programação
       </h1>
-      {!lead ? (
+      {isUnavailable ? (
+        <EditorialIndisponivel />
+      ) : !lead ? (
         <ArtigosVazios />
       ) : (
         <div className="editorial-highlights">

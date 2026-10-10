@@ -37,21 +37,8 @@ export class PreviewStoreUnavailableError extends Error {
   }
 }
 
-/**
- * Erro de infraestrutura da fonte de conteúdo (Sanity ou Supabase).
- *
- * Tipo separado do `PreviewStoreUnavailableError` porque a causa é outra: uma
- * fala do armazenamento de sessão, a outra da fonte editorial. Os dois
- * terminam no mesmo 503 do proxy, mas manter a distinção evita que um dia a
- * mensagem de log confunda os dois incidentes.
- */
-export class ContentUnavailableError extends Error {
-  /** Cria a falha sem propagar a mensagem crua da fonte para o cliente. */
-  constructor() {
-    super('Fonte de conteúdo indisponível.');
-    this.name = 'ContentUnavailableError';
-  }
-}
+import { ContentUnavailableError } from '@/lib/errors/content';
+export { ContentUnavailableError };
 
 /**
  * Valida se o cookie de preview confere acesso ativo via Cloudflare Durable Object.

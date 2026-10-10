@@ -6,9 +6,10 @@
  */
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { env } from '@/lib/env';
+import { env, isSanityConfigured } from '@/lib/env';
 import { previewCookieOptions } from '@/lib/preview/config';
 import { PREVIEW_COOKIE } from '@/lib/preview/session';
+import { probeSanityAvailability } from '@/lib/sanity/client';
 import {
   isArticleAccessible,
   verifyPreviewSession,
@@ -125,6 +126,21 @@ export async function updateSession(request: NextRequest) {
     // Painel administrativo nunca é público nem indexável (spec 0007).
     response.headers.set('Cache-Control', 'private, no-store');
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+
+  // Sonda de disponibilidade editorial da Home (`/`) antes do streaming iniciar (Spec 0006, 3.C).
+  // Só executa quando o Sanity está configurado/ativo; com rollback para Supabase, a sonda é pulada.
+  if (request.nextUrl.pathname === '/') {
+    if (isSanityConfigured) {
+      try {
+        await probeSanityAvailability();
+      } catch (error) {
+        if (error instanceof ContentUnavailableError) {
+          return unavailableResponse(response);
+        }
+        throw error;
+      }
+    }
   }
 
   // Intercepta rotas de artigo dinâmico `/artigos/[slug]` para garantir que

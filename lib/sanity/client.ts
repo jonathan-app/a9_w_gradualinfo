@@ -10,6 +10,7 @@
  */
 import { env, isSanityConfigured } from '@/lib/env';
 import type { Post } from '@/lib/services/posts';
+import { ContentUnavailableError } from '@/lib/errors/content';
 
 /**
  * Interface do documento Sanity conforme modelagem editorial.
@@ -93,6 +94,7 @@ export async function executeSanityQuery<T = unknown>(
   query: string,
   params: Record<string, string | number | boolean> = {},
   isPreview = false,
+  options?: { timeoutMs?: number },
 ): Promise<T[]> {
   if (!isSanityConfigured) {
     return [];
@@ -116,21 +118,57 @@ export async function executeSanityQuery<T = unknown>(
     headers.Authorization = `Bearer ${readToken}`;
   }
 
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers,
-    // Em preview ou produção, respeita cache no-store da aplicação
-    cache: 'no-store',
-  });
+  const controller = new AbortController();
+  const timeoutMs = options?.timeoutMs ?? 5000;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  let response: Response;
+  try {
+    response = await fetch(url.toString(), {
+      method: 'GET',
+      headers,
+      signal: controller.signal,
+      cache: 'no-store',
+    });
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof ContentUnavailableError) {
+      throw error;
+    }
+    throw new ContentUnavailableError(
+      `Falha na conexão com o Sanity: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+    );
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
-    throw new Error(
-      `Falha na consulta ao Sanity (HTTP ${response.status}): ${await response.text()}`,
+    throw new ContentUnavailableError(
+      `Falha na consulta ao Sanity (HTTP ${response.status})`,
     );
   }
 
-  const data = (await response.json()) as { result?: T[] };
-  return data.result || [];
+  try {
+    const data = (await response.json()) as { result?: T[] };
+    return data.result || [];
+  } catch {
+    throw new ContentUnavailableError(
+      'Resposta inválida do Sanity Content Lake.',
+    );
+  }
+}
+
+/**
+ * Sonda leve de disponibilidade da fonte Sanity para uso no proxy antes do streaming da Home.
+ *
+ * Executa uma consulta GROQ mínima com timeout rígido de 800ms sem cache.
+ *
+ * @throws ContentUnavailableError quando a fonte não responder ou estourar o timeout de 800ms.
+ */
+export async function probeSanityAvailability(): Promise<void> {
+  const query =
+    '*[_type in ["post", "artigo"] && (!defined(status) || status == "publicado")][0]._id';
+  await executeSanityQuery(query, {}, false, { timeoutMs: 800 });
 }
 
 /**
