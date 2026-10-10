@@ -6,6 +6,7 @@
  *   escada de MFA (setup vs verify vs aal2) e redireciona estritamente para caminhos sanitizados.
  * @dependencies next/server, @/lib/admin/auth, @/lib/supabase/server
  */
+import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import {
   resolveAdminMfaLadder,
@@ -13,54 +14,35 @@ import {
   sanitizeAdminRedirect,
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
-import { createClient } from '@/lib/supabase/server';
-import { cookies } from 'next/headers';
+import { createAdminSessionResponse } from '@/lib/admin/session-response';
+import { env } from '@/lib/env';
+import { UUID_PATTERN } from '@/lib/preview/session';
 import { NextResponse } from 'next/server';
+import {
+  consumeAdminRateLimit,
+  adminRateLimitResponse,
+} from '@/lib/admin/rate-limit';
 
-// Memória simples de rate limiting por IP/origem para mitigar brute force local
-const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = loginAttempts.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    loginAttempts.set(ip, { count: 1, resetAt: now + 60000 });
-    return false;
-  }
-
-  entry.count += 1;
-  return entry.count > 5;
-}
-
+/**
+ * Autentica exclusivamente a identidade administrativa antes de iniciar MFA.
+ * @param request - Credenciais, origem e destino interno.
+ * @returns Resposta sem cache e com cookies fornecidos pelo SDK.
+ */
 export async function POST(request: Request) {
+  const admissionFailure = guardAdminAccess(request);
+  if (admissionFailure) return admissionFailure;
   // 1. Validação estrita de origem contra CSRF
   if (!validateAdminRequestOrigin(request)) {
     return new NextResponse('Origem não permitida.', { status: 403 });
   }
 
-  // 2. Limitação de taxa contra força bruta
-  const ip =
-    request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for') ||
-    'local';
-  if (isRateLimited(ip)) {
-    const isJson =
-      request.headers.get('accept')?.includes('application/json') ||
-      request.headers.get('content-type')?.includes('application/json');
-    if (isJson) {
-      return new NextResponse(
-        JSON.stringify({
-          error: 'rate_limited',
-          message: 'Muitas tentativas de login. Limite de taxa excedido.',
-        }),
-        { status: 429, headers: { 'content-type': 'application/json' } },
-      );
-    }
-    const loginUrl = new URL('/admin-dashboard/login', request.url);
-    loginUrl.searchParams.set('error', 'rate_limited');
-    return NextResponse.redirect(loginUrl, 303);
-  }
+  // A admissão já foi comprovada; preservar as duas quotas do contrato aceito.
+  const rateResponse = adminRateLimitResponse(
+    request,
+    await consumeAdminRateLimit('login'),
+    'login',
+  );
+  if (rateResponse) return rateResponse;
 
   let email: string;
   let password: string;
@@ -93,7 +75,14 @@ export async function POST(request: Request) {
   }
 
   // 3. Autenticação contra Supabase Auth no servidor
-  const supabase = await createClient();
+  const adminId = env.adminUserId.trim();
+  if (!UUID_PATTERN.test(adminId)) {
+    return new NextResponse('Operação indisponível.', {
+      status: 500,
+      headers: { 'Cache-Control': 'private, no-store' },
+    });
+  }
+  const { supabase, finish } = await createAdminSessionResponse();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -101,17 +90,23 @@ export async function POST(request: Request) {
 
   if (error || !data.user) {
     loginUrl.searchParams.set('error', 'invalid_credentials');
-    return NextResponse.redirect(loginUrl, 303);
+    return finish(NextResponse.redirect(loginUrl, 303), true);
+  }
+
+  if (data.user.id !== adminId) {
+    // Nunca emitir a sessão recém-criada de outra identidade, mesmo se signOut falhar.
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // A remoção dos cookies capturados continua obrigatória.
+    }
+    loginUrl.searchParams.set('error', 'invalid_credentials');
+    return finish(NextResponse.redirect(loginUrl, 303), true);
   }
 
   // Helper para propagar cookies de sessão do Supabase no redirecionamento
   const createRedirectWithCookies = async (target: URL) => {
-    const res = NextResponse.redirect(target, 303);
-    const cookieStore = await cookies();
-    cookieStore.getAll().forEach((c) => {
-      res.cookies.set(c.name, c.value);
-    });
-    return res;
+    return finish(NextResponse.redirect(target, 303));
   };
 
   // 4. Verificação estrita da escada de MFA

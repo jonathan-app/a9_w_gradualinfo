@@ -43,6 +43,12 @@ paths = [
   # O gitleaks lê o valor hexadecimal como token Sentry — falso positivo,
   # não é credencial.
   '''security/skills-quarantine\.json''',
+  # Manifesto de evidência com o sha256 do conteúdo de cada arquivo avaliado,
+  # usado pelo /check para amarrar resultado ao código testado. Os valores são
+  # hashes de fonte, não credencial: a regra generic-api-key acende para dois
+  # deles por entropia. Só o nome de manifesto é allowlistado, o resto de
+  # docs/reviews/evidence segue sendo varrido.
+  '''source-hashes\.json''',
 ]
 
 regexTarget = "match"

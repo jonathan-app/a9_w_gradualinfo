@@ -8,12 +8,14 @@
  * @dependencies @/lib/env, @/lib/site-config, @/lib/supabase/server
  */
 
+import { guardAdminAccess } from './access-guard';
 import { env } from '@/lib/env';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { createClient } from '@/lib/supabase/server';
 import type { User } from '@supabase/supabase-js';
 
 export type AdminAuthFailureReason =
+  | 'access_unavailable'
   | 'config_missing'
   | 'unauthenticated'
   | 'unauthorized'
@@ -56,16 +58,20 @@ export type AdminMfaLadder =
 export async function resolveAdminMfaLadder(
   supabase: AdminSupabaseClient,
 ): Promise<AdminMfaLadder> {
-  const { data: aalData } =
+  const { data: aalData, error: aalError } =
     await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  const currentAal = aalData?.currentLevel || 'aal1';
+  if (aalError || !aalData?.currentLevel)
+    throw new Error('Estado MFA indisponível.');
+  const currentAal = aalData.currentLevel;
 
   // Sessão já comprovada em AAL2: nada a exigir do fator.
   if (currentAal === 'aal2') {
     return { action: 'ok' };
   }
 
-  const { data: factorData } = await supabase.auth.mfa.listFactors();
+  const { data: factorData, error: factorError } =
+    await supabase.auth.mfa.listFactors();
+  if (factorError || !factorData) throw new Error('Estado MFA indisponível.');
   const factors = factorData?.all ?? [];
   const hasTotpFactor = factors.some(
     (factor: { factor_type: string }) => factor.factor_type === 'totp',
@@ -123,7 +129,7 @@ export function sanitizeAdminRedirect(
  */
 export function validateAdminRequestOrigin(request: Request): boolean {
   const isAllowedOrigin = (targetOrigin: string, reqUrl: URL): boolean => {
-    if (targetOrigin === SITE_ORIGIN || targetOrigin === reqUrl.origin) {
+    if (targetOrigin === new URL(SITE_ORIGIN).origin) {
       return true;
     }
     try {
@@ -132,12 +138,12 @@ export function validateAdminRequestOrigin(request: Request): boolean {
         targetUrl.hostname,
       );
       const isLocalReq = ['localhost', '127.0.0.1'].includes(reqUrl.hostname);
-      if (isLocalTarget && isLocalReq) {
+      if (!env.isProduction && isLocalTarget && isLocalReq) {
         const targetPort =
           targetUrl.port || (targetUrl.protocol === 'https:' ? '443' : '80');
         const reqPort =
           reqUrl.port || (reqUrl.protocol === 'https:' ? '443' : '80');
-        return targetPort === reqPort;
+        return targetPort === reqPort && targetUrl.protocol === reqUrl.protocol;
       }
     } catch {
       // Ignora erro de parsing
@@ -161,8 +167,8 @@ export function validateAdminRequestOrigin(request: Request): boolean {
     return false;
   }
 
-  // Em requisições de mesma origem sem cabeçalho explícito (ex: testes internos controlados)
-  return true;
+  // Ausência dos dois cabeçalhos não comprova origem nem autoriza mutação.
+  return false;
 }
 
 /**
@@ -265,6 +271,7 @@ export async function checkAdminUser(
     ? T
     : never,
 ): Promise<AdminAuthResult> {
+  if (guardAdminAccess()) return { ok: false, reason: 'access_unavailable' };
   const adminId = env.adminUserId.trim();
 
   // Fail-closed absoluto: configuração ausente nunca pode abrir o painel
@@ -333,6 +340,8 @@ export async function assertAdminApiAuth(request?: Request): Promise<
       response: Response;
     }
 > {
+  const admissionFailure = guardAdminAccess(request);
+  if (admissionFailure) return { ok: false, response: admissionFailure };
   if (request && !validateAdminRequestOrigin(request)) {
     return {
       ok: false,

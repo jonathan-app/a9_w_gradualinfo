@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "2bcea1ddb429c1988b211923a17eb25df9dbaa48",
+  "evaluatedTree": "2ac9eb05cda26c90dd25f7925799a1c175bb9bff",
+  "workingTreeDirty": true,
+  "spec": {
+    "path": "docs/specs/2026-10-07-1040-0003-preview-autorizacao.md",
+    "sha256": "cecda7178e53cc204246a57687f2a0d8c776fbe5fa7dd525cdb15a7fed927d0b"
+  },
+  "acs": [
+    {
+      "id": "preview/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    },
+    {
+      "id": "preview/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-08-0003-conexoes-check/2026-10-08-2228-verify.md",
+      "evidenceSha256": "8ea6ac908e1011d1f1cc5cff9e4ebcdaaf4864e1829c9634efb3f37be27f39cf"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "scripts/run-gitleaks.mjs:146: filtro pode descartar achados em caminhos Unicode ou escapados; usar git ls-files -z e divisão por NUL."
+    },
+    {
+      "severity": "BLOCKER",
+      "description": "package.json: ESLint 10.12.0 falha com eslint-plugin-react 7.37.5; corrigir compatibilidade e repetir lint completo."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 8,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNVERIFIABLE": 8,
+    "missingEvidence": 0,
+    "BLOCKER": 2,
+    "WARNING": 0
+  },
+  "reasons": [
+    "AC sem PASS: preview/AC-01",
+    "AC sem PASS: preview/AC-02",
+    "AC sem PASS: preview/AC-03",
+    "AC sem PASS: preview/AC-04",
+    "AC sem PASS: preview/AC-05",
+    "AC sem PASS: preview/AC-06",
+    "AC sem PASS: preview/AC-07",
+    "AC sem PASS: preview/AC-08",
+    "BLOCKER: scripts/run-gitleaks.mjs:146: filtro pode descartar achados em caminhos Unicode ou escapados; usar git ls-files -z e divisão por NUL.",
+    "BLOCKER: package.json: ESLint 10.12.0 falha com eslint-plugin-react 7.37.5; corrigir compatibilidade e repetir lint completo."
+  ]
+}

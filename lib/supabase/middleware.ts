@@ -9,7 +9,40 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { env } from '@/lib/env';
 import { previewCookieOptions } from '@/lib/preview/config';
 import { PREVIEW_COOKIE } from '@/lib/preview/session';
-import { isArticleAccessible, verifyPreviewSession } from '@/lib/preview/auth';
+import {
+  isArticleAccessible,
+  verifyPreviewSession,
+  PreviewStoreUnavailableError,
+  ContentUnavailableError,
+} from '@/lib/preview/auth';
+
+/**
+ * Monta a resposta 503 de indisponibilidade, fixa antes de o streaming começar.
+ *
+ * O corpo é HTML estático e sem conteúdo editorial: falha fechada não vaza
+ * rascunho nem diagnostica qual fonte caiu para quem estiver lendo a resposta.
+ * Cookies vivos da requisição são reaplicados para não perder refresh de sessão.
+ *
+ * @param response - Resposta parcial que carrega os cookies a preservar.
+ * @returns Resposta 503 com `private, no-store` e `noindex, nofollow`.
+ */
+function unavailableResponse(response: NextResponse): NextResponse {
+  const unavailable = new NextResponse(
+    '<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Serviço indisponível</title><body><h1>Serviço temporariamente indisponível</h1><p>Tente novamente em alguns instantes.</p></body></html>',
+    {
+      status: 503,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'private, no-store',
+        'X-Robots-Tag': 'noindex, nofollow',
+      },
+    },
+  );
+  response.cookies
+    .getAll()
+    .forEach((cookie) => unavailable.cookies.set(cookie));
+  return unavailable;
+}
 
 /**
  * lib/supabase/middleware.ts — renova a sessão a cada requisição e protege rotas
@@ -32,7 +65,8 @@ import { isArticleAccessible, verifyPreviewSession } from '@/lib/preview/auth';
  * @param request - Requisição corrente: fornece cookies, pathname e a URL usada
  *   no rewrite de artigo inacessível.
  * @returns Response com a sessão reescrita nos cookies; ou rewrite para
- *   `/_not-found` com status 404 quando o artigo não é acessível ao leitor.
+ *   `/_not-found` com status 404 quando o artigo não é acessível ao leitor;
+ *   ou 503 quando o Durable Object ou a fonte de conteúdo está indisponível.
  */
 export async function updateSession(request: NextRequest) {
   // `NextResponse.next()` carrega os cookies de request adiante; sem isso a
@@ -100,8 +134,28 @@ export async function updateSession(request: NextRequest) {
   if (segments.length === 2 && segments[0] === 'artigos') {
     const slug = segments[1]!;
     const previewCookie = request.cookies.get(PREVIEW_COOKIE)?.value;
-    const isPreview = await verifyPreviewSession(supabase, previewCookie);
-    const accessible = await isArticleAccessible(supabase, slug, isPreview);
+    let accessible: boolean;
+    try {
+      // A leitura pública precede o DO para não tornar sua disponibilidade
+      // obrigatória: artigo público responde sem tocar o armazenamento.
+      accessible = await isArticleAccessible(supabase, slug, false);
+      if (!accessible) {
+        const isPreview = await verifyPreviewSession(supabase, previewCookie);
+        accessible =
+          isPreview && (await isArticleAccessible(supabase, slug, true));
+      }
+    } catch (error) {
+      // DO ou fonte de conteúdo fora do ar: o 503 precisa sair aqui, antes que
+      // qualquer layout comece o streaming e o Next responda 200 com a UI de
+      // erro (soft 200). Erro inesperado segue para o tratador global.
+      if (
+        error instanceof PreviewStoreUnavailableError ||
+        error instanceof ContentUnavailableError
+      ) {
+        return unavailableResponse(response);
+      }
+      throw error;
+    }
 
     if (!accessible) {
       // Copiar os headers de next() também copiaria x-middleware-next: 1,

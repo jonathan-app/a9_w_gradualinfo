@@ -108,12 +108,17 @@ export async function getPostBySlug(
   supabase: SupabaseClient,
   slug: string,
 ): Promise<Post | null> {
-  const isPreview = await isPreviewSession(supabase);
-
   // Transição editorial da spec 0006: Sanity como fonte primária única
   if (isSanityActive()) {
+    // Conteúdo público permanece legível mesmo com cookie de preview e DO indisponível.
+    const publicPost = await getSanityPostBySlug(slug, { isPreview: false });
+    if (publicPost) return publicPost;
+    const isPreview = await isPreviewSession(supabase);
+    if (!isPreview) return null;
     return getSanityPostBySlug(slug, { isPreview });
   }
+
+  const isPreview = await isPreviewSession(supabase);
 
   // Uma sessão vencida não deve contaminar a consulta pública com JWT inválido.
   const reader = isPreview

@@ -17,6 +17,8 @@
  *
  * Referência: https://nextjs.org/docs/app/api-reference/file-conventions/proxy
  */
+import { guardAdminAccess } from '@/lib/admin/access-guard';
+import { classifyAdminPath } from '@/lib/admin/access';
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
@@ -26,13 +28,24 @@ import { updateSession } from '@/lib/supabase/middleware';
  * @returns Resposta de continuidade ou bloqueio com os cookies atualizados.
  */
 export async function proxy(request: NextRequest) {
-  return await updateSession(request);
+  if (classifyAdminPath(request.nextUrl.pathname) !== 'public') {
+    const failure = guardAdminAccess(request);
+    if (failure) return failure;
+  }
+  const response = await updateSession(request);
+  if (classifyAdminPath(request.nextUrl.pathname) !== 'public') {
+    response.headers.set('Cache-Control', 'private, no-store');
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+  return response;
 }
 
 /** Seleciona caminhos que exigem sessão, incluindo os protegidos com extensão. */
 export const config = {
   matcher: [
     // Caminhos protegidos não podem escapar da verificação por parecerem assets.
+    '/admin-dashboard/:path*',
+    '/api/admin/:path*',
     '/artigos/:path*',
     '/preview/:path*',
     '/api/preview/:path*',

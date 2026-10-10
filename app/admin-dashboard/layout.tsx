@@ -5,9 +5,11 @@
  *   sob /admin-dashboard.
  * @dependencies next
  */
+import { requireAdminAccessPage } from '@/lib/admin/access-guard';
 
 import type { Metadata } from 'next';
 
+/** Metadados privados e sem indexação do painel. */
 export const metadata: Metadata = {
   title: 'Painel Administrativo | GradualInfo',
   robots: {
@@ -17,11 +19,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminRootLayout({
+/**
+ * Apresenta somente conteúdo com admissão Worker comprovada.
+ * @param props - Filhos administrativos.
+ * @returns Layout privado.
+ */
+export default async function AdminRootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await requireAdminAccessPage();
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
       {children}

@@ -88,6 +88,65 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
       expect(post.author_name).toBe('Redação GradualInfo'); // Fallback padrão
       expect(post.editoria).toBe('Tecnologia');
     });
+
+    it('usa slug em texto puro, corpo em body e campos no padrão camelCase', () => {
+      const camelDoc: SanityPostDocument = {
+        _id: 'post-camel-1',
+        _type: 'artigo',
+        _createdAt: '2026-10-01T10:00:00Z',
+        _updatedAt: '2026-10-02T12:00:00Z',
+        title: 'Artigo no padrão camelCase',
+        slug: 'artigo-camel',
+        body: '## Corpo em Markdown',
+        coverImage: {
+          asset: {
+            url: 'https://cdn.sanity.io/images/proj/production/capa.jpg',
+          },
+        },
+        author: { name: 'Autor A' },
+        fontesCitadas: [{ titulo: 'Fonte', url: 'https://fonte.com' }],
+        publishedAt: '2026-10-01T10:00:00Z',
+        status: 'publicado',
+      };
+
+      const post = mapSanityDocumentToPost(camelDoc);
+
+      expect(post.slug).toBe('artigo-camel');
+      expect(post.content).toBe('## Corpo em Markdown');
+      expect(post.cover_image_url).toBe(
+        'https://cdn.sanity.io/images/proj/production/capa.jpg',
+      );
+      expect(post.author_name).toBe('Autor A');
+      expect(post.fontes_citadas[0]?.titulo).toBe('Fonte');
+      expect(post.published_at).toBe('2026-10-01T10:00:00Z');
+    });
+
+    it('usa o id como slug quando o slug não vem definido e cobre título ausente', () => {
+      const noSlugDoc: SanityPostDocument = {
+        _id: 'drafts.post-sem-slug',
+        _type: 'post',
+        _createdAt: '2026-10-03T00:00:00Z',
+        _updatedAt: '2026-10-03T00:00:00Z',
+        status: 'rascunho',
+      };
+
+      const withoutTitle: SanityPostDocument = {
+        _id: 'post-sem-titulo',
+        _type: 'post',
+        _createdAt: '2026-10-03T00:00:00Z',
+        _updatedAt: '2026-10-03T00:00:00Z',
+        slug: { current: 'post-sem-titulo' },
+        status: 'publicado',
+      };
+
+      const draftPost = mapSanityDocumentToPost(noSlugDoc);
+      const titlePost = mapSanityDocumentToPost(withoutTitle);
+
+      expect(draftPost.slug).toBe('post-sem-slug');
+      expect(draftPost.status).toBe('rascunho');
+      expect(titlePost.slug).toBe('post-sem-titulo');
+      expect(titlePost.title).toBe('Sem título');
+    });
   });
 
   describe('2. Listagem Pública e Corte Temporal', () => {
@@ -129,6 +188,30 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
 
       // Confirma que NÃO enviou cabeçalho Authorization em consulta pública
       expect(callOptions.headers).not.toHaveProperty('Authorization');
+      // Política de cache da spec 0006: leitura sempre sem cache intermediário
+      expect(callOptions.cache).toBe('no-store');
+    });
+
+    it('inclui o limite padrão e o parâmetro $now no corpo da consulta pública', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ result: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+
+      const posts = await getSanityPublishedPosts();
+
+      expect(posts).toEqual([]);
+
+      const calledUrl = new URL(fetchSpy.mock.calls[0]![0] as string);
+      const query = calledUrl.searchParams.get('query') ?? '';
+
+      expect(query).toContain('[0...10]');
+      const nowParam = calledUrl.searchParams.get('$now');
+      expect(nowParam).toBeDefined();
+      const parsedNow = JSON.parse(nowParam ?? '') as string;
+      expect(parsedNow).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
   });
 
@@ -220,6 +303,29 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
       const calledUrl = new URL(callArgs[0] as string);
       const query = calledUrl.searchParams.get('query') ?? '';
       expect(query).toContain('order(_id match "drafts.*" desc)[0]');
+    });
+
+    it('não envia o corte temporal $now na consulta de preview', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ result: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+
+      const post = await getSanityPostBySlug('post-agendado', {
+        isPreview: true,
+      });
+
+      expect(post).toBeNull();
+
+      const calledUrl = new URL(fetchSpy.mock.calls[0]![0] as string);
+      const query = calledUrl.searchParams.get('query') ?? '';
+      const nowParam = calledUrl.searchParams.get('$now');
+
+      // Preview não aplica corte temporal: posts agendados permanecem visíveis
+      expect(query).not.toContain('publishedAt <= $now');
+      expect(nowParam).toBeNull();
     });
 
     it('em preview permite visualizar artigo agendado com data futura', async () => {

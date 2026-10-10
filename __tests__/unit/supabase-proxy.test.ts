@@ -105,3 +105,11 @@ describe('proteção de rotas no proxy (preview/AC-03 e AC-05)', () => {
     );
   });
 });
+
+// Esta suíte isola a camada já admitida; admissão criptográfica tem suíte própria.
+vi.mock('@/lib/admin/access-guard', () => ({
+  guardAdminAccess: () => null,
+  requireAdminAccessPage: () => {},
+  getAdminAccessLogoutUrl: () =>
+    'https://admin.example.test/cdn-cgi/access/logout',
+}));

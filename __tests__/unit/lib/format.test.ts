@@ -15,6 +15,7 @@ import {
   formatCurrency,
   formatDate,
   formatNumber,
+  formatRelativeDate,
   initials,
   serializeJsonLd,
 } from '@/lib/utils/format';
@@ -129,5 +130,53 @@ describe('serializeJsonLd', () => {
 
     const parsed = JSON.parse(serialized);
     expect(parsed.headline).toBe('</script><script>alert(1)</script>');
+  });
+});
+
+describe('formatRelativeDate', () => {
+  it('formata segundos relativos recentes', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now)).toBe('agora');
+    expect(formatRelativeDate(now - 10000)).toBe('há 10 segundos');
+  });
+
+  it('formata minutos relativos', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now - 5 * 60 * 1000)).toBe('há 5 minutos');
+    expect(formatRelativeDate(now + 15 * 60 * 1000)).toBe('em 15 minutos');
+  });
+
+  it('formata horas relativas', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now - 2 * 60 * 60 * 1000)).toBe('há 2 horas');
+  });
+
+  it('formata dias relativos', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now - 24 * 60 * 60 * 1000)).toBe('ontem');
+    expect(formatRelativeDate(now - 3 * 24 * 60 * 60 * 1000)).toBe('há 3 dias');
+    expect(formatRelativeDate(now + 48 * 60 * 60 * 1000)).toBe(
+      'depois de amanhã',
+    );
+  });
+
+  it('formata semanas, meses e anos relativos', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now - 14 * 24 * 60 * 60 * 1000)).toBe(
+      'há 2 semanas',
+    );
+    expect(formatRelativeDate(now - 60 * 24 * 60 * 60 * 1000)).toBe(
+      'há 2 meses',
+    );
+    expect(formatRelativeDate(now - 400 * 24 * 60 * 60 * 1000)).toBe(
+      'ano passado',
+    );
+  });
+
+  it('suporta locale customizado como en-US', () => {
+    const now = Date.now();
+    expect(formatRelativeDate(now - 10 * 60 * 1000, { locale: 'en-US' })).toBe(
+      '10 minutes ago',
+    );
   });
 });

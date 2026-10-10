@@ -88,3 +88,47 @@
     outline-offset: 2px;
   }
 }
+
+/* O marcador público amplia somente estas páginas, preservando o painel. */
+main:has([data-editorial-layout='home']) {
+  max-width: 1200px;
+}
+.editorial-highlights {
+  display: grid;
+  gap: 2rem;
+}
+.editorial-body {
+  font-size: 18px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.editorial-body a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.editorial-body img {
+  max-width: 100%;
+  height: auto;
+}
+.editorial-body pre,
+.editorial-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+@media (min-width: 768px) {
+  .editorial-highlights {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  }
+  .editorial-recent {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1280px) {
+  .editorial-highlights {
+    grid-template-columns: minmax(0, 45fr) minmax(0, 25fr) minmax(0, 30fr);
+  }
+  .editorial-recent {
+    grid-column: auto;
+  }
+}

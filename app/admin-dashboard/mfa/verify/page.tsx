@@ -6,6 +6,7 @@
  *   executar logout seguro.
  * @dependencies react, next/link, next/navigation, @/lib/admin/auth, @/lib/env, @/lib/supabase/server
  */
+import { requireAdminAccessPage } from '@/lib/admin/access-guard';
 
 import { resolveAdminMfaLadder, sanitizeAdminRedirect } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
@@ -20,9 +21,15 @@ interface MfaVerifyPageProps {
   }>;
 }
 
+/**
+ * Apresenta desafio e orientação de recuperação sem recriar fatores.
+ * @param props - Parâmetros de navegação do desafio.
+ * @returns Página restrita à identidade administrativa.
+ */
 export default async function AdminMfaVerifyPage({
   searchParams,
 }: MfaVerifyPageProps) {
+  await requireAdminAccessPage();
   const params = await searchParams;
   const safeRedirect = sanitizeAdminRedirect(params.redirectTo);
 
@@ -94,6 +101,12 @@ export default async function AdminMfaVerifyPage({
             {errorMessage}
           </div>
         )}
+
+        <p className="mb-4 text-xs text-gray-600 dark:text-gray-300">
+          Se você perdeu o autenticador ou não conseguiu concluir a
+          configuração, o proprietário deve recuperar o fator manualmente no
+          Supabase. Esta página não recria nem reapresenta a chave TOTP.
+        </p>
 
         <form
           action="/api/admin/auth/mfa/verify"

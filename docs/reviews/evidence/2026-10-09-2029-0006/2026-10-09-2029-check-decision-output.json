@@ -1,0 +1,96 @@
+{
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "bdfb1a9b691ad6935b0a18d2abc15f8b8f6e965909e18a0f18845a61d78cf5c1"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-01-ac-06-falha-induzida.log",
+      "evidenceSha256": "223e68553f7e02b330934549d141d31e4a391150a11ec7431a04cd8ac82a5a60"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-02.log",
+      "evidenceSha256": "fae559b82cd8a8ef83cb060f63c7ee9e4916249a6a7db1c60cdb2fd8bc9c8148"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-03-ac-07.log",
+      "evidenceSha256": "e2eea2fa976648a94a362976cf60d29ff64759c03dd827af14fcb815c6345aed"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-04.log",
+      "evidenceSha256": "96ba98b6665d882a5d545f99507b5794fbbbd108473047d2a873e04ed070f542"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-05.log",
+      "evidenceSha256": "7b56222645526507667e7965eba4cf621407a39185e955e33ec42b273273c776"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "FAIL",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-01-ac-06-falha-induzida.log",
+      "evidenceSha256": "223e68553f7e02b330934549d141d31e4a391150a11ec7431a04cd8ac82a5a60"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-03-ac-07.log",
+      "evidenceSha256": "e2eea2fa976648a94a362976cf60d29ff64759c03dd827af14fcb815c6345aed"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2029-0006/2026-10-09-2029-ac-08.log",
+      "evidenceSha256": "23c1c07a185d03309ff7dc034265d741b28dab158e2e3958682884645a3ad722"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "sanity/AC-06: com o Content Lake indisponível a home / responde HTTP 200 com a UI de \"Página não encontrada\" (app/page.tsx delega ao throw de getPublishedPosts e o Next entrega a fronteira de not-found), mascarando falha de infraestrutura como 404. A rota /artigos/[slug] já responde 503 corretamente. O comportamento da home sob falha editorial não está decidido em nenhuma spec; a decisão (probe no proxy com 503, ou 200 com copy honesta de indisponibilidade) pertence a /architect antes de /develop corrigir."
+    },
+    {
+      "severity": "WARNING",
+      "description": "sanity/AC-03: os nomes das variáveis privadas SANITY_API_READ_TOKEN, SANITY_API_VERSION e GA_MEASUREMENT_ID aparecem no chunk cliente .open-next/assets/_next/static/chunks/32ev0pvo51kjo.js, vindos de lib/env.ts que monta um único objeto env consumido também no cliente. O valor do token não vaza (0 ocorrências do valor de 180 caracteres no bundle), mas o nome expõe ao cliente quais segredos existem."
+    },
+    {
+      "severity": "WARNING",
+      "description": "sanity/AC-07: a home não emite <link rel=\"canonical\"> (0 ocorrências no HTML), apesar de app/layout.tsx declarar metadataBase. Sitemap e resíduos estão limpos (0 arquivos com gradualinfo.pages.dev em .open-next/assets; sitemap usa https://gradualinfo.com.br)."
+    },
+    {
+      "severity": "INFO",
+      "description": "sanity/AC-08: o ramo de contingência Supabase em lib/services/posts.ts e o caminho legado de auth em lib/preview/auth.ts permanecem por decisão da própria spec (seção 6, plano de rollback), não por esquecimento."
+    }
+  ],
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 8,
+    "PASS": 3,
+    "FAIL": 1,
+    "UNVERIFIABLE": 4,
+    "missingEvidence": 0,
+    "BLOCKER": 1,
+    "WARNING": 2
+  },
+  "reasons": [
+    "AC sem PASS: sanity/AC-02",
+    "AC sem PASS: sanity/AC-04",
+    "AC sem PASS: sanity/AC-05",
+    "AC sem PASS: sanity/AC-06",
+    "AC sem PASS: sanity/AC-08",
+    "BLOCKER: sanity/AC-06: com o Content Lake indisponível a home / responde HTTP 200 com a UI de \"Página não encontrada\" (app/page.tsx delega ao throw de getPublishedPosts e o Next entrega a fronteira de not-found), mascarando falha de infraestrutura como 404. A rota /artigos/[slug] já responde 503 corretamente. O comportamento da home sob falha editorial não está decidido em nenhuma spec; a decisão (probe no proxy com 503, ou 200 com copy honesta de indisponibilidade) pertence a /architect antes de /develop corrigir."
+  ]
+}

@@ -1,10 +1,10 @@
 # Test: 0007-painel-administrativo-tailadmin — Registro de Execução da Suíte
 
-> Registro formal da skill `/test` para a primeira entrega da spec 0007 (`docs/specs/0007-painel-administrativo-tailadmin.md`).
+> Registro formal da skill `/test` para a primeira entrega da spec 0007 (`docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md`).
 
 ## 1. Identidade e Versão
 
-- **Spec**: `docs/specs/0007-painel-administrativo-tailadmin.md` (Status: `Accepted`)
+- **Spec**: `docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md` (Status: `Accepted`)
 - **Branch**: `feat/transicao-editorial-sanity`
 - **Commit Avaliado**: `2bcea1ddb429c1988b211923a17eb25df9dbaa48`
 - **Data**: 2026-10-08

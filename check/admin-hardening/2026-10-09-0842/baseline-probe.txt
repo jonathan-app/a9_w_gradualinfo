@@ -1,0 +1,48 @@
+const state=vi.hoisted(()=>({
+ signIn:vi.fn(),signOut:vi.fn(),enroll:vi.fn(),aal:vi.fn(),factors:vi.fn(),
+ getUser:vi.fn(),jar:{getAll:()=>[{name:'test-cookie',value:'fixture',path:'/admin-dashboard',secure:true,httpOnly:true,sameSite:'strict',maxAge:600}]}
+}));
+vi.mock('@/lib/env',()=>({env:{adminUserId:'11111111-1111-4111-8111-111111111111',isProduction:true}}));
+vi.mock('@/lib/site-config',()=>({SITE_ORIGIN:'https://gradualinfo.com.br'}));
+vi.mock('@/lib/supabase/server',()=>({createClient:async()=>({auth:{signInWithPassword:state.signIn,signOut:state.signOut,getUser:state.getUser,mfa:{getAuthenticatorAssuranceLevel:state.aal,listFactors:state.factors,enroll:state.enroll}}})}));
+vi.mock('next/headers',()=>({cookies:async()=>state.jar}));
+import {validateAdminRequestOrigin} from '@/lib/admin/auth';
+import Setup from '@/app/admin-dashboard/mfa/setup/page';
+const req=(ip='probe')=>new Request('https://gradualinfo.com.br/api/admin/auth/login',{method:'POST',headers:{origin:'https://gradualinfo.com.br','content-type':'application/json',accept:'application/json','x-forwarded-for':ip},body:JSON.stringify({email:'fixture@example.invalid',password:'not-a-real-credential'})});
+beforeEach(()=>{
+ vi.clearAllMocks();
+ state.signIn.mockResolvedValue({data:{user:{id:'22222222-2222-4222-8222-222222222222'}},error:null});
+ state.getUser.mockResolvedValue({data:{user:{id:'11111111-1111-4111-8111-111111111111'}},error:null});
+ state.aal.mockResolvedValue({data:{currentLevel:'aal1'}});
+ state.factors.mockResolvedValue({data:{all:[]}});
+ state.enroll.mockResolvedValue({data:null,error:{message:'synthetic failure'}});
+});
+describe('Baseline observável dos P0, sem rede',()=>{
+ it('P0-1 conta diferente recebe redirecionamento para matrícula, sem signOut',async()=>{
+ const {POST}=await import('@/app/api/admin/auth/login/route');
+ const res=await POST(req('identity'));
+ expect(res.headers.get('location')).toContain('/mfa/setup');expect(state.signOut).not.toHaveBeenCalled();
+ });
+ it('P0-2 origem ausente e origem/host arbitrários são aceitos',()=>{
+ expect(validateAdminRequestOrigin(new Request('https://gradualinfo.com.br/api/admin/auth/login'))).toBe(true);
+ expect(validateAdminRequestOrigin(new Request('https://attacker.invalid/api/admin/auth/login',{headers:{origin:'https://attacker.invalid'}}))).toBe(true);
+ });
+ it('P0-3 novo módulo reinicia contador e x-forwarded-for altera chave',async()=>{
+ vi.resetModules(); const first=await import('@/app/api/admin/auth/login/route');
+ let res;for(let i=0;i<6;i++)res=await first.POST(req('distributed'));
+ expect(res.status).toBe(429);
+ vi.resetModules();const second=await import('@/app/api/admin/auth/login/route');
+ expect((await second.POST(req('distributed'))).status).toBe(303);
+ expect((await first.POST(req('changed-client-header'))).status).toBe(303);
+ });
+ it('P0-4 reconstrução perde atributos de cookies',async()=>{
+ const {POST}=await import('@/app/api/admin/auth/login/route');
+ const res=await POST(req('cookies'));
+ const header=res.headers.get('set-cookie') || '';
+ expect(header).not.toContain('HttpOnly');expect(header).not.toContain('Secure');expect(header).not.toContain('SameSite=');expect(header).not.toContain('Max-Age=');expect(header).toContain('Path=/');
+ });
+ it('P0-5 renderização do GET chama enroll repetidamente quando sem fator',async()=>{
+ await Setup({searchParams:Promise.resolve({})});await Setup({searchParams:Promise.resolve({})});
+ expect(state.enroll).toHaveBeenCalledTimes(2);
+ });
+});

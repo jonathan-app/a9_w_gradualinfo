@@ -3,7 +3,7 @@ node_modules/
 .pnp
 .pnp.js
 
-# next.js
+# Next.js
 .next/
 out/
 build/
@@ -15,6 +15,7 @@ open-next/
 .wrangler/
 cloudflare-env.d.ts
 .dev.vars
+.dev.vars.*
 
 # supabase
 supabase/.branches/
@@ -35,12 +36,27 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
-# `.env*` e não `.env*.local`: o padrão antigo não casava com backups como
-# `.env.local.bak`, que não terminam em `.local` — foi assim que três
-# backups com credenciais reais entraram no commit 10eecbc.
+
+# Environment files and backups
+# Blocks .env.local.bak and similar credential backups
 .env*
 !.env.example
-.vercel
+
+# Common secret / credential files
+*.key
+*.p12
+*.pfx
+*.keystore
+secrets/
+secrets.*
+credentials/
+credentials.*
+service-account*.json
+
+# Vercel
+.vercel/
+
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
@@ -61,16 +77,20 @@ yarn-error.log*
 .idea/
 
 # agents
-.agents/
+.agents/*
 !.agents/mcp.json
 .kilo/
-.kilo/worktrees
+.kilo/worktrees/
+.continue/
+.aws/
+
+# local templates / temporary material
 Temp_Modelos/
 
 # reports
 reports/
 !dist/.gitkeep
 
-# Downloaded locally by scripts/run-gitleaks.mjs (pin board, não backing source)
+# Downloaded locally by scripts/run-gitleaks.mjs
 .cache/
 security-reports/

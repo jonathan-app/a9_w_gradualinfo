@@ -133,4 +133,18 @@ export default defineConfig([
       'no-console': 'off',
     },
   },
+
+  {
+    // scripts/cloudflare-worker.ts importa o worker que o OpenNext gera em
+    // .open-next/ só durante `pnpm build`. O job `quality` da CI
+    // roda `check:all` (com o lint) antes de qualquer build, numa
+    // árvore sem .open-next: a regra não pode resolver um artefato
+    // que ainda não existe. Mesmo tratamento do `exclude` do
+    // tsconfig (scripts/**); o resto das regras continua valendo
+    // neste arquivo.
+    files: ['scripts/cloudflare-worker.ts'],
+    rules: {
+      'import/no-unresolved': 'off',
+    },
+  },
 ]);

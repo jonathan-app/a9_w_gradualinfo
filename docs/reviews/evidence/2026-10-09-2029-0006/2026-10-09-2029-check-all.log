@@ -1,0 +1,80 @@
+# pnpm check:all · 2026-10-09T20:30:59-03:00 · tree 9ef0f628b6eef85ca97ae9295b33e4f13343efee
+
+$ pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
+$ tsc --noEmit
+$ eslint .
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+$ vitest run
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/preview-failure-status.test.ts (12 tests) 84ms
+ ✓ __tests__/unit/admin-mfa-enrollment.test.ts (16 tests) 124ms
+ ✓ __tests__/unit/admin-e2e-guard.test.ts (3 tests) 105ms
+(node:198572) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node-22 --trace-warnings ...` to show where the warning was created)
+stderr | __tests__/unit/components/google-analytics.test.tsx > GoogleAnalytics > renderiza os scripts quando measurementId estiver configurado
+Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 110ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 112ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (15 tests) 34ms
+ ✓ __tests__/unit/admin-rate-limit.test.ts (17 tests) 108ms
+ ✓ __tests__/unit/admin-access.test.ts (33 tests) 293ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 445ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 309ms
+ ✓ __tests__/components/button.test.tsx (5 tests) 473ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 341ms
+ ✓ __tests__/unit/mfa-enrollment-ui.test.tsx (6 tests) 622ms
+   ✓ não consulta matrícula ao renderizar e pede POST somente no clique 414ms
+ ✓ __tests__/unit/sanity-client.test.ts (13 tests) 131ms
+ ✓ __tests__/unit/admin-rate-limit-protocol.test.ts (8 tests) 109ms
+ ✓ __tests__/unit/preview-security.test.ts (10 tests) 67ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 33ms
+ ✓ __tests__/unit/admin-session-response.test.ts (6 tests) 45ms
+ ✓ __tests__/unit/preview-auth-accessible.test.ts (10 tests) 31ms
+ ✓ __tests__/unit/components/admin-components.test.tsx (13 tests) 972ms
+ ✓ __tests__/unit/admin-hardening.test.ts (16 tests) 50ms
+ ✓ __tests__/unit/admin-logout.test.ts (3 tests) 33ms
+ ✓ __tests__/unit/admin-auth.test.ts (29 tests) 49ms
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 29ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 51ms
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 13ms
+ ✓ __tests__/unit/lib/format.test.ts (18 tests) 42ms
+ ✓ __tests__/lib/format.test.ts (7 tests) 38ms
+ ✓ __tests__/unit/preview-durable-object.test.ts (7 tests) 18ms
+ ✓ __tests__/unit/admin-access-worker.test.ts (5 tests) 15ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 19ms
+ ✓ __tests__/lib/cn.test.ts (6 tests) 11ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 7ms
+ ✓ __tests__/unit/logger.test.ts (3 tests) 8ms
+ ✓ __tests__/unit/audit-logger.test.ts (2 tests) 7ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 6714ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 529ms
+     ✓ rejeita missing 638ms
+     ✓ rejeita duplicate 475ms
+     ✓ rejeita extra 515ms
+     ✓ rejeita fail 519ms
+     ✓ rejeita unverifiable 532ms
+     ✓ rejeita missing-proof 515ms
+     ✓ rejeita bad-hash 452ms
+     ✓ rejeita blocker 333ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 351ms
+
+ Test Files  34 passed (34)
+      Tests  326 passed (326)
+   Start at  20:31:12
+   Duration  7.61s (environment 45%, tests 23%, setup 17%, import 8%, transform 6%, worker 2%)
+
+Environment  jsdom was created 34 times · 21.23s total, 45% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

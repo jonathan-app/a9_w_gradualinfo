@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
  *
  * @fileoverview Cabeçalho fixo do site.
  * @module components/layout/site-header
+ * @description Navegação pública com entrada para o login administrativo.
  * @dependencies next/link, components/shared/theme-toggle (folha client),
  *   components/ui/button.
  */
@@ -37,6 +38,11 @@ export function SiteHeader() {
           className="flex items-center gap-1">
           <Button asChild variant="ghost" size="sm">
             <Link href="/">Início</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/admin-dashboard/login" prefetch={false}>
+              Login
+            </Link>
           </Button>
         </nav>
 

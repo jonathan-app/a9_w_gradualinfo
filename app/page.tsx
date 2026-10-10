@@ -1,17 +1,17 @@
 /**
- * @fileoverview Home do site (`/`): artigo em destaque + grade dos últimos.
+ * @fileoverview Home do site (`/`): capa, dois destaques e lista de recentes.
  * @module app/page
  * @description Server Component dinâmico: busca 10 artigos publicados (1
- *   destaque + 9 na grade, limite definido na spec) com o cliente público —
+ *   capa + 2 destaques + 7 recentes, limite definido na spec) com o cliente público —
  *   leitor anônimo enxerga só o que já é publicado, porque a regra de
  *   visibilidade mora na consulta e no RLS. Sem artigos, cai para o estado
  *   vazio mantendo o H1 institucional.
  * @dependencies lib/services/posts (consulta), lib/supabase/server (cliente
- *   público), components/shared/post-card, app/artigos-vazios.
+ *   público), components/shared/editorial-story, app/artigos-vazios.
  */
 import { getPublishedPosts } from '@/lib/services/posts';
 import { createPublicClient } from '@/lib/supabase/server';
-import { PostCard } from '@/components/shared/post-card';
+import { EditorialStory } from '@/components/shared/editorial-story';
 import { ArtigosVazios } from './artigos-vazios';
 
 // No ar a cada requisição: a home não pode congelar no build com a lista da
@@ -30,47 +30,54 @@ export default async function HomePage() {
   // O limite na querie é de 10 artigos, como exigido na spec (1 destaque + 9 grade)
   const posts = await getPublishedPosts(supabase, 10);
 
-  if (!posts || posts.length === 0) {
-    return (
-      <div className="container max-w-6xl mx-auto py-10 px-4">
-        <h1 className="text-3xl font-bold mb-6">
-          Gradualinfo, tecnologia para estudar programação
-        </h1>
-        <ArtigosVazios />
-      </div>
-    );
-  }
-
-  // `posts[0]!` é seguro: o guard acima já devolveu quando a lista é vazia.
-  const featuredPost = posts[0];
-  const gridPosts = posts.slice(1);
+  const lead = posts[0];
+  const secondary = posts.slice(1, 3);
+  const recent = posts.slice(3);
 
   return (
-    <div className="container max-w-6xl mx-auto py-10 px-4 flex flex-col gap-12">
-      <h1 className="text-3xl font-bold">
+    <div data-editorial-layout="home" className="space-y-8">
+      <h1 className="border-b border-border pb-6 text-xl font-semibold tracking-tight">
         Gradualinfo, tecnologia para estudar programação
       </h1>
-      <section aria-label="Artigo em Destaque">
-        {/* `aria-label` nomeia a região para quem navega por landmarks; o h2
-            sr-only existe para quem navega por lista de cabeçalhos. Os dois
-            enxergam a mesma seção, que sem isso ficaria sem título. */}
-        <h2 className="sr-only">Artigo em Destaque</h2>
-        <PostCard post={featuredPost!} isFeatured />
-      </section>
-
-      {gridPosts.length > 0 && (
-        <section aria-labelledby="latest-articles-heading">
-          <h2
-            id="latest-articles-heading"
-            className="text-2xl font-semibold tracking-tight mb-6">
-            Últimos Artigos
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gridPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        </section>
+      {!lead ? (
+        <ArtigosVazios />
+      ) : (
+        <div className="editorial-highlights">
+          <section aria-labelledby="lead-heading" className="min-w-0">
+            <h2 id="lead-heading" className="sr-only">
+              Matéria de capa
+            </h2>
+            <EditorialStory post={lead} variant="lead" />
+          </section>
+          {secondary.length > 0 && (
+            <section
+              aria-labelledby="secondary-heading"
+              className="min-w-0 space-y-6">
+              <h2 id="secondary-heading" className="sr-only">
+                Destaques editoriais
+              </h2>
+              {secondary.map((post) => (
+                <EditorialStory key={post.id} post={post} variant="secondary" />
+              ))}
+            </section>
+          )}
+          {recent.length > 0 && (
+            <section
+              aria-labelledby="recent-heading"
+              className="editorial-recent min-w-0">
+              <h2
+                id="recent-heading"
+                className="mb-5 border-b border-border pb-3 text-lg font-semibold">
+                Artigos recentes
+              </h2>
+              <div className="space-y-5">
+                {recent.map((post) => (
+                  <EditorialStory key={post.id} post={post} variant="recent" />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       )}
     </div>
   );

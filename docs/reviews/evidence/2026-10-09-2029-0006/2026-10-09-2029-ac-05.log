@@ -1,0 +1,14 @@
+# AC-05 · motivo do UNVERIFIABLE · 2026-10-09T20:26:07-03:00
+
+O Durable Object PreviewSessionDO só responde quando o binding existe.
+Sob 'next start' puro (sem @opennextjs/cloudflare) o fallback é InMemoryPreviewSessionStore, que não falha fora de simulateFailure.
+Portanto não há alavanca de ambiente para provar na rede:
+ - 503 com DO indisponível durante a autorização
+ - 303 de logout só após persistência da revogação no DO
+ - rejeição com 404 da cópia de cookie reutilizada pós logout
+ - Max-Age=1800 no Set-Cookie (exige login válido, que exige o segredo real de preview, item que não deve trafegar em claro)
+
+Cobertura em unidade existe e está verde (check/editorial-sanity/2026-10-09-2010/TEST.md),
+mas unidade não é prova de rede. Prova exige Worker publicado com o binding, sem autorização de deploy.
+
+Estado: UNVERIFIABLE.

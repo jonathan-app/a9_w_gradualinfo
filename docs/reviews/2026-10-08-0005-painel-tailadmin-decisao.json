@@ -4,105 +4,105 @@
   "evaluatedTree": "93f9b546e12511cba58990e6428665d82745bfe6",
   "dirty": false,
   "spec": {
-    "path": "docs/specs/0007-painel-administrativo-tailadmin.md",
+    "path": "docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md",
     "sha256": "0f0714e462dfb8866d5dec4d9084a45d74f22e1cc431de5ff8d44a028fe8b9f6"
   },
   "acs": [
     {
       "id": "admin/AC-01",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-01.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-01.json",
       "evidenceSha256": "247127bf87415c6d65272f2562c74f3162fa6838fb5d4bba4a0844a70b943707",
       "note": "Acesso anônimo interceptado no servidor e redirecionado para /admin-dashboard/login (E2E)."
     },
     {
       "id": "admin/AC-02",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-02.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-02.json",
       "evidenceSha256": "e90f6472b6977a4ab0df98b763e197a03f53121c2cb1c5d79394af6a346fc954",
       "note": "UUID administrativo obrigatório no servidor (fail-closed) e negação a outros UUIDs com status HTTP 403 no layout e APIs (testes unitários + E2E)."
     },
     {
       "id": "admin/AC-03",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-03.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-03.json",
       "evidenceSha256": "e273b977457c4299a9c5a0ac75172dbd069c443f070ebaf37f3cd5ab345ad2aa",
       "note": "Guarda de autorização invocada de forma independente em Route Handlers de API (E2E: 401/403 sem auth + E2E autenticado)."
     },
     {
       "id": "admin/AC-04",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-04.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2343-ac-04.json",
       "evidenceSha256": "20e7367f3c999affc45f4a88228a266348cd13cf06973b2941cf218f09a77cf7",
       "note": "Escada de MFA restritiva comprovada via testes unitários, E2E com mock e integração real no Supabase local (login, setup TOTP, verify AAL1->AAL2 e preview). Validação remota no Supabase Cloud delimitada para deploy de produção."
     },
     {
       "id": "admin/AC-05",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-05.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2159-ac-05.json",
       "evidenceSha256": "64b14131580348c8dc949fe805e80b7d671297f9fc95a58a140120bcd1978d04",
       "note": "E2E empírico: sanitização de redirect (legítimo/falso/open), CSRF (Origin malicioso → 403), rate limiting (429 + error=rate_limited), logout seguro (303 + bloqueio pós-logout)."
     },
     {
       "id": "admin/AC-06",
       "status": "UNVERIFIABLE",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-06.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-06.json",
       "evidenceSha256": "c6516d345987136e3a61207abf1b39854727989402cccca42066e3215b68e948",
       "note": "E2E comprova ausência de links de cadastro na UI. Desabilitação no console Supabase depende de infraestrutura real (AC-14)."
     },
     {
       "id": "admin/AC-07",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-07.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-07.json",
       "evidenceSha256": "5987ee27ecd70f95109301f8ab0447737d4fb06d61a70b1d6d5407470088ebfd",
       "note": "Template original TailAdmin 2.4.0 preservado na pasta de referências com licença MIT."
     },
     {
       "id": "admin/AC-08",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-08.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-08.json",
       "evidenceSha256": "0e8571c7f3565ad8576fcd3b52b9222dac751393c15e94bbad7b12c9aa941355",
       "note": "Componentes adaptados em pt-BR e exclusão de gráficos/telas desnecessárias da árvore."
     },
     {
       "id": "admin/AC-09",
       "status": "UNVERIFIABLE",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-09.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-09.json",
       "evidenceSha256": "7b8f6bc3d49a435491d199637203895d7cc881bc4b5121c7cc54aae1cd977bd7",
       "note": "Árvore ativa limpa. 11 achados no histórico Git (commit 10eecbc) classificados individualmente em secrets-classification.md como chaves locais de demo/template; nenhuma chave de produção exposta."
     },
     {
       "id": "admin/AC-10",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-10.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-10.json",
       "evidenceSha256": "359146ec551dbe799a07df841bcc1141aa31afb4f1986922ce1a3db1eae2c1d3",
       "note": "Dashboard operacional provê atalho para Sanity Studio e disparo de preview seguro (testes unitários + E2E com AAL2)."
     },
     {
       "id": "admin/AC-11",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-11.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2159-ac-11.json",
       "evidenceSha256": "77f2b266b8136365d2b26a6c289cebe7df46dcd858115b808fa85d362703738d",
       "note": "E2E empírico: headers Cache-Control (private, no-store) e X-Robots-Tag (noindex, nofollow) em /login, /mfa/*, /admin-dashboard + robots.txt Disallow. Cobertura completa em todas as rotas administrativas."
     },
     {
       "id": "admin/AC-12",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-12.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2343-ac-12.json",
       "evidenceSha256": "086bbd696d552daef40e02e94fbcfadd4e14f337db6fdc4f25172a0835afbdbb",
       "note": "Logout via POST limpa cookies e encerra sessão no servidor (E2E com mock, E2E Supabase local e testes unitários). Revogação remota no Supabase Cloud delimitada."
     },
     {
       "id": "admin/AC-13",
       "status": "PASS",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-13.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2159-ac-13.json",
       "evidenceSha256": "3236a422a38ad72ccb0de19152e4c3e2c8b9d137523583e7d7b2ad8393f034c9",
       "note": "E2E empírico: Axe sem violações nos cenários testados + navegação por teclado em login, MFA setup, MFA verify e dashboard operacional."
     },
     {
       "id": "admin/AC-14",
       "status": "UNVERIFIABLE",
-      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/ac-14.json",
+      "evidence": "docs/reviews/evidence/2026-10-08-0005-painel-tailadmin/2026-10-08-2228-ac-14.json",
       "evidenceSha256": "a564393206b2ddb445b0a1a516105325235ed6531c3c0af16595ce50fbec6278",
       "note": "Cláusula de delimitação: console Supabase (cadastro desabilitado), histórico Git (segredos), Worker publicado (headers rotas protegidas, Axe dashboard) exigem infraestrutura real."
     }

@@ -5,6 +5,10 @@
  *   do operador via POST em /api/admin/auth/login. Não exibe links de cadastro de leitores nem login social.
  * @dependencies react, next/link, @/lib/admin/auth
  */
+import {
+  getAdminAccessLogoutUrl,
+  requireAdminAccessPage,
+} from '@/lib/admin/access-guard';
 
 import { sanitizeAdminRedirect } from '@/lib/admin/auth';
 import Link from 'next/link';
@@ -13,13 +17,22 @@ interface LoginPageProps {
   searchParams: Promise<{
     error?: string;
     redirectTo?: string;
+    signedOut?: string;
   }>;
 }
 
+/**
+ * Apresenta login Supabase após admissão Access.
+ * @param props - Parâmetros seguros de navegação.
+ * @returns Formulário administrativo privado.
+ */
 export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
+  await requireAdminAccessPage();
   const params = await searchParams;
   const safeRedirect = sanitizeAdminRedirect(params.redirectTo);
 
+  const accessLogoutUrl =
+    params.signedOut === '1' ? getAdminAccessLogoutUrl() : null;
   let errorMessage = '';
   if (params.error === 'invalid_credentials') {
     errorMessage = 'Credenciais inválidas. Verifique seu e-mail e senha.';
@@ -50,6 +63,12 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
             className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
             {errorMessage}
           </div>
+        )}
+
+        {accessLogoutUrl && (
+          <p className="mb-4 text-sm">
+            <a href={accessLogoutUrl}>Encerrar também a sessão de acesso</a>
+          </p>
         )}
 
         <form

@@ -54,6 +54,12 @@
       "sourceType": "github",
       "skillPath": "skills/test/SKILL.md",
       "computedHash": "87dd379cca618d8cb2ca3d5073ffa8be6755e5822e7834a3c0ebe06bd3853f1f"
+    },
+    "jwt-validate": {
+      "source": "jsonwebtoken/jwt-skills",
+      "sourceType": "github",
+      "skillPath": "jwt-validate/SKILL.md",
+      "computedHash": "1f489e962f7dd5ea3bf3c4319dd4b74e6b9439c8c0a3f20676bdbba89b6c98fc"
     }
   }
 }

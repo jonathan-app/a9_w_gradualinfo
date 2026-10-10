@@ -1,0 +1,15 @@
+# AC-04 · rotas de preview · 2026-10-09T20:23:15-03:00 · build next start :3101
+
+- GET /api/preview -> HTTP 405
+- GET /api/preview/logout -> HTTP 405
+- POST /api/preview -> HTTP 403
+- POST /api/preview/logout -> HTTP 403
+
+## POST /api/preview com origem divergente
+- Origin https://evil.example -> HTTP 403
+
+## POST /api/preview com segredo errado no corpo
+- secret errado -> HTTP 403
+
+## POST /api/preview com destino externo
+- destination externo -> HTTP 403

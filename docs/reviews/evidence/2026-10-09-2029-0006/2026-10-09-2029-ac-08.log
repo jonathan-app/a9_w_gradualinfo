@@ -1,0 +1,10 @@
+# AC-08 · motivo do UNVERIFIABLE · 2026-10-09T20:26:07-03:00
+
+A AC exige a retirada do Supabase da camada editorial e da auth de preview 'após validação 100% PASS do Sanity'.
+A validação 100% PASS não existe: o gate de hoje reprovou, e há ACs UNVERIFIABLE nesta própria rodada.
+O ramo de contingência Supabase continua no código de propósito (seção 6 da spec, plano de rollback).
+
+Medição: lib/services/posts.ts ainda contém o ramo isSanityActive() com consulta à tabela posts como fallback,
+e lib/preview/auth.ts mantém o caminho legado do Supabase Auth.
+
+Estado: UNVERIFIABLE (precondição não cumprida; retirar o fallback antes da validação quebraria o rollback planejado).

@@ -1,9 +1,14 @@
 {
+  "tool": "vitest",
   "framework": "vitest",
   "runner": "vitest",
+  "testDir": "__tests__",
   "unitDirectory": "__tests__",
-  "e2eDirectory": "e2e",
+  "filePattern": "**/*.test.ts?(x)",
+  "packageManager": "pnpm",
+  "e2eTool": "playwright",
   "e2eFramework": "playwright",
+  "e2eDirectory": "e2e",
   "componentTesting": "@testing-library/react",
   "a11y": true,
   "coverageThresholds": {

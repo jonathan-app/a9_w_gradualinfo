@@ -1,6 +1,9 @@
 /**
  * lib/env.ts — leitura única e tipada das variáveis de ambiente
  * @fileoverview Leitura tipada de variáveis de ambiente com default local.
+ * @module lib/env
+ * @description Centraliza configuração pública e leitura explícita de Access no Worker.
+ * @dependencies Env original do Worker e variáveis Node para configurações existentes.
  *
  * Por que este arquivo existe
  * - Um lugar só para saber o nome de cada variável (o `.env.example` documenta,
@@ -105,3 +108,63 @@ export const isSanityConfigured = Boolean(
     process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) &&
   (process.env.SANITY_DATASET || process.env.NEXT_PUBLIC_SANITY_DATASET),
 );
+
+/** Configuração Access recebida diretamente do Worker, sem snapshot global. */
+export interface AdminAccessConfig {
+  issuer: string;
+  audience: string;
+  ownerEmail: string;
+  hosts: readonly string[];
+}
+
+/**
+ * Lê configuração server only antes da inicialização do OpenNext.
+ * @param bindings - Env original ou contexto request scoped do Worker.
+ * @returns Configuração válida, ou null para falhar fechado.
+ */
+export function readAdminAccessConfig(
+  bindings: Record<string, unknown>,
+): AdminAccessConfig | null {
+  const issuer = bindings.ADMIN_ACCESS_ISSUER;
+  const audience = bindings.ADMIN_ACCESS_AUD;
+  const ownerEmail = bindings.ADMIN_ACCESS_OWNER_EMAIL;
+  const hostsValue = bindings.ADMIN_ACCESS_HOSTS;
+  if (
+    [issuer, audience, ownerEmail, hostsValue].some(
+      (value) => typeof value !== 'string' || !value || value !== value.trim(),
+    )
+  )
+    return null;
+  try {
+    const url = new URL(issuer as string);
+    if (
+      url.protocol !== 'https:' ||
+      !/^[a-z0-9-]+\.cloudflareaccess\.com$/.test(url.hostname) ||
+      url.origin !== issuer ||
+      url.username ||
+      url.password
+    )
+      return null;
+    if (!/^[^\s@]+@[^\s@]+$/.test(ownerEmail as string)) return null;
+    const hosts = (hostsValue as string)
+      .split(',')
+      .map((value) => value.trim());
+    if (
+      !hosts.length ||
+      hosts.some(
+        (host) =>
+          !/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(host) ||
+          host.includes('..'),
+      )
+    )
+      return null;
+    return Object.freeze({
+      issuer: issuer as string,
+      audience: audience as string,
+      ownerEmail: ownerEmail as string,
+      hosts: Object.freeze(hosts),
+    });
+  } catch {
+    return null;
+  }
+}

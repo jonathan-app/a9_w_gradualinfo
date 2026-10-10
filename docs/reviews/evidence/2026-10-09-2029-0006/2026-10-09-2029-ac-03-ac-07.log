@@ -1,0 +1,31 @@
+# AC-03 e AC-07 · bundle cliente e respostas · 2026-10-09T20:23:50-03:00
+
+## AC-03: variáveis privadas no bundle do cliente
+- arquivos em .open-next/assets/_next/static: 18
+- ocorrências de 'sanity.io' em assets _next/static: 0
+- ocorrências de 'Bearer ' em assets _next/static: 0
+- ocorrências do padrão SANITY_API_READ_TOKEN em assets: 1
+- ocorrências de 'SUPABASE_SERVICE_ROLE_KEY' em assets: 0
+- ocorrências do padrão de token JWT (eyJ) em _next/static: 0
+
+## AC-07: resíduo do domínio antigo e domínio oficial
+- HTML da home com 'gradualinfo.pages.dev': 0
+- HTML da home com 'gradualinfo.com.br': 0
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin-dashboard/
+
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://gradualinfo.com.br</loc>
+<lastmod>2026-10-09T23:23:50.295Z</lastmod>
+<changefreq>weekly</changefreq>
+<priority>1</priority>
+</url>
+
+## NEXT_PUBLIC_SITE_URL lida pelo build (nome da variável, sem valor)
+- presente no HTML da home: 0 ocorrências de 'canonical'
+- resíduo pages.dev em todo .open-next/assets: 0 arquivos

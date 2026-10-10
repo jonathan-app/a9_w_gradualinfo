@@ -1,0 +1,12 @@
+{
+  "app/admin-dashboard/mfa/setup/page.tsx": "85ebbe0784981af7cbeec018770af1f1990789721c6f968088c3b675a6fafeb4",
+  "app/admin-dashboard/mfa/verify/page.tsx": "80d175f242c61cd678c7e4b39fad71e87f4d6de8a1a7d0bca48794aa8c06e980",
+  "app/api/admin/auth/mfa/enroll/route.ts": "40386ef30c8a034973acf09dec1945b954fbbd456f1f80ce1ae1b1199cd58adb",
+  "app/api/admin/auth/mfa/verify/route.ts": "9bbb3b0dca3249ea59eaa25ddc39e9100f5b0bba65fe82ca484cca2e72efaf9d",
+  "lib/admin/auth.ts": "5e07dad757ef779d47e2563f6770eb0490a0bea235a85c80451e8b924dff56fb",
+  "proxy.ts": "e6ba8137fdf4f5f0628b13f14a262cc0b4b6d7ea840026ebd985978dd19ccbbf",
+  "components/admin/mfa-enrollment.tsx": "da9642addf8bc30c72ec511d971746b18af8a6c09ba1fbe730725ef3d63022fb",
+  "__tests__/unit/admin-mfa-enrollment.test.ts": "b0fd10ad4455331d2cd022db6d1ee9396d08ad8edcfbcfe8c4c105232debfcab",
+  "__tests__/unit/mfa-enrollment-ui.test.tsx": "43d3087167b48d0e7142b65288a5adf97b6483460b81a4c2e4d48446936a1f64",
+  "docs/specs/2026-10-09-0842-endurecimento-auth-admin.md": "aff5e2d08dd6f72a4c951ec9d0040f7d124464d8bb9a48c0e47040e1eac6f2ae"
+}

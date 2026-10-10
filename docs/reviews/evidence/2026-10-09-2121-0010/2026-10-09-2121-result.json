@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "spec": {
+    "path": "docs/specs/2026-10-09-2038-0010-layout-editorial-home-artigo.md",
+    "sha256": "86903d061239f991f94dd3843dc1148a96240012a9f2299359f6c15e70074c67"
+  },
+  "acs": [
+    {
+      "id": "layout-editorial/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-01.md",
+      "evidenceSha256": "fcbf47c582b5e10958cf63ba6a73a7f2ce57833ad2af139d1594d2fd16da9e5f"
+    },
+    {
+      "id": "layout-editorial/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-02.md",
+      "evidenceSha256": "eee9f169a9e91527d0a0e7f709aee62c536cf5122056a42fcc832554dcf2f12e"
+    },
+    {
+      "id": "layout-editorial/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-03.md",
+      "evidenceSha256": "633677b2339ab9410592497e04cd590eadcb4531689c4732b4da73b3a3be9921"
+    },
+    {
+      "id": "layout-editorial/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-04.md",
+      "evidenceSha256": "ded98852f3eb8c518d986b1b9a47630aac1010e7182179de2262da460db74c13"
+    },
+    {
+      "id": "layout-editorial/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-05.md",
+      "evidenceSha256": "715a15fc5660d409aa5d2d906acf0123ac50c1c97ed22b6d323a321c4c884364"
+    },
+    {
+      "id": "layout-editorial/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-06.md",
+      "evidenceSha256": "a5bdd7f7a7eaa4cae2e0e097e8dcb1142c30f8c388f79ab64645cee0d10e7b97"
+    },
+    {
+      "id": "layout-editorial/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-07.md",
+      "evidenceSha256": "3e9d1343ec10fe62457ca17e260ba947b41e6b6f80febec6fcb69b42495470d5"
+    },
+    {
+      "id": "layout-editorial/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-08.md",
+      "evidenceSha256": "686f9d2d5397459bb244ebd4b04d7319bc68e6371cd0aa362b731d694c314aba"
+    },
+    {
+      "id": "layout-editorial/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-09.md",
+      "evidenceSha256": "ae8f2676f22f8dc9b63660439375ed477d911c2e2b88fa59cac16f0823999a1a"
+    },
+    {
+      "id": "layout-editorial/AC-10",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2121-0010/2026-10-09-2121-ac-10.md",
+      "evidenceSha256": "60fd3bc8285257acfa3d7c0f4dde63915ec92557ae42cafd061d499102f59458"
+    }
+  ],
+  "findings": []
+}

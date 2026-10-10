@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "spec": {
+    "path": "docs/specs/2026-10-09-1632-0009-admissao-admin-access.md",
+    "sha256": "b9aebc507e7d9512f0775772daefd499b92a4e7881b268bcbe58083d9dcb1001"
+  },
+  "acs": [
+    {
+      "id": "admin-access/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-11",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-12",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    },
+    {
+      "id": "admin-access/AC-13",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2215-0009/2026-10-09-2215-evidence.log",
+      "evidenceSha256": "977c098bb0b763ac18405922fd40d5f2ad9b1e19a6014bcded7a213794b2dd13"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "AC-01, AC-02 e AC-13 exigem ambiente Cloudflare com Google Access, MFA independente e conta de teste. Não verificáveis localmente."
+    }
+  ]
+}

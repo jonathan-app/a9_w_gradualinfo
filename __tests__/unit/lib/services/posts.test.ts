@@ -25,6 +25,13 @@ vi.mock('next/headers', () => ({
     get: () => (cookie.value ? { value: cookie.value } : undefined),
   }),
 }));
+const mockSanityPublished = vi.hoisted(() => vi.fn());
+const mockSanityBySlug = vi.hoisted(() => vi.fn());
+vi.mock('@/lib/sanity/client', () => ({
+  getSanityPublishedPosts: (...args: unknown[]) => mockSanityPublished(...args),
+  getSanityPostBySlug: (...args: unknown[]) => mockSanityBySlug(...args),
+}));
+
 vi.mock('@/lib/env', () => ({
   env: {
     supabase: { url: 'http://127.0.0.1:54321', anonKey: 'test-anon-key' },
@@ -32,6 +39,10 @@ vi.mock('@/lib/env', () => ({
     previewPassword: 'different-account-password',
     previewEmail: 'test@example.invalid',
     previewUserId: '11111111-1111-4111-8111-111111111111',
+    sanity: {
+      projectId: '',
+      dataset: '',
+    },
   },
 }));
 import {
@@ -39,6 +50,7 @@ import {
   getPostBySlug,
   isPreviewSession,
 } from '@/lib/services/posts';
+import { env } from '@/lib/env';
 
 describe('Posts Service', () => {
   let supabaseMock: any;
@@ -218,6 +230,69 @@ describe('Posts Service', () => {
       expect(queryBuilderMock.lte).not.toHaveBeenCalledWith(
         'published_at',
         expect.any(String),
+      );
+    });
+
+    it('propaga exceção quando a consulta por slug no Supabase falha com erro', async () => {
+      queryBuilderMock.maybeSingle.mockResolvedValue({
+        data: null,
+        error: new Error('Falha no banco ao buscar por slug'),
+      });
+
+      await expect(getPostBySlug(supabaseMock, 'post-erro')).rejects.toThrow(
+        'Falha no banco ao buscar por slug',
+      );
+    });
+  });
+
+  describe('Integração com Sanity (quando configurado no env)', () => {
+    beforeEach(() => {
+      (env as any).sanity.projectId = 'sanity-project-id';
+      (env as any).sanity.dataset = 'production';
+    });
+
+    afterEach(() => {
+      (env as any).sanity.projectId = '';
+      (env as any).sanity.dataset = '';
+    });
+
+    it('getPublishedPosts delega para getSanityPublishedPosts quando Sanity estiver ativo', async () => {
+      mockSanityPublished.mockResolvedValueOnce([
+        { id: '1', title: 'Post Sanity', slug: 'post-sanity' },
+      ]);
+
+      const posts = await getPublishedPosts(supabaseMock, 5);
+      expect(posts).toHaveLength(1);
+      expect(mockSanityPublished).toHaveBeenCalledWith(5);
+    });
+
+    it('getPostBySlug delega para getSanityPostBySlug quando Sanity estiver ativo', async () => {
+      mockSanityBySlug.mockResolvedValueOnce({
+        id: '2',
+        title: 'Slug Sanity',
+        slug: 'slug-sanity',
+      });
+
+      const post = await getPostBySlug(supabaseMock, 'slug-sanity');
+      expect(post?.title).toBe('Slug Sanity');
+      expect(mockSanityBySlug).toHaveBeenCalledWith('slug-sanity', {
+        isPreview: false,
+      });
+    });
+  });
+
+  describe('Tratamento de Erros em getPublishedPosts', () => {
+    it('propaga exceção quando a consulta de lista no Supabase falha com erro', async () => {
+      (env as any).sanity.projectId = '';
+      (env as any).sanity.dataset = '';
+
+      queryBuilderMock.limit.mockResolvedValue({
+        data: null,
+        error: new Error('Erro de conexão ao banco de dados'),
+      });
+
+      await expect(getPublishedPosts(supabaseMock, 10)).rejects.toThrow(
+        'Erro de conexão ao banco de dados',
       );
     });
   });

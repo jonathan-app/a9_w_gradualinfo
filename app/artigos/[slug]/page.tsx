@@ -13,8 +13,8 @@
  *   JSON-LD), react-markdown + remark-gfm (renderização), next/image,
  *   components/ui/badge.
  */
-import Image from 'next/image';
-import { coverImageUrl } from '@/lib/editorial-images';
+import { EditorialCover } from '@/components/shared/editorial-cover';
+import { approvedCoverImageUrl, coverImageUrl } from '@/lib/editorial-images';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import ReactMarkdown from 'react-markdown';
@@ -144,31 +144,43 @@ export default async function ArticlePage(props: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+      <div data-editorial-layout="article" className="mx-auto max-w-[720px]">
         <header className="mb-8 flex flex-col items-start gap-4">
+          <a href="/" className="text-sm underline underline-offset-4">
+            Início
+          </a>
           <Badge variant="secondary" className="text-brand-700 bg-brand-50">
             {post.editoria}
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
             {post.title}
           </h1>
+          {post.excerpt && (
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              {post.excerpt}
+            </p>
+          )}
+          {(post.author_name || publishedAt) && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              {post.author_name && <span>{post.author_name}</span>}
+              {publishedAt && (
+                <time dateTime={post.published_at!}>{publishedAt}</time>
+              )}
+            </div>
+          )}
         </header>
 
-        {post.cover_image_url && (
+        {
           <div className="w-full aspect-video relative overflow-hidden bg-muted mb-12 rounded-card border border-border">
-            <Image
-              src={coverImageUrl(post.cover_image_url)}
-              alt={`Capa do artigo ${post.title}`}
-              className="object-cover w-full h-full"
-              fill
-              unoptimized
-              sizes="(min-width: 768px) 896px, 100vw"
-              loading="eager"
+            <EditorialCover
+              src={approvedCoverImageUrl(post.cover_image_url)}
+              priority
+              sizes="(min-width: 768px) 720px, 100vw"
             />
           </div>
-        )}
+        }
 
-        <article className="prose prose-slate prose-lg dark:prose-invert max-w-none mb-12">
+        <article className="editorial-body prose prose-slate prose-lg dark:prose-invert max-w-none mb-12">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -200,17 +212,6 @@ export default async function ArticlePage(props: Props) {
             </ul>
           </section>
         )}
-        <footer className="mt-8">
-          <div className="flex items-center gap-2 text-muted-foreground text-sm">
-            <span>{post.author_name}</span>
-            {publishedAt && (
-              <>
-                <span aria-hidden="true">&middot;</span>
-                <time dateTime={post.published_at || ''}>{publishedAt}</time>
-              </>
-            )}
-          </div>
-        </footer>
       </div>
     </>
   );

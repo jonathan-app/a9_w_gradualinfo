@@ -655,3 +655,11 @@ describe('Painel Administrativo — Autorização e MFA (Spec 0007)', () => {
     });
   });
 });
+
+// Esta suíte isola a camada já admitida; admissão criptográfica tem suíte própria.
+vi.mock('@/lib/admin/access-guard', () => ({
+  guardAdminAccess: () => null,
+  requireAdminAccessPage: () => {},
+  getAdminAccessLogoutUrl: () =>
+    'https://admin.example.test/cdn-cgi/access/logout',
+}));

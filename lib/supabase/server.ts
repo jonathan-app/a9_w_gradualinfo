@@ -1,7 +1,14 @@
+/**
+ * @fileoverview Cliente SSR por requisição com propagação integral dos cookies.
+ * @module lib/supabase/server
+ * @description Mantém o SDK como fonte das opções e permite capturá-las em Route Handlers.
+ * @dependencies @supabase/ssr, next/headers, lib/env.
+ */
 import 'server-only';
 
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
+import type { CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { env } from '@/lib/env';
 
@@ -21,10 +28,15 @@ import { env } from '@/lib/env';
  * clássico de esquecer o await e receber `{}` em vez de cookie.
  *
  * @fileoverview Cliente Supabase do servidor, com sessão em cookie.
+ * @param onCookies - Captura opcional das opções de escrita do SDK para a resposta final.
  * @returns Cliente `@supabase/ssr` com `getAll`/`setAll` encaixados no cookie
  *   store desta requisição; nenhum parâmetro — tudo vem de `env` e dos cookies.
  */
-export async function createClient() {
+export async function createClient(
+  onCookies?: (
+    updates: Array<{ name: string; value: string; options: CookieOptions }>,
+  ) => void,
+) {
   const cookieStore = await cookies();
 
   // A simulação por cookie é instrumento de teste: ativa APENAS em desenvolvimento
@@ -166,6 +178,8 @@ export async function createClient() {
       // tem permissão de escrita. O `try/catch` existe porque o Supabase não
       // trata o erro de cookie readonly.
       setAll(cookiesToSet) {
+        // O SDK fornece opções que getAll() de cookies recebidos não consegue recuperar.
+        onCookies?.(cookiesToSet);
         try {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set(name, value, options),

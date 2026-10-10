@@ -1,6 +1,6 @@
 # Validação das correções locais
 
-Contrato de autorização: `docs/specs/0003-preview-autorizacao.md`, Accepted. As correções preservam a autorização existente, sem introduzir papéis ou rotas novas.
+Contrato de autorização: `docs/specs/2026-10-07-1040-0003-preview-autorizacao.md`, Accepted. As correções preservam a autorização existente, sem introduzir papéis ou rotas novas.
 
 ## Resultados
 

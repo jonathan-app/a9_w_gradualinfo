@@ -230,3 +230,10 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
     });
   });
 });
+
+// A suíte de componentes pressupõe admissão; a fronteira tem testes separados.
+vi.mock('@/lib/admin/access-guard', () => ({
+  requireAdminAccessPage: async () => {},
+  getAdminAccessLogoutUrl: () => null,
+  guardAdminAccess: () => null,
+}));

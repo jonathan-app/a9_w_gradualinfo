@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "spec": {
+    "path": "docs/specs/2026-10-09-1632-0009-admissao-admin-access.md",
+    "sha256": "b9aebc507e7d9512f0775772daefd499b92a4e7881b268bcbe58083d9dcb1001"
+  },
+  "acs": [
+    {
+      "id": "admin-access/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-10",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-11",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-12",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-13",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "Bundle .open-next anterior ao layout atual; dry-run n\u00e3o equivale a build fresco."
+    }
+  ]
+}

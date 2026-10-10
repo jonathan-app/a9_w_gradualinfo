@@ -1,0 +1,28 @@
+{
+  "ac": "md-0002/AC-07",
+  "generatedAt": "2026-10-08T16:06:02.808Z",
+  "source": {
+    "run": "E2E produção local (playwright, E2E_PRODUCTION=1, jwt_expiry=60, fault proxy)",
+    "stats": {
+      "startTime": "2026-10-08T13:28:18.843Z",
+      "duration": 114925.231,
+      "expected": 34,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "resultsFile": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e-results.json",
+    "log": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e.log"
+  },
+  "tests": [
+    {
+      "file": "verify-md0002-tarefa5.spec.ts",
+      "describe": "artigo, JSON-LD e sitemap, contrato md-0002",
+      "title": "md-0002/AC-07: inexistente, rascunho e agendado devolvem 404",
+      "status": "passed",
+      "duration": 322
+    }
+  ],
+  "supplementary": null,
+  "note": "Inexistente, rascunho e agendado com toBe(404) estrito — teste PASS."
+}

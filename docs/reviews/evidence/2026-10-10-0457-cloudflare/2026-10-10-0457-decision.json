@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "spec": {
+    "path": "docs/specs/2026-10-09-1632-0009-admissao-admin-access.md",
+    "sha256": "b9aebc507e7d9512f0775772daefd499b92a4e7881b268bcbe58083d9dcb1001"
+  },
+  "acs": [
+    {
+      "id": "admin-access/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-10",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-11",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-12",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    },
+    {
+      "id": "admin-access/AC-13",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-10-0457-cloudflare/2026-10-10-0457-local.md",
+      "evidenceSha256": "8893274d1aade0dc51e09b502acfc7d64cbdc184d0f31ddd49624daba0784111"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "Bundle .open-next anterior ao layout atual; dry-run não equivale a build fresco."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 13,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNVERIFIABLE": 13,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 1
+  },
+  "reasons": [
+    "AC sem PASS: admin-access/AC-01",
+    "AC sem PASS: admin-access/AC-02",
+    "AC sem PASS: admin-access/AC-03",
+    "AC sem PASS: admin-access/AC-04",
+    "AC sem PASS: admin-access/AC-05",
+    "AC sem PASS: admin-access/AC-06",
+    "AC sem PASS: admin-access/AC-07",
+    "AC sem PASS: admin-access/AC-08",
+    "AC sem PASS: admin-access/AC-09",
+    "AC sem PASS: admin-access/AC-10",
+    "AC sem PASS: admin-access/AC-11",
+    "AC sem PASS: admin-access/AC-12",
+    "AC sem PASS: admin-access/AC-13"
+  ]
+}

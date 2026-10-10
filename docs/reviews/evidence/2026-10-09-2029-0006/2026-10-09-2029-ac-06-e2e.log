@@ -1,0 +1,11 @@
+# AC-06 · E2E de produção contra build real · 2026-10-09T20:27:05-03:00
+Comando: E2E_PRODUCTION=1 E2E_TLS_KEY=./localhost-key.pem E2E_TLS_CERT=./localhost-cert.pem E2E_BASE_URL=https://localhost:3100 npx playwright test e2e/editorial-sanity.spec.ts --reporter=line
+
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium] › e2e/editorial-sanity.spec.ts:13:7 › Rotas Editoriais — Comportamento de Rede e 404 Real no Servidor › slug de artigo inexistente devolve status HTTP 404 real na rede
+[2/4] [chromium] › e2e/editorial-sanity.spec.ts:28:7 › Rotas Editoriais — Comportamento de Rede e 404 Real no Servidor › tentativa de acesso direto a rascunho sem preview devolve HTTP 404 real
+[3/4] [chromium] › e2e/editorial-sanity.spec.ts:39:7 › Rotas Editoriais — Comportamento de Rede e 404 Real no Servidor › respostas de erro 404 emitem cabeçalho de cache no-store
+[4/4] [chromium] › e2e/editorial-sanity.spec.ts:53:7 › Rotas Editoriais — Comportamento de Rede e 404 Real no Servidor › home pública responde HTTP 200 com headers de segurança
+  4 passed (5.2s)

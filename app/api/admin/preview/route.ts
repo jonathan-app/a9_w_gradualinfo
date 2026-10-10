@@ -6,6 +6,7 @@
  *   Cria a sessão no Durable Object com consistência forte e assina o cookie de preview.
  * @dependencies next/server, @/lib/admin/auth, @/lib/env, @/lib/preview/config, @/lib/preview/durable-object, @/lib/preview/session, @/lib/site-config
  */
+import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import { assertAdminApiAuth } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
@@ -20,6 +21,8 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
+  const admissionFailure = guardAdminAccess(request);
+  if (admissionFailure) return admissionFailure;
   // 1. Guarda estrita de autorização administrativa (UUID + AAL2 + Origem)
   const auth = await assertAdminApiAuth(request);
   if (!auth.ok) {

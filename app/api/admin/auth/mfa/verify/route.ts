@@ -6,6 +6,7 @@
  *   para AAL2 e redireciona estritamente para caminhos sanitizados.
  * @dependencies next/server, @/lib/admin/auth, @/lib/env, @/lib/supabase/server
  */
+import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import {
   resolveSafeRedirectBase,
@@ -13,42 +14,24 @@ import {
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
 import { env } from '@/lib/env';
-import { createClient } from '@/lib/supabase/server';
-import { cookies } from 'next/headers';
+import { createAdminSessionResponse } from '@/lib/admin/session-response';
 import { NextResponse } from 'next/server';
+import {
+  consumeAdminRateLimit,
+  adminRateLimitResponse,
+} from '@/lib/admin/rate-limit';
 
-// Rate limiting em memória para proteger contra força bruta em códigos TOTP de 6 dígitos
-const mfaAttempts = new Map<string, { count: number; resetAt: number }>();
-
-function isMfaRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = mfaAttempts.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    mfaAttempts.set(ip, { count: 1, resetAt: now + 60000 });
-    return false;
-  }
-
-  entry.count += 1;
-  return entry.count > 5;
-}
-
+/**
+ * Valida desafio somente para a identidade administrativa autorizada.
+ * @param request - Origem, fator e código submetidos.
+ * @returns Resposta privada com os cookies de elevação preservados.
+ */
 export async function POST(request: Request) {
+  const admissionFailure = guardAdminAccess(request);
+  if (admissionFailure) return admissionFailure;
   // 1. Validação estrita de origem contra CSRF
   if (!validateAdminRequestOrigin(request)) {
     return new NextResponse('Origem não permitida.', { status: 403 });
-  }
-
-  // 2. Limitação de taxa contra força bruta
-  const ip =
-    request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for') ||
-    'local';
-  if (isMfaRateLimited(ip)) {
-    return new NextResponse('Muitas tentativas. Aguarde um minuto.', {
-      status: 429,
-      headers: { 'Cache-Control': 'private, no-store' },
-    });
   }
 
   // 3. Verificação de fail-closed e usuário autenticado
@@ -60,7 +43,7 @@ export async function POST(request: Request) {
     });
   }
 
-  const supabase = await createClient();
+  const { supabase, finish } = await createAdminSessionResponse();
   const { data: authData, error: authError } = await supabase.auth.getUser();
 
   if (authError || !authData.user || authData.user.id !== adminId) {
@@ -69,6 +52,14 @@ export async function POST(request: Request) {
       headers: { 'Cache-Control': 'private, no-store' },
     });
   }
+
+  // Só a identidade autorizada pode consumir a quota de desafio compartilhada.
+  const rateResponse = adminRateLimitResponse(
+    request,
+    await consumeAdminRateLimit('mfa'),
+    'mfa',
+  );
+  if (rateResponse) return finish(rateResponse);
 
   let code: string;
   let factorId: string;
@@ -109,12 +100,7 @@ export async function POST(request: Request) {
   fallbackUrl.searchParams.set('redirectTo', safeRedirect);
 
   const createRedirectWithCookies = async (target: URL) => {
-    const res = NextResponse.redirect(target, 303);
-    const cookieStore = await cookies();
-    cookieStore.getAll().forEach((c) => {
-      res.cookies.set(c.name, c.value);
-    });
-    return res;
+    return finish(NextResponse.redirect(target, 303));
   };
 
   if (!code || !/^\d{6}$/.test(code)) {
@@ -168,6 +154,27 @@ export async function POST(request: Request) {
     factorId = matchedFactor.id;
   }
 
+  // O identificador recebido nunca substitui a prova de propriedade do fator.
+  const { data: ownedFactors, error: ownedError } =
+    await supabase.auth.mfa.listFactors();
+  if (
+    ownedError ||
+    !ownedFactors?.all.some(
+      (f: { id: string; factor_type: string }) =>
+        f.id === factorId && f.factor_type === 'totp',
+    )
+  ) {
+    return finish(
+      NextResponse.json(
+        { ok: false, error: 'invalid_factor' },
+        {
+          status: 400,
+          headers: { 'Cache-Control': 'private, no-store' },
+        },
+      ),
+    );
+  }
+
   // 5. Execução do desafio e elevação da sessão para AAL2
   const { error: verifyError } = await supabase.auth.mfa.challengeAndVerify({
     factorId,
@@ -185,14 +192,30 @@ export async function POST(request: Request) {
     );
   }
 
+  const { data: elevated, error: elevationError } =
+    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (elevationError || elevated?.currentLevel !== 'aal2') {
+    return finish(
+      NextResponse.json(
+        { ok: false, error: 'mfa_unavailable' },
+        {
+          status: 503,
+          headers: { 'Cache-Control': 'private, no-store' },
+        },
+      ),
+    );
+  }
+
   // 6. Sucesso: redireciona para destino sanitizado
   if (isForm) {
     const targetUrl = new URL(safeRedirect, baseUrl);
     return await createRedirectWithCookies(targetUrl);
   }
 
-  return NextResponse.json(
-    { ok: true, redirectTo: safeRedirect },
-    { status: 200, headers: { 'Cache-Control': 'private, no-store' } },
+  return finish(
+    NextResponse.json(
+      { ok: true, redirectTo: safeRedirect },
+      { status: 200, headers: { 'Cache-Control': 'private, no-store' } },
+    ),
   );
 }

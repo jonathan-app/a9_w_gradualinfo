@@ -7,15 +7,15 @@
 
 ## Identidade
 
-- Spec: `docs/specs/md-0002-casca-editorial-home.md` (status **Accepted**, revisão 2; sha256 `266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564`)
+- Spec: `docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md` (status **Accepted**, revisão 2; sha256 `266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564`)
 - Branch/PR: `feat/md-0002-casca-editorial-home` → PRs #22 e #23 (mergeados em `origin/main`, cabeça `f888d05`)
 - SHA verificado: `2bcea1ddb429c1988b211923a17eb25df9dbaa48` (árvore `2ac9eb05cda26c90dd25f7925799a1c175bb9bff`; o relatório só vale para ESTE hash)
 - Data: 2026-10-08; Verificador: agente `/check` (opencode, big-pickle)
-- Árvore no momento do artefato: **suja** (13 modificados + 11 untracked — bump de dependências e correções de outra sessão, correções P0 de segredos desta sessão e os artefatos do próprio check). Manifesto: `docs/reviews/evidence/2026-10-08-md0002-revalidacao/manifesto-trabalho.json`.
+- Árvore no momento do artefato: **suja** (13 modificados + 11 untracked — bump de dependências e correções de outra sessão, correções P0 de segredos desta sessão e os artefatos do próprio check). Manifesto: `docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-manifesto-trabalho.json`.
 
 ## Modo VERIFY — cada AC, provado
 
-**Proveniência da evidência de runtime (reuso justificado):** nenhum arquivo de `app/ lib/ components/ hooks/ e2e/ supabase/ scripts/ __tests__` tem mtime posterior ao `e2e.log` do run 34/34 — o código exercitado é byte a byte o código atual. As mudanças novas desde o run são apenas documentais (`AGENTS.md`, `docs/scope/0001`, `docs/specs/INDICE.md`, `workflow/STATE.md`), sem impacto nos ACs. Gates de estática/build foram **reexecutados agora** (seção Regressão).
+**Proveniência da evidência de runtime (reuso justificado):** nenhum arquivo de `app/ lib/ components/ hooks/ e2e/ supabase/ scripts/ __tests__` tem mtime posterior ao `e2e.log` do run 34/34 — o código exercitado é byte a byte o código atual. As mudanças novas desde o run são apenas documentais (`AGENTS.md`, `docs/scope/0001`, `docs/specs/2026-10-08-2228-INDICE.md`, `workflow/STATE.md`), sem impacto nos ACs. Gates de estática/build foram **reexecutados agora** (seção Regressão).
 
 | AC    | Prova (comando/saída/evidência)                                                                                                                                                                            | Resultado esperado                             | Status |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------ |
@@ -54,7 +54,7 @@ Contexto: `origin/main...HEAD` contém apenas `docs.zip` (feature já em `main` 
 
 Observações de review (WARNINGs/INFOs do artefato):
 
-1. `docs/specs/INDICE.md` (linha 25, ainda editada hoje às 12:40) lista `md-0002` como `Proposed` × spec `Accepted` (linha 4) — índice desatualizado.
+1. `docs/specs/2026-10-08-2228-INDICE.md` (linha 25, ainda editada hoje às 12:40) lista `md-0002` como `Proposed` × spec `Accepted` (linha 4) — índice desatualizado.
 2. Árvore suja: 13 modificados + 11 untracked (manifesto com hashes); evidências de runtime vêm do run anterior porque o código não mudou (proveniência acima).
 3. Artefato anterior `2026-10-07-check-producao-local-axe-decisao.json` aponta caminhos externos (`/home/jonathan/.gemini/...`) — não serve como prova; substituído por esta execução.
 4. `docs.zip` duplica 63 arquivos de `docs/` em binário (decisão do dono: manter); ZIP extraído: 0 segredos.
@@ -97,11 +97,11 @@ Itens a corrigir antes de novo `/check`:
 
 1. **P0 — /develop:** compatibilidade do eslint (reverter a 9.x ou atualizar `eslint-plugin-react`); repetir `pnpm check:all` até exit 0.
 2. **P0 — decisão do usuário:** forço de `origin/feat/md-0002-casca-editorial-home` + rotação de `SUPABASE_SERVICE_ROLE_KEY`/`SUPABASE_PREVIEW_*`; repetir `pnpm security:secrets` até exit 0.
-3. **P1:** `docs/specs/INDICE.md` (`md-0002` → `Accepted`).
+3. **P1:** `docs/specs/2026-10-08-2228-INDICE.md` (`md-0002` → `Accepted`).
 
 ## Artefato do gate
 
-- `node scripts/check-decision.mjs docs/reviews/2026-10-08-md0002-revalidacao-resultado.json` → exit 1, saída transcrita acima (13 ACs com evidência + hash conferidos, contrato `schemaVersion: 1`).
+- `node scripts/check-decision.mjs docs/reviews/2026-10-08-2228-2026-10-08-md0002-revalidacao-resultado.json` → exit 1, saída transcrita acima (13 ACs com evidência + hash conferidos, contrato `schemaVersion: 1`).
 - `node scripts/check-gate.mjs … --commit 2bcea1d…` → **Bloqueado: Árvore suja** (exit 1); mesmo com árvore limpa recusaria por `Decisão … REPROVADA`.
 - Evidências: `docs/reviews/evidence/2026-10-08-md0002-revalidacao/` (13 `ac-NN.json`, manifesto, logs `*-rerun.log` e corridas de apoio).
 

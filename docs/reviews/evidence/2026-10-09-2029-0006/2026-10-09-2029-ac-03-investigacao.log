@@ -1,0 +1,11 @@
+# Investigação: SANITY_API_READ_TOKEN nos assets · 2026-10-09T20:24:08-03:00
+
+## Arquivos que contêm o nome
+.open-next/assets/_next/static/chunks/32ev0pvo51kjo.js
+
+## Contém também o VALOR do token? (contagem apenas, valor nunca exibido)
+tamanho_do_token_em_env_local: 180
+arquivos_com_o_valor_do_token: 0
+
+## Contexto do nome (só 120 caracteres, valor substituido por [REDACTED])
+nv.SANITY_API_VERSION??"2024-01-01",readToken:s.default.env.[REDACTED]??""},gaMeasurementId:s.default.env.[REDACTED]

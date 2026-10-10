@@ -1,12 +1,12 @@
 # Validação Operacional: 0006-transicao-editorial-sanity
 
-> Registro formal de evidências empíricas, testes contra build de produção e delimitações da spec 0006 (`docs/specs/0006-transicao-editorial-sanity.md`).
+> Registro formal de evidências empíricas, testes contra build de produção e delimitações da spec 0006 (`docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md`).
 
 ---
 
 ## 1. Identidade e Versão
 
-- **Spec**: [`docs/specs/0006-transicao-editorial-sanity.md`](file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/docs/specs/0006-transicao-editorial-sanity.md) (Status: `Accepted`)
+- **Spec**: [`docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md`](file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md) (Status: `Accepted`)
 - **Branch**: `feat/transicao-editorial-sanity`
 - **Data**: 2026-10-09
 - **Frameworks de Teste**: Vitest 4.1 (jsdom/node), Playwright 1.63 (Chromium) e OpenNext / Next.js 16.4

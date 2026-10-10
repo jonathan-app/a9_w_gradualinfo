@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "workingTreeDirty": true,
+  "spec": {
+    "path": "docs/specs/2026-10-09-0842-endurecimento-auth-admin.md",
+    "sha256": "aff5e2d08dd6f72a4c951ec9d0040f7d124464d8bb9a48c0e47040e1eac6f2ae"
+  },
+  "acs": [
+    {
+      "id": "admin-mfa/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-01.md",
+      "evidenceSha256": "aa2a62ebc07d5a9400fb81cabc48c436278d160eea2551af875f321c4a1d1afd"
+    },
+    {
+      "id": "admin-mfa/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-02.md",
+      "evidenceSha256": "e7ed940fa85bf6de28982038a0554cd0ea65a0bf32c30c997fd617f708a58688"
+    },
+    {
+      "id": "admin-mfa/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-03.md",
+      "evidenceSha256": "74426fa3eb637ba633858c9569f79153a0689e92078245ea6c98c8d907e7d5e8"
+    },
+    {
+      "id": "admin-mfa/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-04.md",
+      "evidenceSha256": "e36e3a3f7ddecb79a9f2b64ad1e931eaaf3ea0deb17a80ab224cc57b7a746410"
+    },
+    {
+      "id": "admin-mfa/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-05.md",
+      "evidenceSha256": "20bc93643175bd0d2f85b1bf18d1380c02cd15fadef2aa1b3c326445b1e9b598"
+    },
+    {
+      "id": "admin-mfa/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-06.md",
+      "evidenceSha256": "7971542d5e8f6bf51f54360aba64088a69f2b9465d4e92e14dec62f7a53190d1"
+    },
+    {
+      "id": "admin-mfa/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-1536-admin-mfa/2026-10-09-1536-AC-07.md",
+      "evidenceSha256": "2e7f79be9c8e78e37dc88f9c99ed284f6f8a18cd5f4fe4e1a56c0aa09311470e"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "Ambiente impede execução real: servidor local listen EPERM; reexecuções ampliadas aguardam permissão. Nenhum defeito da aplicação foi demonstrado por esse bloqueio."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 7,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNVERIFIABLE": 7,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 1
+  },
+  "reasons": [
+    "AC sem PASS: admin-mfa/AC-01",
+    "AC sem PASS: admin-mfa/AC-02",
+    "AC sem PASS: admin-mfa/AC-03",
+    "AC sem PASS: admin-mfa/AC-04",
+    "AC sem PASS: admin-mfa/AC-05",
+    "AC sem PASS: admin-mfa/AC-06",
+    "AC sem PASS: admin-mfa/AC-07"
+  ]
+}

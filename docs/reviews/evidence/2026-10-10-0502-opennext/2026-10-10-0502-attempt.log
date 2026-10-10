@@ -1,0 +1,4 @@
+OpenNext 1.20.9 / Next 16.4.0: build iniciado, aguardou comando pnpm build:next sem saída; encerrado por Ctrl-C, exit 130.
+Next direto --turbopack: exit 1, creating new process / binding to a port / Operation not permitted (os error 1), app/globals.css.
+Build OpenNext completo fora do sandbox solicitado, pendente.
+Não executado dry-run do artefato antigo nesta rodada. Nenhum deploy/configuração remota/merge realizado.

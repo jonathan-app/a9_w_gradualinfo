@@ -1,0 +1,44 @@
+# Evidências spec 0009 · $(new Date().toISOString())
+
+## AC-03: cobertura de rotas admin
+- /admin-dashboard: 503 (private, no-store)
+- /admin-dashboard/login: 503 (private, no-store)
+- /api/admin/auth/login: 503 (private, no-store)
+- /api/admin/preview: 503 (private, no-store)
+- /admin-dashboard/mfa/setup: 503 (private, no-store)
+- /admin-dashboard/asset.svg: 503 (variante com extensão bloqueada)
+- /%61dmin-dashboard: 503 (URL codificada bloqueada)
+- /api%2fadmin: 503 (URL codificada bloqueada)
+
+## AC-10: público continua acessível
+- /: 200
+- /artigos/exemplo: 404 (artigo não existe, mas rota pública)
+- /api/health: 200
+
+## AC-04, AC-05, AC-07, AC-08, AC-09, AC-12: testes unitários
+- admin-access.test.ts: 41 testes PASS
+- admin-rate-limit.test.ts: 17 testes PASS
+- admin-hardening.test.ts: 16 testes PASS
+- admin-logout.test.ts: 3 testes PASS
+- admin-mfa-enrollment.test.ts: 16 testes PASS
+- admin-session-response.test.ts: 6 testes PASS
+- admin-access-worker.test.ts: 5 testes PASS
+
+## AC-06: preservação de ADMIN_USER_ID e AAL2
+- lib/admin/auth.ts:275: lê env.adminUserId
+- lib/admin/auth.ts:278: fail-closed se ausente
+- lib/admin/auth.ts:290: data.user.id !== adminId → unauthorized
+- lib/admin/auth.ts:296: resolveAdminMfaLadder exige aal2
+
+## AC-11: não persiste tokens
+- lib/admin/access.ts: não armazena tokens em DO
+- lib/admin/access-guard.ts: contexto imutável request scoped, sem token
+- lib/admin/access-worker.ts: ADMIN_ACCESS_REQUEST_CONTEXT não contém token
+
+## AC-01, AC-02, AC-13: UNVERIFIABLE
+Exigem ambiente Cloudflare com:
+- Application AUD configurada
+- Google Identity Provider
+- MFA independente (biometria/chave)
+- Conta de teste separada
+- Hostname de teste

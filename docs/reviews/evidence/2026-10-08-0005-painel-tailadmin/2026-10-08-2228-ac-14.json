@@ -1,0 +1,9 @@
+{
+  "ac": "admin/AC-14",
+  "title": "Cláusula de delimitação de verificação local vs infraestrutura",
+  "generatedAt": "2026-10-08T18:25:15.453Z",
+  "status": "UNVERIFIABLE",
+  "targetFile": "docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md",
+  "testsExecuted": ["(sem teste local aplicável — cláusula de infraestrutura)"],
+  "note": "Cláusula de delimitação presente na spec, mas a desativação de cadastro no console Supabase e as proteções do Worker permanecem verificações de infraestrutura real não executadas."
+}

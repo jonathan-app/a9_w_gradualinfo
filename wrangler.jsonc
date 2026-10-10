@@ -10,8 +10,8 @@
   //
   // Referência: https://developers.cloudflare.com/workers/wrangler/configuration/
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gradualinfo-editorial",
-  "main": "cloudflare-worker.ts",
+  "name": "gradualinfo",
+  "main": "scripts/cloudflare-worker.ts",
   "compatibility_date": "2026-01-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": {
@@ -21,6 +21,8 @@
   "keep_vars": true,
   // `pnpm deploy` sobrescreve este worker; `pnpm build` gera a pasta .open-next.
   "assets": {
+    // A plataforma não pode servir caminhos administrativos antes da admissão.
+    "run_worker_first": true,
     "binding": "ASSETS",
     "directory": ".open-next/assets",
   },
@@ -35,12 +37,20 @@
         "name": "PREVIEW_SESSION_DO",
         "class_name": "PreviewSessionDO",
       },
+      {
+        "name": "ADMIN_RATE_LIMIT_DO",
+        "class_name": "AdminRateLimitDO",
+      },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
       "new_sqlite_classes": ["PreviewSessionDO"],
+    },
+    {
+      "tag": "v2-admin-rate-limit",
+      "new_sqlite_classes": ["AdminRateLimitDO"],
     },
   ],
   "routes": [

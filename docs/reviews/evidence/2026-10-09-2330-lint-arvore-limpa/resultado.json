@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "acs": [],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "NIT da revisão imparcial: o comentário citava o pre-commit rodando lint, mas .husky/pre-commit roda só prettier e typecheck. Corrigido no comentário antes de gerar este artefato (mudança de comentário, zero linhas de código)."
+    }
+  ]
+}

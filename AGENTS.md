@@ -122,6 +122,15 @@ DESIGN.md       O design system do produto (tokens em oklch, tipografia); build 
     nunca expor tokens ou segredos em chat, comandos visíveis, logs,
     relatórios, testes, commits ou PRs. Usar apenas nomes das variáveis e
     `[REDACTED]`; conferir saídas antes de compartilhá-las.
+12. **Todo artefato exportado em `docs/` nasce com data e hora no nome.**
+    Formato `YYYY-MM-DD-HHmm-<nome>.md` (ou a mesma estrutura de prefixo
+    temporal em `.json`, `.log`, `.patch`). Aplica-se a relatórios de
+    auditoria, verificação, revisão e evidência em qualquer subpasta de
+    `docs/` — `audits/`, `reviews/`, `evidence/`, `operations/`,
+    `tooling/`, `security-*` e futuras. O prefixo permite ordenação
+    cronológica e identificação imediata do último relatório gerado, e
+    evita colisões entre execuções do mesmo dia. A regra está formalizada
+    em `docs/audits/2026-10-09-0735-auditoria-completa.md` (seção 5).
 
 ## Regra Universal de Delegação (handoff entre agentes)
 
@@ -227,6 +236,8 @@ versionado. Instalação, descoberta pelo cliente e execução são estados
 diferentes, que devem ser conferidos no ambiente utilizado. O ciclo inclui
 `/scope`, `/architect`, `/audit`, `/develop`, `/check`, `/debug`, `/test`,
 `/document` e `/sync`. Atualizar: `npx skills@latest update`.
+
+- [`jwt-validate`](.agents/skills/jwt-validate/SKILL.md): `jsonwebtoken/jwt-skills` (Okta, Apache-2.0) — validação de JWT: assinatura, `algorithms` allowlist, `iss`/`aud`/`exp`/`nbf`/`iat`, 60s de tolerância e JWKS. Complementar, não substitui a autorização por `ADMIN_USER_ID` e AAL2 em `lib/admin/auth.ts`.
 
 Quem escreve o quê, para ninguém gravar estado no lugar errado:
 

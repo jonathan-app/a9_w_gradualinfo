@@ -5,6 +5,8 @@
  *   rotas de API e Server Components. Implementa a semântica de falha fechada estrita:
  *   - Sessão inválida, expirada ou revogada + artigo não público -> 404 Not Found;
  *   - Durable Object indisponível durante a autorização -> 503 Service Unavailable (sem entregar rascunho);
+ *   - Fonte de conteúdo (Sanity ou Supabase) indisponível na checagem de artigo ->
+ *     `ContentUnavailableError`, que o proxy traduz em 503 antes do streaming;
  *   - Artigo público -> 200 OK diretamente, sem exigir nem depender do status de preview.
  * @dependencies @supabase/supabase-js, lib/env, lib/preview/session, lib/preview/durable-object.
  */
@@ -24,6 +26,31 @@ export interface PreviewAuthResult {
   reason?:
     'valid' | 'invalid_grant' | 'revoked' | 'expired' | 'store_unavailable';
   sessionId?: string;
+}
+
+/** Erro de infraestrutura preservado até a resposta anterior ao streaming. */
+export class PreviewStoreUnavailableError extends Error {
+  /** Cria a falha sem incluir dados da sessão na mensagem. */
+  constructor() {
+    super('Armazenamento de preview indisponível.');
+    this.name = 'PreviewStoreUnavailableError';
+  }
+}
+
+/**
+ * Erro de infraestrutura da fonte de conteúdo (Sanity ou Supabase).
+ *
+ * Tipo separado do `PreviewStoreUnavailableError` porque a causa é outra: uma
+ * fala do armazenamento de sessão, a outra da fonte editorial. Os dois
+ * terminam no mesmo 503 do proxy, mas manter a distinção evita que um dia a
+ * mensagem de log confunda os dois incidentes.
+ */
+export class ContentUnavailableError extends Error {
+  /** Cria a falha sem propagar a mensagem crua da fonte para o cliente. */
+  constructor() {
+    super('Fonte de conteúdo indisponível.');
+    this.name = 'ContentUnavailableError';
+  }
 }
 
 /**
@@ -111,6 +138,7 @@ export async function evaluateArticleAccess(params: {
  * @param supabase - Cliente Supabase.
  * @param previewCookieValue - Valor do cookie.
  * @returns boolean indicando se a sessão é válida no Supabase Auth.
+ * @throws PreviewStoreUnavailableError quando o DO não consegue validar o grant atual.
  */
 export async function verifyPreviewSession(
   supabase: SupabaseClient,
@@ -118,9 +146,15 @@ export async function verifyPreviewSession(
 ): Promise<boolean> {
   // Se houver grant assinado com a nova chave e DO ativo, avalia pelo DO
   const doResult = await verifyDurableObjectPreviewSession(previewCookieValue);
+  if (doResult.status === 503) {
+    throw new PreviewStoreUnavailableError();
+  }
   if (doResult.authorized) {
     return true;
   }
+
+  // Um grant do contrato atual não pode recuperar uma sessão revogada pelo legado.
+  if (readPreviewGrant(previewCookieValue, env.previewSigningKey)) return false;
 
   if (!isPreviewConfigured()) return false;
   const grant = readPreviewGrant(previewCookieValue, env.previewToken);
@@ -151,8 +185,15 @@ export async function verifyPreviewSession(
 
 /**
  * Checa se um artigo por slug está acessível para o usuário atual (público ou preview).
- * Retorna true caso o artigo exista e seja legível, ou se ocorrer erro transitório
- * de infraestrutura (para não mascarar falhas de banco com 404 indevido).
+ * Retorna true caso o artigo exista e seja legível, ou false quando não existe
+ * ou não é visível. Falha fechada: erro de infraestrutura da fonte propaga
+ * `ContentUnavailableError`, nunca vira `true` nem `false`.
+ *
+ * @param supabase - Cliente com a sessão do leitor.
+ * @param slug - Slug do artigo.
+ * @param isPreview - Se `true`, avalia na visão de preview (rascunho e agendado).
+ * @returns `true` quando legível; `false` quando inexistente ou invisível.
+ * @throws ContentUnavailableError quando a fonte de conteúdo não respondeu.
  */
 export async function isArticleAccessible(
   supabase: SupabaseClient,
@@ -165,8 +206,10 @@ export async function isArticleAccessible(
       const post = await getSanityPostBySlug(slug, { isPreview });
       return Boolean(post);
     } catch {
-      // Erros de infraestrutura transitória não devem gerar falso 404; deixa fluir para a página
-      return true;
+      // Devolver `true` aqui deixava a página lançar no render, e o Next 16
+      // respondia HTTP 200 com a UI de 404 (soft 200). O proxy precisa do
+      // erro para emitir 503 antes do streaming começar.
+      throw new ContentUnavailableError();
     }
   }
 
@@ -191,8 +234,9 @@ export async function isArticleAccessible(
   const { data, error } = await query.maybeSingle();
 
   if (error) {
-    // Erros no banco não devem gerar falsos 404 no middleware; deixa fluir para a página
-    return true;
+    // Mesma semântica da fonte Sanity: indisponibilidade de infraestrutura
+    // responde erro adequado, e não um 404 mascarado (AC-06 da spec 0006).
+    throw new ContentUnavailableError();
   }
 
   return Boolean(data);

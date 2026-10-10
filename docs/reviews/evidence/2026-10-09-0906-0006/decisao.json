@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "workingTreeDirty": true,
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "d931c37a6da4176829a6ed26c192fcb67dd62bd86d9b5a5852ac4ad4f4eb02e2"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-01.md",
+      "evidenceSha256": "b75fdb65f380249f1b9ee09bf2408431ee6af8728e8d239a99e7f34025835433"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-02.md",
+      "evidenceSha256": "84d1f23caf2b29bdbf5b82c8fff71a2b50b3c5220040e8e7b9e33ed9ede1e9cd"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-03.md",
+      "evidenceSha256": "2d2fcbff27eedce5cb597068d61453fddd19f132977c4253d05c8404f2721a6c"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-04.md",
+      "evidenceSha256": "8d987dc4a5f178320ab6d698ae93b11450f5b6d95a108375d485b4cd70d22eef"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-05.md",
+      "evidenceSha256": "49e916a09f6e6f04527c6a599b77f3272bab0182eb7e955b91dda9a60b171481"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "FAIL",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-06.md",
+      "evidenceSha256": "bdc0d9866722c85c82fad3e10164cb24f86faef973bcf89718c491ce9faa9c5a"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-07.md",
+      "evidenceSha256": "95805684e328dabbff912b97cc29aa02e5c9c3b24aa7014d2fa6de8281f891e8"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-0906-0006/AC-08.md",
+      "evidenceSha256": "3302a7fe92d16b1c310b9c0c6c4bc3111e3edc7bd42edd16b8e9b5a773512791"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "A spec 0006 não é parseável pelo contrato do gate (scripts/check-contract.mjs): o status é \"Accepted (documentação preparada...)\" em vez da linha literal `**Status**: Accepted`, e os ACs vivem em '## 7. Critérios de Aceite (ACs)' com '- [ ] **sanity/AC-01 (...)**:' em vez da seção '## Requirements' com itens `- **id/AC-n**`. Resultado: o gate não extrai AC algum e reprova por formato, independentemente da evidência empírica. Normalizar a spec (ou estender o contrato) antes que o gate consiga avaliar 0006."
+    },
+    {
+      "id": "W-01",
+      "severity": "WARNING",
+      "description": "Dual-source editorial sobrevive no código: lib/services/posts.ts ainda ramifica para Supabase quando o Sanity não está configurado. Com o Sanity ativo o ramo Supabase é inativo, mas o código contradiz o princípio 1 da spec (nao manter duas fontes editoriais ativas) e mantém rota de escrita/leitura editorial no Supabase."
+    },
+    {
+      "id": "W-02",
+      "status": "open",
+      "severity": "WARNING",
+      "description": "Arvore de trabalho suja com 184 arquivos (0006/0007 misturados): o verify roda contra a arvore, nao contra o HEAD ed00c4b limpo. O resultado so vale para commit+tree declarados se a proveniencia dos arquivos exercitados for reconferida."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 8,
+    "PASS": 3,
+    "FAIL": 1,
+    "UNVERIFIABLE": 4,
+    "missingEvidence": 0,
+    "BLOCKER": 1,
+    "WARNING": 2
+  },
+  "reasons": [
+    "Spec não está Accepted.",
+    "Spec sem conjunto único de ACs.",
+    "Conjunto de ACs incompleto, duplicado ou diferente da spec.",
+    "AC sem PASS: sanity/AC-02",
+    "AC sem PASS: sanity/AC-05",
+    "AC sem PASS: sanity/AC-06",
+    "AC sem PASS: sanity/AC-07",
+    "AC sem PASS: sanity/AC-08",
+    "BLOCKER: A spec 0006 não é parseável pelo contrato do gate (scripts/check-contract.mjs): o status é \"Accepted (documentação preparada...)\" em vez da linha literal `**Status**: Accepted`, e os ACs vivem em '## 7. Critérios de Aceite (ACs)' com '- [ ] **sanity/AC-01 (...)**:' em vez da seção '## Requirements' com itens `- **id/AC-n**`. Resultado: o gate não extrai AC algum e reprova por formato, independentemente da evidência empírica. Normalizar a spec (ou estender o contrato) antes que o gate consiga avaliar 0006."
+  ]
+}

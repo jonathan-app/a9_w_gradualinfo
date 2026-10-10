@@ -12,15 +12,15 @@
  */
 import { env } from '@/lib/env';
 /**
- * Resolve a capa de um post para uma URL segura de exibir.
+ * Valida a capa sem impor uma imagem padrão à apresentação.
  *
  * @param value - Valor bruto do campo de capa (URL absoluta, caminho relativo
  *   ou algo inválido).
  * @returns A URL original quando ela pertence ao site ou ao caminho público do
  *   bucket em https (http só fora de produção, por causa do Supabase local);
- *   nos demais casos, `/editorial-cover.svg` absoluta.
+ *   nos demais casos, null para o fallback visual neutro.
  */
-export function coverImageUrl(value: string): string {
+export function approvedCoverImageUrl(value: string): string | null {
   const site = new URL(env.siteUrl);
   try {
     const source = new URL(value);
@@ -41,5 +41,17 @@ export function coverImageUrl(value: string): string {
   } catch {
     /* Capa inválida não vira request para origem arbitrária. */
   }
-  return new URL('/editorial-cover.svg', site).href;
+  return null;
+}
+
+/**
+ * Preserva a capa padrão usada nos metadados sem impor esse fallback à interface.
+ * @param value - URL editorial bruta.
+ * @returns URL aprovada ou capa padrão para SEO.
+ */
+export function coverImageUrl(value: string): string {
+  return (
+    approvedCoverImageUrl(value) ??
+    new URL('/editorial-cover.svg', env.siteUrl).href
+  );
 }

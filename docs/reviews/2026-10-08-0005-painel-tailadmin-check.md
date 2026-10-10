@@ -1,7 +1,7 @@
 # Check: 0007-painel-administrativo-tailadmin — relatório de /check (corrigido)
 
 > Relatório formal de verificação e auditoria de qualidade da primeira entrega da spec 0007
-> (`docs/specs/0007-painel-administrativo-tailadmin.md`), combinando prova empírica (modo verify)
+> (`docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md`), combinando prova empírica (modo verify)
 > e auditoria imparcial do diff (modo review).
 >
 > **Correção em 2026-10-08**: Matriz de evidências ajustada para refletir lacunas reais,
@@ -12,7 +12,7 @@
 
 ## Identidade
 
-- **Spec**: `docs/specs/0007-painel-administrativo-tailadmin.md` (Status: `Accepted`, Hash: `0f0714e462dfb8866d5dec4d9084a45d74f22e1cc431de5ff8d44a028fe8b9f6`)
+- **Spec**: `docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md` (Status: `Accepted`, Hash: `0f0714e462dfb8866d5dec4d9084a45d74f22e1cc431de5ff8d44a028fe8b9f6`)
 - **Branch**: `feat/transicao-editorial-sanity`
 - **SHA Avaliado**: `2bcea1ddb429c1988b211923a17eb25df9dbaa48` (Tree: `2ac9eb05cda26c90dd25f7925799a1c175bb9bff`)
 - **Data**: 2026-10-08
@@ -59,15 +59,15 @@
 
 ## Portões de Qualidade e Regressão
 
-| Comando                                                                                     | Resultado              | Observações                                                |
-| :------------------------------------------------------------------------------------------ | :--------------------- | :--------------------------------------------------------- |
-| `pnpm vitest run __tests__/unit/admin-auth.test.ts`                                         | **23/23 PASS**         | Suíte dedicada do painel e MFA                             |
-| `pnpm test:run`                                                                             | **161/161 PASS**       | Suíte total de testes unitários do projeto                 |
-| `pnpm exec playwright test e2e/admin-dashboard.spec.ts`                                     | **15/15 PASS**         | Suíte E2E Chromium completa (anônimo, MFA, dashboard, Axe) |
-| `pnpm typecheck`                                                                            | **0 erros**            | Tipagem estrita completa                                   |
-| `pnpm lint`                                                                                 | **0 erros**            | ESLint limpo nos novos módulos                             |
-| `pnpm build:next`                                                                           | **100% PASS**          | Build de produção Turbopack sem erros                      |
-| `node scripts/check-decision.mjs --spec docs/specs/0007-painel-administrativo-tailadmin.md` | **REPROVADO (exit 1)** | 3 ACs UNVERIFIABLE delimitados mantêm gate seguro          |
+| Comando                                                                                                     | Resultado              | Observações                                                |
+| :---------------------------------------------------------------------------------------------------------- | :--------------------- | :--------------------------------------------------------- |
+| `pnpm vitest run __tests__/unit/admin-auth.test.ts`                                                         | **23/23 PASS**         | Suíte dedicada do painel e MFA                             |
+| `pnpm test:run`                                                                                             | **161/161 PASS**       | Suíte total de testes unitários do projeto                 |
+| `pnpm exec playwright test e2e/admin-dashboard.spec.ts`                                                     | **15/15 PASS**         | Suíte E2E Chromium completa (anônimo, MFA, dashboard, Axe) |
+| `pnpm typecheck`                                                                                            | **0 erros**            | Tipagem estrita completa                                   |
+| `pnpm lint`                                                                                                 | **0 erros**            | ESLint limpo nos novos módulos                             |
+| `pnpm build:next`                                                                                           | **100% PASS**          | Build de produção Turbopack sem erros                      |
+| `node scripts/check-decision.mjs --spec docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md` | **REPROVADO (exit 1)** | 3 ACs UNVERIFIABLE delimitados mantêm gate seguro          |
 
 ---
 
