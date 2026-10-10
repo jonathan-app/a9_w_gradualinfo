@@ -140,7 +140,7 @@ jobs:
 
       - name: Preservar relatório E2E
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
           path: |
@@ -176,7 +176,7 @@ jobs:
           pnpm supabase:test 2>&1 | tee ci-results/pgtap.log
       - name: Preservar resultado do pgTAP
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: database-pgtap
           path: |
@@ -206,7 +206,7 @@ jobs:
           node-version-file: .nvmrc
       - name: SAST com regras locais
         run: pnpm security:sast
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: semgrep-report
@@ -229,7 +229,7 @@ jobs:
           node-version-file: .nvmrc
       - name: Gitleaks pinado e relatórios redigidos
         run: pnpm security:secrets
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: gitleaks-report
@@ -292,7 +292,7 @@ jobs:
         run: pnpm dlx @lhci/cli@0.15.1 autorun --config=lighthouserc.cjs
       - name: Preservar relatório Lighthouse
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: lighthouse-report
           path: .lighthouseci/
@@ -345,7 +345,7 @@ jobs:
           node scripts/check-gate.mjs "$RUNNER_TEMP/check-decision.json" --commit "$EVALUATED_SHA"
       - name: Preservar resultado do gate
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: check-gate
           path: |
