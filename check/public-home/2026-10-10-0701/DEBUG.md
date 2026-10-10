@@ -2,6 +2,8 @@
 
 ## Diagnóstico atualizado com logs da versão publicada
 
+Uma execução remota posterior publicou a versão `b04f70c0-1f16-49fc-96c3-d0aa6139f9f9` às 11:38:47Z, conforme log fornecido pelo usuário. O diagnóstico abaixo se refere à versão anterior `bf9f208b-2753-4530-aaf8-cd2014405f30`. Ainda não há resposta ou stack trace da versão nova para as rotas investigadas.
+
 **Causa confirmada do HTTP 500 de `/api/health` às 10:15:47.896Z:** a versão `bf9f208b-2753-4530-aaf8-cd2014405f30` lança `Unexpected loadManifest(/.next/server/preview-props.json) call!` enquanto constrói `NextNodeServer`. O stack passa por `loadManifest`, `NextNodeServer.getPreviewProps`, `new Server`, `new NextNodeServer` e `.open-next/server-functions/default/handler.mjs`. A inicialização falha antes de executar o código da rota de saúde. A requisição registrada foi **HEAD**, não GET.
 
 O mesmo erro ocorreu em `GET /robots.txt` às 10:55:29.525Z, na mesma versão, também com HTTP 500. Isso confirma que a falha não é exclusiva de `/api/health`. Os registros de `HEAD /` e `HEAD /admin-dashboard` às 10:15:47Z e 10:15:48Z tiveram HTTP 503 e `outcome=ok`; o anexo não traz a causa interna desses 503.
@@ -114,6 +116,24 @@ Para vincular o defeito local ao 500 publicado, preciso somente de:
 2. Se confirmado, passar a `/develop` a correção da inicialização do limitador no escopo global, preservando o contrato de limite da rota.
 3. Passar a `/test` o cenário de regressão: carregar a rota em `workerd` com a mesma data de compatibilidade, chamar `/api/health`, exigir 200 e JSON `status=ok`, sem erro de timer no escopo global.
 4. Verificar as três rotas após a correção.
+
+## Causa raiz confirmada e correção aplicada (2026-10-10 11:40 UTC)
+
+A versão publicada `b04f70c0-1f16-49fc-96c3-d0aa6139f9f9`, subiu às 11:38:47Z, ainda responde HTTP 500 em `/api/health`, `/robots.txt` e `/`. O `curl` direto retornou `error code: 1101` e corpo `Unexpected loadManifest(/.next/server/preview-props.json) call!` — o mesmo stack da versão anterior, portanto o deploy remoto não resolveu o problema.
+
+**Reprodução local:** `pnpm build` + `npx wrangler dev --port 8799` na mesma árvore, com a mesma data de compatibilidade e flags, devolveu o mesmo erro em `/api/health` e `/`. Isso localiza o defeito no adaptador, não em configuração remota.
+
+**Causa raiz:** o adaptador `@opennextjs/cloudflare` inlina `loadManifest()` no bundle em tempo de build para evitar `readFileSync`, que não funciona em `workerd`. O glob que coleta os manifests é `**/{*-manifest,required-server-files,prefetch-hints}.json`. O arquivo `preview-props.json` não termina em `-manifest`, então nunca é coletado, e a função joga `throw new Error('Unexpected loadManifest(...) call!')`. O Next.js 16.4 moveu os dados de draft mode para esse arquivo e chama `getPreviewProps()` de forma incondicionada na construção de `NextNodeServer`, antes de qualquer rota. A inicialização do Worker fracassa em toda requisição.
+
+**Correção aplicada:** `pnpm patch @opennextjs/cloudflare@1.20.9` em `dist/cli/build/patches/plugins/load-manifest.js`, adicionando `preview-props` à alternância do glob, exatamente o que o upstream faz no PR #1356 (ainda não lançado; 1.20.10 não inclui). A changeset do upstream confirma que é o único caminho certo — o `return {}` do PR #1151 não serve, porque o arquivo é opcional e carrega as chaves de draft mode.
+
+**Verificação pós-correção (mesmo ambiente local):**
+- `HEAD /api/health` → 200, `{"status":"ok","runtime":"cloudflare-workers","timestamp":...}`.
+- `GET /` → 200, página inicial com `link rel=canonical href="https://gradualinfo.com.br"`.
+- `GET /artigos/guia-notebook` → 404, rota dinâmica já responde (nenhum artigo publicado, comportamento esperado).
+- `pnpm check:all` → typecheck, lint, prettier e 463/463 testes PASS.
+
+**Limites:** a correção está em `pnpm-lock.yaml` (patchedDependencies) e no repositório local; o build remoto que publicou `b04f70c0` não a continha. Reenviar o build com o patch exige autorização separada. O timer global do `hono-rate-limiter` em `app/api/health/route.ts` permanece defeito local separado, documentado acima, e não explica este stack.
 
 ## Validador administrativo
 

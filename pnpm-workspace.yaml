@@ -64,6 +64,9 @@ overrides:
 # `allowedVersions` silencia apenas o aviso de peer incompatível. O projeto
 # já fixa a versão via override acima, então aceitar o aviso é seguro e evita
 # travar o install em cada dependência transitiva que declara ^18 || ^19.
+patchedDependencies:
+  '@opennextjs/cloudflare@1.20.9': patches/@opennextjs__cloudflare@1.20.9.patch
+
 peerDependencyRules:
   allowedVersions:
     react: '19.3.0'
