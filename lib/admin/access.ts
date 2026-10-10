@@ -5,7 +5,8 @@
  * @dependencies jose, lib/env, lib/admin/rate-limit-protocol.
  */
 import { decodeProtectedHeader, importJWK, jwtVerify, type JWK } from 'jose';
-import { readAdminAccessConfig, type AdminAccessConfig } from '../env';
+import { env, readAdminAccessConfig, type AdminAccessConfig } from '../env';
+import { securityHeaders } from '../security-headers';
 import { readBoundedJson } from './rate-limit-protocol';
 
 /** Resultado transportado exclusivamente no env da requisição atual. */
@@ -61,6 +62,11 @@ export function classifyAdminPath(
 
 /**
  * Constrói uma recusa sanitizada sem eco de entrada.
+ *
+ * Os headers de segurança entram no mapa porque resposta montada à mão não
+ * passa pelo `headers()` do `next.config.ts` (ver `lib/security-headers`): sem
+ * eles a recusa sairia sem CSP, justamente numa resposta de fail closed.
+ *
  * @param request - Seleciona somente JSON ou HTML.
  * @param status - Recusa, forma ambígua ou indisponibilidade.
  * @returns Resposta privada, sem redirect.
@@ -72,6 +78,10 @@ export function accessFailureResponse(
   const headers: Record<string, string> = {
     'Cache-Control': 'private, no-store',
     'X-Robots-Tag': 'noindex, nofollow',
+    ...securityHeaders({
+      isProduction: env.isProduction,
+      siteUrl: env.siteUrl,
+    }),
   };
   if (status === 503) headers['Retry-After'] = '5';
   const error = status === 503 ? 'access_unavailable' : 'access_denied';

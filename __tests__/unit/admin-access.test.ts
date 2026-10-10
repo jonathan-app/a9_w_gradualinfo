@@ -7,7 +7,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+// `env` entrou no mock porque `accessFailureResponse` agora espalha os headers
+// de `lib/security-headers`, que recebem isProduction e siteUrl deste módulo.
 vi.mock('@/lib/env', () => ({
+  env: { isProduction: false, siteUrl: 'http://localhost:3000' },
   readAdminAccessConfig: vi.fn(() => null),
 }));
 vi.mock('@/lib/admin/rate-limit-protocol', () => ({

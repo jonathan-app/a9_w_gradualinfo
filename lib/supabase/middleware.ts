@@ -16,6 +16,7 @@ import {
   PreviewStoreUnavailableError,
   ContentUnavailableError,
 } from '@/lib/preview/auth';
+import { securityHeaders } from '@/lib/security-headers';
 
 /**
  * Monta a resposta 503 de indisponibilidade, fixa antes de o streaming começar.
@@ -23,9 +24,12 @@ import {
  * O corpo é HTML estático e sem conteúdo editorial: falha fechada não vaza
  * rascunho nem diagnostica qual fonte caiu para quem estiver lendo a resposta.
  * Cookies vivos da requisição são reaplicados para não perder refresh de sessão.
+ * Os headers de segurança entram porque resposta construída à mão não passa
+ * pelo `headers()` do `next.config.ts` — sem eles a home 503 ficava sem CSP.
  *
  * @param response - Resposta parcial que carrega os cookies a preservar.
- * @returns Resposta 503 com `private, no-store` e `noindex, nofollow`.
+ * @returns Resposta 503 com `private, no-store`, `noindex, nofollow` e os
+ *   headers de segurança de `lib/security-headers`.
  */
 function unavailableResponse(response: NextResponse): NextResponse {
   const unavailable = new NextResponse(
@@ -36,6 +40,10 @@ function unavailableResponse(response: NextResponse): NextResponse {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'private, no-store',
         'X-Robots-Tag': 'noindex, nofollow',
+        ...securityHeaders({
+          isProduction: env.isProduction,
+          siteUrl: env.siteUrl,
+        }),
       },
     },
   );
@@ -176,12 +184,20 @@ export async function updateSession(request: NextRequest) {
     if (!accessible) {
       // Copiar os headers de next() também copiaria x-middleware-next: 1,
       // contradizendo o rewrite de bloqueio. Só os cookies precisam sobreviver.
+      // Os headers de segurança entram pelo mesmo motivo do 503: resposta
+      // montada à mão não passa pelo `headers()` do next.config.
       const blocked = NextResponse.rewrite(
         new URL('/_not-found', request.url),
         {
           status: 404,
           request: { headers: request.headers },
-          headers: { 'Cache-Control': 'private, no-store' },
+          headers: {
+            'Cache-Control': 'private, no-store',
+            ...securityHeaders({
+              isProduction: env.isProduction,
+              siteUrl: env.siteUrl,
+            }),
+          },
         },
       );
       response.cookies

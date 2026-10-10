@@ -16,8 +16,22 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": {
     "enabled": true,
+    "head_sampling_rate": 1,
+    "redact_query_string": false,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true,
+    },
     // Logs já estavam ativos; traces precisam de habilitação independente.
     "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+    },
+    // O Wrangler chama a detecção de problemas de `issues`.
+    "issues": {
       "enabled": true,
     },
   },
@@ -30,6 +44,13 @@
     "binding": "ASSETS",
     "directory": ".open-next/assets",
   },
+  // `vars` (não secrets): variáveis lidas pelo Worker em produção.
+  // O Next.js em dev lê `.env.*`, mas o Worker publicado só lê este arquivo
+  // mais os secrets. Uma variável que só existe em `.env.production.local`
+  // é invisível no runtime deployado — e `env.ts:39` cai no placeholder
+  // inválido, derrubando `createPublicClient()` e gerando HTTP 500 em `/`.
+  // Configure NEXT_PUBLIC_SUPABASE_ANON_KEY diretamente no Worker antes do
+  // deploy; o valor não é versionado neste arquivo.
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://sjngngsjvotagwctzpde.supabase.co",
     "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.com.br",

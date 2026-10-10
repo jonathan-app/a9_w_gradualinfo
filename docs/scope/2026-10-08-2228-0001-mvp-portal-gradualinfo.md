@@ -193,7 +193,7 @@ Spec `0006` · code em `lib/sanity/`, `lib/services/sanity.ts`, `lib/supabase/mi
 - [ ] Review it: `/check review transição editorial Sanity`
 - [ ] Audit security: `/security transição editorial Sanity`
 - [ ] Test it: `/test transição editorial Sanity`
-- [ ] Document it: `/document pr`
+- [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
 ### I. Layout editorial home artigo (0010) · in-progress
@@ -210,7 +210,7 @@ Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `component
 - [ ] Review it: `/check review layout editorial home artigo`
 - [ ] Audit security: `/security layout editorial home artigo`
 - [ ] Test it: `/test layout editorial home artigo`
-- [ ] Document it: `/document pr`
+- [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
 ## Slice 3: Administração
@@ -229,7 +229,7 @@ Spec `0007` · code em `app/admin-dashboard/`, `lib/admin/`
 - [ ] Review it: `/check review painel administrativo TailAdmin`
 - [ ] Audit security: `/security painel administrativo TailAdmin`
 - [ ] Test it: `/test painel administrativo TailAdmin`
-- [ ] Document it: `/document pr`
+- [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
 ### K. Endurecimento auth admin MFA · done
@@ -251,7 +251,7 @@ Spec `0009` · code em `lib/admin/access-guard.ts`, `scripts/validate-admin-acce
 - [ ] Review it: `/check review admissão Admin Access`
 - [ ] Audit security: `/security admissão Admin Access`
 - [ ] Test it: `/test admissão Admin Access`
-- [ ] Document it: `/document pr`
+- [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
 ### M. AI security checklist (0008) · done

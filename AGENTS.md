@@ -283,6 +283,12 @@ As pastas `docs/scope/`, `docs/specs/` e `docs/reviews/` já contêm escopo,
 índice, specs, templates e relatórios. Consulte os artefatos vigentes e seus
 estados; a presença de um arquivo não comprova aprovação ou execução.
 
+## Context files
+
+- [lib/admin/AGENTS.md](lib/admin/AGENTS.md) (Access, MFA AAL2, rate limit DO, guards admin)
+- [lib/preview/AGENTS.md](lib/preview/AGENTS.md) (cookie de preview e PreviewSessionDO)
+- [lib/sanity/AGENTS.md](lib/sanity/AGENTS.md) (cliente GROQ e fonte editorial primária quando configurada)
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
