@@ -194,7 +194,7 @@ Spec `0006` · code em `lib/sanity/`, `lib/services/sanity.ts`, `lib/supabase/mi
 - [ ] Audit security: `/security transição editorial Sanity`
 - [ ] Test it: `/test transição editorial Sanity`
 - [ ] Document it: `/document pr`
-- [ ] Sync it: `/sync`
+- [x] Sync it: `/sync`
 
 ### I. Layout editorial home artigo (0010) · in-progress
 
@@ -211,7 +211,7 @@ Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `component
 - [ ] Audit security: `/security layout editorial home artigo`
 - [ ] Test it: `/test layout editorial home artigo`
 - [ ] Document it: `/document pr`
-- [ ] Sync it: `/sync`
+- [x] Sync it: `/sync`
 
 ## Slice 3: Administração
 
@@ -230,7 +230,7 @@ Spec `0007` · code em `app/admin-dashboard/`, `lib/admin/`
 - [ ] Audit security: `/security painel administrativo TailAdmin`
 - [ ] Test it: `/test painel administrativo TailAdmin`
 - [ ] Document it: `/document pr`
-- [ ] Sync it: `/sync`
+- [x] Sync it: `/sync`
 
 ### K. Endurecimento auth admin MFA · done
 
@@ -252,7 +252,7 @@ Spec `0009` · code em `lib/admin/access-guard.ts`, `scripts/validate-admin-acce
 - [ ] Audit security: `/security admissão Admin Access`
 - [ ] Test it: `/test admissão Admin Access`
 - [ ] Document it: `/document pr`
-- [ ] Sync it: `/sync`
+- [x] Sync it: `/sync`
 
 ### M. AI security checklist (0008) · done
 
@@ -325,8 +325,7 @@ enrolamento no escopo ou em spec própria:
    follow-up, não como parte da AC. Entra na fatia O.
 3. **Produção Access** (0009 follow-up): configurar issuer, AUD, hosts,
    ownerEmail em produção. É provisionamento humano, não skill.
-4. **Índice de specs desatualizado**: `docs/specs/INDICE.md` mostra md-0002
-   como `Proposed`, mas o arquivo está `Accepted`. É tarefa de `/sync`.
+4. **Índice de specs corrigido**: `docs/specs/INDICE.md` atualizado pelo `/sync`.
 
 ## Specs vigentes
 

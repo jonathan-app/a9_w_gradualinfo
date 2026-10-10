@@ -16,6 +16,10 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": {
     "enabled": true,
+    // Logs já estavam ativos; traces precisam de habilitação independente.
+    "traces": {
+      "enabled": true,
+    },
   },
   // Evita apagar variáveis configuradas no painel ao publicar uma nova versão.
   "keep_vars": true,

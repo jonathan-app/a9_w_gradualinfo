@@ -63,19 +63,30 @@ pnpm security:secrets # gitleaks sobre o histórico e a árvore atual
 
 ```
 app/            App Router. Rotas, Server Components e o CSS global.
+  admin-dashboard/  Painel administrativo (TailAdmin), guards, MFA, preview dispatch.
+  api/            Rotas de API: admin auth, preview, health, sitemap, robots.
+  artigos/        Página de artigo `/artigos/[slug]` com render Markdown.
 components/
-  ui/           Design system. Componente com variante e data-slot.
-  layout/       Header e footer da aplicação.
-  shared/       Reutilizável entre features (tema, marca).
+  ui/             Design system. Componente com variante e data-slot.
+  layout/         Header e footer da aplicação.
+  shared/         Reutilizável entre features (tema, marca, editorial-cover, editorial-story).
+  admin/          Componentes do painel (header, shell, sidebar, MFA enrollment).
 lib/
-  env.ts        Leitura tipada das variáveis, com padrão para build sem .env.
-  supabase/     Três clientes: browser, servidor e o que roda no proxy.
-  utils/        Funções puras (cn, formatação).
+  env.ts          Leitura tipada das variáveis, com padrão para build sem .env.
+  supabase/       Três clientes: browser, servidor e o que roda no proxy.
+  sanity/         Cliente GROQ para leitura editorial (Sanity como fonte única).
+  admin/          Autenticação admin (ADMIN_USER_ID + AAL2), rate limit DO, access guard, session response.
+  preview/        Durable Object para sessões de preview (criação, revogação, verificação).
+  errors/         Erros tipados (ContentUnavailableError) — contrato entre camadas.
+  services/       Queries de posts (Sanity) e suporte editorial.
+  utils/          Funções puras (cn, formatação).
+  audit.ts        Logger de auditoria para ações administrativas.
+  logger.ts       Logger estruturado.
 hooks/          Hooks que dependem de React.
-proxy.ts        O antigo middleware.ts. Renova a sessão a cada requisição.
+proxy.ts          O antigo middleware.ts. Renova a sessão a cada requisição. Probe de disponibilidade Sanity.
 instrumentation.ts
-                Sentry. O `instrumentation-client.ts` inicializa no cliente.
-scripts/        Wrappers Node por trás de `security:*` e preinstall.
+                  Sentry. O `instrumentation-client.ts` inicializa no cliente.
+scripts/        Wrappers Node por trás de `security:*`, preinstall e validação Access.
 supabase/       config.toml, migrations/ e seed.sql.
 e2e/            Testes Playwright.
 __tests__/      Testes Vitest (unit/ guarda a árvore).
@@ -83,7 +94,7 @@ security/       Regras de SAST do Semgrep.
 .storybook/     Catálogo de componentes (`.stories.tsx` ao lado do componente).
 .github/        A CI em `workflows/ci.yml`: quality, build e security.
 next.config.ts, open-next.config.ts, wrangler.jsonc
-                Next, adaptação para o Worker e o worker em si.
+                  Next, adaptação para o Worker e o worker em si.
 DESIGN.md       O design system do produto (tokens em oklch, tipografia); build de UI segue ele.
 ```
 
@@ -216,6 +227,15 @@ Formato obrigatório do bloco final:
   sobrescrevem. A única forma de detectar colisão é comparar o mtime e o
   conteúdo de um arquivo que você leu antes de escrever nele, por isso o `stat`
   antes do `edit`.
+- **Preview Durable Object não publicado.** Rotas de preview e logout falham
+  com 503 se o `PreviewSessionDO` não estiver publicado na Cloudflare com
+  migration aplicada. Verificar `wrangler migrations list` e `wrangler deploy`.
+- **Cloudflare Access não configurado.** Guards admin devolvem 403/503 sem
+  issuer/AUD/hosts válidos em `wrangler.jsonc` ou secrets. Provisionar antes
+  de testar rotas protegidas.
+- **Sanity dataset sem conteúdo.** Home e artigo devolvem estado vazio ou 404
+  se o dataset `production` não tem artigos publicados. AC-02 da spec 0006
+  exige conteúdo real.
 
 ## Portão de qualidade
 
@@ -239,6 +259,15 @@ diferentes, que devem ser conferidos no ambiente utilizado. O ciclo inclui
 `/scope`, `/architect`, `/audit`, `/develop`, `/check`, `/debug`, `/test`,
 `/document` e `/sync`. Atualizar: `npx skills@latest update`.
 
+- [`architect`](.agents/skills/architect/SKILL.md): `JavaScript-Mastery-Pro/skills` — decisões load-bearing, specs, trade-offs.
+- [`audit`](.agents/skills/audit/SKILL.md): `JavaScript-Mastery-Pro/skills` — cria/preenche AGENTS.md, inventário de código.
+- [`check`](.agents/skills/check/SKILL.md): `JavaScript-Mastery-Pro/skills` — validação empírica (verify) e auditoria imparcial (review).
+- [`debug`](.agents/skills/debug/SKILL.md): `JavaScript-Mastery-Pro/skills` — root cause com evidência observável.
+- [`develop`](.agents/skills/develop/SKILL.md): `JavaScript-Mastery-Pro/skills` — build a partir de spec aceita.
+- [`document`](.agents/skills/document/SKILL.md): `JavaScript-Mastery-Pro/skills` — PR, changelog, release note, postmortem.
+- [`scope`](.agents/skills/scope/SKILL.md): `JavaScript-Mastery-Pro/skills` — plano grosseiro em docs/scope/, reconciliação.
+- [`sync`](.agents/skills/sync/SKILL.md): `JavaScript-Mastery-Pro/skills` — AGENTS.md, scope, STATE.md cirúrgicos.
+- [`test`](.agents/skills/test/SKILL.md): `JavaScript-Mastery-Pro/skills` — suíte de testes após build.
 - [`jwt-validate`](.agents/skills/jwt-validate/SKILL.md): `jsonwebtoken/jwt-skills` (Okta, Apache-2.0) — validação de JWT: assinatura, `algorithms` allowlist, `iss`/`aud`/`exp`/`nbf`/`iat`, 60s de tolerância e JWKS. Complementar, não substitui a autorização por `ADMIN_USER_ID` e AAL2 em `lib/admin/auth.ts`.
 
 Quem escreve o quê, para ninguém gravar estado no lugar errado:
