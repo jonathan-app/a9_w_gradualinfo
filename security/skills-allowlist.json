@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "algorithm": "sha256-path-content-v1",
-  "lockSha256": "59fd923d901f0cafc7df4f65cfba347f4a2d09a0c5fd5512ba6a756b328299dc",
+  "lockSha256": "d4538b4fb723686bf0486be1ece5f35f9ca9fc685ad9f37a3d579db440ab45a5",
   "skills": {
     "architect": {
       "contentSha256": "48afe861b31b5a4e1081f8249826ad6c86fc2c0fcc97b3220f11d0988fe52a82",
@@ -39,11 +39,53 @@
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "90933443f204d2ed29c84730be87b7b5470f6819fccde6129aedad1df517fb92"
     },
+    "ponytail": {
+      "contentSha256": "b40d655883ea462755ae12373b59833fce20ba256bc06b0bc4e08dc59ba2ca5d",
+      "pointerSha256": "40cbe3e0300d48db50bc945eade4fc7247ba72916b53c936c370acec9295cbfa",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "061f887d9e3e735f85db3be3655a8936a00f24d5fb65ac4ab74a968a770fe342"
+    },
+    "ponytail-audit": {
+      "contentSha256": "e06adf4f4ee04dc135b8ff0ce9f168590c0540c69c02fc76400b6ad3bb11f10e",
+      "pointerSha256": "38c9387ab63486ca247b0b251193b2c18e5b19bc745bc80674bac1bf7b66c6a3",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "1d718f893dabc01caad0dacef86444b5b4b3e1e59409527d66e8b5dd0cd85ae0"
+    },
+    "ponytail-debt": {
+      "contentSha256": "576b8ad55b041a9b87e50719534a7148e68752ca02ceec4b1afdf364bf142aa4",
+      "pointerSha256": "f0fab5b0d89a0b7311ceb3599d6e111f48b7a1d09fa41fa79f33457ce898ce87",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "f5d1d2ab891ff0a650a90b67235e487828e7d2a189de08a1ae073032de379407"
+    },
+    "ponytail-gain": {
+      "contentSha256": "9b28a69ecb63598424d7176e347d2e8d374ec4c1e5ba22665a310e75444a1af4",
+      "pointerSha256": "c7a3f7d44fc4ad547f61892929f456e253ee80825eb611e347c82156ad8d966e",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "fca2297cf7b5fd26692f6bd94d398b522e19fa81ad6e2aaebf1933575f7a6803"
+    },
+    "ponytail-help": {
+      "contentSha256": "249f52da4d11b7d3184ed8c6025bf85d6667262009ca6738b7806b6df345b8b9",
+      "pointerSha256": "44a2d6094b9c76db13998504e07cb6b5e27e19e66b829d68d738d46145fbb316",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "4582025c3923072fb6c35b8cbd75adf4f7ce47df0eff43cc9a2a39808537fd61"
+    },
+    "ponytail-review": {
+      "contentSha256": "0a56beb5b3b9b89b363ce5d0a9ae5263cd431a6ecc9b3f57d7e795a889d626fd",
+      "pointerSha256": "91ba528f24f20d6ecf2b2536ff52a3e795a07839d8e8733f573b07a63e69fd6d",
+      "source": "DietrichGebert/ponytail",
+      "lockComputedHash": "800dc0c86402978e12359f701b9e0c81ba4607a0cd0027f4596d0f835a67eadc"
+    },
     "scope": {
       "contentSha256": "9b2cbf3cc05d46f2b5e90091855c5b316142fa9f338310c2b867926129d32bb6",
       "pointerSha256": "6e6c2acb6fbb8d1f6fef393965282135e2ccbd0447e5b958915c6490a7ddae9a",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "cc3683a45b96c1b0ecb23f9aba64263be096cb3ef2487662c0fe7e7c3200fb70"
+    },
+    "security-audit": {
+      "contentSha256": "c7970d862af9b8bfd7601f31db6d3ea638c6e833f2f8bcf81293bcdb36f3f6f4",
+      "pointerSha256": "30047a7923853b7ac88472c48c83d2f76fb260d1c6b2f1d77822ae4d3a990612",
+      "source": "cloudflare/security-audit-skill",
+      "lockComputedHash": "98b97aad2873b3b9a8e064007c25e7827b493ba27fda8bfbdb41dab586767973"
     },
     "sync": {
       "contentSha256": "86bd466dab547108c952696d1d7b238b28893f5af9f199f5ae0da47bf55b7327",
