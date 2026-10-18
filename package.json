@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.4.0",
-    "@sentry/nextjs": "^11.5.0",
+    "@sentry/nextjs": "^11.7.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
