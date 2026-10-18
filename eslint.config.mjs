@@ -50,6 +50,10 @@ export default defineConfig([
     'scratch/**',
     '.kilo/worktrees/**',
     '.agents/**',
+    // Conteúdo vendorizado do catálogo de skills, com bytes conferidos por
+    // hash contra a allowlist. Lintar código de terceiro faria o lint do
+    // projeto depender do estilo do upstream — mesma decisão de `.agents/**`.
+    'security/skills-catalog/**',
     '.ag-kit-backups/**',
     '.wrangler/**',
     // Artefatos de verificação gerados pelo /check
