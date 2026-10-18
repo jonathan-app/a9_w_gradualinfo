@@ -3,31 +3,39 @@ name: CI
 # ============================================================================
 # CI — gate completo, em ordem de custo crescente
 # ============================================================================
-# Fluxo alvo:
+# Fluxo alvo (pull request para a main):
 #   PR
-#   ├── typecheck
-#   ├── lint
-#   ├── prettier
-#   ├── unit
-#   ├── E2E
-#   ├── build
-#   ├── RLS
-#   ├── SAST
-#   ├── dependency scan
-#   ├── secrets
-#   ├── Lighthouse
-#   └── /check gate
+#   ├── quality        → typecheck, lint, prettier, unit, skills, MCP,
+#   │                    pnpm audit e OSV scan
+#   ├── security       → gitleaks (histórico) e semgrep
+#   ├── e2e            → build + Playwright no servidor compilado
+#   ├── database       → migrations, seed e pgTAP
+#   ├── lighthouse     → home e artigo público
+#   └── check-gate     → matriz do /check para o SHA avaliado
 #            ↓
 #         APPROVED
 #
 # O pre-commit fica leve (lint/typecheck/format). O gate de aprovação
 # fica na CI/PR, ligado a uma decisão /check aprovada.
+#
+# Plano Free (2.000 minutos por mês): a pipeline roda uma vez por mudança,
+# não duas. O gatilho de `push` saiu de propósito porque o PR já valida
+# exatamente a árvore que chega na main; execuções manuais (por exemplo no
+# HEAD da main) usam o `workflow_dispatch`. PR que só toca `docs/`,
+# `workflow/`, `check/` ou arquivos `.md` não aciona nada. Os dois scanners
+# de dependência ficaram no job `quality`, gitleaks e semgrep dividem o job
+# `security`, e o job de build avulso foi removido porque `e2e` e
+# `lighthouse` já rodam `pnpm build:next` na mesma árvore.
 
 on:
-  push:
-    branches: [main, feat/transicao-editorial-sanity]
   pull_request:
-    branches: [main, feat/transicao-editorial-sanity]
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'workflow/**'
+      - 'check/**'
+      - '**/*.md'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -38,7 +46,7 @@ permissions:
 
 jobs:
   quality:
-    name: Tipos, lint, formatação e testes
+    name: Qualidade (tipos, lint, formatação, testes e dependências)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -68,13 +76,28 @@ jobs:
         run: pnpm check:all
       - name: Typecheck E2E
         run: pnpm typecheck:e2e
+      - name: pnpm audit
+        run: pnpm audit --audit-level=high
+      - name: OSV scan
+        uses: google/osv-scanner-action/osv-scanner-action@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+        with:
+          scan-args: '--lockfile=pnpm-lock.yaml'
 
-  build:
-    name: Build
+  security:
+    name: Segredos e SAST (gitleaks + Semgrep)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.9'
+
+      - name: Instalar scanner pinado
+        run: python3 -m pip install semgrep==1.179.0
 
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
@@ -83,12 +106,29 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Gitleaks pinado e relatórios redigidos
+        run: pnpm security:secrets
 
-      - name: Build do Next
-        run: pnpm build:next
+      # Um scanner não pode esconder o resultado do outro: o segundo roda
+      # mesmo quando o primeiro falha, e a falha de qualquer um derruba o job.
+      - name: SAST com regras locais
+        if: always()
+        run: pnpm security:sast
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: gitleaks-report
+          path: security-reports/gitleaks.json
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: semgrep-report
+          path: security-reports/semgrep.json
+          if-no-files-found: error
 
   e2e:
     env:
@@ -110,6 +150,14 @@ jobs:
 
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
+
+      # Baixar o Chromium inteiro a cada execução custa minutos do plano; o
+      # cache é seguro porque a chave muda sempre que o lockfile muda.
+      - name: Cache dos browsers do Playwright
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Instalar browsers do Playwright
         run: pnpm exec playwright install chromium
@@ -195,76 +243,6 @@ jobs:
         if: always()
         run: pnpm supabase:stop --no-backup
 
-  sast:
-    name: SAST (Semgrep)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: '3.12.9'
-      - name: Instalar scanner pinado
-        run: python3 -m pip install semgrep==1.179.0
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
-          version: 12.5.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-      - name: SAST com regras locais
-        run: pnpm security:sast
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: semgrep-report
-          path: security-reports/semgrep.json
-          if-no-files-found: error
-
-  secrets:
-    name: Segredos no histórico e árvore
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
-          version: 12.5.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-      - name: Gitleaks pinado e relatórios redigidos
-        run: pnpm security:secrets
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: gitleaks-report
-          path: security-reports/gitleaks.json
-          if-no-files-found: error
-
-  dependency-scan:
-    name: Dependency scan (OSV + pnpm audit)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
-          version: 12.5.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: pnpm audit
-        run: pnpm audit --audit-level=high
-      - name: OSV scan
-        uses: google/osv-scanner-action/osv-scanner-action@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
-        with:
-          scan-args: '--lockfile=pnpm-lock.yaml'
-
   lighthouse:
     env:
       CI_FIXTURE_ORIGIN: http://localhost:3000
@@ -312,17 +290,7 @@ jobs:
 
   check-gate:
     name: /check gate
-    needs:
-      [
-        quality,
-        build,
-        e2e,
-        database,
-        sast,
-        secrets,
-        dependency-scan,
-        lighthouse,
-      ]
+    needs: [quality, security, e2e, database, lighthouse]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

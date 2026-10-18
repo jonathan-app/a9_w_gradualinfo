@@ -107,7 +107,7 @@ workflow/       Fila de delegação (STATE.md) e check-targets.json.
 check/          Artefatos dos gates /check por feature (results.json e evidências).
 patches/        Patch do OpenNext aplicado pelo pnpm no install.
 .storybook/     Catálogo de componentes (`.stories.tsx` ao lado do componente).
-.github/        A CI em `workflows/ci.yml`: quality, build, e2e, database, sast, secrets, dependency-scan, lighthouse e check-gate.
+.github/        A CI em `workflows/ci.yml`: quality, security, e2e, database, lighthouse e check-gate.
 next.config.ts, open-next.config.ts, wrangler.jsonc
                   Next, adaptação para o Worker e o worker em si.
 DESIGN.md       O design system do produto (tokens em oklch, tipografia); build de UI segue ele.
@@ -268,10 +268,13 @@ Formato obrigatório do bloco final:
 `pnpm check:all` é o que a CI roda, na mesma ordem: typecheck, lint,
 formatação, testes. Hook de commit roda a checagem de vazamento de env, a
 formatação dos arquivos staged e o typecheck; commit não pode custar minutos.
-A CI tem nove jobs: quality, build, e2e, database, sast, secrets,
-dependency-scan, lighthouse e check-gate. O job secrets roda o gitleaks sobre
-o histórico inteiro, e o dependency-scan roda `pnpm audit --audit-level=high`
-e o OSV scan.
+A CI tem seis jobs: quality (check:all, typecheck E2E, `pnpm audit
+--audit-level=high` e OSV scan), security (gitleaks sobre o histórico
+inteiro e semgrep), e2e, database (pgTAP), lighthouse e check-gate. Ela roda
+em pull requests para a main e em execução manual (`workflow_dispatch`);
+PR que só toca `docs/`, `workflow/`, `check/` ou arquivos `.md` não aciona
+a CI, e o gatilho de `push` saiu para caber no plano Free (2.000
+minutos/mês) sem rodar a mesma árvore duas vezes.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
 Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
