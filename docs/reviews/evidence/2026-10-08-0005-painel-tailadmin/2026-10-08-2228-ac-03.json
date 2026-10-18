@@ -1,0 +1,13 @@
+{
+  "ac": "admin/AC-03",
+  "title": "Guarda independente em cada operação e Route Handlers",
+  "generatedAt": "2026-10-08T18:25:15.451Z",
+  "status": "PASS",
+  "targetFile": "lib/admin/auth.ts",
+  "testsExecuted": [
+    "guarda assertAdminApiAuth falha fechado se a requisição não atender os requisitos",
+    "rejeita emissão de preview para usuário autenticado com UUID não autorizado",
+    "E2E produção local: POST /api/admin/preview sem sessão → 401 antes da lógica de preview"
+  ],
+  "note": "assertAdminApiAuth caminha em cada rota em /api/admin/*. Em runtime de produção a chamada direta à API sem sessão retornou 401 (guarda disparada antes do armazenamento de preview)."
+}

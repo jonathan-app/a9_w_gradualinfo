@@ -4,34 +4,25 @@
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp"
+        "@playwright/mcp@0.0.83"
       ]
     },
     "next-devtools": {
       "command": "npx",
       "args": [
         "-y",
-        "next-devtools-mcp"
+        "next-devtools-mcp@0.4.0"
       ]
     },
     "fetch": {
-      "command": "npx",
+      "command": "uvx",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-fetch"
+        "mcp-server-fetch==0.6.3"
       ]
     },
     "supabase": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@supabase/mcp-server"
-      ],
-      "env": {
-        "SUPABASE_URL": "http://127.0.0.1:54321",
-        "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjo0MTAyNDQ0ODAwfQ.local-development-placeholder-signature"
-      },
-      "notes": "Uso restrito a desenvolvimento. Nunca apontar para produção. Agente → MCP Supabase → dev, nunca agente → produção → database."
+      "type": "http",
+      "url": "http://127.0.0.1:54321/mcp"
     }
   }
 }

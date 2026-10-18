@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "ed00c4b9fcc69c3570cfed106bb58cc6931633aa",
+  "evaluatedTree": "9ef0f628b6eef85ca97ae9295b33e4f13343efee",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md",
+    "sha256": "0f0714e462dfb8866d5dec4d9084a45d74f22e1cc431de5ff8d44a028fe8b9f6"
+  },
+  "acs": [
+    {
+      "id": "admin/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-11",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-12",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-13",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    },
+    {
+      "id": "admin/AC-14",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-09-2145-0007/2026-10-09-2145-ac-01-ac-11.log",
+      "evidenceSha256": "d1fd240883146f3f1e4611c7a57e840fc3c497e7eda727e0fb89c4954e1c117e"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Access guard bloqueia todas as rotas admin sob next start puro (sem binding Cloudflare). ACs que exigem interação real com login, MFA, rate limit e logout são UNVERIFIABLE localmente."
+    }
+  ]
+}

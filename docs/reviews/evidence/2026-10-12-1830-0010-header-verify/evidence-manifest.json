@@ -1,0 +1,27 @@
+[
+  {
+    "name": "320",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/header-320.png",
+    "sha256": "beed01aa704736511a90461bc2a58298bdd50d292dd727796fa6238fface3d31"
+  },
+  {
+    "name": "375",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/header-375.png",
+    "sha256": "241ba047135f76010c7f91dc3f3d5598904c1606f5559a6998794859a8946fed"
+  },
+  {
+    "name": "768",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/header-768.png",
+    "sha256": "34525d820ab4f0c5f231ef187c297129c078918b149a46744783bb05d7f860f6"
+  },
+  {
+    "name": "1440",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/header-1440.png",
+    "sha256": "95d8069265d8034ac066fde0add71cfe4939243fd40d2b663709c61eb4d76f81"
+  },
+  {
+    "name": "artigo-longo",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/artigo-longo.png",
+    "sha256": "3c1c0ff936734dc9d4d4619a840bf07da3a58aec4965bda5c000e88124c6825c"
+  }
+]

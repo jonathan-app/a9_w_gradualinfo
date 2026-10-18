@@ -1,0 +1,8 @@
+{
+  "app/page.tsx": "d4491503d349aa07bc015fb95d2837c1ea887dc7bca8aabb57096936c1044b23",
+  "app/artigos/[slug]/page.tsx": "e0cc303a8ebcdaf701b06556febbaab48815a6de62c8156c5dc8e434f1f327e0",
+  "app/globals.css": "c2342ed52380d75fd20590d115a8d81ffdd856d880c3db3105ac2392ca6d753c",
+  "lib/editorial-images.ts": "61f6309112a1a5ce94a6bce1ab69869e84d2837071d819f82dcedc03deac060e",
+  "components/shared/editorial-cover.tsx": "35c8cdb65394327b074fde8e01068e86111bbbcc8fe0316dd9846078982466f9",
+  "components/shared/editorial-story.tsx": "6d54d5cde8f9f860bd34025b006e77a8a5a4e8b4f07b9514be5e90aab3328793"
+}

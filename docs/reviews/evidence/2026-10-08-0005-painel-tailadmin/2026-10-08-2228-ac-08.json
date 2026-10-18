@@ -1,0 +1,9 @@
+{
+  "ac": "admin/AC-08",
+  "title": "Código morto descartado e interface em pt-BR",
+  "generatedAt": "2026-10-08T18:25:15.452Z",
+  "status": "PASS",
+  "targetFile": "components/admin/admin-sidebar.tsx",
+  "testsExecuted": ["Painel Administrativo — Autorização e MFA (Spec 0007)"],
+  "note": "Telas de comércio e mapas descartadas; interface 100% traduzida em pt-BR."
+}

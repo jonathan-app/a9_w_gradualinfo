@@ -29,6 +29,7 @@ export default defineConfig([
   // vira um config que não casa com nada e o ESLint avisa sobre isso.
   globalIgnores([
     '.next/**',
+    '.next-editorial/**',
     'out/**',
     'build/**',
     'dist/**',
@@ -44,10 +45,16 @@ export default defineConfig([
     // template de terceiro faz o lint do projeto depender do estilo de outro.
     // Mesma decisão e mesmo motivo que no `.prettierignore`.
     'referencias/template-editorial/**',
+    'referencias/template-admin-dashboard/**',
+    'referencias/**',
     'scratch/**',
     '.kilo/worktrees/**',
     '.agents/**',
+    '.ag-kit-backups/**',
     '.wrangler/**',
+    // Artefatos de verificação gerados pelo /check
+    'docs/reviews/evidence/**',
+    'gradualinfo-*/**',
   ]),
 
   // --- Regras base (JS, TS, React, a11y, imports) ------------------------
@@ -67,7 +74,7 @@ export default defineConfig([
   },
   {
     settings: {
-      react: { version: 'detect' },
+      react: { version: '19.3.0' },
       'import/resolver': {
         typescript: true,
         node: true,
@@ -129,6 +136,20 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-console': 'off',
+    },
+  },
+
+  {
+    // scripts/cloudflare-worker.ts importa o worker que o OpenNext gera em
+    // .open-next/ só durante `pnpm build`. O job `quality` da CI
+    // roda `check:all` (com o lint) antes de qualquer build, numa
+    // árvore sem .open-next: a regra não pode resolver um artefato
+    // que ainda não existe. Mesmo tratamento do `exclude` do
+    // tsconfig (scripts/**); o resto das regras continua valendo
+    // neste arquivo.
+    files: ['scripts/cloudflare-worker.ts'],
+    rules: {
+      'import/no-unresolved': 'off',
     },
   },
 ]);

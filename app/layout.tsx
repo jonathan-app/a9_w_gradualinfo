@@ -5,7 +5,11 @@ import { GoogleTagManager } from '@/components/shared/google-tag-manager';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { env } from '@/lib/env';
-import { GOOGLE_SITE_VERIFICATION } from '@/lib/site-config';
+import {
+  GOOGLE_SITE_VERIFICATION,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+} from '@/lib/site-config';
 import './globals.css';
 
 /**
@@ -38,17 +42,16 @@ import './globals.css';
 export const metadata: Metadata = {
   metadataBase: new URL(env.siteUrl),
   title: {
-    default: 'Gradualinfo',
-    template: '%s | Gradualinfo',
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    'Guias de tecnologia para estudantes de programação tomarem decisões sobre equipamentos e ferramentas.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    siteName: 'Gradualinfo',
+    siteName: SITE_NAME,
   },
-  robots: { index: true, follow: true },
+  robots: { index: !env.editorialLocal, follow: !env.editorialLocal },
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
   },
@@ -79,8 +82,8 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-dvh flex-col antialiased">
-        <GoogleTagManager />
-        <GoogleAnalytics />
+        {!env.editorialLocal && <GoogleTagManager />}
+        {!env.editorialLocal && <GoogleAnalytics />}
         <ThemeProvider>
           {/* `skip` leva o foco ao conteúdo, permitindo pular o menu com o
               primeiro Tab. É requisito de acessibilidade, não enfeite. */}
@@ -93,6 +96,12 @@ export default function RootLayout({
           <main
             id="conteudo"
             className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+            {env.editorialLocal && (
+              <div className="editorial-local-notice">
+                <strong>Prévia local</strong>
+                <span>Conteúdo em revisão · nada é publicado aqui.</span>
+              </div>
+            )}
             {children}
           </main>
           <SiteFooter />

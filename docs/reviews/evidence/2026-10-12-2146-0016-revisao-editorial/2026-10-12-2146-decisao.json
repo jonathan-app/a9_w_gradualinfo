@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-12-1317-0016-revisao-editorial-dez-rascunhos.md",
+    "sha256": "f16b12832ad829392ca8845f9833970f52a225bab2b84932d019b6b19e378f8a"
+  },
+  "acs": [
+    {
+      "id": "editorial-ten/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    },
+    {
+      "id": "editorial-ten/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-2146-0016-revisao-editorial/evidence.md",
+      "evidenceSha256": "ff96d4f8683b6aed7b623d4402f840657d05adb1bbc880693e314173eb9f8d59"
+    }
+  ],
+  "findings": [],
+  "approved": true,
+  "verdict": "APROVADO",
+  "counts": {
+    "totalACs": 9,
+    "PASS": 9,
+    "FAIL": 0,
+    "UNVERIFIABLE": 0,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 0
+  },
+  "reasons": []
+}

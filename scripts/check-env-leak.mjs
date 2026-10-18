@@ -2,8 +2,8 @@
 /**
  * @fileoverview Guarda de vazamento de variáveis de ambiente (`.env*`) no Git.
  * @module scripts/check-env-leak
- * @description Verifica duas superfícies: arquivos `.env*` já rastreados no índice e arquivos
- *   `.env*` em staging (preparados para commit), sempre ignorando `*.example`.
+ * @description Verifica arquivos de ambiente e bindings locais já rastreados ou em staging,
+ *   em qualquer subpasta; apenas modelos `.env.example` são permitidos.
  * @dependencies node:child_process (`git ls-files` e `git diff --cached`), node:path, node:process.
  *
  * Quando executado: como etapa 1/5 do `pnpm run security:baseline`, dentro do diagnóstico
@@ -26,29 +26,71 @@ import process from 'node:process';
  *   no `.gitignore`. Não lança exceção — falhas do Git retornam listas vazias.
  */
 export function checkEnvLeaks({ cwd = process.cwd() } = {}) {
-  // 1. Verificar arquivos .env rastreados no repositório (exceto .env.example)
-  const lsResult = spawnSync('git', ['ls-files', '.env*'], {
+  // O Git não aplica .gitignore a arquivos já rastreados nem a git add -f.
+  const isPrivateEnvironmentFile = (file) => {
+    const name = path.basename(file);
+    if (name === '.env.example' || name.endsWith('.env.example')) return false;
+    return (
+      name === '.env' ||
+      name.startsWith('.env.') ||
+      name.endsWith('.env') ||
+      name.includes('.env.') ||
+      name === '.dev.vars' ||
+      name.startsWith('.dev.vars.')
+    );
+  };
+
+  const lsResult = spawnSync('git', ['ls-files', '-z'], {
     cwd,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   });
+
+  if (lsResult.status !== 0) {
+    const err = lsResult.stderr
+      ? lsResult.stderr.toString().trim()
+      : 'unknown error';
+    console.error(
+      `[Security:env] ERRO CRÍTICO: Falha ao consultar índice Git (git ls-files): ${err}`,
+    );
+    return {
+      status: 'FAIL',
+      exitCode: 1,
+      leakedFiles: [],
+    };
+  }
 
   const trackedFiles = (lsResult.stdout || '')
-    .split('\n')
-    .map((f) => f.trim())
-    .filter((f) => f && !f.endsWith('.example'));
+    .split('\0')
+    .filter(isPrivateEnvironmentFile);
 
-  // 2. Verificar arquivos .env em staging (staged para commit, exceto .env.example)
-  const diffResult = spawnSync('git', ['diff', '--cached', '--name-only'], {
-    cwd,
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  const diffResult = spawnSync(
+    'git',
+    ['diff', '--cached', '--name-only', '-z'],
+    {
+      cwd,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+
+  if (diffResult.status !== 0) {
+    const err = diffResult.stderr
+      ? diffResult.stderr.toString().trim()
+      : 'unknown error';
+    console.error(
+      `[Security:env] ERRO CRÍTICO: Falha ao consultar staging Git (git diff --cached): ${err}`,
+    );
+    return {
+      status: 'FAIL',
+      exitCode: 1,
+      leakedFiles: [],
+    };
+  }
 
   const stagedFiles = (diffResult.stdout || '')
-    .split('\n')
-    .map((f) => f.trim())
-    .filter((f) => f.startsWith('.env') && !f.endsWith('.example'));
+    .split('\0')
+    .filter(isPrivateEnvironmentFile);
 
   const detected = Array.from(new Set([...trackedFiles, ...stagedFiles]));
 

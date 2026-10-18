@@ -19,7 +19,8 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 // Spec avaliada quando `--spec` não é informado: mudar o arquivo de referência muda quais
 // ACs o gate espera, por isso ele é código e não argumento obrigatório.
-export const DEFAULT_SPEC = 'docs/specs/md-0002-casca-editorial-home.md';
+export const DEFAULT_SPEC =
+  'docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md';
 
 /**
  * Calcula o SHA-256 hexadecimal de um buffer.

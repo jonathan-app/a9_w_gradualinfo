@@ -1,0 +1,35 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 1. Sanitização estrita de redirecionamento pós-login > aceita a raiz do painel administrativo exata 3ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 1. Sanitização estrita de redirecionamento pós-login > aceita subcaminhos válidos do painel 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 1. Sanitização estrita de redirecionamento pós-login > rejeita prefixos colidentes fraudulentos como /admin-dashboard-falso 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 1. Sanitização estrita de redirecionamento pós-login > rejeita open-redirect com protocolo absoluto ou barras duplas 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 1. Sanitização estrita de redirecionamento pós-login > rejeita valores nulos, vazios ou indefinidos caindo no padrão seguro 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 2. Validação de origem contra requisições forjadas (CSRF) > aprova requisição com cabeçalho Origin correspondente ao SITE_ORIGIN 2ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 2. Validação de origem contra requisições forjadas (CSRF) > aprova requisição com Referer correspondente ao SITE_ORIGIN 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 2. Validação de origem contra requisições forjadas (CSRF) > rejeita requisição com Origin fraudulento de domínio externo 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 2. Validação de origem contra requisições forjadas (CSRF) > rejeita requisição com Referer fraudulento de domínio externo 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: acesso anônimo retorna unauthenticated 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: sessão expirada ou erro do Supabase retorna unauthenticated 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: usuário autenticado com UUID divergente retorna unauthorized 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: administrador sem nenhum fator TOTP cadastrado exige matrícula (mfa_enrollment_required) 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: administrador com TOTP cadastrado mas sessão AAL1 exige desafio (mfa_challenge_required) 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: administrador com sessão em AAL2 autoriza com sucesso 0ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 3. Verificação no servidor e escada de MFA (checkAdminUser) > cenário: falha fechada absoluta quando ADMIN_USER_ID está ausente no servidor (config_missing) 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > rejeita logout se a origem for ilegítima (CSRF) 2ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > rejeita emissão de preview em /api/admin/preview se a origem for ilegítima 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > rejeita slug de preview com caracteres maliciosos ou formato inválido 2ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > emite preview e cookie seguro com sucesso quando administrador possui AAL2 3ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > rejeita emissão de preview se sessão do administrador estiver apenas em AAL1 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > rejeita emissão de preview para usuário autenticado com UUID não autorizado 1ms
+ ✓ __tests__/unit/admin-auth.test.ts > Painel Administrativo — Autorização e MFA (Spec 0007) > 4. Guarda em cada operação e emissão de preview restrita a AAL2 > guarda assertAdminApiAuth falha fechado se a requisição não atender os requisitos 0ms
+
+ Test Files  1 passed (1)
+      Tests  23 passed (23)
+   Start at  15:24:44
+   Duration  510ms (setup 40%, transform 27%, import 24%, tests 7%, worker 2%)
+

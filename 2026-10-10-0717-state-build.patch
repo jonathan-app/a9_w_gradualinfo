@@ -1,0 +1,17 @@
+--- a/workflow/STATE.md
++++ b/workflow/STATE.md
+@@ -22,6 +22,8 @@
+ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
+ 
+ ## Bastão atual
++
++**Verificação do ZIP de 07:16, rodada local de 2026-10-10 07:17:** build Next/OpenNext, Wrangler dry-run e check:all executados nesta extração: todos exit 0, 339/339 testes em 35 arquivos. Fonte identificada pelo ZIP b23acf79 e manifesto de 212 arquivos, sem mudanças de aplicação. Entry point em scripts/cloudflare-worker.ts. Relatório `docs/reviews/2026-10-10-0717-zip-build-verify.md`. Não há checkout Git nem prova remota nesta cópia. Próximo /check verify para runtime isolado autorizado; 13 ACs Access continuam UNVERIFIABLE. Quotas vigentes preservadas, sem aplicar patch anterior por IP. Sem configuração remota, merge ou deploy.
+ 
+ **Home pública, /debug pendente de evidência remota:** `check/public-home/2026-10-10-0701/DEBUG.md` registra que o HTTP 500 publicado ainda não tem causa provada. A chave Supabase substituta existe, mas a home usa Sanity quando configurado; `wrangler.jsonc` não prova ausência de binding remoto por `keep_vars: true`. `scripts/validate-admin-access.mjs` valida localmente os quatro campos com a função real, sem alterar o Worker. Próximo: obter status e logs da versão publicada com valores redigidos, então isolar a causa e prescrever correção. Nenhuma alteração remota foi feita.
+ 
+@@ -385,3 +387,5 @@
+ | 175 | 2026-10-10 | /debug home pública e validador local Access | `check/public-home/2026-10-10-0701/DEBUG.md` e `scripts/validate-admin-access.mjs`: hipótese da chave Supabase analisada, causa do HTTP 500 remoto ainda não confirmada; validador usa `readAdminAccessConfig` e passou com ausência e valores fictícios, sem mostrar valores ou alterar produção. Consulta HTTP direta bloqueada por DNS no sandbox; execução ampliada solicitada. | /debug precisa de status e logs da versão publicada; trilha administrativa separada |
+ | 176 | 2026-10-10 | /debug continuação da home pública | `check/public-home/2026-10-10-0701/DEBUG.md` atualizado: commit local `307141d` identificado, versão publicada não identificada; Wrangler falhou por conectividade no sandbox, execução ampliada de leitura solicitada; navegador indisponível, captura web antiga. Sem status ou logs atuais, causa e correção permanecem não confirmadas. | /debug retomar após evidência remota, sem configurar valores ou fazer deploy |
+ | 177 | 2026-10-10 | publicação Git solicitada para artefatos de /debug | Escopo isolado: `scripts/validate-admin-access.mjs`, `check/public-home/2026-10-10-0701/DEBUG.md` e linhas 175 a 177 de `workflow/STATE.md`. ESLint passou; formatação corrigida. `git add` falhou por `.git/index.lock` em sistema somente leitura; execução ampliada solicitada e ainda pendente. Sem commit ou push. Mudanças concorrentes no Worker e em `docs/reviews/` preservadas. | aguardar permissão do ambiente para commit e push solicitados |
++
++| 178 | 2026-10-10 | verificação independente do ZIP 07:16 | Build Next/OpenNext exit 0, Wrangler dry-run exit 0, check:all exit 0 com 339/339; fonte ZIP b23acf79, manifesto 212 arquivos, saída OpenNext 1666 arquivos; relatório `docs/reviews/2026-10-10-0717-zip-build-verify.md`. Nenhuma lógica ou quota alterada. | /check verify runtime isolado autorizado; 13 ACs Access UNVERIFIABLE; sem merge/deploy |

@@ -1,0 +1,160 @@
+$ pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
+$ tsc --noEmit
+$ eslint .
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+$ vitest run
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+stderr | __tests__/unit/components/editorial-components.test.tsx > EditorialStory > renderiza variante lead com título e link
+Received `true` for a non-boolean attribute `fill`.
+
+If you want to write it to the DOM, pass a string instead: fill="true" or fill={value.toString()}.
+Received `true` for a non-boolean attribute `unoptimized`.
+
+If you want to write it to the DOM, pass a string instead: unoptimized="true" or unoptimized={value.toString()}.
+Received `true` for a non-boolean attribute `priority`.
+
+If you want to write it to the DOM, pass a string instead: priority="true" or priority={value.toString()}.
+
+ ✓ __tests__/unit/components/editorial-components.test.tsx (11 tests) 502ms
+   ✓ EditorialStory (6)
+     ✓ renderiza variante lead com título e link 338ms
+ ✓ __tests__/unit/mfa-enrollment-ui.test.tsx (6 tests) 569ms
+   ✓ não consulta matrícula ao renderizar e pede POST somente no clique 355ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 522ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 326ms
+ ✓ __tests__/components/button.test.tsx (5 tests) 475ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 338ms
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+ ✓ __tests__/unit/editorial-reading.test.tsx (18 tests) 559ms
+   ✓ leitura editorial (6)
+     ✓ liga sumário a títulos repetidos sem incluir código como seção 358ms
+ ✓ __tests__/unit/access-logic.test.ts (29 tests) 1266ms
+ ✓ __tests__/unit/app-home.test.tsx (11 tests) 1123ms
+   ✓ HomePage (11)
+     ✓ renderiza H1 institucional 363ms
+     ✓ renderiza artigos quando existem 455ms
+ ✓ __tests__/unit/components/admin-components.test.tsx (17 tests) 1213ms
+ ✓ __tests__/unit/admin-access-crypto.test.ts (11 tests) 342ms
+ERRO: ADMIN_USER_ID inválido ou ausente. Um UUID fixo válido é obrigatório.
+[ADMIN-MFA-RESET] Consultando fatores cadastrados para o usuário: 11111111-1111-1111-1111-111111111111
+[ADMIN-MFA-RESET] Nenhum fator TOTP encontrado para o usuário 11111111-1111-1111-1111-111111111111. Nenhuma ação necessária.
+ ✓ __tests__/integration/spec-0019-recovery.test.ts (17 tests) 349ms
+ ✓ __tests__/unit/admin-rate-limit-protocol.test.ts (8 tests) 132ms
+(node:737191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node-22 --trace-warnings ...` to show where the warning was created)
+ ✓ __tests__/integration/spec-0018-real-auth.test.ts (16 tests) 3322ms
+   ✓ Spec 0018 — Verificação Empírica Integrada (AC-01 a AC-08) (16)
+     ✓ AC-02: Rejeição na admissão do Worker de tokens inválidos (5)
+       ✓ ignora ADMIN_ACCESS_KEY_PAIR e recusa quando bindings indicam produção (NODE_ENV=production ou gradualinfo.com.br) 702ms
+     ✓ AC-05: Escada de MFA e elevação para AAL2 contra GoTrue local (3)
+       ✓ eleva sessão para AAL2 com código TOTP válido e impede reutilização imediata 637ms
+     ✓ AC-07: Logout seguro no Supabase GoTrue local (1)
+       ✓ revoga a sessão no GoTrue e invalida tokens associados 367ms
+ ✓ __tests__/unit/admin-rate-limit.test.ts (17 tests) 119ms
+ ✓ __tests__/unit/admin-e2e-guard.test.ts (5 tests) 67ms
+ ✓ __tests__/unit/sanity-client.test.ts (14 tests) 109ms
+stderr | __tests__/unit/components/google-analytics.test.tsx > GoogleAnalytics > renderiza os scripts quando measurementId estiver configurado
+Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 108ms
+ ✓ __tests__/unit/sanity-probe-home.test.tsx (5 tests) 321ms
+ ✓ __tests__/unit/admin-hardening.test.ts (16 tests) 59ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 115ms
+ ✓ __tests__/unit/admin-mfa-enrollment.test.ts (16 tests) 79ms
+ ✓ __tests__/unit/editorial-logs-reader.test.tsx (1 test) 190ms
+ ✓ __tests__/integration/preview-cookie-reuse.test.ts (12 tests) 77ms
+ ✓ __tests__/unit/admin-auth.test.ts (29 tests) 47ms
+ ✓ __tests__/unit/config-admin-access.test.ts (21 tests) 5910ms
+   ✓ publicacao: wrangler secret put (2)
+     ✓ envia cada valor pelo stdin do wrangler, um secret por nome 1044ms
+     ✓ interrompe na primeira falha do wrangler sem publicar os demais 455ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 80ms
+ ✓ __tests__/unit/preview-failure-status.test.ts (12 tests) 69ms
+ ✓ __tests__/unit/lib/offers/route-evidencias.test.ts (5 tests) 27ms
+ ✓ __tests__/unit/admin-auth-lifecycle.test.ts (13 tests) 125ms
+ ✓ __tests__/unit/lib/format.test.ts (28 tests) 89ms
+ ✓ __tests__/unit/lib/offers/route-avaliar-selo.test.ts (11 tests) 52ms
+ ✓ __tests__/unit/admin-logout.test.ts (3 tests) 27ms
+ ✓ __tests__/unit/preview-security.test.ts (10 tests) 86ms
+ ✓ __tests__/unit/mfa-verify-route.test.ts (18 tests) 83ms
+ ✓ __tests__/unit/preview-route.test.ts (12 tests) 53ms
+ ✓ __tests__/unit/durable-object.test.ts (25 tests) 53ms
+ ✓ __tests__/unit/preview-auth-accessible.test.ts (10 tests) 26ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (15 tests) 54ms
+ ✓ __tests__/unit/admin-access-worker.test.ts (5 tests) 29ms
+ ✓ __tests__/unit/supabase-middleware.test.ts (15 tests) 52ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 22ms
+ ✓ __tests__/lib/format.test.ts (7 tests) 43ms
+ ✓ __tests__/unit/admin-login-route.test.ts (6 tests) 42ms
+ ✓ __tests__/unit/lib/offers/route-out-redirect.test.ts (14 tests) 27ms
+ ✓ __tests__/unit/admin-session-response.test.ts (6 tests) 23ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 27ms
+ ✓ __tests__/unit/admin-access.test.ts (20 tests) 27ms
+ ✓ __tests__/unit/admin-auth-utils.test.ts (24 tests) 36ms
+ ✓ __tests__/unit/lib/editorial-images.test.ts (15 tests) 26ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 10460ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 533ms
+     ✓ rejeita missing 614ms
+     ✓ rejeita duplicate 487ms
+     ✓ rejeita extra 559ms
+     ✓ rejeita fail 551ms
+     ✓ rejeita unverifiable 587ms
+     ✓ rejeita missing-proof 659ms
+     ✓ rejeita bad-hash 542ms
+     ✓ rejeita blocker 616ms
+     ✓ rejeita malformed 588ms
+     ✓ rejeita adulteração de commit 508ms
+     ✓ rejeita adulteração de tree 615ms
+     ✓ rejeita adulteração de spec 637ms
+     ✓ rejeita adulteração de counts 615ms
+     ✓ rejeita aprovação antiga com --commit atual após commit real 592ms
+     ✓ rejeita árvore suja mesmo sem alterar o SHA 563ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 865ms
+     ✓ rejeita spec Proposed mesmo com hash correspondente 324ms
+ ✓ __tests__/unit/preview-durable-object.test.ts (7 tests) 29ms
+ ✓ __tests__/unit/lib/offers/outlier-classifier.test.ts (13 tests) 15ms
+ ✓ __tests__/unit/proxy.test.ts (6 tests) 38ms
+ ✓ __tests__/unit/supabase-server.test.ts (12 tests) 40ms
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 29ms
+ ✓ __tests__/unit/security-headers.test.ts (9 tests) 22ms
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 14ms
+ ✓ __tests__/unit/lib/offers/route-ofertas.test.ts (3 tests) 24ms
+ ✓ __tests__/unit/lib/offers/webhook-auth.test.ts (8 tests) 36ms
+ ✓ __tests__/unit/lib/offers/memory-adapter.test.ts (10 tests) 22ms
+ ✓ __tests__/unit/sitemap.test.ts (4 tests) 19ms
+ ✓ __tests__/unit/logger.test.ts (3 tests) 16ms
+ ✓ __tests__/unit/access-guard.test.ts (17 tests) 26ms
+ ✓ __tests__/unit/lib/local-editorial-covers.test.ts (2 tests) 21ms
+ ✓ __tests__/unit/lib/offers/shipping-validation.test.ts (12 tests) 15ms
+ ✓ __tests__/unit/audit-logger.test.ts (2 tests) 16ms
+ ✓ __tests__/unit/lib/offers/coupon-validation.test.ts (6 tests) 17ms
+ ✓ __tests__/unit/admin-dashboard-routes.test.ts (3 tests) 19ms
+ ✓ __tests__/unit/lib/offers/evidence-canonicalizer.test.ts (6 tests) 14ms
+ ✓ __tests__/unit/lib/commercial-dashboard.test.ts (4 tests) 17ms
+ ✓ __tests__/unit/lib/offers/verified-price-pipeline.test.ts (5 tests) 8ms
+ ✓ __tests__/unit/lib/health-dashboard.test.ts (2 tests) 10ms
+ ✓ __tests__/unit/lib/editorial-dashboard.test.ts (3 tests) 9ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 7ms
+ ✓ __tests__/unit/lib/offers/variant-validation.test.ts (4 tests) 7ms
+ ✓ __tests__/unit/lib/search-posts.test.ts (2 tests) 5ms
+
+ Test Files  75 passed (75)
+      Tests  765 passed (765)
+   Start at  18:22:56
+   Duration  15.15s (environment 54%, tests 23%, setup 14%, import 6%, worker 1%, transform 1%)
+
+Environment  jsdom was created 75 times · 70.59s total, 54% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

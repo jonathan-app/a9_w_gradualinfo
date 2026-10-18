@@ -26,9 +26,8 @@ export default defineConfig({
   // Sem isso, um teste que passa por acaso em rerun não é sinal de nada.
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  // Worker único em CI e em produção: os specs mutam a stack local (banco incluído) e
-  // paralelismo aqui causaria corrida de estado, não velocidade.
-  workers: process.env.CI || production ? 1 : undefined,
+  // Worker único: os specs mutam a stack local e sessões; paralelismo causaria corrida de estado.
+  workers: 1,
   reporter: process.env.CI
     ? [
         ['github'],
@@ -69,12 +68,19 @@ export default defineConfig({
   // Sobe o app antes do primeiro teste e derruba ao terminar.
   // `reuseExistingServer` evita subir dois servidores na máquina local.
   webServer: {
-    command: production
-      ? 'node scripts/e2e-server.mjs'
-      : `pnpm dev --port ${PORT}`,
+    command:
+      production ||
+      process.env.E2E_USE_WORKER === '1' ||
+      process.env.E2E_REAL_SUPABASE === '1'
+        ? 'node scripts/e2e-server.mjs'
+        : `pnpm dev --port ${PORT}`,
     url: baseURL,
     ignoreHTTPSErrors: baseURL.startsWith('https://localhost:'),
-    reuseExistingServer: !process.env.CI && !production,
+    reuseExistingServer:
+      !process.env.CI &&
+      !production &&
+      process.env.E2E_USE_WORKER !== '1' &&
+      process.env.E2E_REAL_SUPABASE !== '1',
     timeout: 120_000,
   },
 });

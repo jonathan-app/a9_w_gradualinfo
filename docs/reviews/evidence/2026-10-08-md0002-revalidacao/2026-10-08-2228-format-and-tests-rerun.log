@@ -1,0 +1,48 @@
+### format:check
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+exit=0
+
+### test:run
+$ vitest run
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 29ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 31ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 69ms
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 14ms
+ ✓ __tests__/lib/format.test.ts (7 tests) 37ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (11 tests) 32ms
+stderr | __tests__/unit/components/google-analytics.test.tsx > GoogleAnalytics > renderiza os scripts quando measurementId estiver configurado
+Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 92ms
+ ✓ __tests__/unit/lib/format.test.ts (12 tests) 45ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 134ms
+ ✓ __tests__/components/button.test.tsx (5 tests) 291ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 319ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 12ms
+ ✓ __tests__/lib/cn.test.ts (6 tests) 12ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 7ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 5648ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 646ms
+     ✓ rejeita missing 527ms
+     ✓ rejeita duplicate 409ms
+     ✓ rejeita extra 391ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 381ms
+
+ Test Files  15 passed (15)
+      Tests  104 passed (104)
+   Start at  13:04:32
+   Duration  6.53s (environment 49%, tests 26%, setup 15%, import 5%, transform 4%, worker 1%)
+
+    Isolate  15 workers spawned · ~1.17s startup each (spawn + environment, per file)
+             at least ~426ms faster with isolate: false — reuses workers across files instead of one per file
+
+exit=0

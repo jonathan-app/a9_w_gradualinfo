@@ -9,6 +9,7 @@ skills-lock.json
 package.json
 node_modules/
 .next/
+.next-editorial/
 out/
 dist/
 build/
@@ -22,6 +23,7 @@ next-env.d.ts
 
 # Conteúdo das skills: documentado em outro idioma e com formatação própria.
 .agents/**
+security/skills-catalog/**
 
 # ---------------------------------------------------------------------------
 # Referência externa preservada, não código ativo.
@@ -39,6 +41,7 @@ next-env.d.ts
 # separada, para o diff mostrar causa e efeito.
 # ---------------------------------------------------------------------------
 referencias/template-editorial/**
+referencias/template-admin-dashboard/**
 
 # `scratch/` é rascunho de trabalho. Também não é código ativo, e por isso
 # segue a mesma regra do template.
@@ -56,4 +59,6 @@ public/**
 *.svg
 
 # Artefatos de verificação.
-verify-result.json
+docs/reviews/2026-10-07-0712-verify-result.json
+docs/reviews/evidence/**
+gradualinfo-*/**

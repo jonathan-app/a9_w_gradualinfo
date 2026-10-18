@@ -1,0 +1,12 @@
+=== 2026-10-10-0646 — falha induzida (SANITY_DATASET inexistente no next start) ===
+--- GET / (probe) ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+--- corpo home (traços de indisponibilidade vs 404) ---
+      1 indisponível
+      1 Serviço temporariamente indisponível
+--- GET /artigos/slug-que-nao-existe ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow

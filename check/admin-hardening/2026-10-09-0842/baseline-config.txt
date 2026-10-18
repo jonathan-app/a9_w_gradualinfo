@@ -1,0 +1,5 @@
+export default {
+ root: '/tmp/admin-hardening-probe',
+ test: {globals:true,environment:'node',include:['baseline.test.ts']},
+ resolve: {alias:{'next/headers':'/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/next/headers.js','@':'/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo'}}
+};

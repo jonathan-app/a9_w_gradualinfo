@@ -1,0 +1,122 @@
+/**
+ * @fileoverview app/admin-dashboard/mfa/setup/page.tsx — configuração inicial do MFA
+ * @module app/admin-dashboard/mfa/setup
+ * @description Fluxo protegido de matrícula do fator TOTP para o administrador único.
+ *   Exige sessão autenticada com UUID autorizado. Apenas lê o estado em GET;
+ *   a folha interativa inicia matrícula explicitamente por POST.
+ * @dependencies react, next/link, next/navigation, @/lib/admin/auth, @/lib/env, @/lib/supabase/server
+ */
+import { requireAdminAccessPage } from '@/lib/admin/access-guard';
+
+import { resolveAdminMfaLadder, sanitizeAdminRedirect } from '@/lib/admin/auth';
+import { env } from '@/lib/env';
+import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { MfaEnrollment } from '@/components/admin/mfa-enrollment';
+import { notFound, redirect } from 'next/navigation';
+
+interface MfaSetupPageProps {
+  searchParams: Promise<{
+    error?: string;
+    redirectTo?: string;
+  }>;
+}
+
+/**
+ * Apresenta o estado da matrícula sem criar fator.
+ * @param props - Parâmetros de navegação do setup.
+ * @returns Página protegida sem segredo na renderização do servidor.
+ */
+export default async function AdminMfaSetupPage({
+  searchParams,
+}: MfaSetupPageProps) {
+  await requireAdminAccessPage();
+  const params = await searchParams;
+  const safeRedirect = sanitizeAdminRedirect(params.redirectTo);
+
+  const adminId = env.adminUserId.trim();
+  if (!adminId) {
+    notFound();
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  // Se não estiver autenticado, vai para a tela de login
+  if (authError || !authData.user) {
+    redirect(
+      `/admin-dashboard/login?redirectTo=${encodeURIComponent('/admin-dashboard/mfa/setup')}`,
+    );
+  }
+
+  // Se não for o administrador único, oculta existência (404)
+  if (authData.user.id !== adminId) {
+    notFound();
+  }
+
+  // Verifica status atual de MFA
+  const ladder = await resolveAdminMfaLadder(supabase);
+
+  // Já em AAL2 comprovado: não forçar setup
+  const alreadyConfigured = ladder.action === 'ok';
+
+  if (ladder.action === 'verify') {
+    // Existe fator TOTP (verificado ou pendente) — matricular de novo geraria
+    // conflito no gotrue e travaria o fluxo; o caminho correto é completar o desafio.
+    redirect(
+      `/admin-dashboard/mfa/verify?redirectTo=${encodeURIComponent(safeRedirect)}`,
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 dark:border-gray-800 dark:bg-gray-900">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-xl">
+            MFA
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Configurar Autenticação de Dois Fatores
+          </h1>
+          <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">
+            Obrigatório para autorizar acesso ao painel editorial (Nível AAL2)
+          </p>
+        </div>
+
+        {alreadyConfigured ? (
+          <div className="space-y-4">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <p className="font-semibold">MFA já ativo e verificado!</p>
+              <p className="mt-1">
+                Sua sessão atual possui autenticação de dois fatores completa
+                (AAL2).
+              </p>
+            </div>
+            <Link
+              href={safeRedirect}
+              className="block w-full rounded-lg bg-blue-600 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700">
+              Ir para o Painel
+            </Link>
+          </div>
+        ) : (
+          <MfaEnrollment redirectTo={safeRedirect} />
+        )}
+
+        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-600 dark:border-gray-800 dark:text-gray-300">
+          <Link
+            href="/"
+            className="hover:text-gray-700 dark:hover:text-gray-300">
+            ← Voltar ao portal
+          </Link>
+          <form action="/api/admin/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="text-red-700 font-medium hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+              Encerrar sessão
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

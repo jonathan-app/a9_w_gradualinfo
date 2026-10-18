@@ -1,0 +1,11 @@
+# Revisão independente da spec 0010
+
+Revisor: gpt-6-astra, somente leitura, escolhido explicitamente pelo proprietário. Spec avaliada: `2026-10-09-2038-0010-layout-editorial-home-artigo.md`. Não constitui aceite. Nenhuma alteração de aplicação ou contrato aplicada nesta rodada.
+
+1. **R1 BLOCKER, precedência contratual**: md-0002/AC-02 exige todos os campos em cada card, AC-04 descreve destaque acima da grade e limite de dez na grade, AC-13 posiciona autoria após fontes. A 0010 propõe variantes, dez no total e autoria antes da capa. Recomendação: tabela de precedência pontual sobre essas disposições visuais, preservando demais contratos e nomeando 0006 para transição e preview.
+2. **R2 WARNING, fallback e SEO**: coverImageUrl retorna sempre uma URL e usa editorial-cover.svg quando rejeita a capa. Recomendação: extrair validação compartilhada que retorne URL ou null para apresentação; preservar wrapper atual para SEO; bloco neutro inclusive onError, sem ampliar origens. URLs Sanity rejeitadas pela allowlist atual continuarão neutras até decisão específica.
+3. **R3 WARNING, largura pública**: main raiz e cabeçalho limitam a largura a max-w-5xl. Recomendação: marcador exclusivo nas páginas públicas e CSS localizado para ampliar somente o main correspondente, sem novos grupos de rotas. Cabeçalho e rodapé permanecem na largura atual nesta proposta; prova visual administrativa antes e depois.
+4. **R4 WARNING, campos por card**: a palavra metadados não fecha os campos por variante. Recomendação proposta: capa e secundários com editoria, título, resumo e data; recentes com editoria, título e data; autor somente no artigo. Omissões de valores ausentes sem separadores órfãos. Esta tabela é proposta pelo autor, não uma escolha prévia atribuída ao proprietário.
+5. **R5 NIT, limites visuais**: registrar números como proposta do autor sujeita ao aceite, separando obrigatórios (720 px máximo de corpo, 1200 px máximo de home, faixas responsivas) de pesos aproximados ajustáveis conforme conteúdo.
+
+Próxima decisão: aplicar as recomendações à proposta ou tratar cada ajuste separadamente. Aceite integral continua separado. Bloqueio da home sob falha é independente e permanece na fila vigente.

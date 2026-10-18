@@ -1,0 +1,557 @@
+$ playwright test
+
+Running 34 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/accessibility.spec.ts:15:7 › Acessibilidade › página inicial (1.7s)
+  ✓   2 [chromium] › e2e/accessibility.spec.ts:30:7 › Acessibilidade › artigo publicado (1.5s)
+  ✓   3 [chromium] › e2e/critical-flows.spec.ts:16:7 › Fluxos críticos › home carrega com título e navegação (407ms)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+  ✘   4 [chromium] › e2e/critical-flows.spec.ts:27:7 › Fluxos críticos › artigo publicado abre a partir da home (5.7s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✓   5 [chromium] › e2e/critical-flows.spec.ts:41:7 › Fluxos críticos › alternância de tema altera a classe do html (526ms)
+  ✓   6 [chromium] › e2e/critical-flows.spec.ts:52:7 › Fluxos críticos › rota inexistente devolve 404 útil (335ms)
+  ✓   7 [chromium] › e2e/critical-flows.spec.ts:61:7 › Fluxos críticos › sonda de saúde responde ok (51ms)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘   8 [chromium] › e2e/home.spec.ts:15:7 › página inicial › carrega o título principal (5.3s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘   9 [chromium] › e2e/home.spec.ts:23:7 › página inicial › abre o artigo publicado pela navegação da home (30.9s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✓  10 [chromium] › e2e/home.spec.ts:30:7 › página inicial › alterna o tema (567ms)
+  ✓  11 [chromium] › e2e/home.spec.ts:50:7 › página inicial › responde 200 na sonda de saúde (32ms)
+  ✓  12 [chromium] › e2e/home.spec.ts:57:7 › página inicial › devolve 404 com conteúdo útil em URL inexistente (311ms)
+  ✘  13 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:20:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de rascunho com sessão de preview não tem violations (5.6s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  14 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:30:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de artigo publicado não tem violations (1.0s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✓  15 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:39:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página inicial não tem violations (999ms)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  16 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:103:7 › home editorial › md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite (5.3s)
+  ✘  17 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:135:7 › home editorial › md-0002/AC-03: lista vazia mostra mensagem própria (220ms)
+[WebServer] ⨯ Error: {"message":"Falha de transporte induzida no teste"}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3103046278'
+[WebServer] }
+  ✓  18 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:178:7 › home editorial › md-0002/AC-03: falha real de transporte mostra erro, não vazio (7.4s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✓  19 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:198:7 › home editorial › md-0002/AC-12: teclado chega ao conteúdo com foco visível (356ms)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  20 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:13:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado (30.8s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  21 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:38:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-07: inexistente, rascunho e agendado devolvem 404 (507ms)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+  ✘  22 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:44:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-10: canonical e sitemap só incluem públicos (5.5s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  23 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:64:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-13: fontes aparecem somente quando presentes (5.5s)
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1117120775'
+[WebServer] }
+[WebServer] ⨯ Error: {"message":""}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2210165350'
+[WebServer] }
+  ✘  24 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:24:7 › preview em produção local › rascunho anônimo retorna HTTP 404 (600ms)
+  -  25 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:29:7 › preview em produção local › GET antigo não autentica e POST inválido falha
+  -  26 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:45:7 › preview em produção local › sessão válida lê rascunho, sem indexação e sem cache
+  -  27 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:61:7 › preview em produção local › autorização vencida nega rascunho mantendo a sessão Supabase
+  -  28 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:88:7 › preview em produção local › logout remove cookies e nega leitura
+  -  29 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:101:7 › preview em produção local › outra identidade com claim válida não lê rascunho
+  -  30 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:115:7 › preview em produção local › identidade permitida sem claim não lê rascunho
+  -  31 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:137:7 › preview em produção local › conta sem claim com sessão real permanece pública
+  -  32 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:149:7 › preview em produção local › falha real de logout responde 503 e remove autorização local
+  -  33 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:177:7 › preview em produção local › sessão Auth realmente expirada nega rascunho sem apagar cookies
+  -  34 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:210:7 › preview em produção local › cookies preservam HttpOnly, Secure e prazo em HTTPS
+
+
+  1) [chromium] › e2e/critical-flows.spec.ts:27:7 › Fluxos críticos › artigo publicado abre a partir da home 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('heading', { name: 'Fixture publicado', level: 1 })
+    Expected: "Fixture publicado"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('heading', { name: 'Fixture publicado', level: 1 }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Fixture publicado', level: 1 })
+
+
+      32 |     await expect(
+      33 |       page.getByRole('heading', { level: 1, name: 'Fixture publicado' }),
+    > 34 |     ).toHaveText('Fixture publicado');
+         |       ^
+      35 |     await page.getByRole('link', { name: 'Início', exact: true }).click();
+      36 |     await expect(
+      37 |       page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/critical-flows.spec.ts:34:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-flows-Fluxos-crít-db383-icado-abre-a-partir-da-home-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-flows-Fluxos-crít-db383-icado-abre-a-partir-da-home-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-flows-Fluxos-crít-db383-icado-abre-a-partir-da-home-chromium/error-context.md
+
+  2) [chromium] › e2e/home.spec.ts:15:7 › página inicial › carrega o título principal ──────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /Gradualinfo/i, level: 1 })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: /Gradualinfo/i, level: 1 }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: /Gradualinfo/i, level: 1 })
+
+
+      18 |     await expect(
+      19 |       page.getByRole('heading', { level: 1, name: /Gradualinfo/i }),
+    > 20 |     ).toBeVisible();
+         |       ^
+      21 |   });
+      22 |
+      23 |   test('abre o artigo publicado pela navegação da home', async ({ page }) => {
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/home.spec.ts:20:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/home-página-inicial-carrega-o-título-principal-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/home-página-inicial-carrega-o-título-principal-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/home-página-inicial-carrega-o-título-principal-chromium/error-context.md
+
+  3) [chromium] › e2e/home.spec.ts:23:7 › página inicial › abre o artigo publicado pela navegação da home 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('a[href="/artigos/fixture-publicado"]').first()
+
+
+      23 |   test('abre o artigo publicado pela navegação da home', async ({ page }) => {
+      24 |     await page.goto('/');
+    > 25 |     await page.locator('a[href="/artigos/fixture-publicado"]').first().click();
+         |                                                                        ^
+      26 |     await expect(page).toHaveURL(/\/artigos\/fixture-publicado$/);
+      27 |     await expect(page.locator('h1')).toContainText('Fixture publicado');
+      28 |   });
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/home.spec.ts:25:72
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/home-página-inicial-abre-o-809e9-cado-pela-navegação-da-home-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/home-página-inicial-abre-o-809e9-cado-pela-navegação-da-home-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/home-página-inicial-abre-o-809e9-cado-pela-navegação-da-home-chromium/error-context.md
+
+  4) [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:20:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de rascunho com sessão de preview não tem violations 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/$/
+    Received string:  "https://localhost:3100/api/preview"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        14 × locator resolved to <html>…</html>
+           - unexpected value "https://localhost:3100/api/preview"
+
+
+       at support/preview.ts:21
+
+      19 |   await page.getByLabel('Segredo de entrada').fill(token);
+      20 |   await page.getByRole('button', { name: 'Entrar no preview' }).click();
+    > 21 |   await expect(page).toHaveURL(/\/$/);
+         |                      ^
+      22 | }
+      23 | export async function logoutPreview(page: Page) {
+      24 |   await page.goto('/preview');
+        at loginPreview (/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/support/preview.ts:21:22)
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-acessibilidade.spec.ts:23:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-acessibilida-46128--preview-não-tem-violations-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-acessibilida-46128--preview-não-tem-violations-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-acessibilida-46128--preview-não-tem-violations-chromium/error-context.md
+
+  5) [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:30:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de artigo publicado não tem violations 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 43
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure each HTML document contains a non-empty <title> element",
+    +     "help": "Documents must have <title> element to aid in navigation",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/document-title?application=playwright",
+    +     "id": "document-title",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "doc-has-title",
+    +             "impact": "serious",
+    +             "message": "Document does not have a non-empty <title> element",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Document does not have a non-empty <title> element",
+    +         "html": "<html lang=\"pt-BR\" class=\"light\" style=\"color-scheme: light;\">",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "html",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.text-alternatives",
+    +       "wcag2a",
+    +       "wcag242",
+    +       "TTv5",
+    +       "TT12.a",
+    +       "EN-301-549",
+    +       "EN-9.2.4.2",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-8.5.1",
+    +     ],
+    +   },
+    + ]
+
+      34 |
+      35 |     const results = await new AxeBuilder({ page }).analyze();
+    > 36 |     expect(results.violations).toEqual([]);
+         |                                ^
+      37 |   });
+      38 |
+      39 |   test('AC-12: Página inicial não tem violations', async ({ page }) => {
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-acessibilidade.spec.ts:36:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-acessibilida-db731-ublicado-não-tem-violations-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-acessibilida-db731-ublicado-não-tem-violations-chromium/video-1.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-acessibilida-db731-ublicado-não-tem-violations-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-acessibilida-db731-ublicado-não-tem-violations-chromium/error-context.md
+
+  6) [chromium] › e2e/verify-md0002-tarefa4.spec.ts:103:7 › home editorial › md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('main a[href^="/artigos/"]')
+    Expected: 10
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('main a[href^="/artigos/"]') with timeout 5000ms
+      - waiting for locator('main a[href^="/artigos/"]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      108 |     // Limite de 10 por página: `toHaveCount` aguarda a estabilização do DOM (auto-waiting),
+      109 |     // eliminando leituras transitórias de nós duplicados durante o streaming do SSR.
+    > 110 |     await expect(cards).toHaveCount(10);
+          |                         ^
+      111 |     // Ordenação conferida sobre os atributos <time>: mais novo primeiro é o contrato
+      112 |     // editorial que o card em destaque também pressupõe.
+      113 |     const dates = await page
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa4.spec.ts:110:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa4-home-e62b8-completos-destaque-e-limite-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa4-home-e62b8-completos-destaque-e-limite-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa4-home-e62b8-completos-destaque-e-limite-chromium/error-context.md
+
+    Error Context: test-results/verify-md0002-tarefa4-home-e62b8-completos-destaque-e-limite-chromium/error-context.md
+
+  7) [chromium] › e2e/verify-md0002-tarefa4.spec.ts:135:7 › home editorial › md-0002/AC-03: lista vazia mostra mensagem própria 
+
+    Error: Falha na preparação do estado vazio.
+
+      141 |       .select('id,status')
+      142 |       .eq('status', 'publicado');
+    > 143 |     if (error || !rows) throw new Error('Falha na preparação do estado vazio.');
+          |                               ^
+      144 |     mutatedPostIds = rows.map((row) => row.id);
+      145 |     const restoreErrors: unknown[] = [];
+      146 |     // Mutação destrutiva com restauração garantida em `finally`: se a asserção falhar, os
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa4.spec.ts:143:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa4-home-bfa19-zia-mostra-mensagem-própria-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa4-home-bfa19-zia-mostra-mensagem-própria-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa4-home-bfa19-zia-mostra-mensagem-própria-chromium/error-context.md
+
+    Error Context: test-results/verify-md0002-tarefa4-home-bfa19-zia-mostra-mensagem-própria-chromium/error-context.md
+
+  8) [chromium] › e2e/verify-md0002-tarefa5.spec.ts:13:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.innerText: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('script[type="application/ld+json"]')
+
+
+      18 |     await expect(page.locator('h1')).toHaveCount(1);
+      19 |     const json = JSON.parse(
+    > 20 |       await page.locator('script[type="application/ld+json"]').innerText(),
+         |                                                                ^
+      21 |     );
+      22 |     expect(json['@type']).toBe('Article');
+      23 |     expect(json.datePublished).toBeTruthy();
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa5.spec.ts:20:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-9870b-ML-malicioso-permanece-dado-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-9870b-ML-malicioso-permanece-dado-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa5-arti-9870b-ML-malicioso-permanece-dado-chromium/error-context.md
+
+  9) [chromium] › e2e/verify-md0002-tarefa5.spec.ts:38:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-07: inexistente, rascunho e agendado devolvem 404 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 200
+
+      40 |   }) => {
+      41 |     for (const slug of ['absent-slug', 'fixture-rascunho', 'fixture-agendado'])
+    > 42 |       expect((await page.goto(`/artigos/${slug}`))?.status()).toBe(404);
+         |                                                               ^
+      43 |   });
+      44 |   test('md-0002/AC-10: canonical e sitemap só incluem públicos', async ({
+      45 |     page,
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa5.spec.ts:42:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-f9259-nho-e-agendado-devolvem-404-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-f9259-nho-e-agendado-devolvem-404-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa5-arti-f9259-nho-e-agendado-devolvem-404-chromium/error-context.md
+
+  10) [chromium] › e2e/verify-md0002-tarefa5.spec.ts:44:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-10: canonical e sitemap só incluem públicos 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: locator('link[rel="canonical"]')
+    Expected: "https://localhost:3100/artigos/fixture-publicado"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" locator('link[rel="canonical"]') with timeout 5000ms
+      - waiting for locator('link[rel="canonical"]')
+
+
+      48 |   }) => {
+      49 |     await page.goto('/artigos/fixture-publicado');
+    > 50 |     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+         |                                                         ^
+      51 |       'href',
+      52 |       `${baseURL}/artigos/fixture-publicado`,
+      53 |     );
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa5.spec.ts:50:57
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-945c9-sitemap-só-incluem-públicos-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-945c9-sitemap-só-incluem-públicos-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa5-arti-945c9-sitemap-só-incluem-públicos-chromium/error-context.md
+
+  11) [chromium] › e2e/verify-md0002-tarefa5.spec.ts:64:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-13: fontes aparecem somente quando presentes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Fontes', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Fontes', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Fontes', exact: true })
+
+
+      69 |     await expect(
+      70 |       page.getByRole('heading', { name: 'Fontes', exact: true }),
+    > 71 |     ).toBeVisible();
+         |       ^
+      72 |     await page.goto('/artigos/fixture-sem-fontes');
+      73 |     await expect(
+      74 |       page.getByRole('heading', { name: 'Fontes', exact: true }),
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa5.spec.ts:71:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-f54c1-em-somente-quando-presentes-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa5-arti-f54c1-em-somente-quando-presentes-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa5-arti-f54c1-em-somente-quando-presentes-chromium/error-context.md
+
+  12) [chromium] › e2e/verify-md0002-tarefa8.spec.ts:24:7 › preview em produção local › rascunho anônimo retorna HTTP 404 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 200
+
+      23 |   // conteúdo existe.
+      24 |   test('rascunho anônimo retorna HTTP 404', async ({ page }) => {
+    > 25 |     expect((await page.goto('/artigos/fixture-rascunho'))?.status()).toBe(404);
+         |                                                                      ^
+      26 |   });
+      27 |   // GET não é método de autenticação (405) e token errado morre no POST (401): a rota antiga
+      28 |   // de trocar token por query string não pode sobreviver como caminho alternativo.
+        at /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts:25:70
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa8-prev-2b383-ho-anônimo-retorna-HTTP-404-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify-md0002-tarefa8-prev-2b383-ho-anônimo-retorna-HTTP-404-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify-md0002-tarefa8-prev-2b383-ho-anônimo-retorna-HTTP-404-chromium/error-context.md
+
+  12 failed
+    [chromium] › e2e/critical-flows.spec.ts:27:7 › Fluxos críticos › artigo publicado abre a partir da home 
+    [chromium] › e2e/home.spec.ts:15:7 › página inicial › carrega o título principal ───────────────
+    [chromium] › e2e/home.spec.ts:23:7 › página inicial › abre o artigo publicado pela navegação da home 
+    [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:20:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de rascunho com sessão de preview não tem violations 
+    [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:30:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de artigo publicado não tem violations 
+    [chromium] › e2e/verify-md0002-tarefa4.spec.ts:103:7 › home editorial › md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite 
+    [chromium] › e2e/verify-md0002-tarefa4.spec.ts:135:7 › home editorial › md-0002/AC-03: lista vazia mostra mensagem própria 
+    [chromium] › e2e/verify-md0002-tarefa5.spec.ts:13:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado 
+    [chromium] › e2e/verify-md0002-tarefa5.spec.ts:38:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-07: inexistente, rascunho e agendado devolvem 404 
+    [chromium] › e2e/verify-md0002-tarefa5.spec.ts:44:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-10: canonical e sitemap só incluem públicos 
+    [chromium] › e2e/verify-md0002-tarefa5.spec.ts:64:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-13: fontes aparecem somente quando presentes 
+    [chromium] › e2e/verify-md0002-tarefa8.spec.ts:24:7 › preview em produção local › rascunho anônimo retorna HTTP 404 
+  10 did not run
+  12 passed (2.0m)
+[ELIFECYCLE] Command failed with exit code 1.

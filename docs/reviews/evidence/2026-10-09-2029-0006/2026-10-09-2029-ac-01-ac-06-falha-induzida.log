@@ -1,0 +1,18 @@
+# AC-01 e AC-06 · falha induzida na fonte de conteúdo · 2026-10-09T20:24:53-03:00
+Override de processo: SANITY_DATASET=dataset-que-nao-existe-prova-gate (dataset inexistente, sem mudança de código)
+
+## /artigos/qualquer-slug
+HTTP 503
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+corpo: Serviço indisponível Serviço temporariamente indisponível Tente novamente em alguns instantes.
+vazamento_de_conteudo_editorial: False
+
+## / (home)
+HTTP 200
+corpo: Gradualinfo !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(
+mostra_UI_de_404: True
+mostra_UI_de_erro: False
+
+## log do servidor (prova de que a chamada foi ao Sanity)
+⨯ Error: Falha na consulta ao Sanity (HTTP 404): {"error":"Dataset not found","message":"Dataset \"dataset-que-nao-existe-prova-gate\" not found for project ID \"4iipvaar\"","statusCode":404}

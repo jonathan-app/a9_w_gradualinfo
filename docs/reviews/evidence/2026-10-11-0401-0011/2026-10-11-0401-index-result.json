@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-10-2155-0011-governanca-engenharia/index.md",
+    "sha256": "1f3879a72f0c8c4d77a8ecce9fd27ab3a8d2ec0a7356b47d9b85fdbe3178270b"
+  },
+  "acs": [
+    {
+      "id": "governance/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0401-0011/2026-10-11-0401-observacoes.md",
+      "evidenceSha256": "1289d21b7a9d3b6c2f86c0e8da9ebf5f0d4d648e62f172a849725ef29afe809c"
+    },
+    {
+      "id": "governance/AC-02",
+      "status": "FAIL",
+      "evidence": "docs/reviews/evidence/2026-10-11-0401-0011/2026-10-11-0401-observacoes.md",
+      "evidenceSha256": "1289d21b7a9d3b6c2f86c0e8da9ebf5f0d4d648e62f172a849725ef29afe809c"
+    },
+    {
+      "id": "governance/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0401-0011/2026-10-11-0401-observacoes.md",
+      "evidenceSha256": "1289d21b7a9d3b6c2f86c0e8da9ebf5f0d4d648e62f172a849725ef29afe809c"
+    },
+    {
+      "id": "governance/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0401-0011/2026-10-11-0401-observacoes.md",
+      "evidenceSha256": "1289d21b7a9d3b6c2f86c0e8da9ebf5f0d4d648e62f172a849725ef29afe809c"
+    }
+  ],
+  "findings": []
+}

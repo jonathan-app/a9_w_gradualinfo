@@ -1,0 +1,10 @@
+# AC-02 · tentativa de medição de canonical e OpenGraph · 2026-10-09T20:26:07-03:00
+
+Dataset Sanity real: nenhum artigo publicado (home responde o estado vazio 'Nenhum artigo publicado').
+GET /artigos/<slug> com Sanity saudável -> HTTP 404 (slug inexistente), portanto não há página de artigo para medir.
+GET /sitemap.xml -> apenas a home:
+0
+servidor já encerrado; medição anterior registrada: 1 <loc> (https://gradualinfo.com.br)
+
+Conclusão: sem artigo publicado não existe <link rel=canonical> nem meta og:url de artigo para comparar.
+Estado: UNVERIFIABLE (exige conteúdo publicado no dataset, o que é mutação remota e está fora do escopo desta rodada).

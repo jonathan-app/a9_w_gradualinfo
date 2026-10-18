@@ -1,0 +1,27 @@
+[
+  {
+    "name": "ac01",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/ac01-home-capa.png",
+    "sha256": "c26e2f6ca87947e43ca00505419ec098807f1911066b6d4f542e72f4dbf6f532"
+  },
+  {
+    "name": "ac03",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/ac01-home-capa.png",
+    "sha256": "c26e2f6ca87947e43ca00505419ec098807f1911066b6d4f542e72f4dbf6f532"
+  },
+  {
+    "name": "ac05",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/ac05-artigo-detalhe.png",
+    "sha256": "8e5013a144d28ac203b66fd9345b178923b72efc94548774c0e14306c627d5a6"
+  },
+  {
+    "name": "ac06",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/ac05-artigo-detalhe.png",
+    "sha256": "8e5013a144d28ac203b66fd9345b178923b72efc94548774c0e14306c627d5a6"
+  },
+  {
+    "name": "ac08",
+    "path": "docs/reviews/evidence/2026-10-12-1830-0010-header-verify/ac05-artigo-detalhe.png",
+    "sha256": "8e5013a144d28ac203b66fd9345b178923b72efc94548774c0e14306c627d5a6"
+  }
+]

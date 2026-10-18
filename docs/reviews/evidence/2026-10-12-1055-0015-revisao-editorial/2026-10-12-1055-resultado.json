@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "spec": {
+    "path": "docs/specs/2026-10-12-0828-0015-revisao-editorial-seis-rascunhos.md",
+    "sha256": "602237a17c2f0143ee2fb4e9070287827830d5c7336d1d1ff9186d256991e4a0"
+  },
+  "acs": [
+    {
+      "id": "editorial-review/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    },
+    {
+      "id": "editorial-review/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1055-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "cc319ce2f20e09f2edd8236cdef0e7a01ead07d4276d81902c41870b05b31deb"
+    }
+  ],
+  "findings": []
+}
+

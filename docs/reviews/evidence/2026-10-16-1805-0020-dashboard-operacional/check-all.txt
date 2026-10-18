@@ -1,0 +1,11 @@
+$ pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
+$ tsc --noEmit
+$ eslint .
+$ prettier --check .
+Checking formatting...
+[warn] docs/reviews/2026-10-16-1805-0020-dashboard-operacional-aal2.md
+[warn] e2e/admin-operational-dashboard.spec.ts
+[warn] scripts/seed-e2e-offers.mjs
+[warn] Code style issues found in 3 files. Run Prettier with --write to fix.
+[ELIFECYCLE] Command failed with exit code 1.
+[ELIFECYCLE] Command failed with exit code 1.

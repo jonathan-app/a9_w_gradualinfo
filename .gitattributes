@@ -1,4 +1,4 @@
-# .gitattributes — gradualinfo-editorial
+# .gitattributes — gradualinfo
 #
 # Configurações de atributos git e regras de exclusão de exportação
 # (consumidas por git archive e scripts/export-template.mjs)
@@ -26,3 +26,23 @@ verify-result.json export-ignore
 coverage export-ignore
 security-reports export-ignore
 .lighthouseci export-ignore
+
+# Artefatos de auditoria/processo não pertencem ao template exportado.
+# Caminhos antigos (raiz) referenciam o estado pré-2026-10-10; os novos
+# estão sob docs/ e scripts/, pelo mesmo critério de export-ignore.
+docs/audits/2026-10-07-1350-BRANCHES.md export-ignore
+docs/audits/2026-10-07-1350-plano-atualizacao-auditoria.md export-ignore
+docs/audits/2026-10-08-2228-revalidacao-3fd3e50.md export-ignore
+docs/workflow/2026-10-04-1256-GUIA-RAPIDO-SKILLS.md export-ignore
+docs/tooling/2026-10-07-1350-skills-load-config.md export-ignore
+docs/reviews/2026-10-07-0712-verify-result.json export-ignore
+scripts/cloudflare-worker.ts export-ignore
+BRANCHES.md export-ignore
+plano-atualizacao-auditoria.md export-ignore
+revalidacao-3fd3e50.md export-ignore
+GUIA-RAPIDO-SKILLS.md export-ignore
+skills-load-config.md export-ignore
+verify-result.json export-ignore
+localhost-cert.pem export-ignore
+localhost-key.pem export-ignore
+docs.zip export-ignore

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "2639744b44b82cb7e659e941f60c460ad5873182",
+  "evaluatedTree": "8cc6ced73f8aa464fcce42de7ffb0cc16257a098",
+  "spec": {
+    "path": "docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md",
+    "sha256": "266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564"
+  },
+  "acs": [
+    {
+      "id": "md-0002/AC-01",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-02",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-03",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-04",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-05",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-06",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-07",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-08",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-09",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-10",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-11",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/pgtap.log",
+      "evidenceSha256": "012398c17b97201ffbe5f0f63a6e00c063924213ee5ec73e2968e2b56b7f27da",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-12",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    },
+    {
+      "id": "md-0002/AC-13",
+      "status": "PASS",
+      "evidence": "/home/jonathan/.gemini/antigravity-ide/brain/3155d1e1-4c88-4d97-915f-8d37761b00cd/scratch/check-evidence/test-results/results.json",
+      "evidenceSha256": "0f8e508c6efa02ef16ec0d25e6e23a6dc5a1cbcb9ca91a0feb4fbc4fe4b015c0",
+      "note": "Avaliação mecânica dos casos obrigatórios desta revisão. Aprovação humana permanece separada."
+    }
+  ],
+  "findings": [],
+  "approved": true,
+  "verdict": "APROVADO",
+  "counts": {
+    "totalACs": 13,
+    "PASS": 13,
+    "FAIL": 0,
+    "UNVERIFIABLE": 0,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 0
+  },
+  "reasons": []
+}

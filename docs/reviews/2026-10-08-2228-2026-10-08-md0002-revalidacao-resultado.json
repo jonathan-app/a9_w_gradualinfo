@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "2bcea1ddb429c1988b211923a17eb25df9dbaa48",
+  "evaluatedTree": "2ac9eb05cda26c90dd25f7925799a1c175bb9bff",
+  "dirty": true,
+  "spec": {
+    "path": "docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md",
+    "sha256": "266d40cb169edc222c2ba6ae95d7587724d146646fc5b0ed815b386b9c5c8564"
+  },
+  "acs": [
+    {
+      "id": "md-0002/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-01.json",
+      "evidenceSha256": "69b2886a585ac2ebcf8c3c8a82c66d4a49a8be39b82254dc725d2a06c84165af",
+      "note": "Grade ≤10, ordenada, sem rascunho nem data futura — teste da tarefa4 PASS no run 34/34."
+    },
+    {
+      "id": "md-0002/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-02.json",
+      "evidenceSha256": "461f12dd454412a99615372ae45c8250c7a905055dd8aecdbd90b1168d555e00",
+      "note": "Cards com capa/editoria/título/resumo/data — mesmo teste da tarefa4 PASS."
+    },
+    {
+      "id": "md-0002/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-03.json",
+      "evidenceSha256": "f25c34015116ff67da186b73ab89c5b7ba294d508c43989d1f85c528739e175d",
+      "note": "Estado vazio e falha de transporte com mensagens distintas — 2 testes PASS."
+    },
+    {
+      "id": "md-0002/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-04.json",
+      "evidenceSha256": "a483b03cbb4715358ecf1e220bd797a84f8ed3b9e1d5fc63e0f3e2315b2cce94",
+      "note": "Esboço do mais recente no topo e limite só na grade — teste PASS."
+    },
+    {
+      "id": "md-0002/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-05.json",
+      "evidenceSha256": "09059d1aa99e1c6acb75bbfa1c83b2742f9708e47feb41c359984f81894d59a1",
+      "note": "<h1> único e corpo Markdown convertido, sem sintaxe crua — teste PASS."
+    },
+    {
+      "id": "md-0002/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-06.json",
+      "evidenceSha256": "680ee799748a9994e48e4a7ce061d742dd67478663cdc9d11030381c31c18e62",
+      "note": "Conteúdo malicioso permanece dado (teste PASS) + inspeção de caminhos: única ocorrência é o <script type=\"application/ld+json\"> permitido."
+    },
+    {
+      "id": "md-0002/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-07.json",
+      "evidenceSha256": "76ec17044fbf86826fdb6dad206457a095618065c43edb918d8523b62f8bc8a7",
+      "note": "Inexistente, rascunho e agendado com toBe(404) estrito — teste PASS."
+    },
+    {
+      "id": "md-0002/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-08.json",
+      "evidenceSha256": "c57cb7ac184ed4683c2c3206b8ee74f88769781aa2c13ef11b5b9478b1b33c30",
+      "note": "11 testes das duas laterais do portão (anon 404 / sessão 200 / claims / expiração real / logout 503 / cookies HTTPS) — 11/11 PASS."
+    },
+    {
+      "id": "md-0002/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-09.json",
+      "evidenceSha256": "fbcd19a411518f60efe5da811e7b8876b327b37ae51591e1ac4020e454530c3b",
+      "note": "JSON-LD Article parseável com valores preservados sob ataque de fechamento de tag — teste PASS."
+    },
+    {
+      "id": "md-0002/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-10.json",
+      "evidenceSha256": "af762f3f759c2dd889f50385d4fca2983afab9d80bbcacad610204a0a8a1dd49",
+      "note": "Canonical absoluto de SITE_ORIGIN e sitemap só com públicos (lastModified=published_at) — teste PASS."
+    },
+    {
+      "id": "md-0002/AC-11",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-11.json",
+      "evidenceSha256": "7def89fc47500e8e623073fc65c7bbc245ee48cd09ce661c3a710de8de759443",
+      "note": "pgTAP 63/63 PASS prova RLS para anon/papéis públicos; varredura automatizada (Semgrep) + grep confirmam service_role fora do alcance do leitor."
+    },
+    {
+      "id": "md-0002/AC-12",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-12.json",
+      "evidenceSha256": "1a77135228c18296a5ba3051309dae9a49edc77e99a0ad8d3504b472981a354c",
+      "note": "axe 0 violações (home, artigo publicado, rascunho com sessão) + navegação por teclado com foco visível — 6/6 PASS."
+    },
+    {
+      "id": "md-0002/AC-13",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-ac-13.json",
+      "evidenceSha256": "e137ac962bca59ca07b165f3717cccf8076b797fd2bf5e3397e58bb2ab34dff7",
+      "note": "Seção Fontes ao final, links absolutos, lista vazia sem seção/erro — teste PASS."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "S01",
+      "name": "Happy path: home semeada só com publicados, ordenada",
+      "status": "PASS",
+      "reason": "tarefa4 AC-01/AC-02 PASS (run 34/34)"
+    },
+    {
+      "id": "S02",
+      "name": "Estado limite: 11→10 na grade; 0→estado vazio",
+      "status": "PASS",
+      "reason": "tarefa4 limite + estado vazio PASS"
+    },
+    {
+      "id": "S03",
+      "name": "Leitura: h1 único e Markdown como HTML sem sintaxe crua",
+      "status": "PASS",
+      "reason": "tarefa5 AC-05/AC-06 PASS"
+    },
+    {
+      "id": "S04",
+      "name": "Falha: inexistente e futuro devolvem 404",
+      "status": "PASS",
+      "reason": "tarefa5 AC-07 PASS (toBe(404) estrito)"
+    },
+    {
+      "id": "S05",
+      "name": "Ambiente: rascunho 200 com autorização e 404 sem ela",
+      "status": "PASS",
+      "reason": "tarefa8 11/11 PASS em build de produção (dois lados do portão; expiração real sob jwt 60s)"
+    },
+    {
+      "id": "S06",
+      "name": "Segurança de renderização: JSON-LD parseável sob conteúdo hostil",
+      "status": "PASS",
+      "reason": "tarefa5 AC-05/06/09 PASS + inspeção dangerouslySetInnerHTML"
+    },
+    {
+      "id": "S07",
+      "name": "SEO: JSON-LD Article, canonical absoluto, sitemap público",
+      "status": "PASS",
+      "reason": "tarefa5 AC-09/AC-10 PASS"
+    },
+    {
+      "id": "S08",
+      "name": "Autorização: anon não lê rascunho (pgTAP)",
+      "status": "PASS",
+      "reason": "pgtap.log: 63/63 PASS"
+    },
+    {
+      "id": "S09",
+      "name": "Acessibilidade: axe sem violações nas duas páginas",
+      "status": "PASS",
+      "reason": "accessibility.spec + verify-md0002-acessibilidade PASS"
+    },
+    {
+      "id": "S10",
+      "name": "Jornada das fontes: links absolutos; lista vazia sem seção",
+      "status": "PASS",
+      "reason": "tarefa5 AC-13 PASS"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "pnpm check:all falha (exit 2): eslint 10.12.0 quebra com eslint-plugin-react 7.37.5 (resolveBasedir/detectReactVersion) — bump unstaged de package.json de 2026-10-08 09:58. typecheck, format:check e testes (104/104) passam isoladamente; build e wrangler dry-run passam. Corrigir a compatibilidade (reverter eslint a 9.x ou atualizar o plugin) e repetir o gate completo.",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-check-all-rerun.log"
+    },
+    {
+      "severity": "BLOCKER",
+      "description": "pnpm security:secrets termina exit 1 com 11 findings, todos do commit 10eecbc alcançável apenas via refs/remotes/origin/feat/md-0002-casca-editorial-home (não ancestral de HEAD 2bcea1d nem de origin/main); o commit em si está limpo, mas as chaves SUPABASE_SERVICE_ROLE_KEY e SUPABASE_PREVIEW_* seguem vivas. Forço do branch e rotação das chaves são decisão do usuário.",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-secrets-rerun.log"
+    },
+    {
+      "severity": "WARNING",
+      "description": "Árvore de trabalho suja: 13 modificados + 11 untracked no momento do artefato, incluindo bump de dependências (next 16.4.0, eslint 10) da sessão paralela e as correções P0 de segredos desta sessão. Os testes desta execução rodam sobre a árvore, não sobre o commit HEAD — manifesto com hashes em manifesto-trabalho.json.",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-manifesto-trabalho.json"
+    },
+    {
+      "severity": "WARNING",
+      "description": "docs/specs/2026-10-08-2228-INDICE.md:25 lista md-0002 como Proposed enquanto a própria spec está Accepted (Status na linha 4) — índice desatualizado, P1 da auditoria, ainda presente.",
+      "evidence": "docs/specs/2026-10-08-2228-INDICE.md"
+    },
+    {
+      "severity": "WARNING",
+      "description": "Artefato anterior 2026-10-07-check-producao-local-axe-decisao.json (13/13 PASS para 2639744b) aponta evidências para caminhos externos (/home/jonathan/.gemini/...) — não serve como prova; substituído por esta execução, cujas evidências vivem em docs/reviews/evidence/2026-10-08-md0002-revalidacao/.",
+      "evidence": "docs/reviews/2026-10-07-1502-2026-10-07-check-producao-local-axe-decisao.json"
+    },
+    {
+      "severity": "INFO",
+      "description": "1ª execução do E2E (12 failed / 10 skipped) foi invalidada por parada da stack Supabase no meio do run (containers Exited ~10:18, colisão com a sessão paralela); reexecução com stack estável: 34/34 PASS. Log preservado como e2e-run1-parada-de-stack.log.",
+      "evidence": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e-run1-parada-de-stack.log"
+    },
+    {
+      "severity": "INFO",
+      "description": "Bloco A do check paralelo (2026-10-08-0003-supabase-cloudflare-sanity-check.md) corrigido nesta sessão: gitVisibleFiles em scripts/run-gitleaks.mjs agora usa git ls-files -z com divisão por NUL; escopo atual tem 0 caminhos não-ASCII, sem delta de findings atribuível à correção.",
+      "evidence": "scripts/run-gitleaks.mjs"
+    },
+    {
+      "severity": "INFO",
+      "description": "docs.zip (único arquivo do commit 2bcea1d) duplica 63 arquivos de docs/ em binário — decisão do dono é mantê-lo; varredura do ZIP extraído por padrões de segredo: 0 achados.",
+      "evidence": "docs.zip"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "ac": "admin/AC-06",
+  "title": "Cadastro público desabilitado e ausente na UI",
+  "generatedAt": "2026-10-08T18:25:15.451Z",
+  "status": "UNVERIFIABLE",
+  "targetFile": "app/admin-dashboard/login/page.tsx",
+  "testsExecuted": ["cenário: acesso anônimo retorna unauthenticated"],
+  "note": "Ausência de link de cadastro na UI não comprova que cadastro público está desabilitado no console Supabase. Requer verificação na infraestrutura real (AC-14)."
+}

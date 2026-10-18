@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-16-2350-0022-guia-notebook-estudar-programacao.md",
+    "sha256": "ed7f4bb85cdbccc5729f9705017eb40bb556083afc793f82ab4afa93eea99ea2"
+  },
+  "acs": [
+    {
+      "id": "jornada/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-01-rascunho-front-matter.md",
+      "evidenceSha256": "2a35313715ef4d10e001321a46a92fc5c860aa856bf1cf5a03b95f746adc4ee3"
+    },
+    {
+      "id": "jornada/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-02-matriz-decisao.md",
+      "evidenceSha256": "e21c09ae3e0b1360106de739f74631be587f5d5664b7100ebc5c908ebc8fa2c0"
+    },
+    {
+      "id": "jornada/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-03-fecho-curto-caminhos.md",
+      "evidenceSha256": "62655104a7163f8d3b5779866c88322b37c00d4e533b42cdd26d3f44910e7f1f"
+    },
+    {
+      "id": "jornada/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-04-fontes-primarias.md",
+      "evidenceSha256": "5d7b7f6eb735a959c91bb9ab32bd08fad8c424c373ac4607bb061855dd6da09b"
+    },
+    {
+      "id": "jornada/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-05-precos-marcas-contexto.md",
+      "evidenceSha256": "9397feaf0b1fdef96a02a3e0fed5c525478b94e278fc86326b440fcee9a24b72"
+    },
+    {
+      "id": "jornada/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-06-revisao-proprietario-sanity.md",
+      "evidenceSha256": "7041778d27b5045582c6ec7dbef4a379e1f7f5ba191c85d2b7113b3ab838984e"
+    },
+    {
+      "id": "jornada/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-07-renderizacao-artigo-leitor.md",
+      "evidenceSha256": "f1134112057c2c698dec0e6a174e367713b8257493ee6500fb6969f2fe95511f"
+    },
+    {
+      "id": "jornada/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-08-isolamento-rascunho-publico.md",
+      "evidenceSha256": "0a437d6a6c99fa57f7afbfebd40a5fe3e4b8e75b709009e4d744641a615571ce"
+    },
+    {
+      "id": "jornada/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-09-tom-glossario-hardware.md",
+      "evidenceSha256": "c97fb9148386aed7d8b67184a2fadd1280bb0f807e5f1f5b759812a61792bb78"
+    },
+    {
+      "id": "jornada/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1730-0022-guia-notebook/ac-10-evidencias-arvore-rastreavel.md",
+      "evidenceSha256": "27d0bed55e5a53bbf539a8f52a84da1e1b1523ea8e756b68c2681c9bbdceff65"
+    }
+  ],
+  "findings": []
+}

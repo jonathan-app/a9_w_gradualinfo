@@ -1,0 +1,7 @@
+Typecheck: node node_modules/typescript/bin/tsc --noEmit, exit 0.
+ESLint global: node node_modules/eslint/bin/eslint.js ., exit 0.
+Vitest: 308 PASS, 18 bloqueados em fixture git init por spawnSync git EPERM; exit 1.
+Next dev --port 3012: exit 1, listen EPERM 0.0.0.0:3012.
+Reexecução ampliada do servidor solicitada e pendente. Reexecução ampliada dos gates solicitada anteriormente e pendente. Nenhuma aprovação/rejeição presumida.
+MCP Playwright não disponível na lista de ferramentas desta rodada.
+Provas visuais, axe, teclado, cache, SEO, artigo real e comparação admin não executadas.

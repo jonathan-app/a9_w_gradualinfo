@@ -1,0 +1,182 @@
+{
+  "acs": [
+    {
+      "id": "md-0002/AC-01",
+      "requirement": "a home lista no máximo 10 artigos publicados, do mais recente para o mais antigo, e **não lista rascunho nem artigo com data futura**, verificado com um banco semeado que contenha os dois casos.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-02",
+      "requirement": "cada card da home exibe capa, editoria, título, resumo e data, e cada valor vem da coluna nomeada em `## Value sourcing`.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-03",
+      "requirement": "com 0 artigos publicados a home mostra o estado vazio (mensagem explícita, não uma grade silenciosamente vazia); com falha de leitura do banco ela mostra a página de erro — **as duas mensagens são diferentes**, porque \"não tem artigo\" e \"deu erro\" são respostas diferentes para o leitor.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-04",
+      "requirement": "a home tem um esboço do artigo mais recente no topo, acima da grade, e o limite de 10 vale para a grade.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-05",
+      "requirement": "`/artigos/[slug]` renderiza o título em um único `<h1>` e o corpo Markdown convertido em HTML, sem nenhuma sintaxe Markdown crua aparecendo na página.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-06",
+      "requirement": "o corpo do artigo **não** usa `dangerouslySetInnerHTML` em nenhum caminho; verificável por busca no bundle servido.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-07",
+      "requirement": "`slug` inexistente devolve **404** com a página de erro do app; artigo com `published_at` no futuro também devolve **404** em produção.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-08",
+      "requirement": "o preview de artigo não publicado existe e é **autorizado explicitamente**, pelo mecanismo do `md-0001` (`app_metadata.preview` em sessão `authenticated`, obtida a partir de `SUPABASE_PREVIEW_TOKEN`): nunca por `NODE_ENV`, que é constante de build e não credencial. Com sessão de preview, o rascunho responde **200**; sem sessão, responde **404** — e **os dois lados têm teste**, porque um portão com teste só do lado que permite é meio portão.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-09",
+      "requirement": "o HTML servido contém `<script type=\"application/ld+json\">` com `@type: Article`, título, `datePublished`, autor e imagem, e o JSON faz parse.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-10",
+      "requirement": "cada artigo tem canonical absoluto derivado de `SITE_ORIGIN`, e o mapa do site (`/sitemap.xml`) contém a URL de cada artigo publicado com `lastModified` igual a `published_at`.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-11",
+      "requirement": "`pnpm supabase:test` prova, para `anon` e para cada papel público, que rascunho e artigo agendado não são legíveis; e o código de leitura pública **não** usa cliente `service_role`, com verificação automatizada de que nenhum caminho alcançável por `anon` chega até ele.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-12",
+      "requirement": "a home e o artigo passam no `@axe-core/playwright` já configurado em `e2e/accessibility.spec.ts`, e a navegação por teclado funciona com foco visível.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    },
+    {
+      "id": "md-0002/AC-13",
+      "requirement": "a página de artigo exibe as `fontes_citadas` do `md-0001` em uma **seção \"Fontes\" ao final do corpo**, depois do último parágrafo e **antes** dos metadados de autoria; cada fonte é um link com o texto de `titulo` e o `href` de `url`, em URL absoluta; artigo com lista vazia renderiza a página **sem** a seção e **sem** erro; e nenhuma fonte é inserida dentro do corpo Markdown como HTML arbitrário. Esta spec é a metade de exibição do contrato, e a metade de dados é o AC-07 do `md-0001`.",
+      "status": "UNVERIFIABLE",
+      "note": "Sem execução funcional atual confirmada para a revisão/hash desta spec. Evidência histórica não promovida a PASS."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "E2E de AC-08 aceita [200,404], limpa cookies em vez de expirar sessão e não simula falha de logout; não comprova os cenários exigidos.",
+      "evidence": "e2e/verify-md0002-tarefa8.spec.ts; arquivo -diff.patch e manifesto associados."
+    },
+    {
+      "severity": "BLOCKER",
+      "description": "Spec md-0002 continua Proposed; conflito AC-06/JSON-LD requer resolução contratual e aceite explícito, sem inferir aprovação da autorização de verificar.",
+      "evidence": "docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md; app/artigos/[slug]/page.tsx; hash da spec no manifesto."
+    }
+  ],
+  "head": "cfcfd6fa5bed981393ee6e8cc18afb30243403e7",
+  "spec_sha256": "a59fa5c1348ed38db8db6182c762a3ffe26a46a4c652b9779b30fd4def3b9cac",
+  "scenarios": [
+    {
+      "id": "S01",
+      "name": "HTTP artigo público",
+      "related_acs": "AC-05, AC-09",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S02",
+      "name": "HTTP artigo inexistente",
+      "related_acs": "AC-07",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S03",
+      "name": "HTTP rascunho sem preview",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S04",
+      "name": "HTTP rascunho com preview",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S05",
+      "name": "Secure no Set-Cookie de produção",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S06",
+      "name": "no-store no artigo protegido",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S07",
+      "name": "Sessão realmente expirada",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S08",
+      "name": "Usuário autenticado sem claim",
+      "related_acs": "AC-08, AC-11",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S09",
+      "name": "Identidade diferente da dedicada",
+      "related_acs": "AC-08, AC-11",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S10",
+      "name": "Logout com falha simulada e tentativa de rascunho",
+      "related_acs": "AC-08",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S11",
+      "name": "Axe home",
+      "related_acs": "AC-12",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    },
+    {
+      "id": "S12",
+      "name": "Axe artigo",
+      "related_acs": "AC-12",
+      "status": "UNVERIFIABLE",
+      "note": "Execução HTTP/browser fora do sandbox ainda sem saída confirmada."
+    }
+  ]
+}

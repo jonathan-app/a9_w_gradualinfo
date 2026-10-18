@@ -6,25 +6,46 @@
 
 ## O que este projeto é
 
-Boilerplate de aplicação Next.js hospedada na Cloudflare Workers, com Supabase
-como backend. É ponto de partida para produto novo, não um app com domínio.
+Portal editorial GradualInfo (tecnologia e consumo digital) em Next.js na
+Cloudflare Workers, com Supabase como backend de aplicação. O repositório
+nasceu como boilerplate e hoje carrega domínio de produto (editorial e
+ofertas).
+
+## Arquitetura editorial
+
+**Estado atual do MVP:**
+
+- Seleção de fontes por configuração (não por fallback de falha): o Sanity é a fonte primária quando configurado no ambiente (`isSanityConfigured`); `EDITORIAL_LOCAL=1` ativa o catálogo local exclusivamente em desenvolvimento (`NODE_ENV=development` em loopback); o Supabase permanece como fallback legado apenas quando o Sanity não estiver configurado. Falhas em tempo de execução no Sanity acionam 503 no proxy ou banner honesto de indisponibilidade (Spec 0006), nunca substituição silenciosa pelo catálogo local em produção.
+- Corpo editorial em Markdown.
+- Preview e publicação seguem os contratos atuais.
+
+**Arquitetura-alvo aprovada:**
+
+- Sanity será a fonte editorial única após migração autorizada (artigos, autores, editorias, fontes, mídia).
+- Supabase permanecerá responsável pela camada de aplicação/autenticação.
+- A migração exige spec própria, validação e rollback.
+- Não manter duas fontes editoriais ativas após a transição.
 
 ## Stack (versão real, não aproximada)
 
 | Peça         | Versão                    | Por quê importa                                                      |
 | ------------ | ------------------------- | -------------------------------------------------------------------- |
-| Next.js      | 16.3                      | App Router, `proxy.ts` no lugar de `middleware.ts`, build Turbopack  |
-| React        | 19.3.0 (fixo)             | Ver `overrides` em `pnpm-workspace.yaml` — duas cópias quebram hooks |
+| Next.js      | 16.4                      | App Router, `proxy.ts` no lugar de `middleware.ts`, build Turbopack  |
+| React        | 19.3.1 (fixo)             | Ver `overrides` em `pnpm-workspace.yaml` — duas cópias quebram hooks |
 | TypeScript   | 6.0.3                     | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`           |
 | Tailwind CSS | 4.3                       | Configuração em CSS (`@theme`), não em `tailwind.config.js`          |
 | Supabase     | ssr 0.12 + js 2.117       | Sessão em cookie, renovada no `proxy.ts`                             |
-| OpenNext     | 1.20                      | Adapta a saída do Next para o runtime de Workers                     |
-| Sentry       | 11.4                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
-| Vitest       | 4.1                       | Unidade e componente, em jsdom                                       |
+| OpenNext     | 1.20.10                   | Adapta a saída do Next para o runtime de Workers                     |
+| Sentry       | 11.7                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
+| Vitest       | 5.0.4                     | Unidade e componente, em jsdom                                       |
 | next-themes  | 1.0.0-beta.0              | A 0.4.x injeta `<script>` no provider e o React 19 não executa       |
-| Playwright   | 1.63                      | Ponta a ponta, em Chromium                                           |
+| Playwright   | 1.64                      | Ponta a ponta, em Chromium                                           |
 | Node         | 22 (`.nvmrc`)             | `engines.node >= 22`                                                 |
 | pnpm         | 12.5.1 (`packageManager`) | Lockfile e `overrides` dependem disso                                |
+
+## Build approach
+
+Tracer Bullet — vertical end to end slices, thin but complete through every layer
 
 ## Comandos que importam
 
@@ -35,36 +56,60 @@ pnpm build            # build completo para a Cloudflare (OpenNext)
 pnpm check:all        # typecheck + lint + formatação + testes
 pnpm test:run         # testes unitários, uma vez
 pnpm test:e2e         # ponta a ponta (sobe o servidor sozinho)
+pnpm test:editorial   # Playwright editorial isolado (porta 3200, sem credenciais)
 pnpm supabase:start   # stack local do Supabase
 pnpm supabase:reset   # migrations + seed
+pnpm supabase:test    # pgTAP no Supabase local (RLS e ofertas)
 pnpm security:secrets # gitleaks sobre o histórico e a árvore atual
+pnpm security:sast    # semgrep com as regras em security/semgrep.yml
 ```
 
 ## Mapa de pastas
 
 ```
 app/            App Router. Rotas, Server Components e o CSS global.
+  admin-dashboard/  Painel administrativo (TailAdmin), guards, MFA, preview dispatch.
+  api/            Rotas de API: admin (auth, dashboard, evidências, ofertas, preview), health, ofertas, out e preview.
+  artigos/        Página de artigo `/artigos/[slug]` com render Markdown.
+  busca/          Busca pública por título, resumo, editoria e corpo.
 components/
-  ui/           Design system. Componente com variante e data-slot.
-  layout/       Header e footer da aplicação.
-  shared/       Reutilizável entre features (tema, marca).
+  ui/             Design system. Componente com variante e data-slot.
+  layout/         Header e footer da aplicação.
+  home/           Componentes da home editorial (hero, destaques 2×2, últimas leituras, seções).
+  editorial/      Componentes do leitor (corpo do artigo e compartilhamento).
+  shared/         Reutilizável entre features (tema, marca, editorial-cover, editorial-story).
+  admin/          Componentes do painel (header, shell, sidebar, MFA enrollment, dashboard operacional).
 lib/
-  env.ts        Leitura tipada das variáveis, com padrão para build sem .env.
-  supabase/     Três clientes: browser, servidor e o que roda no proxy.
-  utils/        Funções puras (cn, formatação).
+  env.ts          Leitura tipada das variáveis, com padrão para build sem .env.
+  supabase/       Três clientes: browser, servidor e o que roda no proxy.
+  sanity/         Cliente GROQ para leitura editorial (Sanity como fonte única).
+  seo/            Dados estruturados (JSON-LD) e construção do sitemap em índice.
+  editorial/      Catálogo local de rascunhos e lógica de leitura dos artigos.
+  offers/         Módulo de ofertas: selo verificado, cupons, WORM e canonização.
+  admin/          Autenticação admin (ADMIN_USER_ID + AAL2), rate limit DO, access guard, session response.
+  preview/        Durable Object para sessões de preview (criação, revogação, verificação).
+  errors/         Erros tipados (ContentUnavailableError) — contrato entre camadas.
+  services/       Queries de posts (Sanity), leitura do dashboard e suporte editorial.
+  editorial-images.ts  Resolução de capas locais e do CDN do Sanity.
+  utils/          Funções puras (cn, formatação).
+  audit.ts        Logger de auditoria para ações administrativas.
+  logger.ts       Logger estruturado.
 hooks/          Hooks que dependem de React.
-proxy.ts        O antigo middleware.ts. Renova a sessão a cada requisição.
+proxy.ts          O antigo middleware.ts. Renova a sessão a cada requisição. Probe de disponibilidade Sanity.
 instrumentation.ts
-                Sentry. O `instrumentation-client.ts` inicializa no cliente.
-scripts/        Wrappers Node por trás de `security:*` e preinstall.
-supabase/       config.toml, migrations/ e seed.sql.
+                  Sentry. O `instrumentation-client.ts` inicializa no cliente.
+scripts/        Wrappers Node por trás de `security:*`, preinstall e validação Access.
+supabase/       config.toml, migrations/, seed.sql e tests/ (pgTAP).
 e2e/            Testes Playwright.
 __tests__/      Testes Vitest (unit/ guarda a árvore).
 security/       Regras de SAST do Semgrep.
+workflow/       Fila de delegação (STATE.md) e check-targets.json.
+check/          Artefatos dos gates /check por feature (results.json e evidências).
+patches/        Patch do OpenNext aplicado pelo pnpm no install.
 .storybook/     Catálogo de componentes (`.stories.tsx` ao lado do componente).
-.github/        A CI em `workflows/ci.yml`: quality, build e security.
+.github/        A CI em `workflows/ci.yml`: quality, build, e2e, database, sast, secrets, dependency-scan, lighthouse e check-gate.
 next.config.ts, open-next.config.ts, wrangler.jsonc
-                Next, adaptação para o Worker e o worker em si.
+                  Next, adaptação para o Worker e o worker em si.
 DESIGN.md       O design system do produto (tokens em oklch, tipografia); build de UI segue ele.
 ```
 
@@ -99,6 +144,26 @@ DESIGN.md       O design system do produto (tokens em oklch, tipografia); build 
     a skill `code-documenter` e o exemplo `scripts/check-env-leak.mjs`;
     `referencias/` e `.agents/` ficam de fora. Baseline: 97 arquivos rastreados
     cobertos em 2026-10-07 (linha 70 de `workflow/STATE.md`).
+11. **Nunca expor tokens ou segredos.** Regra permanente para todos os agentes:
+    nunca expor tokens ou segredos em chat, comandos visíveis, logs,
+    relatórios, testes, commits ou PRs. Usar apenas nomes das variáveis e
+    `[REDACTED]`; conferir saídas antes de compartilhá-las.
+12. **Todo artefato exportado em `docs/` nasce com data e hora no nome.**
+    Formato `YYYY-MM-DD-HHmm-<nome>.md` (ou a mesma estrutura de prefixo
+    temporal em `.json`, `.log`, `.patch`). Aplica-se a relatórios de
+    auditoria, verificação, revisão e evidência em qualquer subpasta de
+    `docs/` — `audits/`, `reviews/`, `evidence/`, `operations/`,
+    `tooling/`, `security-*` e futuras. O prefixo permite ordenação
+    cronológica e identificação imediata do último relatório gerado, e
+    evita colisões entre execuções do mesmo dia. A regra está formalizada
+    em `docs/audits/2026-10-09-0735-auditoria-completa.md` (seção 5).
+13. **Ponytail & YAGNI para todo agente.** Todo agente de codificação
+    (Antigravity, Claude Code, Cursor, Codex, OpenCode, Kilo) deve priorizar o
+    menor diff funcional que resolve a tarefa integralmente. Não criar wrappers,
+    abstrações prematuras ou dependências dispensáveis quando helpers existentes
+    ou a biblioteca padrão atendem ao requisito. Nunca cortar validação em
+    fronteiras de confiança ou segurança. Atalhos conscientes são documentados
+    com `shortcut: <limite>, <quando refatorar>`.
 
 ## Regra Universal de Delegação (handoff entre agentes)
 
@@ -184,17 +249,35 @@ Formato obrigatório do bloco final:
   sobrescrevem. A única forma de detectar colisão é comparar o mtime e o
   conteúdo de um arquivo que você leu antes de escrever nele, por isso o `stat`
   antes do `edit`.
+- **Preview Durable Object não publicado.** Rotas de preview e logout falham
+  com 503 se o `PreviewSessionDO` não estiver publicado na Cloudflare com
+  migration aplicada. Verificar `wrangler migrations list` e `wrangler deploy`.
+- **Cloudflare Access não configurado.** Guards admin devolvem 403/503 sem
+  issuer/AUD/hosts válidos em `wrangler.jsonc` ou secrets. Provisionar antes
+  de testar rotas protegidas.
+- **Sanity dataset sem conteúdo.** Home e artigo devolvem estado vazio ou 404
+  se o dataset `production` não tem artigos publicados. AC-02 da spec 0006
+  exige conteúdo real.
+- **Piso de SEO do Lighthouse é só para página indexável.** O `lighthouserc.cjs`
+  scopa `categories:seo` via `assertMatrix` porque `/busca` é noindex de
+  propósito (seo/AC-06); adicionar URL nova ao `collect.url` sem revisar o
+  padrão reprova o job por `is-crawlable`.
 
 ## Portão de qualidade
 
 `pnpm check:all` é o que a CI roda, na mesma ordem: typecheck, lint,
-formatação, testes. Hook de commit roda apenas formatação e typecheck —
-commit não pode custar minutos. O build é job separado na CI, e um terceiro
-job roda `pnpm audit --audit-level=high` e o gitleaks sobre o histórico inteiro.
+formatação, testes. Hook de commit roda a checagem de vazamento de env, a
+formatação dos arquivos staged e o typecheck; commit não pode custar minutos.
+A CI tem nove jobs: quality, build, e2e, database, sast, secrets,
+dependency-scan, lighthouse e check-gate. O job secrets roda o gitleaks sobre
+o histórico inteiro, e o dependency-scan roda `pnpm audit --audit-level=high`
+e o OSV scan.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
-60% hoje, para virar gate real a cobertura precisa passar de 80% primeiro.
-Subir o piso acima do que o projeto mede esconde o número em vez de avisar.
+Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
+ficam em 60. Medido em 2026-10-17: 858 testes em 83 suites Vitest (sendo 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros e 5 de integração de concorrência e idempotência com banco de dados real local), 171 testes pgTAP em 6 arquivos no banco local Supabase,
+26 testes Playwright Editorial (2 suites), 7 testes Playwright Admin Auth/Recovery real (3 Auth e 4 Recovery), 1 teste Playwright Admin Operational Dashboard exit 0, 4 testes Playwright de auditoria de SEO em `e2e/seo-audit.spec.ts` contra build de produção e 7 testes Playwright de busca e recorte em `e2e/search-flow.spec.ts` (totalizando 45 testes Playwright). Subir o piso acima do que o
+projeto mede esconde o número em vez de avisar.
 
 ## Skills de Engenharia Agêntica
 
@@ -204,6 +287,17 @@ versionado. Instalação, descoberta pelo cliente e execução são estados
 diferentes, que devem ser conferidos no ambiente utilizado. O ciclo inclui
 `/scope`, `/architect`, `/audit`, `/develop`, `/check`, `/debug`, `/test`,
 `/document` e `/sync`. Atualizar: `npx skills@latest update`.
+
+- [`architect`](.agents/skills/architect/SKILL.md): `JavaScript-Mastery-Pro/skills` — decisões load-bearing, specs, trade-offs.
+- [`audit`](.agents/skills/audit/SKILL.md): `JavaScript-Mastery-Pro/skills` — cria/preenche AGENTS.md, inventário de código.
+- [`check`](.agents/skills/check/SKILL.md): `JavaScript-Mastery-Pro/skills` — validação empírica (verify) e auditoria imparcial (review).
+- [`debug`](.agents/skills/debug/SKILL.md): `JavaScript-Mastery-Pro/skills` — root cause com evidência observável.
+- [`develop`](.agents/skills/develop/SKILL.md): `JavaScript-Mastery-Pro/skills` — build a partir de spec aceita.
+- [`document`](.agents/skills/document/SKILL.md): `JavaScript-Mastery-Pro/skills` — PR, changelog, release note, postmortem.
+- [`scope`](.agents/skills/scope/SKILL.md): `JavaScript-Mastery-Pro/skills` — plano grosseiro em docs/scope/, reconciliação.
+- [`sync`](.agents/skills/sync/SKILL.md): `JavaScript-Mastery-Pro/skills` — AGENTS.md, scope, STATE.md cirúrgicos.
+- [`test`](.agents/skills/test/SKILL.md): `JavaScript-Mastery-Pro/skills` — suíte de testes após build.
+- [`jwt-validate`](.agents/skills/jwt-validate/SKILL.md): `jsonwebtoken/jwt-skills` (Okta, Apache-2.0) — validação de JWT: assinatura, `algorithms` allowlist, `iss`/`aud`/`exp`/`nbf`/`iat`, 60s de tolerância e JWKS. Complementar, não substitui a autorização por `ADMIN_USER_ID` e AAL2 em `lib/admin/auth.ts`.
 
 Quem escreve o quê, para ninguém gravar estado no lugar errado:
 
@@ -218,9 +312,19 @@ As pastas `docs/scope/`, `docs/specs/` e `docs/reviews/` já contêm escopo,
 índice, specs, templates e relatórios. Consulte os artefatos vigentes e seus
 estados; a presença de um arquivo não comprova aprovação ou execução.
 
+## Context files
+
+- [lib/admin/AGENTS.md](lib/admin/AGENTS.md) (Access, MFA AAL2, rate limit DO, guards admin)
+- [lib/editorial/AGENTS.md](lib/editorial/AGENTS.md) (catálogo de rascunhos locais e lógica de leitura dos artigos)
+- [lib/offers/AGENTS.md](lib/offers/AGENTS.md) (módulo de ofertas, selo verificado, cupons, WORM e canonização RFC 8785)
+- [lib/preview/AGENTS.md](lib/preview/AGENTS.md) (cookie de preview e PreviewSessionDO)
+- [lib/sanity/AGENTS.md](lib/sanity/AGENTS.md) (cliente GROQ e fonte editorial primária quando configurada)
+- [lib/seo/AGENTS.md](lib/seo/AGENTS.md) (dados estruturados JSON-LD, sitemap em índice e SEO)
+- [supabase/AGENTS.md](supabase/AGENTS.md) (migrations, testes pgTAP e RLS do banco)
+
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

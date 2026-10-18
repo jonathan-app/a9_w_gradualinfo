@@ -3,8 +3,9 @@ node_modules/
 .pnp
 .pnp.js
 
-# next.js
+# Next.js
 .next/
+.next-editorial/
 out/
 build/
 dist/*
@@ -14,7 +15,8 @@ open-next/
 # wrangler / cloudflare
 .wrangler/
 cloudflare-env.d.ts
-.dev.vars
+# Bindings locais do Worker, inclusive backups e variantes de ambiente.
+.dev.vars*
 
 # supabase
 supabase/.branches/
@@ -35,10 +37,32 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
-.env
-.env*.local
+
+# Environment files and backups, inclusive em subpastas.
+.env*
 !.env.example
-.vercel
+*.env
+*.env.*
+!*.env.example
+
+# Common secret / credential files
+*.key
+*.p12
+*.pfx
+*.keystore
+secrets/
+secrets.*
+credentials/
+credentials.*
+service-account*.json
+*.secret
+*.secrets
+*.credentials
+
+# Vercel
+.vercel/
+
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
@@ -59,16 +83,36 @@ yarn-error.log*
 .idea/
 
 # agents
-.agents/
+.agents/*
 !.agents/mcp.json
+.ag-kit-backups/
 .kilo/
-.kilo/worktrees
+.kilo/worktrees/
+.continue/
+.aws/
+# Caches locais de ferramentas de agente e de sessão; não são código do projeto.
+.claude/
+.playwright-mcp/
+.taste-skill/
+
+# python
+__pycache__/
+*.pyc
+
+# pacotes de backup e extrações locais
+# Os zips canônicos de fatia são artefato de entrega local; guardar binários
+# assim no Git pesaria o repositório, e o histórico do STATE já os registra.
+gradualinfo-*.zip
+gradualinfo-*/
+
+# local templates / temporary material
 Temp_Modelos/
+scratch/
 
 # reports
 reports/
 !dist/.gitkeep
 
-# Downloaded locally by scripts/run-gitleaks.mjs (pin board, não backing source)
+# Downloaded locally by scripts/run-gitleaks.mjs
 .cache/
 security-reports/

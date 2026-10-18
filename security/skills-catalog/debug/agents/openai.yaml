@@ -1,0 +1,5 @@
+# OpenAI Codex adapter for Debug skill
+interface:
+  display_name: 'Debug'
+  short_description: 'Investigate root causes and prescribe fixes'
+  default_prompt: 'Use $debug: reproduce the failure, isolate the root cause with evidence, and deliver the diagnostic fix prescription to /develop and regression test to /test.'

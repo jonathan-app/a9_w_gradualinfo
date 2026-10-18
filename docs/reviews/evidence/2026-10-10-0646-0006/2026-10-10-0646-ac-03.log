@@ -1,0 +1,10 @@
+=== 2026-10-10-0646 — AC-03 token não vaza no bundle cliente ===
+valor do token: presente no .env.local, tamanho 180 (valor não impresso)
+ocorrências do valor em .next/static: 0
+ocorrências de 'Bearer ' em .next/static: 0
+ocorrências de api.sanity.io em .next/static: 0
+arquivo com literal SANITY_API_READ_TOKEN (só o shim de env, sem valor):
+.next/static/chunks/32ev0pvo51kjo.js
+contexto (primeira ocorrência, valor ausente):
+API_VERSION??"2024-01-01",readToken:s.default.env.SANITY_API_READ_TOKEN??""},gaMeasurementId:s.default.env.NEXT_PUBLIC_GA
+'use client' em lib/sanity: 0

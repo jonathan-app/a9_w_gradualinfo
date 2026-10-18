@@ -1,76 +1,111 @@
 /**
- * @fileoverview Home do site (`/`): artigo em destaque + grade dos últimos.
+ * @fileoverview Home Cambridge: capa, destaques, últimas leituras e artigos recentes.
  * @module app/page
- * @description Server Component dinâmico: busca 10 artigos publicados (1
- *   destaque + 9 na grade, limite definido na spec) com o cliente público —
+ * @description Server Component dinâmico: busca até 60 artigos visíveis para a home com o cliente público —
  *   leitor anônimo enxerga só o que já é publicado, porque a regra de
  *   visibilidade mora na consulta e no RLS. Sem artigos, cai para o estado
  *   vazio mantendo o H1 institucional.
  * @dependencies lib/services/posts (consulta), lib/supabase/server (cliente
- *   público), components/shared/post-card, app/artigos-vazios.
+ *   público), components/shared/editorial-story, app/artigos-vazios.
  */
-import { getPublishedPosts } from '@/lib/services/posts';
+import type { Metadata } from 'next';
+import { getPublishedPosts, type Post } from '@/lib/services/posts';
 import { createPublicClient } from '@/lib/supabase/server';
-import { PostCard } from '@/components/shared/post-card';
+import { SITE_ORIGIN } from '@/lib/site-config';
+import { cn } from '@/lib/utils/cn';
+import { JsonLd } from '@/components/shared/json-ld';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/seo/structured-data';
+import { HomeHeroFeatured } from '@/components/home/home-hero-featured';
+import { HomeTeaserList } from '@/components/home/home-teaser-list';
+import { HomeLatestSection } from '@/components/home/home-latest-section';
+import { HomeSectionGrid } from '@/components/home/home-section-grid';
+import styles from '@/components/home/home-editorial.module.css';
 import { ArtigosVazios } from './artigos-vazios';
+import { EditorialIndisponivel } from './editorial-indisponivel';
+import { ContentUnavailableError } from '@/lib/errors/content';
+import * as Sentry from '@sentry/nextjs';
 
 // No ar a cada requisição: a home não pode congelar no build com a lista da
 // hora do deploy — publicado um artigo, ele tem que aparecer sem novo build.
 export const dynamic = 'force-dynamic';
 
 /**
+ * Metadados da home: canonical aponta para o apex do site.
+ *
+ * Sem canonical, o buscador pode indexar a home por qualquer variação de URL
+ * (com ou sem www, com query string), dividindo a autoridade da página.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_ORIGIN },
+};
+
+/**
  * Página inicial.
  *
- * @returns H1 institucional + destaque + grade; com o banco vazio, o mesmo H1
- *   com o estado vazio — a home diz o que é o site nos dois casos.
+ * @returns H1 institucional + destaque + grade; com falha de infraestrutura,
+ *   exibe o bloco honesto de indisponibilidade; com o banco vazio, o estado vazio.
  */
 export default async function HomePage() {
   const supabase = createPublicClient();
 
-  // O limite na querie é de 10 artigos, como exigido na spec (1 destaque + 9 grade)
-  const posts = await getPublishedPosts(supabase, 10);
+  let posts: Post[] = [];
+  let isUnavailable = false;
 
-  if (!posts || posts.length === 0) {
-    return (
-      <div className="container max-w-6xl mx-auto py-10 px-4">
-        <h1 className="text-3xl font-bold mb-6">
-          Gradualinfo, tecnologia para estudar programação
-        </h1>
-        <ArtigosVazios />
-      </div>
-    );
+  try {
+    // Até 60 posts alimentam as editorias sem consultas por componente.
+    posts = await getPublishedPosts(supabase, 60);
+  } catch (error) {
+    if (error instanceof ContentUnavailableError) {
+      isUnavailable = true;
+      Sentry.captureException(error);
+    } else {
+      throw error;
+    }
   }
 
-  // `posts[0]!` é seguro: o guard acima já devolveu quando a lista é vazia.
-  const featuredPost = posts[0];
-  const gridPosts = posts.slice(1);
+  const lead = posts[0];
+  // A seção inferior reúne as editorias pela data real de publicação.
+  const recentPosts = [...posts]
+    .sort((a, b) => (b.published_at ?? '').localeCompare(a.published_at ?? ''))
+    .slice(0, 16);
+
+  const hasSideTeasers = posts.length > 1;
+  const teaserPosts = posts.slice(1, 5);
+  const latestPosts = posts.slice(5, 9);
+  const hasSingleSideColumn = teaserPosts.length <= 2;
 
   return (
-    <div className="container max-w-6xl mx-auto py-10 px-4 flex flex-col gap-12">
-      <h1 className="text-3xl font-bold">
+    <div data-editorial-layout="home" className={styles.home}>
+      {/* Institutional, não editorial: os blocos descrevem o site e continuam
+          válidos mesmo quando a fonte de conteúdo está indisponível. */}
+      <JsonLd data={websiteJsonLd()} />
+      <JsonLd data={organizationJsonLd()} />
+      <h1 className="sr-only">
         Gradualinfo, tecnologia para estudar programação
       </h1>
-      <section aria-label="Artigo em Destaque">
-        {/* `aria-label` nomeia a região para quem navega por landmarks; o h2
-            sr-only existe para quem navega por lista de cabeçalhos. Os dois
-            enxergam a mesma seção, que sem isso ficaria sem título. */}
-        <h2 className="sr-only">Artigo em Destaque</h2>
-        <PostCard post={featuredPost!} isFeatured />
-      </section>
-
-      {gridPosts.length > 0 && (
-        <section aria-labelledby="latest-articles-heading">
-          <h2
-            id="latest-articles-heading"
-            className="text-2xl font-semibold tracking-tight mb-6">
-            Últimos Artigos
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gridPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
+      {isUnavailable ? (
+        <EditorialIndisponivel />
+      ) : !lead ? (
+        <ArtigosVazios />
+      ) : (
+        <>
+          <div
+            id="artigos"
+            className={cn(
+              styles.highlights,
+              !hasSideTeasers && styles.highlightsSingle,
+              hasSideTeasers &&
+                hasSingleSideColumn &&
+                styles.highlightsSideSingle,
+            )}>
+            <HomeHeroFeatured post={lead} />
+            {hasSideTeasers && <HomeTeaserList posts={teaserPosts} />}
           </div>
-        </section>
+          {latestPosts.length > 0 && <HomeLatestSection posts={latestPosts} />}
+          <div id="recentes" className={styles.editorias}>
+            <HomeSectionGrid posts={recentPosts} />
+          </div>
+        </>
       )}
     </div>
   );

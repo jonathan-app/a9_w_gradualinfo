@@ -1,0 +1,64 @@
+$ playwright test
+
+Running 34 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/accessibility.spec.ts:15:7 › Acessibilidade › página inicial (1.5s)
+  ✓   2 [chromium] › e2e/accessibility.spec.ts:30:7 › Acessibilidade › artigo publicado (1.3s)
+  ✓   3 [chromium] › e2e/critical-flows.spec.ts:16:7 › Fluxos críticos › home carrega com título e navegação (303ms)
+  ✓   4 [chromium] › e2e/critical-flows.spec.ts:27:7 › Fluxos críticos › artigo publicado abre a partir da home (518ms)
+  ✓   5 [chromium] › e2e/critical-flows.spec.ts:41:7 › Fluxos críticos › alternância de tema altera a classe do html (408ms)
+  ✓   6 [chromium] › e2e/critical-flows.spec.ts:52:7 › Fluxos críticos › rota inexistente devolve 404 útil (254ms)
+  ✓   7 [chromium] › e2e/critical-flows.spec.ts:61:7 › Fluxos críticos › sonda de saúde responde ok (48ms)
+  ✓   8 [chromium] › e2e/home.spec.ts:15:7 › página inicial › carrega o título principal (306ms)
+  ✓   9 [chromium] › e2e/home.spec.ts:23:7 › página inicial › abre o artigo publicado pela navegação da home (391ms)
+  ✓  10 [chromium] › e2e/home.spec.ts:30:7 › página inicial › alterna o tema (320ms)
+  ✓  11 [chromium] › e2e/home.spec.ts:50:7 › página inicial › responde 200 na sonda de saúde (11ms)
+  ✓  12 [chromium] › e2e/home.spec.ts:57:7 › página inicial › devolve 404 com conteúdo útil em URL inexistente (253ms)
+  ✓  13 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:20:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de rascunho com sessão de preview não tem violations (2.0s)
+  ✓  14 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:30:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página de artigo publicado não tem violations (679ms)
+  ✓  15 [chromium] › e2e/verify-md0002-acessibilidade.spec.ts:39:7 › md-0002 Tarefa 8 - Acessibilidade (axe) › AC-12: Página inicial não tem violations (875ms)
+  ✓  16 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:103:7 › home editorial › md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite (319ms)
+  ✓  17 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:135:7 › home editorial › md-0002/AC-03: lista vazia mostra mensagem própria (406ms)
+[WebServer] ⨯ Error: {"message":"Falha de transporte induzida no teste"}
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3103046278'
+[WebServer] }
+  ✓  18 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:178:7 › home editorial › md-0002/AC-03: falha real de transporte mostra erro, não vazio (7.2s)
+  ✓  19 [chromium] › e2e/verify-md0002-tarefa4.spec.ts:198:7 › home editorial › md-0002/AC-12: teclado chega ao conteúdo com foco visível (327ms)
+  ✓  20 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:13:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado (352ms)
+  ✓  21 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:38:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-07: inexistente, rascunho e agendado devolvem 404 (322ms)
+  ✓  22 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:44:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-10: canonical e sitemap só incluem públicos (321ms)
+  ✓  23 [chromium] › e2e/verify-md0002-tarefa5.spec.ts:64:7 › artigo, JSON-LD e sitemap, contrato md-0002 › md-0002/AC-13: fontes aparecem somente quando presentes (419ms)
+  ✓  24 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:24:7 › preview em produção local › rascunho anônimo retorna HTTP 404 (254ms)
+  ✓  25 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:29:7 › preview em produção local › GET antigo não autentica e POST inválido falha (21ms)
+  ✓  26 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:45:7 › preview em produção local › sessão válida lê rascunho, sem indexação e sem cache (1.5s)
+  ✓  27 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:61:7 › preview em produção local › autorização vencida nega rascunho mantendo a sessão Supabase (854ms)
+  ✓  28 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:88:7 › preview em produção local › logout remove cookies e nega leitura (1.2s)
+  ✓  29 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:101:7 › preview em produção local › outra identidade com claim válida não lê rascunho (444ms)
+  ✓  30 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:115:7 › preview em produção local › identidade permitida sem claim não lê rascunho (1.0s)
+  ✓  31 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:137:7 › preview em produção local › conta sem claim com sessão real permanece pública (432ms)
+  ✓  32 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:149:7 › preview em produção local › falha real de logout responde 503 e remove autorização local (931ms)
+[WebServer] Error [AuthRetryableFetchError]: Falha de transporte induzida no teste
+[WebServer]     at iR (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:46517)
+[WebServer]     at async iT (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:48207)
+[WebServer]     at async ik (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:47664)
+[WebServer]     at async r (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:31:23794)
+[WebServer]     at async (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:31:24057) {
+[WebServer]   __isAuthError: true,
+[WebServer]   status: 503,
+[WebServer]   code: undefined
+[WebServer] }
+[WebServer] Error [AuthRetryableFetchError]: Falha de transporte induzida no teste
+[WebServer]     at iR (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:46517)
+[WebServer]     at async iT (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:48207)
+[WebServer]     at async ik (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:18:47664)
+[WebServer]     at async r (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:31:23794)
+[WebServer]     at async (.next/server/chunks/[root-of-the-server]__1f3wntznef8_c._.js:31:24057) {
+[WebServer]   __isAuthError: true,
+[WebServer]   status: 503,
+[WebServer]   code: undefined
+[WebServer] }
+  ✓  33 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:177:7 › preview em produção local › sessão Auth realmente expirada nega rascunho sem apagar cookies (1.4m)
+  ✓  34 [chromium] › e2e/verify-md0002-tarefa8.spec.ts:210:7 › preview em produção local › cookies preservam HttpOnly, Secure e prazo em HTTPS (755ms)
+
+  34 passed (1.9m)

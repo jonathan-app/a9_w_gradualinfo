@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "e4b8631abd59a4ee5765f6bb7f61276577ad27cb",
+  "evaluatedTree": "7ccb67531a1bdc448791b74cf401d08367f42c60",
+  "spec": {
+    "path": "docs/specs/2026-10-17-1037-0023-seo-aprofundado-auditoria.md",
+    "sha256": "e6a657fb4ae93e31e4cc4af2d811a82e202a3801bbe7e71ca1dd348ee0f302e2"
+  },
+  "acs": [
+    {
+      "id": "seo/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-01-orcamento-lighthouse.md",
+      "evidenceSha256": "48ac2caa8163e648daa2c4a00fbb75581c9039c675c883bfbb431f195927e12b"
+    },
+    {
+      "id": "seo/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-02-jsonld-home.md",
+      "evidenceSha256": "153e02bab6e8e611d2ab42c49acaf0283aab719b8e21a4cb5d13b83c87ba3f77"
+    },
+    {
+      "id": "seo/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-03-jsonld-artigo.md",
+      "evidenceSha256": "2ade851d1b215e82d92e070889272852745fa960c24e5aaca9c61e46c59c4c1d"
+    },
+    {
+      "id": "seo/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-04-sitemap-indice-filhos.md",
+      "evidenceSha256": "91dcb352e936225dbc17d3659203daab137d08b8e98e8074d776ae09c28ff850"
+    },
+    {
+      "id": "seo/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-05-degradacao-sanity.md",
+      "evidenceSha256": "88a7db219b95f0869d427b693fb55779b40a58c5c25d1807dc4e14034e26b417"
+    },
+    {
+      "id": "seo/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-06-gates-automatizados.md",
+      "evidenceSha256": "c45d17107cc76fbc9ed815f7edd3e92b9646af41829d789a7588cad712a7869a"
+    },
+    {
+      "id": "seo/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-07-relatorio-datado.md",
+      "evidenceSha256": "e84dfad653d9d7adee8335fa942f048352cede68c4a04644368028e43ee8d78e"
+    },
+    {
+      "id": "seo/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-08-titulos-marca.md",
+      "evidenceSha256": "35cbae9b7771c514a2ea5384ff55b80484cbaaab276c6367154fa2dfe47fb436"
+    },
+    {
+      "id": "seo/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-09-invariantes.md",
+      "evidenceSha256": "50206daf610551f7d72c2497f8743d995660e73870c1dd8986b395c326356c7f"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "Código morto no diff: `buildStableEditoriaIdMap` e o privado `stableHash` em `lib/utils/format.ts` (linhas 139 a 187) têm testes de unidade mas nenhum consumidor de produção no estado atual da árvore; o sitemap usa apenas `slugify` e nenhum componente consome o mapa. Atribuição provável: fluxo de âncoras da home de outra sessão em voo (o prefixo `home-editoria-` denuncia). Resolver antes do merge consumindo o mapa nas seções da home ou removendo-o com os testes."
+    },
+    {
+      "severity": "INFO",
+      "description": "NIT: predicado de publicidade duplicado em `app/artigos/[slug]/page.tsx` (metadata, linhas 78 a 81, e página, linhas 141 a 144) com expressões ligeiramente diferentes (`post.published_at` versus `Boolean(post.published_at)` com asserção não nula); extrair um helper único evita divergência futura entre os dois caminhos."
+    },
+    {
+      "severity": "INFO",
+      "description": "NIT: cabeçalho `@dependencies` de `app/artigos/[slug]/page.tsx` (linhas 10 a 14) desatualizado: lista react-markdown, remark-gfm, next/image, components/ui/badge e serializeJsonLd, que não são mais importados, e não lista ArticleBody, ArticleShare, EditorialStory e lib/editorial/reading."
+    },
+    {
+      "severity": "INFO",
+      "description": "NIT: `slugify` exportado sem JSDoc com `@param` e `@returns` (convenção 10; `lib/utils/format.ts`, linha 123) e `@param editorias` de `buildStableEditoriaIdMap` sem tipo entre chaves."
+    }
+  ],
+  "approved": true,
+  "verdict": "APROVADO",
+  "counts": {
+    "totalACs": 9,
+    "PASS": 9,
+    "FAIL": 0,
+    "UNVERIFIABLE": 0,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 1
+  },
+  "reasons": []
+}

@@ -1,7 +1,7 @@
 # Plano de verificação
 
-Estado: Not run. Contratos: `docs/specs/0003-preview-autorizacao.md`,
-`docs/specs/0004-gate-revisao-ci.md` e md-0002 Accepted.
+Estado: Not run. Contratos: `docs/specs/2026-10-07-1040-0003-preview-autorizacao.md`,
+`docs/specs/2026-10-07-1040-0004-gate-revisao-ci.md` e md-0002 Accepted.
 
 - preview/AC-01: observar GET 405 e POST válido, URL e cookies sem segredo.
 - preview/AC-02: configurações ausentes, iguais e UUID inválido negam acesso.
@@ -22,6 +22,6 @@ Estado: Not run. Contratos: `docs/specs/0003-preview-autorizacao.md`,
 - gate/AC-05: jobs com fixtures próprias, servidor compilado, typecheck E2E,
   scanners locais e versões pinadas. Obter execução CI, não inferir por YAML.
 - md-0002/AC-01 a AC-13: usar matriz canônica e 12 cenários do inventário
-  `docs/reviews/2026-10-07-md0002-inventario.md`. Registrar observações por AC.
+  `docs/reviews/2026-10-07-1040-2026-10-07-md0002-inventario.md`. Registrar observações por AC.
 
 O plano não é evidência de execução ou aceite de entrega.

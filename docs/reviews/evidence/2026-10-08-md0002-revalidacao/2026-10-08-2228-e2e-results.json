@@ -1,0 +1,1551 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node-22",
+      "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/node_modules/@playwright/test/cli.js",
+      "test"
+    ],
+    "configFile": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/playwright.config.ts",
+    "rootDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      ["list", null],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "node scripts/e2e-server.mjs",
+      "url": "https://localhost:3100",
+      "ignoreHTTPSErrors": true,
+      "reuseExistingServer": false,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "accessibility.spec.ts",
+      "file": "accessibility.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Acessibilidade",
+          "file": "accessibility.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "página inicial",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1528,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:20.547Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-c61aa51de3286e801e9b",
+              "file": "accessibility.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "artigo publicado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1286,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:22.171Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-23c4164d3b3836b2b7f7",
+              "file": "accessibility.spec.ts",
+              "line": 30,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "critical-flows.spec.ts",
+      "file": "critical-flows.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Fluxos críticos",
+          "file": "critical-flows.spec.ts",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "home carrega com título e navegação",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 303,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:23.472Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "542ce40c4d5a94d1bfd5-19773257d176ce773d8a",
+              "file": "critical-flows.spec.ts",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "artigo publicado abre a partir da home",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 518,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:23.784Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "542ce40c4d5a94d1bfd5-e5beff4ca5cda8d09ba3",
+              "file": "critical-flows.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "alternância de tema altera a classe do html",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 408,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:24.310Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "542ce40c4d5a94d1bfd5-886b074246333f372670",
+              "file": "critical-flows.spec.ts",
+              "line": 41,
+              "column": 7
+            },
+            {
+              "title": "rota inexistente devolve 404 útil",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 254,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:24.727Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "542ce40c4d5a94d1bfd5-ba9a1c8f80f3980ab279",
+              "file": "critical-flows.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "sonda de saúde responde ok",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 48,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:24.990Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "542ce40c4d5a94d1bfd5-ed6d9274b59681c7cef7",
+              "file": "critical-flows.spec.ts",
+              "line": 61,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "home.spec.ts",
+      "file": "home.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "página inicial",
+          "file": "home.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "carrega o título principal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:25.049Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-783a87d8df7bef6a2a8a",
+              "file": "home.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "abre o artigo publicado pela navegação da home",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 391,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:25.363Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-b5873fc1ef4bd76a695c",
+              "file": "home.spec.ts",
+              "line": 23,
+              "column": 7
+            },
+            {
+              "title": "alterna o tema",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 320,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:25.763Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-7702cde39932c2255b4a",
+              "file": "home.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "responde 200 na sonda de saúde",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:26.092Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-1ebfd626531c6dd8bfca",
+              "file": "home.spec.ts",
+              "line": 50,
+              "column": 7
+            },
+            {
+              "title": "devolve 404 com conteúdo útil em URL inexistente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 253,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:26.111Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-cee8ed612d335b88635c",
+              "file": "home.spec.ts",
+              "line": 57,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "verify-md0002-acessibilidade.spec.ts",
+      "file": "verify-md0002-acessibilidade.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "md-0002 Tarefa 8 - Acessibilidade (axe)",
+          "file": "verify-md0002-acessibilidade.spec.ts",
+          "line": 17,
+          "column": 6,
+          "specs": [
+            {
+              "title": "AC-12: Página de rascunho com sessão de preview não tem violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2038,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:26.375Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cd852b5c5a573f796fe0-c48318319d26ad3c968f",
+              "file": "verify-md0002-acessibilidade.spec.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "AC-12: Página de artigo publicado não tem violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 679,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:28.421Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cd852b5c5a573f796fe0-f0350cdd39f6acb30ac6",
+              "file": "verify-md0002-acessibilidade.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "AC-12: Página inicial não tem violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 875,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:29.108Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cd852b5c5a573f796fe0-13c1b2c3bde99690cab0",
+              "file": "verify-md0002-acessibilidade.spec.ts",
+              "line": 39,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "verify-md0002-tarefa4.spec.ts",
+      "file": "verify-md0002-tarefa4.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "home editorial",
+          "file": "verify-md0002-tarefa4.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 319,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:30.025Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b637adfdc79c92855b6e-9ecaebfdef6af7d9f13f",
+              "file": "verify-md0002-tarefa4.spec.ts",
+              "line": 103,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-03: lista vazia mostra mensagem própria",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 406,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:30.354Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b637adfdc79c92855b6e-27d36891fa7ce93cdedc",
+              "file": "verify-md0002-tarefa4.spec.ts",
+              "line": 135,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-03: falha real de transporte mostra erro, não vazio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7191,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:30.770Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b637adfdc79c92855b6e-91ddeb8659fdd763c336",
+              "file": "verify-md0002-tarefa4.spec.ts",
+              "line": 178,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-12: teclado chega ao conteúdo com foco visível",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 327,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:37.969Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b637adfdc79c92855b6e-c44b1f868a0d22b625d1",
+              "file": "verify-md0002-tarefa4.spec.ts",
+              "line": 198,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "verify-md0002-tarefa5.spec.ts",
+      "file": "verify-md0002-tarefa5.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "artigo, JSON-LD e sitemap, contrato md-0002",
+          "file": "verify-md0002-tarefa5.spec.ts",
+          "line": 12,
+          "column": 6,
+          "specs": [
+            {
+              "title": "md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 352,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:38.316Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea5eb77b2dcf9a50118a-5346e32ee9aee671343a",
+              "file": "verify-md0002-tarefa5.spec.ts",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-07: inexistente, rascunho e agendado devolvem 404",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 322,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:38.675Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea5eb77b2dcf9a50118a-e79e010b5c71f3d9e126",
+              "file": "verify-md0002-tarefa5.spec.ts",
+              "line": 38,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-10: canonical e sitemap só incluem públicos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 321,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:39.005Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea5eb77b2dcf9a50118a-de1cc01001b08c22b558",
+              "file": "verify-md0002-tarefa5.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "md-0002/AC-13: fontes aparecem somente quando presentes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 419,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:39.335Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea5eb77b2dcf9a50118a-a9dcc1d4ac364d7275a3",
+              "file": "verify-md0002-tarefa5.spec.ts",
+              "line": 64,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "verify-md0002-tarefa8.spec.ts",
+      "file": "verify-md0002-tarefa8.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "preview em produção local",
+          "file": "verify-md0002-tarefa8.spec.ts",
+          "line": 20,
+          "column": 15,
+          "specs": [
+            {
+              "title": "rascunho anônimo retorna HTTP 404",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 254,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:39.774Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-002856b516394b194247",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 24,
+              "column": 7
+            },
+            {
+              "title": "GET antigo não autentica e POST inválido falha",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 21,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:40.037Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-dbd6c0a68d367e1273da",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "sessão válida lê rascunho, sem indexação e sem cache",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1456,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:40.066Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-a7add3aab9fff9bd705d",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 45,
+              "column": 7
+            },
+            {
+              "title": "autorização vencida nega rascunho mantendo a sessão Supabase",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 854,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:41.529Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-2ce8116f801ad1924ce9",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 61,
+              "column": 7
+            },
+            {
+              "title": "logout remove cookies e nega leitura",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1177,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:42.392Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-eeb6fdba21541df33172",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 88,
+              "column": 7
+            },
+            {
+              "title": "outra identidade com claim válida não lê rascunho",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 444,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:43.578Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-a0f0224b3ad651d25ae6",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 101,
+              "column": 7
+            },
+            {
+              "title": "identidade permitida sem claim não lê rascunho",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1001,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:44.029Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-4d3951368d2cdad8d92c",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 115,
+              "column": 7
+            },
+            {
+              "title": "conta sem claim com sessão real permanece pública",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 432,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:45.038Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-2b1f332ad5798e1d1499",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 137,
+              "column": 7
+            },
+            {
+              "title": "falha real de logout responde 503 e remove autorização local",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 931,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:45.478Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-b3bb45c1bb4bd0aaab28",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "sessão Auth realmente expirada nega rascunho sem apagar cookies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 86494,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:28:46.417Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-142eceaabd38f4212675",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 177,
+              "column": 7
+            },
+            {
+              "title": "cookies preservam HttpOnly, Secure e prazo em HTTPS",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                        "line": 20,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 755,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-08T13:30:12.924Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/e2e/verify-md0002-tarefa8.spec.ts",
+                            "line": 20,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6dab2bda9b54300a22b8-7f87653c04125f4453b8",
+              "file": "verify-md0002-tarefa8.spec.ts",
+              "line": 210,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-08T13:28:18.843Z",
+    "duration": 114925.231,
+    "expected": 34,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

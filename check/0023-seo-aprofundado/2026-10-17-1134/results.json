@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "e4b8631abd59a4ee5765f6bb7f61276577ad27cb",
+  "evaluatedTree": "7ccb67531a1bdc448791b74cf401d08367f42c60",
+  "spec": {
+    "path": "docs/specs/2026-10-17-1037-0023-seo-aprofundado-auditoria.md",
+    "sha256": "e6a657fb4ae93e31e4cc4af2d811a82e202a3801bbe7e71ca1dd348ee0f302e2"
+  },
+  "acs": [
+    {
+      "id": "seo/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-01-orcamento-lighthouse.md",
+      "evidenceSha256": "48ac2caa8163e648daa2c4a00fbb75581c9039c675c883bfbb431f195927e12b"
+    },
+    {
+      "id": "seo/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-02-jsonld-home.md",
+      "evidenceSha256": "153e02bab6e8e611d2ab42c49acaf0283aab719b8e21a4cb5d13b83c87ba3f77"
+    },
+    {
+      "id": "seo/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-03-jsonld-artigo.md",
+      "evidenceSha256": "2ade851d1b215e82d92e070889272852745fa960c24e5aaca9c61e46c59c4c1d"
+    },
+    {
+      "id": "seo/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-04-sitemap-indice-filhos.md",
+      "evidenceSha256": "91dcb352e936225dbc17d3659203daab137d08b8e98e8074d776ae09c28ff850"
+    },
+    {
+      "id": "seo/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-05-degradacao-sanity.md",
+      "evidenceSha256": "88a7db219b95f0869d427b693fb55779b40a58c5c25d1807dc4e14034e26b417"
+    },
+    {
+      "id": "seo/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-06-gates-automatizados.md",
+      "evidenceSha256": "c45d17107cc76fbc9ed815f7edd3e92b9646af41829d789a7588cad712a7869a"
+    },
+    {
+      "id": "seo/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-07-relatorio-datado.md",
+      "evidenceSha256": "e84dfad653d9d7adee8335fa942f048352cede68c4a04644368028e43ee8d78e"
+    },
+    {
+      "id": "seo/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-08-titulos-marca.md",
+      "evidenceSha256": "35cbae9b7771c514a2ea5384ff55b80484cbaaab276c6367154fa2dfe47fb436"
+    },
+    {
+      "id": "seo/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1218-0023-seo-aprofundado/ac-09-invariantes.md",
+      "evidenceSha256": "50206daf610551f7d72c2497f8743d995660e73870c1dd8986b395c326356c7f"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "lighthouserc.cjs limita o piso de categories:seo às URLs indexáveis via assertMatrix: /busca é noindex por seo/AC-06 e reprova is-crawlable (seo 0,66). As duas leituras do AC-01 são incompatíveis entre si para /busca e a implementação adota a leitura consistente com o AC-06; uma emenda do texto passa pela rota /architect."
+    },
+    {
+      "severity": "WARNING",
+      "description": "O título autenticado do painel não foi observado em runtime local: /admin-dashboard/login responde 503 sem a configuração do Cloudflare Access (limitação de ambiente documentada em AGENTS.md). A cobertura do painel e do preview é a de unidade (seo-metadata.test.ts) mais o template compartilhado, observado em runtime na home, no artigo, na busca e no 404."
+    },
+    {
+      "severity": "WARNING",
+      "description": "A revisão avaliada é a árvore de trabalho com mudanças não commitadas de várias sessões (package.json, .env.example e pnpm-lock.yaml alheios a esta feature). evaluatedCommit é um commit efêmero (e4b8631a) criado apenas para ancorar o hash da árvore; o check-gate da CI exige árvore limpa e commit real antes do merge."
+    },
+    {
+      "severity": "INFO",
+      "description": "As regras negativas do AC-04 (editoria sem publicado não gera filho) e o escaping de XML foram provados em unidade: no banco local toda editoria com post tem ao menos um publicado, então não há caso runtime para observar."
+    },
+    {
+      "severity": "INFO",
+      "description": "O AGENTS.md registra 795 testes em 78 suites; a medição atual é 819 em 80. A atualização do número pertence ao /sync."
+    },
+    {
+      "severity": "INFO",
+      "description": "INP não é medível em laboratório; o TBT fica como proxy declarado no relatório, conforme a própria spec já declara."
+    }
+  ]
+}

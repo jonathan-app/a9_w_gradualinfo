@@ -70,15 +70,17 @@ export default defineConfig({
         'scripts/**',
         '.agents/**',
         '.storybook/**',
+        'scratch/**',
         'next-env.d.ts',
       ],
 
-      // Piso inicial de cobertura. Suba junto com a suíte de testes: um
-      // threshold alto que o projeto não atinge esconde o número real em vez
-      // de avisar sobre ele.
+      // Piso de cobertura. Suba junto com a suíte de testes: um threshold
+      // alto que o projeto não atinge esconde o número real em vez de
+      // avisar sobre ele. Branches em 80 porque o projeto mede ~88% e a
+      // regra do AGENTS.md é subir para 80 antes de virar gate de CI.
       thresholds: {
         global: {
-          branches: 60,
+          branches: 80,
           functions: 60,
           lines: 60,
           statements: 60,

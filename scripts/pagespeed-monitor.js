@@ -8,9 +8,9 @@
  * O Lighthouse é medida de laboratório: reproduzível, mas sintética, porque
  * simula rede e aparelho. O PageSpeed Insights devolve o CrUX, que é o que
  * usuários reais registram. Os dois não se substituem — o PageSpeed é o que
- * revela regressão que o laboratório nunca vai mostrar. (O gate local de
- * Lighthouse via @lhci/cli foi removido em 2026-10-05: cadeia com
- * vulnerabilidades sem patch. Este script roda standalone, sem `lhci`.)
+ * revela regressão que o laboratório nunca vai mostrar. O gate de laboratório
+ * mora no `lighthouserc.cjs`, com `@lhci/cli` pinado; este script roda
+ * standalone, sem `lhci`.
  *
  * Quando roda: `pnpm pagespeed` (manual ou por cron).
  * Lê: PAGESPEED_API_KEY e NEXT_PUBLIC_SITE_URL do ambiente.

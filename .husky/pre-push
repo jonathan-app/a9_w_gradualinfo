@@ -1,14 +1,28 @@
 #!/usr/bin/env sh
 # ============================================================================
-# .husky/pre-push — o que roda antes de cada push
+# .husky/pre-push — trava obrigatória antes de qualquer push para o GitHub
 # ============================================================================
-# Só a suíte unitária: é o que pega regressão sem custo de minutos. O build e
-# os testes e2e ficam para a CI — push não pode custar tanto quanto a CI.
+# Garante que nenhum código com erros, testes quebrados ou lints passe para
+# o repositório remoto. Se qualquer verificação falhar, o push é abortado.
 
+set -e
+
+echo "🔍 Executando verificações de qualidade pré-push..."
+
+# 1. Typecheck
+echo "  [1/4] Verificando tipos TypeScript..."
+pnpm typecheck
+
+# 2. Lint
+echo "  [2/4] Verificando regras de código (ESLint)..."
+pnpm lint
+
+# 3. Formatação
+echo "  [3/4] Verificando formatação (Prettier)..."
+pnpm format:check
+
+# 4. Testes Unitários
+echo "  [4/4] Executando suíte de testes (Vitest)..."
 pnpm test:run
-if [ $? -ne 0 ]; then
-  echo "❌ Testes falharam. Push cancelado."
-  exit 1
-fi
 
-echo "✅ Verificações de pre-push passaram."
+echo "✅ Todas as verificações e testes passaram com sucesso! Liberando o push."

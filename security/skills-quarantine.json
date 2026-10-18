@@ -82,6 +82,7 @@
     "vitest-skill": "e4f7e42f302814c4e0e8e2735212689bbe5c3eac941203098594f3191a2c7f4f",
     "vulnerability-scanner": "c5a9989305d5c687e93f8478a85d088860281c8baac26323db156455476d937c",
     "web-design-guidelines": "2eea5c8e61805a140c61fcf9619ba64aa6694cb7dffcde6ea3d2c1a41ce90eeb",
-    "webapp-testing": "850f732d0ea12dcee3ac4c35cd3468d0e2b27117e36642f3da85a186ea62407f"
+    "webapp-testing": "850f732d0ea12dcee3ac4c35cd3468d0e2b27117e36642f3da85a186ea62407f",
+    "jwt-validate": "ed8c08c3af6626a93738e9478503c9adbf5044c44467d3aad8d7509c4b9b94e6"
   }
 }

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "evaluatedCommit": "0853696773c0fc1820251359e765ae90029817e0",
+  "evaluatedTree": "0cec64a419caa5b32c9d34c264974fc9c6592752",
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef",
+      "artifact": ".open-next/cloudflare/next-env.mjs",
+      "artifactSha256": "416accf14b168ff3fa513587aba2bccc654257a8fc6e7c6aafa679c98a817046"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef",
+      "artifact": ".open-next/worker.js",
+      "artifactSha256": "d05223bf4d44c84108a102ab62aa3bc9c5568f0c3ac2064c37be5cc65c64bc45"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/2026-10-10-1920-verify-0853696.md",
+      "evidenceSha256": "ea92cd43163945f520efa3743333862604b43ac95550600dc21371dface712ef"
+    }
+  ],
+  "findings": []
+}

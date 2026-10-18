@@ -1,0 +1,28 @@
+{
+  "ac": "md-0002/AC-01",
+  "generatedAt": "2026-10-08T16:06:02.805Z",
+  "source": {
+    "run": "E2E produção local (playwright, E2E_PRODUCTION=1, jwt_expiry=60, fault proxy)",
+    "stats": {
+      "startTime": "2026-10-08T13:28:18.843Z",
+      "duration": 114925.231,
+      "expected": 34,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "resultsFile": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e-results.json",
+    "log": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e.log"
+  },
+  "tests": [
+    {
+      "file": "verify-md0002-tarefa4.spec.ts",
+      "describe": "home editorial",
+      "title": "md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite",
+      "status": "passed",
+      "duration": 319
+    }
+  ],
+  "supplementary": null,
+  "note": "Grade ≤10, ordenada, sem rascunho nem data futura — teste da tarefa4 PASS no run 34/34."
+}

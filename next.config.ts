@@ -14,6 +14,7 @@
 import createBundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import { env } from './lib/env';
+import { securityHeaders } from './lib/security-headers';
 
 /**
  * Ativa a análise de bundle somente quando ANALYZE=true (ver o script
@@ -24,7 +25,12 @@ const withBundleAnalyzer = createBundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  // A prévia editorial tem saída própria e não disputa o cache do build.
+  distDir: env.editorialLocal ? '.next-editorial' : '.next',
   reactStrictMode: true,
+  experimental: {
+    authInterrupts: true,
+  },
 
   // Sem esta lista, o dev server bloqueia qualquer recurso de `/_next/*` pedido
   // por um host diferente do que ele considera de origem — é o que acontece
@@ -44,50 +50,11 @@ const nextConfig: NextConfig = {
 
   // Headers de segurança em todas as respostas.
   async headers() {
-    const isProduction = env.isProduction;
-    const securityHeaders = [
-      { key: 'X-Content-Type-Options', value: 'nosniff' },
-      {
-        key: 'Referrer-Policy',
-        value: 'strict-origin-when-cross-origin',
-      },
-      { key: 'X-Frame-Options', value: 'DENY' },
-      {
-        key: 'Permissions-Policy',
-        value: 'camera=(), microphone=(), geolocation=()',
-      },
-      {
-        key: 'Content-Security-Policy',
-        // 'unsafe-eval' só fora de produção: o dev server do React precisa dele, e em
-        // produção ele abriria eval para qualquer script injetado — por isso some da string.
-        value: [
-          "default-src 'self'",
-          `script-src 'self' 'unsafe-inline'${isProduction ? '' : " 'unsafe-eval'"} https://va.vercel-scripts.com https://www.googletagmanager.com`,
-          "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: https:",
-          "font-src 'self' data:",
-          "connect-src 'self' https://*.supabase.co https://*.sentry.io https://va.vercel-scripts.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
-          "frame-src 'self' https://www.googletagmanager.com",
-          "frame-ancestors 'none'",
-          "base-uri 'self'",
-          "form-action 'self'",
-        ].join('; '),
-      },
-    ];
-
-    // HSTS só em produção com host real em https: fixar `max-age` para localhost prende o
-    // dev server ao TLS e o aviso de certificado não confiável não tem volta fácil — por isso
-    // a checagem de protocolo e de host antes de emitir o header.
-    if (
-      isProduction &&
-      new URL(env.siteUrl).protocol === 'https:' &&
-      !['localhost', '127.0.0.1'].includes(new URL(env.siteUrl).hostname)
-    ) {
-      securityHeaders.push({
-        key: 'Strict-Transport-Security',
-        value: 'max-age=31536000',
-      });
-    }
+    // O conjunto mora em lib/security-headers: as respostas montadas à mão no
+    // proxy e no guarda usam o mesmo mapa, e assim os dois caminhos não divergem.
+    const securityHeaderList = Object.entries(
+      securityHeaders({ isProduction: env.isProduction, siteUrl: env.siteUrl }),
+    ).map(([key, value]) => ({ key, value }));
 
     return [
       { source: '/', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
@@ -96,8 +63,28 @@ const nextConfig: NextConfig = {
         headers: [{ key: 'Cache-Control', value: 'no-store' }],
       },
       {
+        // Filhos do índice, incluindo /sitemap/geral.xml: derivam de conteúdo
+        // publicado a qualquer momento e não podem ser servidos de cache.
+        source: '/sitemap/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store' }],
+      },
+      {
+        source: '/admin-dashboard/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
+        source: '/api/admin/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
         source: '/:path*',
-        headers: securityHeaders,
+        headers: securityHeaderList,
       },
     ];
   },

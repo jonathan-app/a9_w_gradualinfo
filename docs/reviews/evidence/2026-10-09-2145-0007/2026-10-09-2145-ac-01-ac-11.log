@@ -1,0 +1,27 @@
+# AC-01 e AC-11 · rotas admin sob requisição anônima · 2026-10-09T21:47:43-03:00
+
+zsh:5: command not found: curl
+zsh:6: command not found: grep
+zsh:6: command not found: tr
+GET /admin-dashboard -> HTTP  | 
+zsh:5: command not found: curl
+zsh:6: command not found: grep
+zsh:6: command not found: tr
+GET /admin-dashboard/ -> HTTP  | 
+zsh:5: command not found: curl
+zsh:6: command not found: grep
+zsh:6: command not found: tr
+GET /admin-dashboard/mfa/setup -> HTTP  | 
+zsh:5: command not found: curl
+zsh:6: command not found: grep
+zsh:6: command not found: tr
+GET /admin-dashboard/mfa/verify -> HTTP  | 
+
+## Headers admin (AC-11)
+zsh:11: command not found: curl
+zsh:12: command not found: grep
+zsh:12: command not found: tr
+
+## robots.txt
+zsh:15: command not found: curl
+zsh:15: command not found: tr

@@ -1,0 +1,11 @@
+{
+  "ac": "admin/AC-10",
+  "title": "Dashboard com atalho para Sanity Studio e preview seguro",
+  "generatedAt": "2026-10-08T18:25:15.452Z",
+  "status": "PASS",
+  "targetFile": "app/admin-dashboard/(protegido)/page.tsx",
+  "testsExecuted": [
+    "emite preview e cookie seguro com sucesso quando administrador possui AAL2"
+  ],
+  "note": "Dashboard exibe link para env.sanityStudioUrl e formulário para gerar sessão de preview."
+}

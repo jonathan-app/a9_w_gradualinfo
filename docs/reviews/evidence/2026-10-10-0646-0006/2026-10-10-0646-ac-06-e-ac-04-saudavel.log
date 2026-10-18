@@ -1,0 +1,34 @@
+=== 2026-10-10-0646 — via saudável (next start, build atual, env de produção local) ===
+--- GET / ---
+HTTP/1.1 200 OK
+Cache-Control: no-store
+--- GET /artigos/slug-que-nao-existe ---
+HTTP/1.1 404 Not Found
+cache-control: private, no-store
+--- GET /admin-dashboard ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+--- GET /api/preview ---
+HTTP/1.1 405 Method Not Allowed
+cache-control: private, no-store
+allow: POST
+--- GET /api/preview/logout ---
+HTTP/1.1 405 Method Not Allowed
+cache-control: private, no-store
+allow: POST
+--- POST /api/preview origem errada ---
+HTTP/1.1 403 Forbidden
+cache-control: private, no-store
+--- POST /api/preview/logout origem errada ---
+HTTP/1.1 403 Forbidden
+cache-control: private, no-store
+--- POST /api/preview origem certa, token errado (corpo) ---
+HTTP/1.1 401 Unauthorized
+cache-control: private, no-store
+--- POST /api/preview origem certa, slugs inválidos ---
+slug=../admin -> 400
+slug=https://evil.com -> 400
+slug=foo/bar -> 400
+slug=UPPER -> 400
+slug=a b -> 400

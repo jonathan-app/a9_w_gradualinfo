@@ -1,0 +1,14 @@
+{
+  "ac": "admin/AC-11",
+  "title": "Cabeçalhos HTTP private, no-store, noindex e disallow no robots.txt",
+  "generatedAt": "2026-10-08T23:45:00.000Z",
+  "status": "PASS",
+  "targetFile": "app/admin-dashboard/layout.tsx",
+  "testsExecuted": [
+    "E2E: resposta em /admin-dashboard/login emite Cache-Control: private, no-store",
+    "E2E: resposta em /admin-dashboard/login emite X-Robots-Tag: noindex, nofollow",
+    "E2E: /robots.txt contém Disallow: /admin-dashboard/",
+    "E2E: rotas protegidas (/admin-dashboard/, /mfa/setup, /mfa/verify) emitem headers de proteção com sessão AAL2"
+  ],
+  "note": "E2E empírico em build de produção comprova headers de proteção e regra robots.txt em todas as rotas administrativas, incluindo rotas protegidas com sessão AAL2 simulada."
+}

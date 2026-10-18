@@ -1,0 +1,13 @@
+{
+  "timestampLocal": "2026-10-10 14:20 America/Sao_Paulo",
+  "head": "4c2bc60e389e4a616448a6b157cdc3c3dd0c6390",
+  "treeState": "dirty; exact build snapshot not proven",
+  "gitIndex": "generated worker.js and next-env.mjs still staged; worktree copies deleted; index cleanup requires sandbox approval",
+  "checkAll": "exit 1 before typecheck: pnpm@12.5.1 signature verification could not reach npm registry in sandbox",
+  "escalatedCheckAll": "approval pending; not executed",
+  "build": "not run in this check",
+  "wranglerDryRun": "not run in this check",
+  "runtime": "not tested in this check",
+  "review": "1 BLOCKER: sensitive generated next-env.mjs staged; 2 provenance/evidence warnings in prior result corrected in working tree",
+  "productionActions": "none"
+}

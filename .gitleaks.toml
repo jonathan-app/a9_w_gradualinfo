@@ -1,18 +1,80 @@
-# Configuração local do Gitleaks — limita alarmes falsos conhecidos.
+# ============================================================================
+# .gitleaks.toml — o que conta como segredo neste projeto
+# ============================================================================
+# Roda por `pnpm security:secrets` (scripts/run-gitleaks.mjs).
 #
-# A PR é para não vazar a NÃO colidir com isso: qualquer segredo real que
-# aparecer no git ou na árvore ainda é encontrado, com `dir` ou `git`.
+# Por que este arquivo existe
+# O padrão do gitleaks é amplo: acende para qualquer string longa que pareça
+# chave. Numa base com muito dado de exemplo e fixture isso vira ruído — e
+# ruído em scanner é ruído em conformidade: o time para de olhar.
+#
+# A allowlist abaixo é o equilíbrio. Ela cobre o caminho (arquivos gerados,
+# lockfile) e o valor (placeholder de .env.example e seed). Nada de padrão
+# frouxo tipo "qualquer coisa depois de `key_`" — isso desligaria a regra de
+# verdade em nome de um falso positivo.
+#
+# O bloco [extend] não é enfeite: sem ele o gitleaks carrega ZERO regras e o
+# gate volta verde sem procurar nada. Foi exatamente o que aconteceu quando o
+# commit 96df568 substituiu este arquivo inteiro e engoliu o bloco — deu um
+# falso verde até a auditoria de 2026-10-07.
+
+title = "gitleaks — gradualinfo"
+
+[extend]
+# Regras padrão, mantidas pelo projeto gitleaks.
+useDefault = true
 
 [allowlist]
-description = "Achados que não são segredos"
+description = "Caminhos e valores que não carregam segredo real"
+
 paths = [
+  '''pnpm-lock\.yaml''',
+  '''skills-lock\.json''',
+  '''\.agents/''',
+  '''node_modules/''',
+  '''\.next/''',
+  '''security-reports/''',
+  '''coverage/''',
   # supabase/.temp é stack local descartável e já está no .gitignore; o
-  # próprio scan `dir` não deveria subir por ali, mas ainda sobe porque a
+  # próprio scan `dir` não deveria subir por ali, mas ainda subia porque a
   # varredura atual não respeita .gitignore.
   '''supabase/.temp''',
+  # Mapa skill → sha256 no arquivo de quarentena (algorithm sha256-path-content-v1).
+  # O gitleaks lê o valor hexadecimal como token Sentry — falso positivo,
+  # não é credencial.
+  '''security/skills-quarantine\.json''',
+  # Fixture de teste: o valor do previewSecret é um placeholder de teste,
+  # não uma credencial real. O histórico contém a versão antiga com entropia
+  # alta (commit a7f5eec); allowlistar o caminho cobre histórico e árvore.
+  '''__tests__/unit/preview-route\.test\.ts''',
+  # Manifesto de evidência com o sha256 do conteúdo de cada arquivo avaliado,
+  # usado pelo /check para amarrar resultado ao código testado. Os valores são
+  # hashes de fonte, não credencial: a regra generic-api-key acende para dois
+  # deles por entropia. Só o nome de manifesto é allowlistado, o resto de
+  # docs/reviews/evidence segue sendo varrido.
+  '''source-hashes\.json''',
+  # Manifestos de evidência de build e execução: contêm sha256 de artefatos,
+  # não credenciais. A regra generic-api-key acende por entropia do hash.
+  '''docs/reviews/evidence/.*-manifest\.json''',
+  '''docs/reviews/evidence/.*-execution\.json''',
+  # Snapshots de fonte (source-before/after) do /check: manifestos com sha256 do
+  # conteúdo avaliado; a regra generic-api-key acende por entropia do hash.
+  # Classificação em check/0023-seo-aprofundado/2026-10-17-1327-security/SECURITY.md.
+  '''docs/reviews/evidence/.*source-(before|after)\.json''',
 ]
+
+regexTarget = "match"
 regexes = [
+  '''YOUR_[A-Z0-9_]*(KEY|TOKEN|SECRET)''',
+  '''sb_(local|placeholder|example)_[a-zA-Z0-9_\-]+''',
+  '''example\.dev''',
   # Placeholder JWT injetado em lib/env.ts só para o build ter um valor a ler;
   # a assinatura é literalmente "local-development-placeholder-signature".
   '''local-development-placeholder-signature''',
+  # JWTs demo do Supabase local (iss=supabase-demo, exp 2032): valor público e
+  # determinístico do CLI do stack local, sem acesso a projeto remoto. Dois
+  # prefixos porque o payload varia entre compacto e formatado com espaços;
+  # token de projeto real (ref da nuvem) não casa e segue acusando.
+  '''eyJpc3MiOiJzdXBhYmFzZS1kZW1v''',
+  '''eyJpc3MiOiAic3VwYWJhc2UtZGVtbyIsICJy''',
 ]

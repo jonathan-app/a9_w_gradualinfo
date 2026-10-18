@@ -1,0 +1,18 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.3 /workspace/scratch/31a81f266718/gradualinfo-local-editorial
+
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+
+ Test Files  53 passed (53)
+      Tests  568 passed (568)
+   Start at  00:15:45
+   Duration  7.95s (environment 48%, tests 24%, setup 14%, import 6%, transform 6%, worker 1%)
+
+Environment  jsdom was created 53 times · 21.16s total, 48% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

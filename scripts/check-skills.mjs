@@ -4,7 +4,7 @@
  * @module scripts/check-skills
  * @description Compara `.agents/skills/` com a baseline aprovada (`security/skills-allowlist.json`
  *   + `skills-lock.json`): nomes idênticos, origem, hash do lock e hash de conteúdo de cada
- *   skill. Diferente de `check-portability.mjs` (forma e prosa), este script trata só de
+ *   skill e seus arquivos versionados. Diferente de `check-portability.mjs` (forma e prosa), este script trata só de
  *   confiança — o que está instalado é exatamente o que foi revisado e aprovado.
  * @dependencies node:fs, node:crypto (SHA-256), node:path, node:url.
  *
@@ -98,7 +98,14 @@ export function checkSkills(repo) {
         !lock[name] ||
         lock[name].computedHash !== value.lockComputedHash ||
         lock[name].source !== value.source ||
-        contentHash(join(repo, '.agents/skills', name)) !== value.contentSha256
+        contentHash(join(repo, '.agents/skills', name)) !==
+          value.contentSha256 ||
+        contentHash(join(repo, 'security/skills-catalog', name)) !==
+          value.contentSha256 ||
+        contentHash(join(repo, '.claude/skills', name)) !==
+          value.pointerSha256 ||
+        contentHash(join(repo, 'security/skills-catalog-pointers', name)) !==
+          value.pointerSha256
       )
         reasons.push(`Conteúdo ou origem divergente: ${name}`);
     } catch {

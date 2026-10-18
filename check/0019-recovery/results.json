@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-16-1115-0019-recuperacao-administrativa.md",
+    "sha256": "4257b82632f155a2ba3b39d97d38fcb5e0fc7fccb1029739d137d59f9982367d"
+  },
+  "acs": [
+    {
+      "id": "admin-recovery/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-01-solicitacao-resposta-uniforme.md",
+      "evidenceSha256": "ac34a2554cd3bb315f45669077053cff69fcce3913da170763306d78576e6104"
+    },
+    {
+      "id": "admin-recovery/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-02-expiracao-otp-15-minutos.md",
+      "evidenceSha256": "bdf7e2496464a5578a0fef381954661a1d517782ab2506782d48aa6c536cf916"
+    },
+    {
+      "id": "admin-recovery/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-03-callback-ssr-pkce-crossbrowser.md",
+      "evidenceSha256": "0ccce5ac3791c37f4cac7f52e7601aa2c1bd8c34cbe9f827850f80a908efde57"
+    },
+    {
+      "id": "admin-recovery/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-04-atualizacao-senha-totp-ativo.md",
+      "evidenceSha256": "de2448d03f57fd1332e7d95a7609a5c9e1d8b8ac7023c551a9b1397e134c6f0c"
+    },
+    {
+      "id": "admin-recovery/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-05-preservacao-guarda-negocio-aal2.md",
+      "evidenceSha256": "3b0f7557b30ebd28dc2ab730829170730701a5b7360e25cb56e724673eb4e6e1"
+    },
+    {
+      "id": "admin-recovery/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-06-contingencia-totp-script-auditado.md",
+      "evidenceSha256": "146498e3a7c56e0c351a3461ffdcc5f297444c82d7a97832646020bd173153bb"
+    },
+    {
+      "id": "admin-recovery/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-07-encerramento-sessoes-janela-residual.md",
+      "evidenceSha256": "b4723ec5633b6284db87f2fab446df1a18e61db284575bb37caf544048710fb0"
+    },
+    {
+      "id": "admin-recovery/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-08-higiene-absoluta-evidencias.md",
+      "evidenceSha256": "a8fff427cd1871d15c12ddbcdfabe123b19344c0f55434ed8bc554b4134dd09f"
+    },
+    {
+      "id": "admin-recovery/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1550-0019-recuperacao-administrativa/ac-09-isolamento-guards-por-etapa.md",
+      "evidenceSha256": "0ae53819d038fe2546460702c23b280645bc417ad3f9561f6867c2972447bbf5"
+    }
+  ],
+  "findings": []
+}

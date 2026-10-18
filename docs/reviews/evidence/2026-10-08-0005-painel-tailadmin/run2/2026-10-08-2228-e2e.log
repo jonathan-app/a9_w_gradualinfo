@@ -1,0 +1,21 @@
+
+Running 15 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/admin-panel.spec.ts:16:7 › Painel Administrativo — Cabeçalhos HTTP e Proteção › rota protegida anônima redireciona para login (admin/AC-01) (204ms)
+  ✓   2 [chromium] › e2e/admin-panel.spec.ts:38:7 › Painel Administrativo — Cabeçalhos HTTP e Proteção › página de login acessível anonimamente (200) (983ms)
+  ✓   3 [chromium] › e2e/admin-panel.spec.ts:43:7 › Painel Administrativo — Cabeçalhos HTTP e Proteção › cabeçalhos de proteção em rota protegida (admin/AC-11) (943ms)
+  ✓   4 [chromium] › e2e/admin-panel.spec.ts:54:7 › Painel Administrativo — Cabeçalhos HTTP e Proteção › robots.ts bloqueia /admin-dashboard/ (631ms)
+  ✓   5 [chromium] › e2e/admin-panel.spec.ts:60:7 › Painel Administrativo — Cabeçalhos HTTP e Proteção › cabeçalhos de proteção em todas as rotas /admin-dashboard/* (admin/AC-11) (219ms)
+  ✓   6 [chromium] › e2e/admin-panel.spec.ts:74:7 › Painel Administrativo — Login: Validação de Origem, Rate Limit e Redirect › POST login com Origin inválido retorna 403 (admin/AC-05) (933ms)
+  ✓   7 [chromium] › e2e/admin-panel.spec.ts:86:7 › Painel Administrativo — Login: Validação de Origem, Rate Limit e Redirect › POST login com redirect externo é sanitizado para /admin-dashboard (admin/AC-05) (856ms)
+  ✓   8 [chromium] › e2e/admin-panel.spec.ts:103:7 › Painel Administrativo — Login: Validação de Origem, Rate Limit e Redirect › POST login com prefixo colidente /admin-dashboard-falso é rejeitado (admin/AC-05) (852ms)
+  ✓   9 [chromium] › e2e/admin-panel.spec.ts:118:7 › Painel Administrativo — Login: Validação de Origem, Rate Limit e Redirect › rate limiting: múltiplos POSTs de login falhos retornam redirect com error=rate_limited (admin/AC-05) (875ms)
+  ✓  10 [chromium] › e2e/admin-panel.spec.ts:148:7 › Painel Administrativo — API direta e Logout (AC-03, AC-12) › API admin direta sem sessão retorna 401 (admin/AC-03) (849ms)
+  ✓  11 [chromium] › e2e/admin-panel.spec.ts:161:7 › Painel Administrativo — API direta e Logout (AC-03, AC-12) › POST logout com Origin inválido retorna 403 (admin/AC-12) (856ms)
+  ✓  12 [chromium] › e2e/admin-panel.spec.ts:174:7 › Painel Administrativo — Acessibilidade WCAG AA (admin/AC-13) › página de login sem violações WCAG 2.1 AA (1.3s)
+  ✓  13 [chromium] › e2e/admin-panel.spec.ts:184:7 › Painel Administrativo — Acessibilidade WCAG AA (admin/AC-13) › navegação por teclado: formulário de login focável e submissível (900ms)
+  -  14 [chromium] › e2e/admin-panel.spec.ts:202:8 › Painel Administrativo — Fluxo Completo (requer credenciais reais) › login válido com MFA setup/challenge/verify
+  -  15 [chromium] › e2e/admin-panel.spec.ts:227:8 › Painel Administrativo — Fluxo Completo (requer credenciais reais) › logout via POST limpa sessão e redireciona para login (admin/AC-12)
+
+  2 skipped
+  13 passed (12.5s)

@@ -1,0 +1,2 @@
+$ node scripts/run-semgrep.mjs
+Semgrep: 0 findings ERROR.

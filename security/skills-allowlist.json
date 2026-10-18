@@ -1,50 +1,59 @@
 {
   "schemaVersion": 1,
   "algorithm": "sha256-path-content-v1",
-  "lockSha256": "33a1f914ab677ab487fedb6b58dce05724eea7bf63e01ea6b3a222e6deb1f422",
+  "lockSha256": "59fd923d901f0cafc7df4f65cfba347f4a2d09a0c5fd5512ba6a756b328299dc",
   "skills": {
     "architect": {
-      "contentSha256": "d47b650662db3de9bd38945e70440c84335f54351aa40238294b38330b7310dd",
+      "contentSha256": "48afe861b31b5a4e1081f8249826ad6c86fc2c0fcc97b3220f11d0988fe52a82",
+      "pointerSha256": "65c71578efe007de4480987f357d949e0697a295a836e5030d21d2e96040bddf",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "ff57c65a06ca4047420113d1eaa18e5002bc657224688b9350a1f06d77204327"
     },
     "audit": {
       "contentSha256": "5cf0ebb3f3b195b016c537d467dc8b0f9ca06da8ae0af41aeecd0cc15f911dc6",
+      "pointerSha256": "5aa25979dfff753a3fed0051ec340d15819a151661d0fbbdaea6e636cd74d1a2",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "a8d524118ce6d60911840ef31509f1f5551ce1099cb8fd8a241ed0859e5c62ed"
     },
     "check": {
-      "contentSha256": "8f2bd01fb7bfb7b2010ee0ee7ed70e2d673bcaecddf5636650323d9458c5fa6b",
+      "contentSha256": "3faccbe74a92be5dc835c6887e32d7ea4bb59e58944c8edd4438ec977b98ba9d",
+      "pointerSha256": "9d7bab363247b51ddb108f93304beb99078c2a8e6afa059c104f68ac0a83b0a9",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "3f21e5cf83a65be1c0fd07fa9f4a75ae31f4f2d169d862be6aec6e6e7adb0382"
     },
     "debug": {
       "contentSha256": "f1669ae09700fc3d93a4995611855f129990566a73f091ec012b84cca0ca0bc3",
+      "pointerSha256": "c56d4c08020d7482df953529e3d0fb88aabc6f1aaba83be179c27566d0aa3337",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "bc5bffa19310d272abc205966b85f5f80d562ccfa16c39b1b92701026e676e30"
     },
     "develop": {
       "contentSha256": "9f1d11257c12ed41ffada3963654c267cc24c014a3e96106977def56a7bfac60",
+      "pointerSha256": "9d5829c2a3e8c7d2d748b6ad3c2d150c2f3bf3da64b68db86cea35bb997a0975",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "42dc998560097e8fe95e78f08df574ef4e5110b9ceacdd5ae3fdf68808f51c59"
     },
     "document": {
       "contentSha256": "b079405682225143bf4abb743c0ea945d77a56b593cc81e1242b291489e34eec",
+      "pointerSha256": "4ff1e24c17def0b683a41c45ab88ebfe7a9fc30b2866880af38698ca6ed349cf",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "90933443f204d2ed29c84730be87b7b5470f6819fccde6129aedad1df517fb92"
     },
     "scope": {
       "contentSha256": "9b2cbf3cc05d46f2b5e90091855c5b316142fa9f338310c2b867926129d32bb6",
+      "pointerSha256": "6e6c2acb6fbb8d1f6fef393965282135e2ccbd0447e5b958915c6490a7ddae9a",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "cc3683a45b96c1b0ecb23f9aba64263be096cb3ef2487662c0fe7e7c3200fb70"
     },
     "sync": {
       "contentSha256": "86bd466dab547108c952696d1d7b238b28893f5af9f199f5ae0da47bf55b7327",
+      "pointerSha256": "103e8661354ecbb0bb1637bf0d5ca16e340bde84af32716d6aa9b6b99640f13c",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "005f989b25192d3dbb4bf4e89630a3c31da8ea45dd77939102f263052309e409"
     },
     "test": {
       "contentSha256": "d18a16ca118b5cdf833b08b0907485834ad6d4caf4f7447b0c93153f46bf53e1",
+      "pointerSha256": "7c8ac0cf6edec93478f4df754e52c4f23120936d9b7a3a10112d441bc866ff9e",
       "source": "JavaScript-Mastery-Pro/skills",
       "lockComputedHash": "87dd379cca618d8cb2ca3d5073ffa8be6755e5822e7834a3c0ebe06bd3853f1f"
     }

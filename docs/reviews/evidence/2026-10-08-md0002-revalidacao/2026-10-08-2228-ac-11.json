@@ -1,0 +1,24 @@
+{
+  "ac": "md-0002/AC-11",
+  "generatedAt": "2026-10-08T16:06:02.809Z",
+  "source": {
+    "run": "E2E produção local (playwright, E2E_PRODUCTION=1, jwt_expiry=60, fault proxy)",
+    "stats": {
+      "startTime": "2026-10-08T13:28:18.843Z",
+      "duration": 114925.231,
+      "expected": 34,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "resultsFile": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e-results.json",
+    "log": "docs/reviews/evidence/2026-10-08-md0002-revalidacao/2026-10-08-2228-e2e.log"
+  },
+  "tests": [],
+  "supplementary": {
+    "pgtap": "pnpm supabase:test: Files=1, Tests=63, Result: PASS (exit 0)",
+    "sast": "pnpm security:sast: Semgrep 0 findings ERROR (regra service_role no browser)",
+    "service_role_no_caminho_de_leitura": "(sem ocorrências em app/lib/components/hooks)"
+  },
+  "note": "pgTAP 63/63 PASS prova RLS para anon/papéis públicos; varredura automatizada (Semgrep) + grep confirmam service_role fora do alcance do leitor."
+}

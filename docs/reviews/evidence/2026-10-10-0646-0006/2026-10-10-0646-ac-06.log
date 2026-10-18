@@ -1,0 +1,27 @@
+=== 2026-10-10-0646 — sanity/AC-06 cache, 404 real e 503 sob indisponibilidade ===
+
+--- VIA SAUDÁVEL (próximo: 2026-10-10-0646-ac-06-e-ac-04-saudavel.log) ---
+--- GET / ---
+HTTP/1.1 200 OK
+Cache-Control: no-store
+--- GET /artigos/slug-que-nao-existe ---
+HTTP/1.1 404 Not Found
+cache-control: private, no-store
+--- GET /admin-dashboard ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+
+--- VIA DE FALHA INDUZIDA (SANITY_DATASET inexistente no next start) ---
+=== 2026-10-10-0646 — falha induzida (SANITY_DATASET inexistente no next start) ===
+--- GET / (probe) ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
+--- corpo home (traços de indisponibilidade vs 404) ---
+      1 indisponível
+      1 Serviço temporariamente indisponível
+--- GET /artigos/slug-que-nao-existe ---
+HTTP/1.1 503 Service Unavailable
+cache-control: private, no-store
+x-robots-tag: noindex, nofollow
