@@ -104,10 +104,21 @@ describe('createClient (cookie E2E em dev)', () => {
       from: vi.fn(),
     });
     process.env.NODE_ENV = 'development';
+    process.env.E2E_TEST = '1';
   });
 
   afterEach(() => {
     process.env.NODE_ENV = 'test';
+    delete process.env.E2E_TEST;
+  });
+
+  it('ignora o cookie em dev quando E2E_TEST não está ativo', async () => {
+    delete process.env.E2E_TEST;
+    mockCookies.__set('__e2e_session_role', 'admin_no_mfa');
+    const client = await createClient();
+    // Sem E2E_TEST=1, createServerClient padrão é chamado
+    expect(mockCreateServerClient).toHaveBeenCalled();
+    expect(client.auth.getUser).toBeUndefined();
   });
 
   it('admin_no_mfa devolve user mock e AAL1 sem fatores', async () => {

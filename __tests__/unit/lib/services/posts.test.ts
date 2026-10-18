@@ -32,6 +32,8 @@ vi.mock('@/lib/sanity/client', () => ({
   getSanityPostBySlug: (...args: unknown[]) => mockSanityBySlug(...args),
 }));
 
+let sanityConfigured = false;
+
 vi.mock('@/lib/env', () => ({
   env: {
     supabase: { url: 'http://127.0.0.1:54321', anonKey: 'test-anon-key' },
@@ -43,6 +45,9 @@ vi.mock('@/lib/env', () => ({
       projectId: '',
       dataset: '',
     },
+  },
+  get isSanityConfigured() {
+    return sanityConfigured;
   },
 }));
 import {
@@ -247,11 +252,13 @@ describe('Posts Service', () => {
 
   describe('Integração com Sanity (quando configurado no env)', () => {
     beforeEach(() => {
+      sanityConfigured = true;
       (env as any).sanity.projectId = 'sanity-project-id';
       (env as any).sanity.dataset = 'production';
     });
 
     afterEach(() => {
+      sanityConfigured = false;
       (env as any).sanity.projectId = '';
       (env as any).sanity.dataset = '';
     });

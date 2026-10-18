@@ -104,4 +104,9 @@ describe('config.matcher', () => {
     expect(mod.config.matcher).toContain('/api/admin/:path*');
     expect(mod.config.matcher.some((m: string) => m.includes('!'))).toBe(true);
   });
+
+  it('inclui sitemap.xml no matcher para probe de disponibilidade do Sanity (spec 0006 seção 3.C)', async () => {
+    const mod = await import('@/proxy');
+    expect(mod.config.matcher).toContain('/sitemap.xml');
+  });
 });

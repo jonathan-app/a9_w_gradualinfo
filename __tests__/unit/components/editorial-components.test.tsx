@@ -106,6 +106,16 @@ describe('EditorialStory', () => {
 });
 
 describe('EditorialCover', () => {
+  it('renderiza a capa local na origem atual', () => {
+    render(
+      <EditorialCover src="/artigos/site-lento-mesmo-com-boa-nota-pagespeed.jpeg" />,
+    );
+    expect(screen.getByTestId('editorial-img')).toHaveAttribute(
+      'src',
+      '/artigos/site-lento-mesmo-com-boa-nota-pagespeed.jpeg',
+    );
+  });
+
   it('renderiza imagem quando src é válido', () => {
     render(<EditorialCover src="https://gradualinfo.com.br/img/x.jpg" />);
     expect(screen.getByTestId('editorial-img')).toHaveAttribute(
@@ -114,9 +124,12 @@ describe('EditorialCover', () => {
     );
   });
 
-  it('renderiza null quando src é null', () => {
+  it('renderiza fallback decorativo quando src é null', () => {
     const { container } = render(<EditorialCover src={null} />);
-    expect(container.innerHTML).toBe('');
+    expect(container.querySelector('[data-cover-fallback]')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
   });
 
   it('remove a imagem após erro', () => {

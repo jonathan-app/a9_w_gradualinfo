@@ -2,13 +2,37 @@
  * @fileoverview Evidência do artigo, do JSON-LD e do sitemap em md-0002 — AC-05..AC-10, AC-13.
  * @module e2e/verify-md0002-tarefa5
  * @description O eixo é o fixture malicioso: HTML hostil digitado no CMS tem de sair como dado
- *   renderizado, sem executar, mantendo o JSON-LD válido. Completa com 404 para rascunho,
- *   agendado e inexistente, canonical/sitemap só com conteúdo público e seção de fontes que
- *   some quando não há fontes.
+ *   renderizado, sem executar, mantendo o JSON-LD válido (agora entre os blocos do artigo).
+ *   Completa com 404 para rascunho, agendado e inexistente, canonical só com conteúdo público
+ *   e cobertura do sitemap em índice (o artigo público aparece num filho, nunca no índice nem
+ *   para rascunho/agendado), e seção de fontes que some quando não há fontes.
  * @dependencies @playwright/test, fixtures `fixture-malicioso`, `fixture-publicado`,
  *   `fixture-rascunho`, `fixture-agendado`, `fixture-sem-fontes` do seed.
  */
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+/** Bloco JSON-LD no formato em que o teste o consome. */
+type JsonLdBlock = {
+  '@type'?: string;
+  headline?: string;
+  datePublished?: string;
+  author?: unknown;
+  image?: unknown;
+};
+
+/** Coleta e interpreta todos os blocos JSON-LD da página corrente. */
+async function jsonLdBlocks(page: Page): Promise<JsonLdBlock[]> {
+  const raws = await page
+    .locator('script[type="application/ld+json"]')
+    .allInnerTexts();
+  return raws.map((raw) => JSON.parse(raw) as JsonLdBlock);
+}
+
+/** Extrai os `<loc>` de um documento XML do sitemap. */
+function locs(xml: string): string[] {
+  return [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((match) => match[1]!);
+}
+
 test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
   test('md-0002/AC-05, AC-06, AC-09: HTML malicioso permanece dado', async ({
     page,
@@ -16,18 +40,18 @@ test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
     const response = await page.goto('/artigos/fixture-malicioso');
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    const json = JSON.parse(
-      await page.locator('script[type="application/ld+json"]').innerText(),
+    const article = (await jsonLdBlocks(page)).find(
+      (block) => block['@type'] === 'Article',
     );
-    expect(json['@type']).toBe('Article');
-    expect(json.datePublished).toBeTruthy();
-    expect(json.author).toBeTruthy();
-    expect(json.image).toBeTruthy();
+    expect(article).toBeTruthy();
+    expect(article?.datePublished).toBeTruthy();
+    expect(article?.author).toBeTruthy();
+    expect(article?.image).toBeTruthy();
     await expect(page.locator('article strong')).toHaveText('seguro');
     await expect(page.locator('article table')).toBeVisible();
     // O JSON-LD carrega a string crua escapada: o dado continua fiel para o buscador, e o
     // marcador deixa de ser marcador dentro da tag <script>.
-    expect(json.headline).toContain('</script><script>');
+    expect(article?.headline).toContain('</script><script>');
     // Duas provas de que nada executou: a global que um script do payload criaria não existe,
     // e o <article> não tem <script> filho nenhum.
     expect(await page.evaluate(() => '__injected' in globalThis)).toBe(false);
@@ -41,7 +65,7 @@ test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
     for (const slug of ['absent-slug', 'fixture-rascunho', 'fixture-agendado'])
       expect((await page.goto(`/artigos/${slug}`))?.status()).toBe(404);
   });
-  test('md-0002/AC-10: canonical e sitemap só incluem públicos', async ({
+  test('md-0002/AC-10: canonical existe e o sitemap só cobre públicos', async ({
     page,
     request,
     baseURL,
@@ -51,15 +75,25 @@ test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
       'href',
       `${baseURL}/artigos/fixture-publicado`,
     );
+    // O índice lista os filhos (geral e um por editoria); o artigo público vive
+    // num deles, e rascunho/agendado não aparecem em filho nenhum.
     const response = await request.get('/sitemap.xml');
     expect(response.status()).toBe(200);
-    const xml = await response.text();
+    const indexXml = await response.text();
+    expect(indexXml).toContain('<sitemapindex');
+    const urls: string[] = [];
+    for (const child of locs(indexXml)) {
+      const childResponse = await request.get(child);
+      expect(childResponse.status()).toBe(200);
+      urls.push(...locs(await childResponse.text()));
+    }
+    const all = urls.join(' ');
     // Excluir rascunho, agendado e rota de exemplo do sitemap é o que impede o Google de
     // indexar conteúdo que ainda não foi publicado.
-    expect(xml).toContain('/artigos/fixture-publicado');
-    expect(xml).not.toContain('fixture-rascunho');
-    expect(xml).not.toContain('fixture-agendado');
-    expect(xml).not.toContain('/exemplo');
+    expect(all).toContain('/artigos/fixture-publicado');
+    expect(all).not.toContain('fixture-rascunho');
+    expect(all).not.toContain('fixture-agendado');
+    expect(all).not.toContain('/exemplo');
   });
   test('md-0002/AC-13: fontes aparecem somente quando presentes', async ({
     page,

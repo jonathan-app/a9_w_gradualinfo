@@ -32,8 +32,24 @@ function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'skills-check-'));
   roots.push(root);
   mkdirSync(join(root, '.agents/skills/develop'), { recursive: true });
-  mkdirSync(join(root, 'security'));
+  mkdirSync(join(root, '.claude/skills/develop'), { recursive: true });
+  mkdirSync(join(root, 'security/skills-catalog/develop'), {
+    recursive: true,
+  });
+  mkdirSync(join(root, 'security/skills-catalog-pointers/develop'), {
+    recursive: true,
+  });
   writeFileSync(join(root, '.agents/skills/develop/SKILL.md'), 'baseline');
+  writeFileSync(
+    join(root, 'security/skills-catalog/develop/SKILL.md'),
+    'baseline',
+  );
+  const pointer = 'See .agents/skills/develop/SKILL.md';
+  writeFileSync(join(root, '.claude/skills/develop/SKILL.md'), pointer);
+  writeFileSync(
+    join(root, 'security/skills-catalog-pointers/develop/SKILL.md'),
+    pointer,
+  );
   const lock = JSON.stringify({
     skills: { develop: { source: 'source', computedHash: 'opaque-lock-hash' } },
   });
@@ -49,6 +65,7 @@ function fixture() {
           source: 'source',
           lockComputedHash: 'opaque-lock-hash',
           contentSha256: contentHash(join(root, '.agents/skills/develop')),
+          pointerSha256: contentHash(join(root, '.claude/skills/develop')),
         },
       },
     }),

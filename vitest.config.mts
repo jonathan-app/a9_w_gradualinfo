@@ -70,6 +70,7 @@ export default defineConfig({
         'scripts/**',
         '.agents/**',
         '.storybook/**',
+        'scratch/**',
         'next-env.d.ts',
       ],
 

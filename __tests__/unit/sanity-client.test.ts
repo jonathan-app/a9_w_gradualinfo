@@ -15,9 +15,11 @@ import {
   getSanityPostBySlug,
   type SanityPostDocument,
 } from '@/lib/sanity/client';
+import { approvedCoverImageUrl } from '@/lib/editorial-images';
 
 vi.mock('@/lib/env', () => ({
   env: {
+    siteUrl: 'https://gradualinfo.com.br',
     sanity: {
       projectId: 'proj-gradual',
       dataset: 'production',
@@ -34,6 +36,32 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
   });
 
   describe('1. Mapeamento de Documentos Sanity para Modelo Post', () => {
+    it('mapeia a capa numerada antiga para o arquivo público do slug', () => {
+      const doc = {
+        _id: 'post-legado',
+        _type: 'artigo' as const,
+        _createdAt: '2026-10-01T10:00:00Z',
+        _updatedAt: '2026-10-02T12:00:00Z',
+        title: 'Artigo legado',
+        slug: { current: 'site-lento-mesmo-com-boa-nota-pagespeed' },
+        cover_image_url:
+          '/1. Seu site é lento mesmo com uma boa nota no PageSpeed? O que os testes não mostram.jpeg',
+      };
+      const mapped = mapSanityDocumentToPost(doc);
+      expect(mapped.cover_image_url).toBe(
+        '/artigos/site-lento-mesmo-com-boa-nota-pagespeed.jpeg',
+      );
+      expect(approvedCoverImageUrl(mapped.cover_image_url)).toBe(
+        '/artigos/site-lento-mesmo-com-boa-nota-pagespeed.jpeg',
+      );
+      expect(
+        mapSanityDocumentToPost({
+          ...doc,
+          cover_image_url: `https://gradualinfo.com.br${doc.cover_image_url}`,
+        }).cover_image_url,
+      ).toBe('/artigos/site-lento-mesmo-com-boa-nota-pagespeed.jpeg');
+    });
+
     it('converte documento publicado com todos os campos mapeados', () => {
       const sanityDoc: SanityPostDocument = {
         _id: 'post-123',
@@ -188,8 +216,8 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
 
       // Confirma que NÃO enviou cabeçalho Authorization em consulta pública
       expect(callOptions.headers).not.toHaveProperty('Authorization');
-      // Política de cache da spec 0006: leitura sempre sem cache intermediário
-      expect(callOptions.cache).toBe('no-store');
+      // Home page usa revalidação de 60s; leitura pública sem cache intermediário
+      expect(callOptions.next).toEqual({ revalidate: 60 });
     });
 
     it('inclui o limite padrão e o parâmetro $now no corpo da consulta pública', async () => {

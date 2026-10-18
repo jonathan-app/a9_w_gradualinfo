@@ -68,12 +68,19 @@ export default defineConfig({
   // Sobe o app antes do primeiro teste e derruba ao terminar.
   // `reuseExistingServer` evita subir dois servidores na máquina local.
   webServer: {
-    command: production
-      ? 'node scripts/e2e-server.mjs'
-      : `pnpm dev --port ${PORT}`,
+    command:
+      production ||
+      process.env.E2E_USE_WORKER === '1' ||
+      process.env.E2E_REAL_SUPABASE === '1'
+        ? 'node scripts/e2e-server.mjs'
+        : `pnpm dev --port ${PORT}`,
     url: baseURL,
     ignoreHTTPSErrors: baseURL.startsWith('https://localhost:'),
-    reuseExistingServer: !process.env.CI && !production,
+    reuseExistingServer:
+      !process.env.CI &&
+      !production &&
+      process.env.E2E_USE_WORKER !== '1' &&
+      process.env.E2E_REAL_SUPABASE !== '1',
     timeout: 120_000,
   },
 });
