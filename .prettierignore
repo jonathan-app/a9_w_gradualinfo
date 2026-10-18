@@ -9,6 +9,7 @@ skills-lock.json
 package.json
 node_modules/
 .next/
+.next-editorial/
 out/
 dist/
 build/
@@ -22,6 +23,7 @@ next-env.d.ts
 
 # Conteúdo das skills: documentado em outro idioma e com formatação própria.
 .agents/**
+security/skills-catalog/**
 
 # ---------------------------------------------------------------------------
 # Referência externa preservada, não código ativo.
@@ -59,3 +61,4 @@ public/**
 # Artefatos de verificação.
 docs/reviews/2026-10-07-0712-verify-result.json
 docs/reviews/evidence/**
+gradualinfo-*/**

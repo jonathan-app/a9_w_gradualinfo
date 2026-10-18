@@ -15,6 +15,9 @@
 
 set -e
 
+# Bloqueia arquivos de ambiente mesmo se alguém os adicionar com git add -f.
+node scripts/check-env-leak.mjs
+
 # --- 1. Formatação dos arquivos staged ------------------------------------
 STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
 

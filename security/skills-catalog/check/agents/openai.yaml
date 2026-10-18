@@ -1,0 +1,7 @@
+# OpenAI Codex adapter. This file supplies the interface metadata Codex shows in
+# its agent picker. The skill's actual instructions live in ../SKILL.md, which the
+# Agent Skills client installs alongside this file and loads when the skill runs.
+interface:
+  display_name: 'Check'
+  short_description: 'Validate & review changes before merge (verify + review)'
+  default_prompt: 'Use $check: read its SKILL.md, run verify mode (prove each AC with evidence), then review mode (audit diff with fresh eyes). Write the report to docs/reviews/ and decide APPROVED or send corrections back to /develop.'

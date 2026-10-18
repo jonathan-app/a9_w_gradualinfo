@@ -25,9 +25,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feat/transicao-editorial-sanity]
   pull_request:
-    branches: [main]
+    branches: [main, feat/transicao-editorial-sanity]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -55,6 +55,14 @@ jobs:
 
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
+
+      - name: Materializar e validar skills aprovadas
+        run: |
+          node scripts/materialize-skills.mjs
+          node scripts/check-skills.mjs
+          node scripts/check-portability.mjs
+      - name: Validar catálogo MCP
+        run: node scripts/check-mcp-config.mjs
 
       - name: Checks locais completos
         run: pnpm check:all
@@ -335,20 +343,16 @@ jobs:
           pattern: '*'
           merge-multiple: true
           path: ${{ runner.temp }}/check-evidence
-      - name: Gerar matriz para o SHA avaliado
-        run: node scripts/ci-check-results.mjs "$RUNNER_TEMP/verify-result.json" "$RUNNER_TEMP/check-evidence"
-      - name: Verificar gate de aprovação
-        env:
-          EVALUATED_SHA: ${{ github.sha }}
-        run: |
-          node scripts/check-decision.mjs "$RUNNER_TEMP/verify-result.json" > "$RUNNER_TEMP/check-decision.json"
-          node scripts/check-gate.mjs "$RUNNER_TEMP/check-decision.json" --commit "$EVALUATED_SHA"
+      - name: Verificar se o trigger é o branch padrão remoto
+        run: node scripts/ci-check-branch.mjs
+
+      - name: Verificar a seleção e todos os gates exigidos
+        run: node scripts/ci-check-matrix.mjs "$RUNNER_TEMP/check-matrix" "$RUNNER_TEMP/check-evidence"
       - name: Preservar resultado do gate
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: check-gate
           path: |
-            ${{ runner.temp }}/verify-result.json
-            ${{ runner.temp }}/check-decision.json
+            ${{ runner.temp }}/check-matrix/
           if-no-files-found: warn

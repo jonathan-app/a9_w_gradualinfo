@@ -312,7 +312,10 @@ const PARSED_LITERALS = new Set([
 ]);
 // Exime termos em CAIXA ALTA com hífen (palavras-chave tipo ALL-CAPS, siglas e paths
 // codificados) e os literais analisados pelas skills.
-const isExemptTerm = (w) => /^[A-Z0-9-]+$/.test(w) || PARSED_LITERALS.has(w);
+const isExemptTerm = (w) =>
+  /^[A-Z0-9-]+$/.test(w) ||
+  PARSED_LITERALS.has(w) ||
+  ['axe-core', 'ts-ignore'].includes(w);
 
 /**
  * Aplica as regras 1–6, 10 e 11 a um único arquivo Markdown da suíte canônica.

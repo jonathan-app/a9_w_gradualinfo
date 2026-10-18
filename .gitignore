@@ -5,6 +5,7 @@ node_modules/
 
 # Next.js
 .next/
+.next-editorial/
 out/
 build/
 dist/*
@@ -14,8 +15,8 @@ open-next/
 # wrangler / cloudflare
 .wrangler/
 cloudflare-env.d.ts
-.dev.vars
-.dev.vars.*
+# Bindings locais do Worker, inclusive backups e variantes de ambiente.
+.dev.vars*
 
 # supabase
 supabase/.branches/
@@ -37,10 +38,12 @@ storybook-static/
 .DS_Store
 *.pem
 
-# Environment files and backups
-# Blocks .env.local.bak and similar credential backups
+# Environment files and backups, inclusive em subpastas.
 .env*
 !.env.example
+*.env
+*.env.*
+!*.env.example
 
 # Common secret / credential files
 *.key
@@ -52,6 +55,9 @@ secrets.*
 credentials/
 credentials.*
 service-account*.json
+*.secret
+*.secrets
+*.credentials
 
 # Vercel
 .vercel/
@@ -79,13 +85,29 @@ yarn-error.log*
 # agents
 .agents/*
 !.agents/mcp.json
+.ag-kit-backups/
 .kilo/
 .kilo/worktrees/
 .continue/
 .aws/
+# Caches locais de ferramentas de agente e de sessão; não são código do projeto.
+.claude/
+.playwright-mcp/
+.taste-skill/
+
+# python
+__pycache__/
+*.pyc
+
+# pacotes de backup e extrações locais
+# Os zips canônicos de fatia são artefato de entrega local; guardar binários
+# assim no Git pesaria o repositório, e o histórico do STATE já os registra.
+gradualinfo-*.zip
+gradualinfo-*/
 
 # local templates / temporary material
 Temp_Modelos/
+scratch/
 
 # reports
 reports/

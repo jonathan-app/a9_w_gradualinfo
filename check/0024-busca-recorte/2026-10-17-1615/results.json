@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-17-1547-0024-busca-recorte-editoria.md",
+    "sha256": "95cabf6a86e09f1ff5015f43824c265811f4c9d11f4554b66e0693d2d002c635"
+  },
+  "acs": [
+    {
+      "id": "busca/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-01-parametros-query.md",
+      "evidenceSha256": "a680e097bab2e351400e95b95f80e915bc1142bd81ec4bf1e3b47ea073a25d5c"
+    },
+    {
+      "id": "busca/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-02-normalizacao-diacriticos.md",
+      "evidenceSha256": "bde4f8beed21c0b02e0960e6da0a86f0c1f8e5fd2b3430709dbb44e050a530bc"
+    },
+    {
+      "id": "busca/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-03-tolerancia-typos-damerau.md",
+      "evidenceSha256": "b36c02936da6ef1245839ea0de9b63f7a1954a44eaf16e2ba7626fa14ca69752"
+    },
+    {
+      "id": "busca/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-04-recorte-editoria.md",
+      "evidenceSha256": "508efb6a54f6d3262ad89319316a1566708b698a8fe90730aa18d658908e76f0"
+    },
+    {
+      "id": "busca/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-05-ordenacao-relevancia-desempate.md",
+      "evidenceSha256": "689fde6d7e5e991b6d3fb05cf13f9d0e321d6cad21a0594c8b3299b0bdd8de9c"
+    },
+    {
+      "id": "busca/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-06-paginacao-preservacao.md",
+      "evidenceSha256": "14cdec289c57bac116cfe85d6024285cfa9d8500056dccff9c7d426c4abc9cda"
+    },
+    {
+      "id": "busca/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-07-pilulas-editoria-estado-ativo.md",
+      "evidenceSha256": "faa747c5e92ec9f2f670273b6ad3850263219a74eb4484124aa5a8d151a8f4d3"
+    },
+    {
+      "id": "busca/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-08-estado-vazio-recuperacao.md",
+      "evidenceSha256": "5311834eee21ac43fc5178cce4c2c06573cf880f1ef8f8d32a4616da1e41f18c"
+    },
+    {
+      "id": "busca/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1615-0024-busca-recorte/ac-09-seo-robots-noindex.md",
+      "evidenceSha256": "47a41f44868d673acdaf69d74c570c05b1fb656f637847faaf0175126604d2f7"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "A busca textual opera inteiramente em TypeScript puro sobre o catálogo de artigos em memória no Worker, com complexidade controlada e sem dependências npm adicionais."
+    },
+    {
+      "severity": "INFO",
+      "description": "A conformidade do contrato de SEO com a diretiva noindex, follow foi comprovada tanto na suíte de testes unitários quanto na renderização Playwright no Chromium."
+    }
+  ]
+}

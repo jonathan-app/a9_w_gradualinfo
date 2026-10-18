@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-14-2150-0018-ambiente-local-login-mfa.md",
+    "sha256": "30a164b5ab146fe5542b1b7c47a4c0ce381e250cad4971632807024566e934bf"
+  },
+  "acs": [
+    {
+      "id": "admin-auth/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-01-worker-entrypoint-jwt.md",
+      "evidenceSha256": "2e2677b489b7b335bb77b0db1281769c70196184c25769b9c1f8d5273dba2a68"
+    },
+    {
+      "id": "admin-auth/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-02-jwt-validacao-chaves-teste.md",
+      "evidenceSha256": "afa54d95bae3078d2433d1efb46e011d0a769d161815479ec91480cf09fdb6c9"
+    },
+    {
+      "id": "admin-auth/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-03-cadastro-desativado-e2e-isolamento.md",
+      "evidenceSha256": "e246f31d73e96fb5d10fee6facfee0fcced1e7b87e06010cf65e8bb94f078899"
+    },
+    {
+      "id": "admin-auth/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-04-login-primeiro-degrau.md",
+      "evidenceSha256": "d1d136b4f1c2eb35f7c09ffc1fbfcd3335750616cd472f42483253e9597781c5"
+    },
+    {
+      "id": "admin-auth/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-05-escada-mfa-aal2.md",
+      "evidenceSha256": "fa7dfc11aa412f933298975416d84f033f7ab44520b001db05a83bebc9e0f54b"
+    },
+    {
+      "id": "admin-auth/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-06-renovacao-sessao.md",
+      "evidenceSha256": "9ba6c40417e227aa21ae964149c194e29e4d1ed16b7ef959a077958e8c564396"
+    },
+    {
+      "id": "admin-auth/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-07-logout-remocao-cookies.md",
+      "evidenceSha256": "0b1de3681ea963b364b14920662bb267f2f20fe9488551482506f43519cc9fce"
+    },
+    {
+      "id": "admin-auth/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-15-2030-0018-login-mfa-verify/ac-08-fail-closed-503.md",
+      "evidenceSha256": "5bc2d67e89217c6c6c82a03255d8a628135bae3414b06ae23f8a45ed6bbb0ae1"
+    }
+  ],
+  "findings": []
+}

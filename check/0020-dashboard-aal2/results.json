@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-16-1650-0020-dashboard-operacional-aal2.md",
+    "sha256": "4242aee90988a6b414a9cf9ff5518fefbb3c7ce53e8156c87ce2b68828f4922d"
+  },
+  "acs": [
+    {
+      "id": "admin-dashboard/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-01-acesso-restrito-aal2.md",
+      "evidenceSha256": "8a7f39dbdb199cebe34a2f728d897b26ea12fa185982619d64c1c2c495155d53"
+    },
+    {
+      "id": "admin-dashboard/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-02-mesa-editorial-sanity.md",
+      "evidenceSha256": "6514b5a02ea0b626669f80e652af174085cfec502f4393c39e9671d80948f0ee"
+    },
+    {
+      "id": "admin-dashboard/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-03-emissao-preview-seguro.md",
+      "evidenceSha256": "58cdc337e79abe6bcc8464b878d7caa50c72f35d53610d2906a164c0f6154151"
+    },
+    {
+      "id": "admin-dashboard/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-04-monitoramento-saude-sondagens-reais.md",
+      "evidenceSha256": "ec68f2d11b9220e71c97879607306f05d2c00e5646bfdb20ee44de18354db866"
+    },
+    {
+      "id": "admin-dashboard/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-05-painel-ofertas-leitura-servidor.md",
+      "evidenceSha256": "275f9fa30fbd623df1180988d65d7addfe4736e111d2c6903c28a25bc5d5a9e2"
+    },
+    {
+      "id": "admin-dashboard/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-06-deteccao-apresentacao-outliers.md",
+      "evidenceSha256": "9a0f57235e56fa720bf9a32a8cc684a7d9b05d103ae5d5622f4a6bf82e98337f"
+    },
+    {
+      "id": "admin-dashboard/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-07-action-hub-rotinas-delimitadas.md",
+      "evidenceSha256": "1e60a8d970a48868420a01cfa43a54e94d0dc29314a737b622f48545d1efb565"
+    },
+    {
+      "id": "admin-dashboard/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-16-1805-0020-dashboard-operacional-aal2/ac-08-acessibilidade-higiene-dados.md",
+      "evidenceSha256": "8d5cd579691b42d291b37addc3ac43ff7937a86b416d6a057c0439e4419edf67"
+    }
+  ],
+  "findings": []
+}

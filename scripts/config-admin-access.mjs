@@ -94,7 +94,7 @@ function readValues() {
   }
 
   // TTY: raw mode desliga o eco do terminal.
-  const wasRaw = stdin.getRawMode();
+  const wasRaw = Boolean(stdin.isRaw);
   stdin.setRawMode(true);
 
   const values = {};

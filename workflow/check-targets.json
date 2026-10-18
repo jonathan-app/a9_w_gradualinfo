@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "specs": [
+    {
+      "feature": "baseline",
+      "path": "docs/specs/2026-10-07-1350-md-0002-casca-editorial-home.md"
+    },
+    {
+      "feature": "H",
+      "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md"
+    },
+    {
+      "feature": "I",
+      "path": "docs/specs/2026-10-09-2038-0010-layout-editorial-home-artigo.md"
+    },
+    {
+      "feature": "J",
+      "path": "docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md"
+    },
+    {
+      "feature": "L",
+      "path": "docs/specs/2026-10-09-1632-0009-admissao-admin-access.md"
+    },
+    {
+      "feature": "Q",
+      "path": "docs/specs/2026-10-10-2155-0011-governanca-engenharia/index.md"
+    },
+    {
+      "feature": "Q",
+      "path": "docs/specs/2026-10-10-2155-0011-governanca-engenharia/0011-ci-check.md"
+    },
+    {
+      "feature": "Q",
+      "path": "docs/specs/2026-10-10-2155-0011-governanca-engenharia/0011-skills.md"
+    },
+    {
+      "feature": "Q",
+      "path": "docs/specs/2026-10-10-2155-0011-governanca-engenharia/0011-mcp.md"
+    }
+  ]
+}

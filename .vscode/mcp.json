@@ -2,14 +2,14 @@
   "servers": {
     "next-devtools": {
       "type": "stdio",
-      "command": "pnpm",
-      "args": ["exec", "next-devtools-mcp"],
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@0.4.0"],
       "cwd": "${workspaceFolder}"
     },
     "playwright": {
       "type": "stdio",
-      "command": "pnpm",
-      "args": ["exec", "playwright-mcp", "--isolated"],
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.83", "--isolated"],
       "cwd": "${workspaceFolder}"
     }
   }

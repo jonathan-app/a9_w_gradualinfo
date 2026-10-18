@@ -29,6 +29,7 @@ export default defineConfig([
   // vira um config que não casa com nada e o ESLint avisa sobre isso.
   globalIgnores([
     '.next/**',
+    '.next-editorial/**',
     'out/**',
     'build/**',
     'dist/**',
@@ -49,9 +50,11 @@ export default defineConfig([
     'scratch/**',
     '.kilo/worktrees/**',
     '.agents/**',
+    '.ag-kit-backups/**',
     '.wrangler/**',
     // Artefatos de verificação gerados pelo /check
     'docs/reviews/evidence/**',
+    'gradualinfo-*/**',
   ]),
 
   // --- Regras base (JS, TS, React, a11y, imports) ------------------------

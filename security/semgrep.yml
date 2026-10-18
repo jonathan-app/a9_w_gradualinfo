@@ -18,7 +18,26 @@
 # ============================================================================
 
 rules:
+  # --- Chave de serviço publicada como pública ----------------------------
+  # Sem paths: se a variável ganhar o prefixo NEXT_PUBLIC_ em QUALQUER lugar,
+  # inclusive lib/env.ts e scripts/, o Next inlina o valor no bundle do cliente
+  # e o achado volta. É a única forma de a chave vazar de fato para o browser.
+  - id: service-role-key-public-in-client
+    message: >-
+      Chave `service_role` marcada como pública (NEXT_PUBLIC_): o Next inlina
+      esse valor no bundle do cliente e qualquer visitante passa a ignorar RLS.
+      Remova o prefixo NEXT_PUBLIC_ e leia a variável apenas no servidor.
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
+
   # --- Chave de serviço em caminho de cliente -----------------------------
+  # Fora das exclusões abaixo, ler a variável não pública em código que também
+  # roda no cliente é ERROR: o valor não vai ao bundle (o Next só inlina
+  # NEXT_PUBLIC_), mas o hábito leva à variante perigosa. As exclusões:
+  #   - lib/env.ts é a fronteira tipada única (convenção 7): só ali o acesso
+  #     cru é legítimo, e o valor continua fora do bundle;
+  #   - scripts/ roda em Node (pnpm/node), nunca é empacotado para o browser.
   - id: service-role-key-in-client
     message: >-
       Chave `service_role` em código que pode chegar ao browser. Ela ignora RLS:
@@ -26,11 +45,14 @@ rules:
       servidor, e mesmo assim só para operação administrativa.
     severity: ERROR
     languages: [typescript, javascript]
+    paths:
+      exclude:
+        - 'lib/env.ts'
+        - 'scripts/'
     patterns:
       - pattern-either:
           - pattern: process.env.SUPABASE_SERVICE_ROLE_KEY
           - pattern: process.env['SUPABASE_SERVICE_ROLE_KEY']
-          - pattern: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
 
   # JSON-LD é a única exceção autorizada; skipHtml bloqueia HTML, não injeta.
   - id: unsafe-html-injection

@@ -6,14 +6,16 @@
 
 ## O que este projeto é
 
-Boilerplate de aplicação Next.js hospedada na Cloudflare Workers, com Supabase
-como backend. É ponto de partida para produto novo, não um app com domínio.
+Portal editorial GradualInfo (tecnologia e consumo digital) em Next.js na
+Cloudflare Workers, com Supabase como backend de aplicação. O repositório
+nasceu como boilerplate e hoje carrega domínio de produto (editorial e
+ofertas).
 
 ## Arquitetura editorial
 
 **Estado atual do MVP:**
 
-- Posts editoriais permanecem em Supabase/PostgreSQL.
+- Seleção de fontes por configuração (não por fallback de falha): o Sanity é a fonte primária quando configurado no ambiente (`isSanityConfigured`); `EDITORIAL_LOCAL=1` ativa o catálogo local exclusivamente em desenvolvimento (`NODE_ENV=development` em loopback); o Supabase permanece como fallback legado apenas quando o Sanity não estiver configurado. Falhas em tempo de execução no Sanity acionam 503 no proxy ou banner honesto de indisponibilidade (Spec 0006), nunca substituição silenciosa pelo catálogo local em produção.
 - Corpo editorial em Markdown.
 - Preview e publicação seguem os contratos atuais.
 
@@ -33,11 +35,11 @@ como backend. É ponto de partida para produto novo, não um app com domínio.
 | TypeScript   | 6.0.3                     | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`           |
 | Tailwind CSS | 4.3                       | Configuração em CSS (`@theme`), não em `tailwind.config.js`          |
 | Supabase     | ssr 0.12 + js 2.117       | Sessão em cookie, renovada no `proxy.ts`                             |
-| OpenNext     | 1.20.9                    | Adapta a saída do Next para o runtime de Workers                     |
-| Sentry       | 11.5                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
-| Vitest       | 5.0.3                     | Unidade e componente, em jsdom                                       |
+| OpenNext     | 1.20.10                   | Adapta a saída do Next para o runtime de Workers                     |
+| Sentry       | 11.7                      | A v11 tira o `withSentryConfig`: init em `instrumentation*.ts`       |
+| Vitest       | 5.0.4                     | Unidade e componente, em jsdom                                       |
 | next-themes  | 1.0.0-beta.0              | A 0.4.x injeta `<script>` no provider e o React 19 não executa       |
-| Playwright   | 1.63                      | Ponta a ponta, em Chromium                                           |
+| Playwright   | 1.64                      | Ponta a ponta, em Chromium                                           |
 | Node         | 22 (`.nvmrc`)             | `engines.node >= 22`                                                 |
 | pnpm         | 12.5.1 (`packageManager`) | Lockfile e `overrides` dependem disso                                |
 
@@ -54,9 +56,12 @@ pnpm build            # build completo para a Cloudflare (OpenNext)
 pnpm check:all        # typecheck + lint + formatação + testes
 pnpm test:run         # testes unitários, uma vez
 pnpm test:e2e         # ponta a ponta (sobe o servidor sozinho)
+pnpm test:editorial   # Playwright editorial isolado (porta 3200, sem credenciais)
 pnpm supabase:start   # stack local do Supabase
 pnpm supabase:reset   # migrations + seed
+pnpm supabase:test    # pgTAP no Supabase local (RLS e ofertas)
 pnpm security:secrets # gitleaks sobre o histórico e a árvore atual
+pnpm security:sast    # semgrep com as regras em security/semgrep.yml
 ```
 
 ## Mapa de pastas
@@ -64,21 +69,28 @@ pnpm security:secrets # gitleaks sobre o histórico e a árvore atual
 ```
 app/            App Router. Rotas, Server Components e o CSS global.
   admin-dashboard/  Painel administrativo (TailAdmin), guards, MFA, preview dispatch.
-  api/            Rotas de API: admin auth, preview, health, sitemap, robots.
+  api/            Rotas de API: admin (auth, dashboard, evidências, ofertas, preview), health, ofertas, out e preview.
   artigos/        Página de artigo `/artigos/[slug]` com render Markdown.
+  busca/          Busca pública por título, resumo, editoria e corpo.
 components/
   ui/             Design system. Componente com variante e data-slot.
   layout/         Header e footer da aplicação.
+  home/           Componentes da home editorial (hero, destaques 2×2, últimas leituras, seções).
+  editorial/      Componentes do leitor (corpo do artigo e compartilhamento).
   shared/         Reutilizável entre features (tema, marca, editorial-cover, editorial-story).
-  admin/          Componentes do painel (header, shell, sidebar, MFA enrollment).
+  admin/          Componentes do painel (header, shell, sidebar, MFA enrollment, dashboard operacional).
 lib/
   env.ts          Leitura tipada das variáveis, com padrão para build sem .env.
   supabase/       Três clientes: browser, servidor e o que roda no proxy.
   sanity/         Cliente GROQ para leitura editorial (Sanity como fonte única).
+  seo/            Dados estruturados (JSON-LD) e construção do sitemap em índice.
+  editorial/      Catálogo local de rascunhos e lógica de leitura dos artigos.
+  offers/         Módulo de ofertas: selo verificado, cupons, WORM e canonização.
   admin/          Autenticação admin (ADMIN_USER_ID + AAL2), rate limit DO, access guard, session response.
   preview/        Durable Object para sessões de preview (criação, revogação, verificação).
   errors/         Erros tipados (ContentUnavailableError) — contrato entre camadas.
-  services/       Queries de posts (Sanity) e suporte editorial.
+  services/       Queries de posts (Sanity), leitura do dashboard e suporte editorial.
+  editorial-images.ts  Resolução de capas locais e do CDN do Sanity.
   utils/          Funções puras (cn, formatação).
   audit.ts        Logger de auditoria para ações administrativas.
   logger.ts       Logger estruturado.
@@ -87,12 +99,15 @@ proxy.ts          O antigo middleware.ts. Renova a sessão a cada requisição. 
 instrumentation.ts
                   Sentry. O `instrumentation-client.ts` inicializa no cliente.
 scripts/        Wrappers Node por trás de `security:*`, preinstall e validação Access.
-supabase/       config.toml, migrations/ e seed.sql.
+supabase/       config.toml, migrations/, seed.sql e tests/ (pgTAP).
 e2e/            Testes Playwright.
 __tests__/      Testes Vitest (unit/ guarda a árvore).
 security/       Regras de SAST do Semgrep.
+workflow/       Fila de delegação (STATE.md) e check-targets.json.
+check/          Artefatos dos gates /check por feature (results.json e evidências).
+patches/        Patch do OpenNext aplicado pelo pnpm no install.
 .storybook/     Catálogo de componentes (`.stories.tsx` ao lado do componente).
-.github/        A CI em `workflows/ci.yml`: quality, build e security.
+.github/        A CI em `workflows/ci.yml`: quality, build, e2e, database, sast, secrets, dependency-scan, lighthouse e check-gate.
 next.config.ts, open-next.config.ts, wrangler.jsonc
                   Next, adaptação para o Worker e o worker em si.
 DESIGN.md       O design system do produto (tokens em oklch, tipografia); build de UI segue ele.
@@ -142,6 +157,13 @@ DESIGN.md       O design system do produto (tokens em oklch, tipografia); build 
     cronológica e identificação imediata do último relatório gerado, e
     evita colisões entre execuções do mesmo dia. A regra está formalizada
     em `docs/audits/2026-10-09-0735-auditoria-completa.md` (seção 5).
+13. **Ponytail & YAGNI para todo agente.** Todo agente de codificação
+    (Antigravity, Claude Code, Cursor, Codex, OpenCode, Kilo) deve priorizar o
+    menor diff funcional que resolve a tarefa integralmente. Não criar wrappers,
+    abstrações prematuras ou dependências dispensáveis quando helpers existentes
+    ou a biblioteca padrão atendem ao requisito. Nunca cortar validação em
+    fronteiras de confiança ou segurança. Atalhos conscientes são documentados
+    com `shortcut: <limite>, <quando refatorar>`.
 
 ## Regra Universal de Delegação (handoff entre agentes)
 
@@ -236,19 +258,26 @@ Formato obrigatório do bloco final:
 - **Sanity dataset sem conteúdo.** Home e artigo devolvem estado vazio ou 404
   se o dataset `production` não tem artigos publicados. AC-02 da spec 0006
   exige conteúdo real.
+- **Piso de SEO do Lighthouse é só para página indexável.** O `lighthouserc.cjs`
+  scopa `categories:seo` via `assertMatrix` porque `/busca` é noindex de
+  propósito (seo/AC-06); adicionar URL nova ao `collect.url` sem revisar o
+  padrão reprova o job por `is-crawlable`.
 
 ## Portão de qualidade
 
 `pnpm check:all` é o que a CI roda, na mesma ordem: typecheck, lint,
-formatação, testes. Hook de commit roda apenas formatação e typecheck —
-commit não pode custar minutos. O build é job separado na CI, e um terceiro
-job roda `pnpm audit --audit-level=high` e o gitleaks sobre o histórico inteiro.
+formatação, testes. Hook de commit roda a checagem de vazamento de env, a
+formatação dos arquivos staged e o typecheck; commit não pode custar minutos.
+A CI tem nove jobs: quality, build, e2e, database, sast, secrets,
+dependency-scan, lighthouse e check-gate. O job secrets roda o gitleaks sobre
+o histórico inteiro, e o dependency-scan roda `pnpm audit --audit-level=high`
+e o OSV scan.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
 Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
-ficam em 60. Medido em 2026-10-10: 94.31% lines, 92.53% statements,
-91.58% functions, 87.99% branches, 510 testes em 49 suites.
-Subir o piso acima do que o projeto mede esconde o número em vez de avisar.
+ficam em 60. Medido em 2026-10-17: 858 testes em 83 suites Vitest (sendo 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros e 5 de integração de concorrência e idempotência com banco de dados real local), 171 testes pgTAP em 6 arquivos no banco local Supabase,
+26 testes Playwright Editorial (2 suites), 7 testes Playwright Admin Auth/Recovery real (3 Auth e 4 Recovery), 1 teste Playwright Admin Operational Dashboard exit 0, 4 testes Playwright de auditoria de SEO em `e2e/seo-audit.spec.ts` contra build de produção e 7 testes Playwright de busca e recorte em `e2e/search-flow.spec.ts` (totalizando 45 testes Playwright). Subir o piso acima do que o
+projeto mede esconde o número em vez de avisar.
 
 ## Skills de Engenharia Agêntica
 
@@ -286,8 +315,12 @@ estados; a presença de um arquivo não comprova aprovação ou execução.
 ## Context files
 
 - [lib/admin/AGENTS.md](lib/admin/AGENTS.md) (Access, MFA AAL2, rate limit DO, guards admin)
+- [lib/editorial/AGENTS.md](lib/editorial/AGENTS.md) (catálogo de rascunhos locais e lógica de leitura dos artigos)
+- [lib/offers/AGENTS.md](lib/offers/AGENTS.md) (módulo de ofertas, selo verificado, cupons, WORM e canonização RFC 8785)
 - [lib/preview/AGENTS.md](lib/preview/AGENTS.md) (cookie de preview e PreviewSessionDO)
 - [lib/sanity/AGENTS.md](lib/sanity/AGENTS.md) (cliente GROQ e fonte editorial primária quando configurada)
+- [lib/seo/AGENTS.md](lib/seo/AGENTS.md) (dados estruturados JSON-LD, sitemap em índice e SEO)
+- [supabase/AGENTS.md](supabase/AGENTS.md) (migrations, testes pgTAP e RLS do banco)
 
 <!-- BEGIN:nextjs-agent-rules -->
 

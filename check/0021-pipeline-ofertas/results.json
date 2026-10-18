@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-16-2050-0021-pipeline-ofertas-worm-duravel.md",
+    "sha256": "27ad38f3a1a1bae6fd4fcbc72a5c7ae943b578679ad881187c8ef369b68dedfd"
+  },
+  "acs": [
+    {
+      "id": "ofertas-pipeline/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-01-invocacao-service-role-autorizada.md",
+      "evidenceSha256": "7533605f4d45aadf9b1487d4f5fc42d1f9fbf7b1b8995a3eb9462b0eb0273f64"
+    },
+    {
+      "id": "ofertas-pipeline/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-02-storage-filesystem-local.md",
+      "evidenceSha256": "fade8b96655810cfe2e793b4be1e1824a5b10d86fd78926cd668e8f4bca7fbdf"
+    },
+    {
+      "id": "ofertas-pipeline/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-03-falha-fechada-producao.md",
+      "evidenceSha256": "36812d2fa3d103ba2b827eb73d1d2f5c3488fc8bc148e98c457f91329b62b5f2"
+    },
+    {
+      "id": "ofertas-pipeline/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-04-idempotencia-concorrencia.md",
+      "evidenceSha256": "dfb7aebdc193d7032e35ad6e081f91c306bae1669447cd2bc4cc8c46abc4b55d"
+    },
+    {
+      "id": "ofertas-pipeline/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-05-sanitizacao-rota-ofertas.md",
+      "evidenceSha256": "5c7a4faf0db5c365198662c0ba7ae304441eacd19c5d188b517c32c212277073"
+    },
+    {
+      "id": "ofertas-pipeline/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-06-validacao-parametros-ofertas.md",
+      "evidenceSha256": "014822cf57807628653f36455bbdb2ce43777f64ef03f8b07b4a264eaf45fe2d"
+    },
+    {
+      "id": "ofertas-pipeline/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-07-isolamento-server-only.md",
+      "evidenceSha256": "615052a02569e15d07b5bf65fe3617de1628574bd4a92aa59f827b983a59b873"
+    },
+    {
+      "id": "ofertas-pipeline/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-08-rota-ingestao-hmac.md",
+      "evidenceSha256": "2577cc7693699d9216de8933f426fbd7d22ca29b4cc58c83dbb2f63c7e5c5a63"
+    },
+    {
+      "id": "ofertas-pipeline/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-17-1330-0021-pipeline-ofertas/ac-09-retencao-probatoria.md",
+      "evidenceSha256": "aec484c3ffd5995b0139caaed385ca008c703eb9dce8ad4212d69c65fc36a18a"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "AC-04: concorrência real de banco não comprovada. Testes pgTAP e Vitest são sequenciais (uma sessão); não há duas conexões/transações independentes disputando simultaneamente a mesma operation_key. Chave primária e testes sequenciais, sozinhos, não comprovam a disputa simultânea exigida pela spec."
+    },
+    {
+      "severity": "WARNING",
+      "description": "AC-04: a RPC compara apenas evidence_hash para detecção de conflito. Campos que alteram a operação (ex. p_action concessao/renovacao) não entram no hash nem são comparados; mesma operation_key + mesmo evidence_hash + ação diferente não dispara 409, divergindo da leitura estrita de payload divergente."
+    },
+    {
+      "severity": "WARNING",
+      "description": "AC-05/AC-08: as rotas de ingestão (/api/ingest/ofertas) e admin (/api/admin/ofertas/[id]/avaliar-selo) retornam code: rpcError.code na resposta de falha da RPC, expondo códigos internos do PostgreSQL ao consumidor. A rota pública /api/ofertas sanitiza corretamente (opaco 503)."
+    },
+    {
+      "severity": "INFO",
+      "description": "AC-09: WORM do provedor de nuvem (Cloudflare R2 Bucket Locks) não verificado localmente. storage-factory falha fechada em produção sem R2; a retenção em camadas está especificada e simulada no filesystem local, mas a homologação em nuvem permanece pendente. Testes de filesystem não aprovam produção."
+    },
+    {
+      "severity": "INFO",
+      "description": "AC-03: OFFERS_INGEST_SECRET sozinho não ativa o pipeline; em produção sem armazenamento durável com retenção validada, a concessão de selo falha fechada com 503 (sem fallback de memória)."
+    }
+  ]
+}
