@@ -55,11 +55,35 @@ export function mapSanityDocumentToPost(doc: SanityPostDocument): Post {
       ? doc.slug
       : doc.slug?.current || doc._id.replace(/^drafts\./, '');
 
-  const coverUrl =
+  const originalCoverUrl =
     doc.cover_image_url ||
     doc.coverImage?.url ||
     doc.coverImage?.asset?.url ||
     '';
+  // Os primeiros rascunhos no Sanity guardaram o nome numerado da capa na raiz.
+  // A organização atual usa o slug, sem exigir uma mutação remota para ler esses posts.
+  let coverUrl = originalCoverUrl;
+  if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && originalCoverUrl) {
+    try {
+      const cover = new URL(originalCoverUrl, env.siteUrl);
+      // Alguns nomes contêm "?", que `new URL` leria como início da query.
+      const isLegacyRelative =
+        /^\/\d+\.[^/]+\.jpe?g$/i.test(originalCoverUrl) &&
+        !originalCoverUrl.startsWith('//');
+      const siteOrigin = new URL(env.siteUrl).origin;
+      const isLegacyAbsolute =
+        cover.origin === siteOrigin &&
+        (/^\/\d+\.[^/]+\.jpe?g$/i.test(
+          originalCoverUrl.slice(siteOrigin.length),
+        ) ||
+          /^\/\d+\.[^/]+\.jpe?g$/i.test(decodeURIComponent(cover.pathname)));
+      if (isLegacyRelative || isLegacyAbsolute) {
+        coverUrl = `/artigos/${slug}.jpeg`;
+      }
+    } catch {
+      // URL inválida segue para o validador da apresentação e cai no fallback.
+    }
+  }
 
   const author = doc.author_name || doc.author?.name || 'Redação GradualInfo';
   const fontes = doc.fontes_citadas || doc.fontesCitadas || [];
@@ -94,7 +118,7 @@ export async function executeSanityQuery<T = unknown>(
   query: string,
   params: Record<string, string | number | boolean> = {},
   isPreview = false,
-  options?: { timeoutMs?: number },
+  options?: { timeoutMs?: number; revalidate?: number },
 ): Promise<T[]> {
   if (!isSanityConfigured) {
     return [];
@@ -128,7 +152,9 @@ export async function executeSanityQuery<T = unknown>(
       method: 'GET',
       headers,
       signal: controller.signal,
-      cache: 'no-store',
+      ...(options?.revalidate
+        ? { next: { revalidate: options.revalidate } }
+        : { cache: 'no-store' }),
     });
   } catch (error) {
     clearTimeout(timeoutId);
@@ -185,6 +211,7 @@ export async function getSanityPublishedPosts(limit = 10): Promise<Post[]> {
     query,
     { now },
     false,
+    { revalidate: 60 },
   );
   return docs.map(mapSanityDocumentToPost);
 }

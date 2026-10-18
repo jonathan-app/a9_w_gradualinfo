@@ -30,9 +30,8 @@ nunca no bundle do cliente. O `proxy.ts` faz probe de disponibilidade.
   0006 exige conteúdo publicado de verdade.
 - Probe no proxy e leitura no serviço podem divergir se env de build e de
   Worker não forem os mesmos.
-- Root `AGENTS.md` ainda descreve MVP com posts só no Supabase; o código já
-  prioriza Sanity quando configurado. Trate isso como transição, não como
-  documentação canônica da fonte ativa.
+- Com `EDITORIAL_LOCAL=1` (modo de desenvolvimento), o catálogo local responde
+  antes do Sanity; a ordem efetiva das fontes está em `lib/services/posts.ts`.
 
 ## Related specs
 

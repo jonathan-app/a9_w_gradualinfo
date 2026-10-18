@@ -7,29 +7,39 @@
  *   o que mostrar. Entrega SEO de artigo completo: metadata com canonical
  *   único, Open Graph e um JSON-LD do tipo `Article` — e marca `noindex` em
  *   post que ainda não é público, para o buscador não guardar rascunho.
- * @dependencies lib/supabase/server (cliente com a sessão do leitor),
+ * @dependencies react (cache), lib/supabase/server (cliente com a sessão do leitor),
  *   lib/services/posts (consulta + regra de visibilidade), lib/editorial-images
  *   (URL de capa), lib/utils/format (data pt-BR e serialização segura do
  *   JSON-LD), react-markdown + remark-gfm (renderização), next/image,
  *   components/ui/badge.
  */
+import { cache } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { EditorialCover } from '@/components/shared/editorial-cover';
 import { approvedCoverImageUrl, coverImageUrl } from '@/lib/editorial-images';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { ArticleBody } from '@/components/editorial/article-body';
+import { ArticleShare } from '@/components/editorial/article-share';
+import { EditorialStory } from '@/components/shared/editorial-story';
+import { readingMinutes, relatedPosts } from '@/lib/editorial/reading';
 
 import { createClient } from '@/lib/supabase/server';
-import { getPostBySlug } from '@/lib/services/posts';
-import { SITE_ORIGIN } from '@/lib/site-config';
-import { formatDate, serializeJsonLd } from '@/lib/utils/format';
-import { Badge } from '@/components/ui/badge';
+import { getPostBySlug, getPublishedPosts } from '@/lib/services/posts';
+import { SITE_ORIGIN, SITE_URL } from '@/lib/site-config';
+import { formatDate } from '@/lib/utils/format';
+import { JsonLd } from '@/components/shared/json-ld';
+import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo/structured-data';
 
 // Sem pré-render no build: o artigo pode ser publicado (ou corrigido) a qualquer
 // momento no banco, e HTML congelado no deploy continuaria servindo a versão
 // antiga até o próximo build.
 export const dynamic = 'force-dynamic';
+
+const getCachedPost = cache(async (slug: string) => {
+  const supabase = await createClient();
+  return getPostBySlug(supabase, slug);
+});
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -51,8 +61,7 @@ export async function generateMetadata(
   _parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const params = await props.params;
-  const supabase = await createClient();
-  const post = await getPostBySlug(supabase, params.slug);
+  const post = await getCachedPost(params.slug);
 
   // notFound() aqui rende HTTP 200 no Next 16: a fase de metadata não
   // propaga o status 404. Deixa o componente página chamá-lo — é o caminho
@@ -107,9 +116,8 @@ export async function generateMetadata(
  */
 export default async function ArticlePage(props: Props) {
   const params = await props.params;
-  const supabase = await createClient();
 
-  const post = await getPostBySlug(supabase, params.slug);
+  const post = await getCachedPost(params.slug);
 
   if (!post) {
     notFound();
@@ -119,50 +127,51 @@ export default async function ArticlePage(props: Props) {
     ? formatDate(post.published_at, { timeZone: 'America/Sao_Paulo' })
     : null;
 
-  // `datePublished` cai em `created_at` só quando o post nunca foi publicado:
-  // é o melhor dado disponível para o buscador sem mentir com data futura.
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    image: [coverImageUrl(post.cover_image_url)],
-    datePublished: post.published_at || post.created_at,
-    dateModified: post.updated_at,
-    author: {
-      '@type': 'Person',
-      name: post.author_name,
-    },
-  };
+  // Canonical absoluto do artigo, a mesma URL do metadata: bloco e link não divergem.
+  const articleUrl = `${SITE_ORIGIN}/artigos/${post.slug}`;
 
+  let related: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+  try {
+    const supabase = await createClient();
+    related = relatedPosts(post, await getPublishedPosts(supabase, 10));
+  } catch (error) {
+    // Outras leituras são opcionais: uma segunda consulta não derruba o artigo disponível.
+    Sentry.captureException(error);
+  }
+  const isPublic =
+    post.status === 'publicado' &&
+    Boolean(post.published_at) &&
+    new Date(post.published_at!) <= new Date();
   return (
     <>
-      {/* `serializeJsonLd` escapa "<", ">", "&" e os separadores Unicode de
-          linha: título e resumo vêm do banco, e entrar cru num innerHTML
-          deixaria qualquer "</script>" quebrar o parser do documento. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
-      />
-      <div data-editorial-layout="article" className="mx-auto max-w-[720px]">
-        <header className="mb-8 flex flex-col items-start gap-4">
-          <a href="/" className="text-sm underline underline-offset-4">
-            Início
+      {/* Somente artigo publicado emite dados estruturados; a serialização
+          segura fica em components/shared/json-ld, único caminho de script. */}
+      {isPublic && (
+        <>
+          <JsonLd data={articleJsonLd(post, articleUrl)} />
+          <JsonLd
+            data={breadcrumbJsonLd([
+              { name: 'Início', url: SITE_URL },
+              { name: post.title, url: articleUrl },
+            ])}
+          />
+        </>
+      )}
+      <div data-editorial-layout="article" className="article-page">
+        <header className="article-header">
+          <a href="/" className="article-back">
+            ← Voltar ao início
           </a>
-          <Badge variant="secondary" className="text-brand-700 bg-brand-50">
-            {post.editoria}
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-            {post.title}
-          </h1>
-          {post.excerpt && (
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              {post.excerpt}
-            </p>
-          )}
-          {(post.author_name || publishedAt) && (
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
-              {post.author_name && <span>{post.author_name}</span>}
+          <span className="article-category">{post.editoria}</span>
+          <h1 className="article-title">{post.title}</h1>
+          {post.excerpt && <p className="article-excerpt">{post.excerpt}</p>}
+          {(post.author_name || publishedAt || post.content) && (
+            <div className="article-meta">
+              {post.author_name && (
+                <span className="article-author">{post.author_name}</span>
+              )}
+              <span>≈ {readingMinutes(post.content)} min de leitura</span>
+              {post.status !== 'publicado' && <span>Em revisão</span>}
               {publishedAt && (
                 <time dateTime={post.published_at!}>{publishedAt}</time>
               )}
@@ -171,31 +180,19 @@ export default async function ArticlePage(props: Props) {
         </header>
 
         {
-          <div className="w-full aspect-video relative overflow-hidden bg-muted mb-12 rounded-card border border-border">
+          <div className="article-hero">
             <EditorialCover
               src={approvedCoverImageUrl(post.cover_image_url)}
               priority
-              sizes="(min-width: 768px) 720px, 100vw"
+              sizes="(min-width: 1024px) 1040px, 100vw"
             />
           </div>
         }
 
-        <article className="editorial-body prose prose-slate prose-lg dark:prose-invert max-w-none mb-12">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              // O <h1> da página já é o título do artigo: um "# " no markdown
-              // desceria para <h2>, senão a página teria dois <h1> e a
-              // hierarquia de cabeçalhos do texto ficaria quebrada para SEO e
-              // para quem navega por cabeçalho no leitor de tela.
-              h1: 'h2',
-            }}>
-            {post.content}
-          </ReactMarkdown>
-        </article>
+        <ArticleBody content={post.content} />
 
         {post.fontes_citadas && post.fontes_citadas.length > 0 && (
-          <section className="mt-12 pt-8 border-t border-border">
+          <section className="article-sources">
             <h2 className="text-2xl font-bold mb-4 text-foreground">Fontes</h2>
             <ul className="flex flex-col gap-2 list-disc pl-5">
               {post.fontes_citadas.map((fonte, idx) => (
@@ -210,6 +207,20 @@ export default async function ArticlePage(props: Props) {
                 </li>
               ))}
             </ul>
+          </section>
+        )}
+        <ArticleShare title={post.title} />
+        {related.length > 0 && (
+          <section className="article-related" aria-labelledby="related-title">
+            <div className="article-section-heading">
+              <span>Continue explorando</span>
+              <h2 id="related-title">Outras leituras para você</h2>
+            </div>
+            <div className="article-related-grid">
+              {related.map((item) => (
+                <EditorialStory key={item.id} post={item} variant="secondary" />
+              ))}
+            </div>
           </section>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { getLocalPosts, getLocalPostBySlug } from '@/lib/editorial/local-posts';
 /**
  * @fileoverview Consultas de leitura de posts (camada de serviço).
  * @module lib/services/posts
@@ -12,7 +13,7 @@
  * Lê: cookie da requisição e tabelas `posts`. Escreve: nada.
  */
 import { cookies } from 'next/headers';
-import { env } from '@/lib/env';
+import { env, isSanityConfigured } from '@/lib/env';
 import { PREVIEW_COOKIE } from '@/lib/preview/session';
 import { verifyPreviewSession } from '@/lib/preview/auth';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -25,7 +26,7 @@ import {
  * Avalia se o Sanity está configurado no objeto env para atuar como fonte primária.
  */
 function isSanityActive(): boolean {
-  return Boolean(env.sanity?.projectId && env.sanity?.dataset);
+  return isSanityConfigured;
 }
 
 /**
@@ -65,6 +66,7 @@ export async function isPreviewSession(
 
 /**
  * Lista posts publicados, mais recentes primeiro.
+ * Exceção explícita: a prévia de desenvolvimento usa somente o catálogo local.
  *
  * @param supabase - Cliente com a sessão do leitor.
  * @param [limit=10] - Máximo de linhas devolvidas.
@@ -76,6 +78,7 @@ export async function getPublishedPosts(
   supabase: SupabaseClient,
   limit = 10,
 ): Promise<Post[]> {
+  if (env.editorialLocal) return getLocalPosts(limit);
   // Transição editorial da spec 0006: Sanity como fonte primária única
   if (isSanityActive()) {
     return getSanityPublishedPosts(limit);
@@ -97,6 +100,7 @@ export async function getPublishedPosts(
 
 /**
  * Busca um post pelo slug na visibilidade do leitor.
+ * A prévia local, desativada em produção, não consulta nem altera rascunhos remotos.
  *
  * @param supabase - Cliente com a sessão do leitor (usado para detectar preview).
  * @param slug - Slug do artigo.
@@ -108,6 +112,7 @@ export async function getPostBySlug(
   supabase: SupabaseClient,
   slug: string,
 ): Promise<Post | null> {
+  if (env.editorialLocal) return getLocalPostBySlug(slug);
   // Transição editorial da spec 0006: Sanity como fonte primária única
   if (isSanityActive()) {
     // Conteúdo público permanece legível mesmo com cookie de preview e DO indisponível.

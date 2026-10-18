@@ -32,7 +32,7 @@ export function EditorialStory({
       )}>
       <div
         className={cn(
-          'relative overflow-hidden bg-muted',
+          'relative w-full overflow-hidden rounded-card bg-muted',
           recent ? 'order-2 aspect-[4/3]' : 'mb-4 aspect-video',
         )}>
         <EditorialCover

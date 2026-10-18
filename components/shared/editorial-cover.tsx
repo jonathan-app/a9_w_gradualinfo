@@ -35,5 +35,12 @@ export function EditorialCover({
       className="object-cover"
       onError={() => setFailedSource(src)}
     />
-  ) : null;
+  ) : (
+    <div
+      className="editorial-cover-fallback"
+      data-cover-fallback
+      aria-hidden="true">
+      <span>GradualInfo</span>
+    </div>
+  );
 }
