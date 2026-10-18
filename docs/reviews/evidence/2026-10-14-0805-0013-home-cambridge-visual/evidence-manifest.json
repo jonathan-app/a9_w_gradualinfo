@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-14T12:34:17.364Z",
+  "baseUrl": "http://127.0.0.1:3000",
+  "captures": [
+    {
+      "file": "01-home-desktop-claro.png",
+      "description": "Home Cambridge Desktop 1280px tema claro",
+      "sha256": "773c309fc9b7c60b19461eb51951e8ded03cae1a196b9d81a6f15da70e95d8ca"
+    },
+    {
+      "file": "02-home-desktop-escuro.png",
+      "description": "Home Cambridge Desktop 1280px tema escuro",
+      "sha256": "18b82b0ec3e5de0bac8cfc5b754fa2328c958c83e7e859e8e8265894625e118a"
+    },
+    {
+      "file": "03-home-celular-390-claro.png",
+      "description": "Home Cambridge Celular 390px tema claro",
+      "sha256": "ba6a583f039d18586ebd6e8b516ab7255cac8665b43079617f1d8a941ebf6ec2"
+    },
+    {
+      "file": "04-home-celular-390-escuro.png",
+      "description": "Home Cambridge Celular 390px tema escuro",
+      "sha256": "298f9d053fe5d7cd24b33a59c03d5d52d1acc5b220196dfa107f1f9b9502baa2"
+    },
+    {
+      "file": "05-home-celular-320-claro.png",
+      "description": "Home Cambridge Celular 320px compacto tema claro",
+      "sha256": "ddc6262b709e0e7c44bd7d0783e4477a15c646f1d6390bd076734ce308069d2d"
+    },
+    {
+      "file": "06-home-celular-320-escuro.png",
+      "description": "Home Cambridge Celular 320px compacto tema escuro",
+      "sha256": "8e9646f55e0eb75f9bb18bd0c9cb3c59787f4887b31577b1c4e22387c426c0bb"
+    },
+    {
+      "file": "07-artigo-referencia-desktop-claro.png",
+      "description": "Artigo de referência Desktop 1280px tema claro",
+      "sha256": "7fbc616764fc039bd6c02ffc5fbe58995ea48bae03db58101c690a145d9ae537"
+    },
+    {
+      "file": "08-artigo-referencia-desktop-escuro.png",
+      "description": "Artigo de referência Desktop 1280px tema escuro",
+      "sha256": "d64ad5887a17cce898fe7dc4909d1f619cb31176799531619727d0028392e15b"
+    },
+    {
+      "file": "09-artigo-referencia-celular-claro.png",
+      "description": "Artigo de referência Celular 390px tema claro",
+      "sha256": "9bc4a491d1f1e53442d8913cba1aa77e510015cc31241b4485ea0990ebec05d5"
+    },
+    {
+      "file": "10-artigo-referencia-celular-escuro.png",
+      "description": "Artigo de referência Celular 390px tema escuro",
+      "sha256": "c8cfffaf221542abd20d7f34c014cc52aa98006d595fee7e25a0f27c6b12728a"
+    },
+    {
+      "file": "11-home-1post-desktop.png",
+      "description": "Catálogo com 1 post: hero largura total (highlightsSingle), zero laterais",
+      "sha256": "756769bd3fd16073c08d387c1120cd98771099ccd3e15a355bdb73d543ec9cd8"
+    },
+    {
+      "file": "12-home-2posts-desktop.png",
+      "description": "Catálogo com 2 posts: hero + 1 destaque lateral coluna única, zero últimas leituras",
+      "sha256": "f282810f04ffa995c1468c2c2c3deff734129c1ab4eeaacccfd0804bccb9093b"
+    },
+    {
+      "file": "13-home-3posts-desktop.png",
+      "description": "Catálogo com 3 posts: hero + 2 destaques laterais coluna única, zero últimas leituras",
+      "sha256": "e2556192776b9ffac2545e848c756fe3bd9ae9a543e7b2ab7f5f9634f95cd37e"
+    },
+    {
+      "file": "14-home-4posts-desktop.png",
+      "description": "Catálogo com 4 posts: hero + 3 destaques grade 2x2, zero últimas leituras",
+      "sha256": "2a72c99c9f91c24f0868e67e6a362b6bda065e3bfe978bed7a5c66b3d9862952"
+    },
+    {
+      "file": "15-home-5posts-desktop.png",
+      "description": "Catálogo com 5 posts: hero + 4 destaques grade 2x2 completa, zero últimas leituras",
+      "sha256": "367da4b188534aabe92a3fe48cac93940c6c542dd0be09af9b955c1cc092344e"
+    }
+  ],
+  "checks": [
+    {
+      "check": "home_320px_claro_sem_overflow",
+      "pass": true
+    },
+    {
+      "check": "home_320px_escuro_sem_overflow",
+      "pass": true
+    },
+    {
+      "scenario": "1_posts",
+      "heroTitle": "Como criar uma arquitetura de conteúdo que constrói autoridade em vez de canibalizar páginas",
+      "heroRepeatedInTeasers": false,
+      "heroRepeatedInLatest": false,
+      "teasersCount": 0,
+      "latestCount": 0,
+      "pass": true
+    },
+    {
+      "scenario": "2_posts",
+      "heroTitle": "Como criar uma arquitetura de conteúdo que constrói autoridade em vez de canibalizar páginas",
+      "heroRepeatedInTeasers": false,
+      "heroRepeatedInLatest": false,
+      "teasersCount": 1,
+      "latestCount": 0,
+      "pass": true
+    },
+    {
+      "scenario": "3_posts",
+      "heroTitle": "Como criar uma arquitetura de conteúdo que constrói autoridade em vez de canibalizar páginas",
+      "heroRepeatedInTeasers": false,
+      "heroRepeatedInLatest": false,
+      "teasersCount": 2,
+      "latestCount": 0,
+      "pass": true
+    },
+    {
+      "scenario": "4_posts",
+      "heroTitle": "Como criar uma arquitetura de conteúdo que constrói autoridade em vez de canibalizar páginas",
+      "heroRepeatedInTeasers": false,
+      "heroRepeatedInLatest": false,
+      "teasersCount": 3,
+      "latestCount": 0,
+      "pass": true
+    },
+    {
+      "scenario": "5_posts",
+      "heroTitle": "Como criar uma arquitetura de conteúdo que constrói autoridade em vez de canibalizar páginas",
+      "heroRepeatedInTeasers": false,
+      "heroRepeatedInLatest": false,
+      "teasersCount": 4,
+      "latestCount": 0,
+      "pass": true
+    }
+  ]
+}

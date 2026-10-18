@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-11-2358-0014-protecao-arquivos-ambiente.md",
+    "sha256": "9a20e5633fa9c6880fbd391e5355f59a055a419622bc71b3f0775e7a551fd924"
+  },
+  "acs": [
+    {
+      "id": "env-protection/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1545-0014-env-protection/evidence.md",
+      "evidenceSha256": "5bc9ce7259d90c415408b25e46aa83c8cab9cb6f560eb1ad3a312cb2bc5943ae"
+    },
+    {
+      "id": "env-protection/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1545-0014-env-protection/evidence.md",
+      "evidenceSha256": "5bc9ce7259d90c415408b25e46aa83c8cab9cb6f560eb1ad3a312cb2bc5943ae"
+    },
+    {
+      "id": "env-protection/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1545-0014-env-protection/evidence.md",
+      "evidenceSha256": "5bc9ce7259d90c415408b25e46aa83c8cab9cb6f560eb1ad3a312cb2bc5943ae"
+    },
+    {
+      "id": "env-protection/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1545-0014-env-protection/evidence.md",
+      "evidenceSha256": "5bc9ce7259d90c415408b25e46aa83c8cab9cb6f560eb1ad3a312cb2bc5943ae"
+    },
+    {
+      "id": "env-protection/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1545-0014-env-protection/evidence.md",
+      "evidenceSha256": "5bc9ce7259d90c415408b25e46aa83c8cab9cb6f560eb1ad3a312cb2bc5943ae"
+    }
+  ],
+  "findings": []
+}

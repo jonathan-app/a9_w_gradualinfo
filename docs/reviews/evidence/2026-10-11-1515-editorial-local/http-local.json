@@ -1,0 +1,66 @@
+{
+  "home_http": 200,
+  "artigos": [
+    {
+      "slug": "auditoria-seo-tecnico-checklist",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 4,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    },
+    {
+      "slug": "como-verificar-respostas-da-ia",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 7,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    },
+    {
+      "slug": "construindo-gradualinfo-estudo-de-caso",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 7,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    },
+    {
+      "slug": "diagnosticar-erro-500-503-site",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 10,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    },
+    {
+      "slug": "seo-nextjs-16-metadata-indexacao",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 9,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    },
+    {
+      "slug": "site-lento-mesmo-com-boa-nota-pagespeed",
+      "http": 200,
+      "h1_unico": true,
+      "titulo_correto": true,
+      "ancoras": 7,
+      "ancoras_validas": true,
+      "capa_http": 200,
+      "noindex": true
+    }
+  ],
+  "inexistente_http": 404
+}

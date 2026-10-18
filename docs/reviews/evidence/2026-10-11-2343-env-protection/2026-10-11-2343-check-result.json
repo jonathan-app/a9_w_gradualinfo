@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0008-ai-security-checklist.md",
+    "sha256": "82aee04b61ff41e7e53e4f9a12227c62a1e6aab1bccae57abf1b5377e5228be1"
+  },
+  "acs": [],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "A proteção de arquivos de ambiente não tem spec aceita com ACs próprios; evidência local não aprova a spec 0008 nem a admissão Access."
+    }
+  ]
+}

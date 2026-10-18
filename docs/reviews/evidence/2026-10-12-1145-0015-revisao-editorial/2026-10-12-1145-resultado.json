@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-12-0828-0015-revisao-editorial-seis-rascunhos.md",
+    "sha256": "602237a17c2f0143ee2fb4e9070287827830d5c7336d1d1ff9186d256991e4a0"
+  },
+  "acs": [
+    {
+      "id": "editorial-review/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    },
+    {
+      "id": "editorial-review/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-12-1145-0015-revisao-editorial/evidence.md",
+      "evidenceSha256": "4b263ce9002a141020f9cc5e292662f10322ebcddfc3690dad15d60525ccc080"
+    }
+  ],
+  "findings": []
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "b14dd5191590f0df3b9bd3835ca13f646d09d14f",
+  "evaluatedTree": "ee6669d1fd859e281be1c6f09050d5295caa9e8a",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-11-0024-0006/evidence.md",
+      "evidenceSha256": "ad854166cd14dde0b8e78ffcb96c199cbfe4d15b9a23722f019c2e8bd5888479"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WARNING",
+      "description": "Artigos não publicados no dataset Sanity impedem validação empírica de canonical/OpenGraph e de fluxo ativo de preview com revogação no DO."
+    }
+  ],
+  "approved": false,
+  "verdict": "REPROVADO",
+  "counts": {
+    "totalACs": 8,
+    "PASS": 5,
+    "FAIL": 0,
+    "UNVERIFIABLE": 3,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 1
+  },
+  "reasons": [
+    "AC sem PASS: sanity/AC-02",
+    "AC sem PASS: sanity/AC-05",
+    "AC sem PASS: sanity/AC-08"
+  ]
+}
+
