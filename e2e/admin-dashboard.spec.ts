@@ -7,17 +7,20 @@
  *   (ativo APENAS quando NODE_ENV !== 'production' em `lib/supabase/server.ts`).
  *   Fluxo real contra Supabase local (gotrue + TOTP) requer `E2E_REAL_SUPABASE=1` e
  *   stack Supabase local ativa — delimitado e opcional.
- * @dependencies @axe-core/playwright, @playwright/test, node:child_process, node:crypto
+ * @dependencies @axe-core/playwright, @playwright/test, node:child_process, node:crypto, node:fs, jose
  */
 
 import AxeBuilder from '@axe-core/playwright';
 import { execSync } from 'node:child_process';
 import { createHmac } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { importJWK, SignJWT } from 'jose';
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 const BASE_URL: string = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:3100';
-const E2E_ADMIN_EMAIL: string = process.env.ADMIN_EMAIL ?? 'a3qua96@gmail.com';
+const E2E_ADMIN_EMAIL: string =
+  process.env.ADMIN_EMAIL ?? 'admin@gradualinfo.dev';
 const E2E_REAL_SUPABASE: boolean = process.env.E2E_REAL_SUPABASE === '1';
 const REAL_EMAIL: string = process.env.E2E_REAL_EMAIL ?? 'ana@exemplo.dev';
 const REAL_PASSWORD: string =
@@ -64,14 +67,45 @@ function totpCode(secret: string, atMs: number = Date.now()): string {
   return (binary % 1_000_000).toString().padStart(6, '0');
 }
 
+async function seedAccessJwt(page: Page): Promise<string> {
+  let token = '';
+  if (existsSync('.wrangler/test-access-keys.json')) {
+    const keys = JSON.parse(
+      readFileSync('.wrangler/test-access-keys.json', 'utf8'),
+    );
+    const privateKey = await importJWK(keys.private, 'RS256');
+    const now = Math.floor(Date.now() / 1000);
+    token = await new SignJWT({
+      type: 'app',
+      email: REAL_EMAIL,
+      sub: REAL_USER_ID,
+      iss: 'https://test-team.cloudflareaccess.com',
+      aud: 'spec-0018-test-aud',
+      iat: now,
+      exp: now + 3600,
+    })
+      .setProtectedHeader({ alg: 'RS256', kid: 'spec0018-rsa-key-01' })
+      .sign(privateKey);
+    await page
+      .context()
+      .addCookies([{ name: 'CF_Authorization', value: token, url: BASE_URL }]);
+  }
+  return token;
+}
+
 async function seedE2eRole(page: Page, role: string): Promise<void> {
   await page.context().clearCookies();
+  await seedAccessJwt(page);
   await page
     .context()
     .addCookies([{ name: '__e2e_session_role', value: role, url: BASE_URL }]);
 }
 
 const A11Y_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] as const;
+
+test.beforeEach(async ({ page }) => {
+  await seedAccessJwt(page);
+});
 
 test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () => {
   test('acesso anônimo a /admin-dashboard/mfa/* é interceptado e redirecionado para login (AC-04)', async ({
@@ -234,6 +268,7 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
     expect(logout.headers()['location']).toContain('/admin-dashboard/login');
 
     await page.context().clearCookies();
+    await seedAccessJwt(page);
     await page.goto('/admin-dashboard/login');
     await page.goto('/admin-dashboard');
     await expect(page).toHaveURL(/\/admin-dashboard\/login/);
@@ -261,6 +296,25 @@ test.describe('Painel Administrativo — Fluxo REAL no Supabase local (opcional,
     );
     test.setTimeout(120_000);
 
+    expect(process.env.E2E_TEST).toBeUndefined();
+
+    // Prova empírica negativa: mesmo se o cookie __e2e_session_role for injetado,
+    // o servidor sem E2E_TEST=1 ignora o mock e redireciona para login.
+    await page
+      .context()
+      .addCookies([
+        { name: '__e2e_session_role', value: 'admin_aal2', url: BASE_URL },
+      ]);
+    await page.goto('/admin-dashboard');
+    await expect(page).toHaveURL(/\/admin-dashboard\/login/);
+    await page.context().clearCookies();
+    await seedAccessJwt(page);
+
+    const cookiesBeforeLogin = await page.context().cookies();
+    expect(
+      cookiesBeforeLogin.some((c) => c.name === '__e2e_session_role'),
+    ).toBe(false);
+
     await page.goto('/admin-dashboard/login');
     await page.getByLabel(/E-mail/i).fill(REAL_EMAIL);
     await page.getByLabel(/Senha/i).fill(REAL_PASSWORD);
@@ -269,8 +323,20 @@ test.describe('Painel Administrativo — Fluxo REAL no Supabase local (opcional,
     await expect(page).toHaveURL(/\/admin-dashboard\/mfa\/setup/, {
       timeout: 30_000,
     });
-    const secret =
-      (await page.locator('div.select-all span').textContent()) ?? '';
+    const cookiesAfterLogin = await page.context().cookies();
+    expect(cookiesAfterLogin.some((c) => c.name === '__e2e_session_role')).toBe(
+      false,
+    );
+    expect(
+      cookiesAfterLogin.some(
+        (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token'),
+      ),
+    ).toBe(true);
+
+    await page
+      .getByRole('button', { name: /Iniciar configuração TOTP/i })
+      .click();
+    const secret = (await page.locator('code').textContent())?.trim() ?? '';
     expect(secret.length).toBeGreaterThanOrEqual(16);
 
     await page.goto('/admin-dashboard');
@@ -283,6 +349,10 @@ test.describe('Painel Administrativo — Fluxo REAL no Supabase local (opcional,
       .fill(totpCode(secret));
     await page.getByRole('button', { name: /Confirmar e Acessar/i }).click();
     await expect(page).toHaveURL(/\/admin-dashboard$/, { timeout: 15_000 });
+    const cookiesAfterMfa = await page.context().cookies();
+    expect(cookiesAfterMfa.some((c) => c.name === '__e2e_session_role')).toBe(
+      false,
+    );
     // O badge de sessão renderiza também no header responsivo (oculto no viewport
     // do teste); `.first()` evita o strict-mode violation com o elemento escondido.
     await expect(
@@ -306,17 +376,71 @@ test.describe('Painel Administrativo — Fluxo REAL no Supabase local (opcional,
     expect(logout.headers()['location']).toContain('/admin-dashboard/login');
 
     await page.context().clearCookies();
+    await seedAccessJwt(page);
     await page.goto('/admin-dashboard');
     await expect(page).toHaveURL(/\/admin-dashboard\/login/);
   });
+
+  test('senha incorreta no primeiro degrau redireciona com error=invalid_credentials (AC-04)', async ({
+    page,
+  }) => {
+    test.skip(
+      !E2E_REAL_SUPABASE,
+      'fluxo real exige stack Supabase local ativa; defina E2E_REAL_SUPABASE=1',
+    );
+    await page.goto('/admin-dashboard/login');
+    await page.getByLabel(/E-mail/i).fill(REAL_EMAIL);
+    await page.getByLabel(/Senha/i).fill('senha-incorreta-de-teste');
+    await page.getByRole('button', { name: /Entrar no Painel/i }).click();
+
+    await expect(page).toHaveURL(
+      /\/admin-dashboard\/login\?.*error=invalid_credentials/,
+    );
+  });
+
+  test('identidade autenticada com UUID não autorizado é revogada imediatamente (AC-04)', async ({
+    page,
+  }) => {
+    test.skip(
+      !E2E_REAL_SUPABASE,
+      'fluxo real exige stack Supabase local ativa; defina E2E_REAL_SUPABASE=1',
+    );
+    await page.goto('/admin-dashboard/login');
+    await page.getByLabel(/E-mail/i).fill('bruno@exemplo.dev');
+    await page.getByLabel(/Senha/i).fill('senha-de-teste-123');
+    await page.getByRole('button', { name: /Entrar no Painel/i }).click();
+
+    await expect(page).toHaveURL(
+      /\/admin-dashboard\/login\?.*error=invalid_credentials/,
+    );
+  });
 });
 
-test.beforeAll(() => {
+function cleanupRealAuthState(): void {
   if (!E2E_REAL_SUPABASE) {
     return;
   }
-  execSync(
-    `docker exec supabase_db_gradualinfo-editorial psql -U postgres -c "delete from auth.mfa_factors where user_id = '${REAL_USER_ID}';"`,
-    { stdio: 'ignore' },
-  );
+  const testUserIds = `'${REAL_USER_ID}', '22222222-2222-2222-2222-222222222222'`;
+  const cmd = `psql -U postgres -c "delete from auth.mfa_factors where user_id in (${testUserIds}); delete from auth.sessions where user_id in (${testUserIds});"`;
+  try {
+    execSync(`podman exec supabase_db_gradualinfo-editorial ${cmd}`, {
+      stdio: 'ignore',
+    });
+  } catch {
+    try {
+      execSync(`docker exec supabase_db_gradualinfo-editorial ${cmd}`, {
+        stdio: 'ignore',
+      });
+    } catch {
+      // Falha ignorada se o banco já estiver limpo
+    }
+  }
+}
+
+test.beforeAll(() => {
+  cleanupRealAuthState();
+});
+
+test.afterAll(() => {
+  cleanupRealAuthState();
 });

@@ -90,8 +90,35 @@ describe('Blindagem de Segurança: Mock __e2e_session_role', () => {
     expect(userRes.data.user).toBeNull();
   });
 
-  it('permite a simulação em ambiente não-produtivo quando o cookie está presente', async () => {
+  it('ignora o cookie quando NEXT_PUBLIC_SITE_URL aponta para produção gradualinfo.com.br mesmo com E2E_TEST=1', async () => {
+    delete process.env.NODE_ENV;
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://gradualinfo.com.br';
+    process.env.E2E_TEST = '1';
+    mockCookiesStore.get.mockReturnValue({ value: 'admin_aal2' });
+
+    const { createClient } = await import('@/lib/supabase/server');
+    const client = await createClient();
+
+    const userRes = await client.auth.getUser();
+    expect(userRes.data.user).toBeNull();
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+  });
+
+  it('ignora o cookie em ambiente não-produtivo quando E2E_TEST=1 NÃO está configurado', async () => {
+    process.env.NODE_ENV = 'development';
+    delete process.env.E2E_TEST;
+    mockCookiesStore.get.mockReturnValue({ value: 'admin_aal2' });
+
+    const { createClient } = await import('@/lib/supabase/server');
+    const client = await createClient();
+
+    const userRes = await client.auth.getUser();
+    expect(userRes.data.user).toBeNull();
+  });
+
+  it('permite a simulação em ambiente não-produtivo SOMENTE com E2E_TEST=1 e o cookie presente', async () => {
     process.env.NODE_ENV = 'test';
+    process.env.E2E_TEST = '1';
     mockCookiesStore.get.mockReturnValue({ value: 'admin_aal2' });
 
     const { createClient } = await import('@/lib/supabase/server');

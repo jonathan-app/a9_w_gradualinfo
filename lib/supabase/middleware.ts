@@ -117,7 +117,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (
-    request.nextUrl.pathname.startsWith('/artigos/') ||
+    (request.nextUrl.pathname.startsWith('/artigos/') &&
+      !request.nextUrl.pathname.includes('.')) ||
     request.nextUrl.pathname.startsWith('/preview') ||
     request.nextUrl.pathname.startsWith('/api/preview')
   ) {
@@ -155,8 +156,13 @@ export async function updateSession(request: NextRequest) {
   // inexistente, rascunho sem preview ou data futura devolva status HTTP 404
   // antes do streaming do layout iniciar (evitando o "soft 200" do streaming).
   const segments = request.nextUrl.pathname.split('/').filter(Boolean);
-  if (segments.length === 2 && segments[0] === 'artigos') {
-    const slug = segments[1]!;
+  if (
+    segments.length === 2 &&
+    segments[0] === 'artigos' &&
+    segments[1] &&
+    !segments[1].includes('.')
+  ) {
+    const slug = segments[1];
     const previewCookie = request.cookies.get(PREVIEW_COOKIE)?.value;
     let accessible: boolean;
     try {

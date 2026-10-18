@@ -20,6 +20,7 @@ vi.mock('@/lib/env', () => ({
     previewSigningKey: 'test-only-signing-key',
     previewToken: 'test-only-signing-key',
   },
+  isSanityConfigured: true,
 }));
 vi.mock('@/lib/preview/config', () => ({
   isPreviewConfigured: () => true,

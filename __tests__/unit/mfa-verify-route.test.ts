@@ -151,14 +151,14 @@ describe('POST /api/admin/auth/mfa/verify', () => {
     expect(res.status).toBe(403);
   });
 
-  it('retorna 403 com erro de getUser', async () => {
+  it('retorna 401 com erro de getUser', async () => {
     const { supabase } = makeSupabase({ authError: true });
     vi.mocked(createAdminSessionResponse).mockResolvedValue({
       supabase,
       finish: vi.fn((r: Response) => r),
     } as never);
     const res = await POST(makeRequest({ body: { code: '123456' } }));
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
   });
 
   it('retorna 415 com content-type não suportado', async () => {

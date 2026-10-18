@@ -9,9 +9,9 @@ import { requireAdminAccessPage } from '@/lib/admin/access-guard';
 
 import type { Metadata } from 'next';
 
-/** Metadados privados e sem indexação do painel. */
+/** Metadados privados e sem indexação do painel; o template raiz põe o sufixo. */
 export const metadata: Metadata = {
-  title: 'Painel Administrativo | GradualInfo',
+  title: 'Painel Administrativo',
   robots: {
     index: false,
     follow: false,

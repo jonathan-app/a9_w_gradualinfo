@@ -22,7 +22,60 @@ vi.mock('jose', () => ({
   jwtVerify: vi.fn(),
 }));
 
-import { classifyAdminPath, accessFailureResponse } from '@/lib/admin/access';
+import {
+  classifyAdminPath,
+  accessFailureResponse,
+  isTestAccessHarnessAllowed,
+} from '@/lib/admin/access';
+
+describe('isTestAccessHarnessAllowed', () => {
+  it('permite harness apenas em ambiente local com ADMIN_ACCESS_KEY_PAIR e sem domínio de produção', () => {
+    expect(
+      isTestAccessHarnessAllowed({
+        ADMIN_ACCESS_KEY_PAIR: '{"keys":[]}',
+        ADMIN_ACCESS_HOSTS: 'admin.example.test',
+        NEXT_PUBLIC_SITE_URL: 'http://127.0.0.1:3100',
+      }),
+    ).toBe(true);
+  });
+
+  it('bloqueia quando ADMIN_ACCESS_KEY_PAIR está ausente', () => {
+    expect(
+      isTestAccessHarnessAllowed({
+        ADMIN_ACCESS_HOSTS: 'admin.example.test',
+      }),
+    ).toBe(false);
+  });
+
+  it('bloqueia quando bindings.NODE_ENV === production', () => {
+    expect(
+      isTestAccessHarnessAllowed({
+        NODE_ENV: 'production',
+        ADMIN_ACCESS_KEY_PAIR: '{"keys":[]}',
+        ADMIN_ACCESS_HOSTS: 'admin.example.test',
+      }),
+    ).toBe(false);
+  });
+
+  it('bloqueia quando NEXT_PUBLIC_SITE_URL aponta para gradualinfo.com.br', () => {
+    expect(
+      isTestAccessHarnessAllowed({
+        ADMIN_ACCESS_KEY_PAIR: '{"keys":[]}',
+        ADMIN_ACCESS_HOSTS: 'admin.example.test',
+        NEXT_PUBLIC_SITE_URL: 'https://gradualinfo.com.br',
+      }),
+    ).toBe(false);
+  });
+
+  it('bloqueia quando ADMIN_ACCESS_HOSTS inclui gradualinfo.com.br', () => {
+    expect(
+      isTestAccessHarnessAllowed({
+        ADMIN_ACCESS_KEY_PAIR: '{"keys":[]}',
+        ADMIN_ACCESS_HOSTS: 'gradualinfo.com.br,admin.example.test',
+      }),
+    ).toBe(false);
+  });
+});
 
 describe('classifyAdminPath', () => {
   it('classifica /admin-dashboard como protected', () => {

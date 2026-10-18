@@ -67,7 +67,7 @@ export default async function ProtectedAdminLayout({
   }
 
   return (
-    <AdminShell userEmail={auth.user.email || 'a3qua96@gmail.com'}>
+    <AdminShell userEmail={auth.user.email || 'admin@gradualinfo.dev'}>
       {children}
     </AdminShell>
   );

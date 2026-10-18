@@ -38,6 +38,8 @@ publica secrets via `wrangler secret put` (stdin; valores nunca impressos).
 - `jwt-validate` (skill) complementa checagens JWT; a autorização de produto
   continua em `auth.ts`.
 - Respostas manuais de falha usam `securityHeaders` / `accessFailureResponse`.
+- Recuperação de senha opera sob o guard `assertRecoverySessionAuth` sem afrouxar `assertAdminApiAuth` das APIs de negócio.
+- Leitura comercial (`commercial-dashboard.ts`) opera com `server-only`, cliente privilegiado isolado sem cookies, cálculo único de medianas e fallback seguro sem expor `service_role` ao cliente.
 
 ## Gotchas
 
@@ -46,6 +48,9 @@ publica secrets via `wrangler secret put` (stdin; valores nunca impressos).
 - JWK com chave privada (`d`, `p`, `q`, …) é recusada em `validKeys()`.
 - Rate limit e Access dependem de bindings no Worker; `wrangler.dev` local sem
   binding não reproduz produção.
+- `ADMIN_ACCESS_KEY_PAIR` e `isTestAccessHarnessAllowed` em `access.ts` servem
+  apenas ao harness local (`scripts/e2e-server.mjs`) e ficam desativados em
+  produção (`NODE_ENV=production` ou domínio `gradualinfo.com.br`).
 
 ## Related specs
 
@@ -53,5 +58,8 @@ publica secrets via `wrangler secret put` (stdin; valores nunca impressos).
 - `docs/specs/2026-10-09-0842-endurecimento-auth-admin.md`
 - `docs/specs/2026-10-09-0852-rate-limiting-admin.md`
 - `docs/specs/2026-10-08-2228-0007-painel-administrativo-tailadmin.md`
+- `docs/specs/2026-10-14-2150-0018-ambiente-local-login-mfa.md`
+- `docs/specs/2026-10-16-1115-0019-recuperacao-administrativa.md`
+- `docs/specs/2026-10-16-1650-0020-dashboard-operacional-aal2.md`
 
 _Drafted by /audit from the repo, worth a quick human pass. Edit freely: once a line stops matching this draft, later runs treat it as curated and will flag rather than overwrite it._

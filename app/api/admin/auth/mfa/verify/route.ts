@@ -46,7 +46,14 @@ export async function POST(request: Request) {
   const { supabase, finish } = await createAdminSessionResponse();
   const { data: authData, error: authError } = await supabase.auth.getUser();
 
-  if (authError || !authData.user || authData.user.id !== adminId) {
+  if (authError || !authData.user) {
+    return new NextResponse('Não autenticado.', {
+      status: 401,
+      headers: { 'Cache-Control': 'private, no-store' },
+    });
+  }
+
+  if (authData.user.id !== adminId) {
     return new NextResponse('Não autorizado.', {
       status: 403,
       headers: { 'Cache-Control': 'private, no-store' },

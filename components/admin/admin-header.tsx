@@ -17,7 +17,7 @@ interface AdminHeaderProps {
 }
 
 export function AdminHeader({
-  userEmail = 'a3qua96@gmail.com',
+  userEmail = 'admin@gradualinfo.dev',
   onToggleSidebar,
 }: AdminHeaderProps) {
   const handleLogout = async (e: React.FormEvent) => {

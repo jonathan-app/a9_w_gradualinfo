@@ -89,6 +89,28 @@ export async function POST(request: Request) {
   });
 
   if (error || !data.user) {
+    if (
+      error &&
+      (('status' in error &&
+        typeof error.status === 'number' &&
+        error.status >= 500) ||
+        error.name === 'AuthRetryableFetchError' ||
+        error.message?.includes('fetch failed'))
+    ) {
+      return finish(
+        new NextResponse(
+          'Serviço de autenticação temporariamente indisponível.',
+          {
+            status: 503,
+            headers: {
+              'Cache-Control': 'private, no-store',
+              'Retry-After': '5',
+            },
+          },
+        ),
+        true,
+      );
+    }
     loginUrl.searchParams.set('error', 'invalid_credentials');
     return finish(NextResponse.redirect(loginUrl, 303), true);
   }

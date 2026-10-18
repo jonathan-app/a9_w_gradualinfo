@@ -40,6 +40,12 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
     errorMessage = 'Muitas tentativas consecutivas. Aguarde um minuto.';
   } else if (params.error === 'missing_credentials') {
     errorMessage = 'Informe e-mail e senha para prosseguir.';
+  } else if (params.error === 'recovery_verifier_missing') {
+    errorMessage =
+      'Verificador de segurança ausente. O link de recuperação deve ser aberto no mesmo navegador onde foi solicitado.';
+  } else if (params.error === 'recovery_link_invalid') {
+    errorMessage =
+      'Link de recuperação inválido, expirado ou já utilizado. Solicite um novo link.';
   }
 
   return (
@@ -95,11 +101,18 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-xs font-medium text-gray-700 dark:text-gray-300">
-              Senha
-            </label>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="password"
+                className="block text-xs font-medium text-gray-700 dark:text-gray-300">
+                Senha
+              </label>
+              <Link
+                href="/admin-dashboard/recovery/request"
+                className="text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                Esqueceu a senha?
+              </Link>
+            </div>
             <input
               id="password"
               name="password"

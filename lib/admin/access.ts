@@ -158,16 +158,59 @@ function validKeys(value: unknown): JWK[] {
 }
 
 /**
+ * Garante que chaves de teste e exceções do harness local nunca operem em produção,
+ * mesmo se NODE_ENV não estiver definido no isolate externo do Worker.
+ * @param bindings - Bindings do Worker na requisição atual.
+ * @returns true apenas em ambiente local/teste sem host ou URL de produção.
+ */
+export function isTestAccessHarnessAllowed(
+  bindings: Record<string, unknown>,
+): boolean {
+  if (
+    env.isProduction ||
+    bindings.NODE_ENV === 'production' ||
+    !bindings.ADMIN_ACCESS_KEY_PAIR
+  )
+    return false;
+  const siteUrl = String(bindings.NEXT_PUBLIC_SITE_URL ?? '');
+  const hosts = String(bindings.ADMIN_ACCESS_HOSTS ?? '');
+  if (
+    siteUrl.includes('gradualinfo.com.br') ||
+    hosts.includes('gradualinfo.com.br')
+  )
+    return false;
+  return true;
+}
+
+/**
  * Cria verificador com cache limitado de chaves públicas, nunca tokens.
  * @param fetchKeys - Fetch da plataforma, injetável em testes de falhas.
  * @returns Função de admissão usando env explícito do Worker.
  */
-export function createAccessAdmission(fetchKeys: typeof fetch = fetch) {
+export function createAccessAdmission(fetchKeys?: typeof fetch) {
   let state: KeysState | undefined;
   async function keyFor(
     config: AdminAccessConfig,
     kid: string,
+    testKeyPair?: unknown,
   ): Promise<JWK | undefined> {
+    if (testKeyPair) {
+      try {
+        const raw =
+          typeof testKeyPair === 'string'
+            ? JSON.parse(testKeyPair)
+            : testKeyPair;
+        const parsed = validKeys(
+          raw && typeof raw === 'object' && 'keys' in raw
+            ? raw
+            : { keys: Array.isArray(raw) ? raw : [raw] },
+        );
+        const match = parsed.find((key) => key.kid === kid);
+        if (match) return match;
+      } catch {
+        // Falha no binding de teste cai no fetch regular.
+      }
+    }
     if (!state || state.issuer !== config.issuer)
       state = {
         issuer: config.issuer,
@@ -189,9 +232,10 @@ export function createAccessAdmission(fetchKeys: typeof fetch = fetch) {
           reject(new AccessUnavailable());
         }, 2000);
       });
+      const platformFetch = fetchKeys ?? fetch;
       const work = (async () => {
         try {
-          const response = await fetchKeys(
+          const response = await platformFetch(
             `${config.issuer}/cdn-cgi/access/certs`,
             { signal: controller.signal, redirect: 'error' },
           );
@@ -245,7 +289,13 @@ export function createAccessAdmission(fetchKeys: typeof fetch = fetch) {
           header.x5u
         )
           return accessFailureResponse(request, 403);
-        const jwk = await keyFor(config, header.kid);
+        const jwk = await keyFor(
+          config,
+          header.kid,
+          isTestAccessHarnessAllowed(bindings)
+            ? bindings.ADMIN_ACCESS_KEY_PAIR
+            : undefined,
+        );
         if (!jwk) return accessFailureResponse(request, 403);
         if (performance.now() >= deadline) throw new AccessUnavailable();
         let key;

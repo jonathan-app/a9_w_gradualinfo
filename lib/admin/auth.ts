@@ -403,3 +403,70 @@ export async function assertAdminApiAuth(request?: Request): Promise<
     ),
   };
 }
+
+/**
+ * Guarda especializada para mutações sob a sessão de recuperação (/api/admin/auth/recovery/update-password).
+ * Valida origem (CSRF), admissão Access e identidade estrita do administrador único,
+ * sem exigir AAL2 (já que a sessão de recuperação nasce em AAL1).
+ *
+ * @param request - Requisição HTTP recebida.
+ * @returns Objeto com `ok: true` e `user`, ou `ok: false` com `response` formatado.
+ */
+export async function assertRecoverySessionAuth(request?: Request): Promise<
+  | { ok: true; user: User }
+  | {
+      ok: false;
+      response: Response;
+    }
+> {
+  const admissionFailure = guardAdminAccess(request);
+  if (admissionFailure) return { ok: false, response: admissionFailure };
+  if (request && !validateAdminRequestOrigin(request)) {
+    return {
+      ok: false,
+      response: new Response('Origem não permitida.', {
+        status: 403,
+        headers: { 'Cache-Control': 'private, no-store' },
+      }),
+    };
+  }
+
+  const adminId = env.adminUserId.trim();
+  if (!adminId) {
+    return {
+      ok: false,
+      response: new Response(
+        'Configuração administrativa ausente no servidor.',
+        {
+          status: 500,
+          headers: { 'Cache-Control': 'private, no-store' },
+        },
+      ),
+    };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data.user) {
+    return {
+      ok: false,
+      response: new Response('Autenticação necessária.', {
+        status: 401,
+        headers: { 'Cache-Control': 'private, no-store' },
+      }),
+    };
+  }
+
+  if (data.user.id !== adminId) {
+    return {
+      ok: false,
+      response: new Response('Acesso negado.', {
+        status: 403,
+        headers: { 'Cache-Control': 'private, no-store' },
+      }),
+    };
+  }
+
+  return { ok: true, user: data.user };
+}

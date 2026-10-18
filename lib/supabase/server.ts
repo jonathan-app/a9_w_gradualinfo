@@ -39,12 +39,17 @@ export async function createClient(
 ) {
   const cookieStore = await cookies();
 
-  // A simulação por cookie é instrumento de teste: ativa APENAS em desenvolvimento
-  // (NODE_ENV !== 'production'). Em produção, o deploy real permanece
-  // fail-closed — o cookie `__e2e_session_role` é terminantemente ignorado,
-  // mesmo que E2E_TEST=1 seja configurado (evita acidentes em produção).
-  const isDev = process.env.NODE_ENV !== 'production';
-  const e2eRole = isDev
+  // Bloqueio incondicional em produção:
+  // 1. Se NODE_ENV === 'production', a simulação é terminantemente bloqueada (fail-closed obrigatório).
+  // 2. O domínio de produção (gradualinfo.com.br) atua como segunda trava independente de defesa em profundidade.
+  // 3. Fora de produção, a simulação exige obrigatoriamente a flag explícita E2E_TEST === '1'.
+  const isProductionEnv = process.env.NODE_ENV === 'production';
+  const isProductionDomain = Boolean(
+    process.env.NEXT_PUBLIC_SITE_URL?.includes('gradualinfo.com.br'),
+  );
+  const isMockAllowed =
+    !isProductionEnv && !isProductionDomain && process.env.E2E_TEST === '1';
+  const e2eRole = isMockAllowed
     ? cookieStore.get('__e2e_session_role')?.value
     : undefined;
 
@@ -53,7 +58,9 @@ export async function createClient(
     const userId = isOtherUser
       ? '00000000-0000-0000-0000-999999999999'
       : env.adminUserId || '00000000-0000-0000-0000-000000000001';
-    const userEmail = isOtherUser ? 'invasor@externo.com' : env.adminEmail;
+    const userEmail = isOtherUser
+      ? 'invasor@externo.com'
+      : env.adminEmail || 'admin@gradualinfo.dev';
 
     let currentLevel = 'aal1';
     let nextLevel = 'aal1';
