@@ -18,7 +18,7 @@
 import { defineCloudflareConfig } from '@opennextjs/cloudflare';
 const config = {
   ...defineCloudflareConfig(),
-  buildCommand: 'pnpm build:next',
+  buildCommand: 'pnpm build:webpack',
 };
 
 export default config;

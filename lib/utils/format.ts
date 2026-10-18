@@ -115,3 +115,87 @@ export function serializeJsonLd(data: unknown): string {
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 }
+
+/**
+ * Converte nome de editoria ou rótulo em identificador seguro para âncoras HTML.
+ * Normaliza acentos, converte para minúsculas e substitui caracteres não alfanuméricos por traço.
+ */
+export function slugify(text: string): string {
+  return (
+    text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'editoria'
+  );
+}
+
+/**
+ * Gera um sufixo alfanumérico determinístico a partir do texto original da categoria.
+ * Utiliza FNV-1a (32 bits) sem dependências externas para garantir consistência
+ * universal e imunidade a deslocamento de índices quando novas categorias são inseridas.
+ */
+function stableHash(text: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(36).slice(0, 6);
+}
+
+/**
+ * Converte uma lista de nomes de editorias em um mapa de identificadores de âncora determinísticos.
+ * A geração é imune à ordem de aparição dos posts e à inserção de novas editorias colidentes:
+ * extrai editorias únicas, agrupa por slug base e atribui o slug canônico limpo ao termo exato;
+ * eventuais colisões adicionais recebem identificador discriminado por hash determinístico do nome,
+ * garantindo que o ID de uma categoria existente nunca mude após novas adições.
+ *
+ * @param editorias Nomes de categorias/editorias
+ * @returns Map associando o nome da categoria ao identificador estável (ex: "home-editoria-tech")
+ */
+export function buildStableEditoriaIdMap(
+  editorias: string[],
+): Map<string, string> {
+  const unique = Array.from(
+    new Set(editorias.map((e) => e.trim()).filter(Boolean)),
+  ).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+  const slugGroups = new Map<string, string[]>();
+  for (const name of unique) {
+    const baseSlug = slugify(name);
+    const list = slugGroups.get(baseSlug) ?? [];
+    list.push(name);
+    slugGroups.set(baseSlug, list);
+  }
+
+  const idMap = new Map<string, string>();
+  for (const [baseSlug, names] of slugGroups) {
+    if (names.length === 1) {
+      idMap.set(names[0]!, `home-editoria-${baseSlug}`);
+    } else {
+      let canonicalAssigned = false;
+      for (const name of names) {
+        const normalized = name
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .trim()
+          .toLowerCase();
+
+        const isExactMatch =
+          normalized.replace(/\s+/g, '-') === baseSlug ||
+          normalized.replace(/\s*&\s*/g, '-').replace(/\s+/g, '-') === baseSlug;
+
+        if (isExactMatch && !canonicalAssigned) {
+          idMap.set(name, `home-editoria-${baseSlug}`);
+          canonicalAssigned = true;
+        } else {
+          idMap.set(name, `home-editoria-${baseSlug}-${stableHash(name)}`);
+        }
+      }
+    }
+  }
+
+  return idMap;
+}

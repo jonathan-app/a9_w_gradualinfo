@@ -55,6 +55,8 @@
     "NEXT_PUBLIC_SUPABASE_URL": "https://sjngngsjvotagwctzpde.supabase.co",
     "NEXT_PUBLIC_SITE_URL": "https://gradualinfo.com.br",
     "NEXT_PUBLIC_SANITY_DATASET": "production",
+    "NEXT_PUBLIC_SANITY_PROJECT_ID": "4iipvaar",
+    "SANITY_PROJECT_ID": "4iipvaar",
   },
   "durable_objects": {
     "bindings": [

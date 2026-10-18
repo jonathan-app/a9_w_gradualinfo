@@ -24,6 +24,26 @@
  * vazaria todas as variáveis.
  */
 
+/** Exige ativação explícita, desenvolvimento e origem local. */
+export function isLocalEditorialMode(
+  nodeEnv?: string,
+  flag?: string,
+  siteUrl?: string,
+  isProduction = false,
+): boolean {
+  if (isProduction || nodeEnv !== 'development' || flag !== '1' || !siteUrl)
+    return false;
+  try {
+    const url = new URL(siteUrl);
+    return (
+      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) &&
+      ['http:', 'https:'].includes(url.protocol)
+    );
+  } catch {
+    return false;
+  }
+}
+
 /** JWT inválido de propósito: existe só para o build ter o que ler. */
 const PLACEHOLDER_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjo0MTAyNDQ0ODAwfQ.local-development-placeholder-signature';
@@ -34,9 +54,15 @@ const PLACEHOLDER_ANON_KEY =
  * mantém os defaults estreitos para o type checker e impede reatribuição.
  */
 export const env = {
+  editorialLocal: isLocalEditorialMode(
+    process.env.NODE_ENV,
+    process.env.EDITORIAL_LOCAL,
+    process.env.NEXT_PUBLIC_SITE_URL,
+  ),
   supabase: {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321',
     anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? PLACEHOLDER_ANON_KEY,
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
   },
   sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
@@ -72,18 +98,11 @@ export const env = {
     apiVersion: process.env.SANITY_API_VERSION ?? '2024-01-01',
     readToken: process.env.SANITY_API_READ_TOKEN ?? '',
   },
-  // ID de produção embutido: um build de produção sem a variável definida
-  // continua medindo, em vez de enviar string vazia e perder o evento.
-  gaMeasurementId:
-    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ??
-    (process.env.NODE_ENV === 'production' ? 'G-7JVZ7JS4MX' : ''),
-  // Mesmo racional de gaMeasurementId acima: contêiner GTM de produção como fallback.
-  gtmId:
-    process.env.NEXT_PUBLIC_GTM_ID ??
-    (process.env.NODE_ENV === 'production' ? 'GTM-TQVMR8TN' : ''),
+  gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '',
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? '',
   // Administração e Controle de Acesso (spec 0007)
   adminUserId: process.env.ADMIN_USER_ID ?? '',
-  adminEmail: process.env.ADMIN_EMAIL ?? 'a3qua96@gmail.com',
+  adminEmail: process.env.ADMIN_EMAIL ?? '',
   sanityStudioUrl:
     process.env.NEXT_PUBLIC_SANITY_STUDIO_URL ??
     'https://gradualinfo.sanity.studio',
@@ -107,6 +126,15 @@ export const isSanityConfigured = Boolean(
   (process.env.SANITY_PROJECT_ID ||
     process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) &&
   (process.env.SANITY_DATASET || process.env.NEXT_PUBLIC_SANITY_DATASET),
+);
+
+/**
+ * `true` quando a chave de serviço do Supabase está configurada para rotinas administrativas.
+ */
+export const isSupabaseServiceRoleConfigured = Boolean(
+  (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? env.supabase.serviceRoleKey
+  )?.trim(),
 );
 
 /** Configuração Access recebida diretamente do Worker, sem snapshot global. */

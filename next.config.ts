@@ -25,6 +25,8 @@ const withBundleAnalyzer = createBundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  // A prévia editorial tem saída própria e não disputa o cache do build.
+  distDir: env.editorialLocal ? '.next-editorial' : '.next',
   reactStrictMode: true,
   experimental: {
     authInterrupts: true,
@@ -58,6 +60,12 @@ const nextConfig: NextConfig = {
       { source: '/', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
       {
         source: '/sitemap.xml',
+        headers: [{ key: 'Cache-Control', value: 'no-store' }],
+      },
+      {
+        // Filhos do índice, incluindo /sitemap/geral.xml: derivam de conteúdo
+        // publicado a qualquer momento e não podem ser servidos de cache.
+        source: '/sitemap/:path*',
         headers: [{ key: 'Cache-Control', value: 'no-store' }],
       },
       {

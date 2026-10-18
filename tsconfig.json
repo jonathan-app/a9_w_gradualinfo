@@ -38,6 +38,8 @@
     // ESM moderno + resolução no estilo de quem escreve para navegadores.
     "module": "esnext",
     "moduleResolution": "bundler",
+    // Permite imports explícitos com extensão .ts para execução direta de subprocessos ESM no Node 22
+    "allowImportingTsExtensions": true,
     // Permite importar JSON direto (`import pkg from './package.json'`).
     "resolveJsonModule": true,
     // Garante que cada arquivo seja transpilável isoladamente — o que o Next
@@ -68,7 +70,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    ".next-editorial/types/**/*.ts",
+    ".next-editorial/dev/types/**/*.ts"
   ],
   // O que NÃO é checado, e por quê:
   //   node_modules → dependências de terceiros
@@ -91,6 +95,8 @@
     "referencias/template-admin-dashboard/**",
     "referencias/**",
     "scratch/**",
-    ".next/**"
+    ".next/**",
+    ".next-editorial/**",
+    "gradualinfo-*/**"
   ]
 }
