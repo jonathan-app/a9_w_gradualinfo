@@ -31,7 +31,7 @@ ofertas).
 | Peça         | Versão                    | Por quê importa                                                      |
 | ------------ | ------------------------- | -------------------------------------------------------------------- |
 | Next.js      | 16.4                      | App Router, `proxy.ts` no lugar de `middleware.ts`, build Turbopack  |
-| React        | 19.3.0 (fixo)             | Ver `overrides` em `pnpm-workspace.yaml` — duas cópias quebram hooks |
+| React        | 19.3.1 (fixo)             | Ver `overrides` em `pnpm-workspace.yaml` — duas cópias quebram hooks |
 | TypeScript   | 6.0.3                     | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`           |
 | Tailwind CSS | 4.3                       | Configuração em CSS (`@theme`), não em `tailwind.config.js`          |
 | Supabase     | ssr 0.12 + js 2.117       | Sessão em cookie, renovada no `proxy.ts`                             |

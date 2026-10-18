@@ -44,8 +44,8 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 
 overrides:
-  react: 19.3.0
-  react-dom: 19.3.0
+  react: 19.3.1
+  react-dom: 19.3.1
   playwright-core: 1.64.0
   # Fix pnpm audit vulnerabilities:
   # - postcss-selector-parser: quadratic complexity in flat selector parsing (GHSA-rj75-hqrm-r3gf)
@@ -66,8 +66,8 @@ overrides:
 # travar o install em cada dependência transitiva que declara ^18 || ^19.
 peerDependencyRules:
   allowedVersions:
-    react: '19.3.0'
-    react-dom: '19.3.0'
+    react: '19.3.1'
+    react-dom: '19.3.1'
 
 patchedDependencies:
   '@opennextjs/cloudflare@1.20.10': patches/@opennextjs__cloudflare@1.20.10.patch
