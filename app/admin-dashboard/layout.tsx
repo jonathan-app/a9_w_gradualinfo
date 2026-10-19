@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Garante renderização exclusivamente dinâmica no servidor para toda a área administrativa. */
+export const dynamic = 'force-dynamic';
+
 /**
  * Apresenta somente conteúdo com admissão Worker comprovada.
  * @param props - Filhos administrativos.

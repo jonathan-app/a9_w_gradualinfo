@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "340e0895251912f1bc171026f07fa64bd71cb458",
+  "evaluatedTree": "c30608b28fcb9a038b4808417e124c4b639a27ce",
+  "spec": {
+    "path": "docs/specs/2026-10-18-1825-0027-racionalizacao-testes-scripts-dependencias.md",
+    "sha256": "89154bf629eb64b24d10b30efcbb374b8185e530583c5cab18a7bbf815c3b538"
+  },
+  "acs": [
+    {
+      "id": "test-clean/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1920-0027-racionalizacao-testes-scripts/ac-01-deleted-scripts.txt",
+      "evidenceSha256": "21fbf33b492e472e9f85d16804a98afbb0526054790ab723d7626d66ec28f9c8"
+    },
+    {
+      "id": "test-clean/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1920-0027-racionalizacao-testes-scripts/ac-02-vitest-run.txt",
+      "evidenceSha256": "3c5ec2711eeb18b520a57073617534d69725c964f4733693090c39f66ff56bd7"
+    },
+    {
+      "id": "test-clean/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1920-0027-racionalizacao-testes-scripts/ac-03-migrations-integrity.txt",
+      "evidenceSha256": "a995b572322f7637844a06fd2d0617cf8f88434fa483b4e5ba0ce9e8fa896c2c"
+    },
+    {
+      "id": "test-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1920-0027-racionalizacao-testes-scripts/ac-04-package-dependencies.txt",
+      "evidenceSha256": "ddb0241c693387e1d45272f371f03e83e2a4a38e6c99986cd2ecf80be61692c0"
+    },
+    {
+      "id": "test-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1920-0027-racionalizacao-testes-scripts/ac-05-check-all.txt",
+      "evidenceSha256": "746ccac7d22139b46f7b3255adc01a16e05f89b697dfc2bbf48044cbf948388a"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Remocao de 756 linhas de scripts legados orfaos de deploy Python e validador encerrado sem quebra de contratos."
+    },
+    {
+      "severity": "INFO",
+      "description": "Totalidade de 859 testes Vitest em 83 suites e 10 migrations SQL integralmente preservados."
+    }
+  ]
+}

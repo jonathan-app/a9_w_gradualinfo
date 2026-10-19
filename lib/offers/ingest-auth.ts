@@ -136,15 +136,36 @@ export function verifyIngestSignature(
   );
   const expectedSig = computeIngestSignature(secret, stringToSign);
 
-  const computedBuf = Buffer.from(expectedSig.toLowerCase(), 'utf8');
-  const providedBuf = Buffer.from(cleanSig.toLowerCase(), 'utf8');
-
-  if (
-    computedBuf.length !== providedBuf.length ||
-    !timingSafeEqual(computedBuf, providedBuf)
-  ) {
+  if (!safeCompareHexSignatures(expectedSig, cleanSig)) {
     return { valid: false, reason: 'invalid_signature' };
   }
 
   return { valid: true };
+}
+
+/**
+ * Compara dois hashes hexadecimais em tempo constante para mitigar timing attacks.
+ * Retorna true se ambos forem válidos, possuírem o mesmo comprimento e conteúdo idêntico.
+ */
+export function safeCompareHexSignatures(
+  expectedHex: string,
+  providedHex: string,
+): boolean {
+  if (
+    !expectedHex ||
+    !providedHex ||
+    expectedHex.length !== providedHex.length ||
+    !/^[a-f0-9]+$/i.test(expectedHex) ||
+    !/^[a-f0-9]+$/i.test(providedHex)
+  ) {
+    return false;
+  }
+
+  const expectedBuf = Buffer.from(expectedHex.toLowerCase(), 'utf8');
+  const providedBuf = Buffer.from(providedHex.toLowerCase(), 'utf8');
+
+  return (
+    expectedBuf.length === providedBuf.length &&
+    timingSafeEqual(expectedBuf, providedBuf)
+  );
 }

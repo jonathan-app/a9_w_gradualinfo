@@ -473,4 +473,66 @@ describe('handleIngestOfertas (POST /api/ingest/ofertas)', () => {
     const json = await res.json();
     expect(json.error).toBe('timestamp_out_of_window');
   });
+
+  it('rejeita payload em streaming que excede o limite máximo com 413', async () => {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(encoder.encode('a'.repeat(300_000)));
+        controller.enqueue(encoder.encode('b'.repeat(300_000)));
+        controller.close();
+      },
+    });
+
+    const req = new Request('http://localhost:3000/api/ingest/ofertas', {
+      method: 'POST',
+      headers: {
+        'x-collector-id': 'col-01',
+        'x-timestamp': Math.floor(Date.now() / 1000).toString(),
+        'x-nonce': 'nonce-stream-overflow',
+        'x-signature-sha256': 'sig',
+      },
+      body: stream,
+      // @ts-expect-error duplex
+      duplex: 'half',
+    });
+
+    const res = await handleIngestOfertas(req, { storage, secret });
+    expect(res.status).toBe(413);
+    const json = await res.json();
+    expect(json.error).toBe('payload_too_large');
+  });
+
+  it('sanitiza vazamento de erro de banco de dados no retorno 422 da RPC', async () => {
+    const supabaseMock = createSupabaseMock({
+      rpcHandler: async () => {
+        return {
+          data: null,
+          error: {
+            message:
+              'violates foreign key constraint "fk_offers_merchants" on table "offers"',
+            code: '23503',
+          },
+        };
+      },
+    });
+
+    const req = createSignedRequest(validBody);
+    const res = await handleIngestOfertas(req, {
+      storage,
+      supabaseClient: supabaseMock as any,
+      secret,
+    });
+
+    expect(res.status).toBe(422);
+    const json = await res.json();
+    expect(json.error).toBe('evaluation_transaction_failed');
+    // Garante que não vazou o nome da tabela nem da constraint
+    expect(json.message).not.toContain('fk_offers_merchants');
+    expect(json.message).not.toContain('offers');
+    expect(json.message).toBe(
+      'Não foi possível concluir a avaliação da oferta no banco de dados.',
+    );
+    expect(json.code).toBeUndefined();
+  });
 });

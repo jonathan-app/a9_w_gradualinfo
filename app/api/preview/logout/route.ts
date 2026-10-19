@@ -39,16 +39,18 @@ export async function POST(request: NextRequest) {
   const cookieValue = request.cookies.get(PREVIEW_COOKIE)?.value;
   const grant = readPreviewGrant(cookieValue, env.previewSigningKey);
   let failed = false;
+  let revoked = !grant?.session_id;
 
   // 1. Revogação persistida no Durable Object com consistência forte
   if (grant?.session_id) {
     try {
       const store = getPreviewSessionStore();
-      const revoked = await store.revokeSession(grant.session_id);
+      revoked = await store.revokeSession(grant.session_id);
       if (!revoked) {
         failed = true;
       }
     } catch {
+      revoked = false;
       failed = true;
     }
   }
@@ -86,11 +88,14 @@ export async function POST(request: NextRequest) {
   response.headers.set('Cache-Control', 'private, no-store');
 
   // Limpeza de cookies de preview e auxiliares no cliente
-  const cookiesToClear = new Set<string>([PREVIEW_COOKIE]);
+  const cookiesToClear = new Set<string>();
   request.cookies
     .getAll()
-    .filter(({ name }) => name.startsWith('sb-') || name === PREVIEW_COOKIE)
+    .filter(({ name }) => name.startsWith('sb-'))
     .forEach(({ name }) => cookiesToClear.add(name));
+  if (revoked) {
+    cookiesToClear.add(PREVIEW_COOKIE);
+  }
 
   cookiesToClear.forEach((name) =>
     response.cookies.set(name, '', {

@@ -1,0 +1,154 @@
+Checking formatting...
+All matched files use Prettier code style!
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/editorial-components.test.tsx (11 tests) 517ms
+   ✓ EditorialStory (6)
+     ✓ renderiza variante lead com título e link 372ms
+ ✓ __tests__/unit/app-article-page.test.tsx (6 tests) 518ms
+   ✓ ArticlePage (6)
+     ✓ emite Article e BreadcrumbList com canonical único para artigo publicado 339ms
+ ✓ __tests__/unit/mfa-enrollment-ui.test.tsx (6 tests) 543ms
+   ✓ não consulta matrícula ao renderizar e pede POST somente no clique 332ms
+ ✓ __tests__/unit/editorial-reading.test.tsx (18 tests) 589ms
+   ✓ leitura editorial (6)
+     ✓ liga sumário a títulos repetidos sem incluir código como seção 356ms
+ ✓ __tests__/unit/access-logic.test.ts (29 tests) 1066ms
+ ✓ __tests__/unit/app-home.test.tsx (11 tests) 1011ms
+   ✓ HomePage (11)
+     ✓ renderiza artigos quando existem 410ms
+ ✓ __tests__/unit/app-busca.test.tsx (13 tests) 1123ms
+   ✓ SearchPage (13)
+     ✓ lista o resultado com contagem no singular e link para o artigo 309ms
+ ✓ __tests__/unit/components/admin-components.test.tsx (17 tests) 1158ms
+ ✓ __tests__/integration/spec-0021-real-db-concurrency.test.ts (5 tests) 624ms
+ ✓ __tests__/integration/spec-0018-real-auth.test.ts (16 tests) 3129ms
+   ✓ Spec 0018 — Verificação Empírica Integrada (AC-01 a AC-08) (16)
+     ✓ AC-02: Rejeição na admissão do Worker de tokens inválidos (5)
+       ✓ ignora ADMIN_ACCESS_KEY_PAIR e recusa quando bindings indicam produção (NODE_ENV=production ou gradualinfo.com.br) 539ms
+     ✓ AC-05: Escada de MFA e elevação para AAL2 contra GoTrue local (3)
+       ✓ eleva sessão para AAL2 com código TOTP válido e impede reutilização imediata 667ms
+     ✓ AC-07: Logout seguro no Supabase GoTrue local (1)
+       ✓ revoga a sessão no GoTrue e invalida tokens associados 367ms
+ ✓ __tests__/unit/admin-access-crypto.test.ts (11 tests) 353ms
+ ✓ __tests__/unit/admin-e2e-guard.test.ts (5 tests) 81ms
+ERRO: ADMIN_USER_ID inválido ou ausente. Um UUID fixo válido é obrigatório.
+[ADMIN-MFA-RESET] Consultando fatores cadastrados para o usuário: 11111111-1111-1111-1111-111111111111
+[ADMIN-MFA-RESET] Nenhum fator TOTP encontrado para o usuário 11111111-1111-1111-1111-111111111111. Nenhuma ação necessária.
+ ✓ __tests__/integration/spec-0019-recovery.test.ts (17 tests) 378ms
+ ✓ __tests__/unit/sanity-client.test.ts (14 tests) 179ms
+ ✓ __tests__/unit/admin-rate-limit.test.ts (17 tests) 129ms
+ ✓ __tests__/unit/lib/offers/spec-0021-worm-pipeline.test.ts (15 tests) 387ms
+   ✓ Spec 0021: WORM durável e infraestrutura do pipeline (15)
+     ✓ FilesystemEvidenceStorageAdapter (AC-02 e AC-04) (12)
+       ✓ trata dois processos independentes sincronizados por barreira disputando a mesma chave com payload idêntico (AC-02 e AC-04) 343ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 404ms
+ ✓ __tests__/unit/admin-rate-limit-protocol.test.ts (8 tests) 98ms
+ ✓ __tests__/unit/sanity-probe-home.test.tsx (5 tests) 412ms
+   ✓ Spec 0006 (Seção 3.C) — Indisponibilidade Editorial em Duas Camadas (5)
+     ✓ 2. Bloco Honesto de Indisponibilidade (EditorialIndisponivel) (1)
+       ✓ renderiza título e copy exatos definidos na spec 321ms
+ ✓ __tests__/unit/editorial-logs-reader.test.tsx (1 test) 250ms
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 87ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 126ms
+ ✓ __tests__/unit/admin-mfa-enrollment.test.ts (16 tests) 86ms
+ ✓ __tests__/unit/preview-failure-status.test.ts (12 tests) 149ms
+ ✓ __tests__/unit/config-admin-access.test.ts (21 tests) 5948ms
+   ✓ validacao local: mesmo rechaco de readAdminAccessConfig (15)
+     ✓ reprova valor com espaco sobrando 359ms
+   ✓ publicacao: wrangler secret put (2)
+     ✓ envia cada valor pelo stdin do wrangler, um secret por nome 1168ms
+     ✓ interrompe na primeira falha do wrangler sem publicar os demais 527ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 50ms
+ ✓ __tests__/unit/preview-security.test.ts (10 tests) 70ms
+ ✓ __tests__/unit/structured-data.test.tsx (5 tests) 78ms
+ ✓ __tests__/unit/durable-object.test.ts (25 tests) 53ms
+ ✓ __tests__/unit/admin-hardening.test.ts (16 tests) 143ms
+ ✓ __tests__/unit/admin-auth-lifecycle.test.ts (13 tests) 77ms
+ ✓ __tests__/integration/preview-cookie-reuse.test.ts (12 tests) 58ms
+ ✓ __tests__/unit/lib/format.test.ts (28 tests) 73ms
+ ✓ __tests__/unit/admin-auth.test.ts (29 tests) 43ms
+ ✓ __tests__/unit/lib/offers/route-ingest-ofertas.test.ts (10 tests) 64ms
+ ✓ __tests__/unit/mfa-verify-route.test.ts (18 tests) 83ms
+ ✓ __tests__/unit/preview-route.test.ts (12 tests) 57ms
+ ✓ __tests__/unit/lib/offers/route-avaliar-selo.test.ts (12 tests) 103ms
+ ✓ __tests__/unit/admin-logout.test.ts (3 tests) 34ms
+ ✓ __tests__/unit/lib/search-posts.test.ts (10 tests) 60ms
+ ✓ __tests__/unit/sitemap.test.ts (16 tests) 55ms
+stdout | __tests__/unit/lib/offers/route-ofertas.test.ts > handleGetOfertas (GET /api/ofertas - Spec 0021) > sanitiza erros do banco e retorna HTTP 503 opaco fail-closed (AC-05)
+{"level":"info","scope":"api/ofertas","event":{"event":"query_error","code":"42P01"}}
+
+ ✓ __tests__/unit/lib/offers/route-ofertas.test.ts (4 tests) 35ms
+ ✓ __tests__/unit/lib/offers/route-out-redirect.test.ts (14 tests) 34ms
+ ✓ __tests__/unit/supabase-middleware.test.ts (15 tests) 44ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (15 tests) 76ms
+ ✓ __tests__/unit/lib/offers/webhook-auth.test.ts (8 tests) 85ms
+ ✓ __tests__/unit/lib/offers/route-evidencias.test.ts (5 tests) 26ms
+ ✓ __tests__/unit/lib/offers/r2-adapter.test.ts (12 tests) 34ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 10906ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 583ms
+     ✓ rejeita missing 506ms
+     ✓ rejeita duplicate 435ms
+     ✓ rejeita extra 541ms
+     ✓ rejeita fail 703ms
+     ✓ rejeita unverifiable 671ms
+     ✓ rejeita missing-proof 597ms
+     ✓ rejeita bad-hash 535ms
+     ✓ rejeita blocker 551ms
+     ✓ rejeita malformed 726ms
+     ✓ rejeita adulteração de commit 585ms
+     ✓ rejeita adulteração de tree 650ms
+     ✓ rejeita adulteração de spec 619ms
+     ✓ rejeita adulteração de counts 590ms
+     ✓ rejeita aprovação antiga com --commit atual após commit real 756ms
+     ✓ rejeita árvore suja mesmo sem alterar o SHA 612ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 920ms
+     ✓ rejeita spec Proposed mesmo com hash correspondente 318ms
+ ✓ __tests__/unit/admin-dashboard-routes.test.ts (3 tests) 21ms
+ ✓ __tests__/unit/admin-login-route.test.ts (6 tests) 32ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 27ms
+ ✓ __tests__/unit/supabase-server.test.ts (12 tests) 86ms
+ ✓ __tests__/unit/admin-access-worker.test.ts (5 tests) 48ms
+ ✓ __tests__/unit/preview-durable-object.test.ts (7 tests) 31ms
+ ✓ __tests__/unit/lib/offers/outlier-classifier.test.ts (13 tests) 15ms
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 40ms
+ ✓ __tests__/unit/preview-auth-accessible.test.ts (10 tests) 40ms
+ ✓ __tests__/unit/admin-auth-utils.test.ts (24 tests) 27ms
+ ✓ __tests__/unit/lib/utils/api-response.test.ts (5 tests) 29ms
+ ✓ __tests__/unit/admin-session-response.test.ts (6 tests) 24ms
+ ✓ __tests__/unit/lib/commercial-dashboard.test.ts (4 tests) 17ms
+ ✓ __tests__/unit/admin-access.test.ts (20 tests) 33ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 23ms
+ ✓ __tests__/unit/access-guard.test.ts (17 tests) 35ms
+ ✓ __tests__/unit/lib/editorial-images.test.ts (15 tests) 29ms
+ ✓ __tests__/unit/security-headers.test.ts (9 tests) 13ms
+ ✓ __tests__/unit/lib/offers/memory-adapter.test.ts (10 tests) 22ms
+ ✓ __tests__/unit/lib/utils/http-stream.test.ts (5 tests) 23ms
+ ✓ __tests__/unit/logger.test.ts (3 tests) 22ms
+ ✓ __tests__/unit/proxy.test.ts (6 tests) 35ms
+ ✓ __tests__/unit/lib/editorial-dashboard.test.ts (3 tests) 18ms
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 11ms
+ ✓ __tests__/unit/lib/offers/evidence-canonicalizer.test.ts (7 tests) 18ms
+ ✓ __tests__/unit/lib/offers/verified-price-pipeline.test.ts (5 tests) 19ms
+ ✓ __tests__/unit/audit-logger.test.ts (2 tests) 17ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 14ms
+ ✓ __tests__/unit/lib/offers/shipping-validation.test.ts (12 tests) 14ms
+ ✓ __tests__/unit/lib/offers/coupon-validation.test.ts (6 tests) 8ms
+ ✓ __tests__/unit/lib/local-editorial-covers.test.ts (2 tests) 9ms
+ ✓ __tests__/unit/lib/health-dashboard.test.ts (2 tests) 8ms
+ ✓ __tests__/unit/lib/offers/variant-validation.test.ts (4 tests) 6ms
+ ✓ __tests__/unit/seo-metadata.test.ts (7 tests) 10ms
+
+ Test Files  83 passed (83)
+      Tests  859 passed (859)
+   Start at  19:18:39
+   Duration  18.01s (environment 54%, tests 21%, setup 15%, import 7%, worker 2%, transform 2%)
+
+Environment  jsdom was created 83 times · 83.05s total, 54% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+Gitleaks: 0 findings redigidos, histórico e árvore.
+Semgrep: 0 findings ERROR.

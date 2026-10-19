@@ -1,35 +1,100 @@
 # .gitattributes — gradualinfo
 #
-# Configurações de atributos git e regras de exclusão de exportação
-# (consumidas por git archive e scripts/export-template.mjs)
+# Objetivo:
+# - Normalizar finais de linha.
+# - Excluir artefatos de desenvolvimento e arquivos sensíveis de `git archive`.
+#
+# IMPORTANTE:
+# `export-ignore` afeta apenas exportações via `git archive` e ferramentas
+# que respeitam esse atributo. NÃO impede `git add`, commits ou push.
+# Use também `.gitignore`, secret scanning e regras de proteção no GitHub.
 
+# Normalização de texto
 * text=auto eol=lf
 
-# Export ignore: artefatos que não devem entrar no pacote de distribuição
+# ---------------------------------------------------------------------------
+# Artefatos de repositório, ferramentas e build
+# ---------------------------------------------------------------------------
 .git export-ignore
-.github export-ignore
+# .github preservado para manter workflows de CI e automacao de seguranca no template
 .husky export-ignore
 .kilo export-ignore
 .agents export-ignore
 .open-next export-ignore
+.next export-ignore
 dist export-ignore
+build export-ignore
+out export-ignore
 node_modules export-ignore
+coverage export-ignore
 test-results export-ignore
 playwright-report export-ignore
+blob-report export-ignore
 ci-results export-ignore
+security-reports export-ignore
+.lighthouseci export-ignore
+.turbo export-ignore
+.vercel export-ignore
+.wrangler export-ignore
+.terraform export-ignore
+.serverless export-ignore
 *.tsbuildinfo export-ignore
 verify-result.json export-ignore
 
+# ---------------------------------------------------------------------------
+# Arquivos locais e credenciais que nunca devem entrar em um template exportado
+# Não use padrões amplos que excluam `.env.example` ou exemplos documentados.
+# ---------------------------------------------------------------------------
+.env export-ignore
+.env.local export-ignore
+.env.development.local export-ignore
+.env.test.local export-ignore
+.env.production.local export-ignore
+.env.development export-ignore
+.env.production export-ignore
+.dev.vars export-ignore
+.dev.vars.* export-ignore
+# .npmrc contem configuracao essencial de linker plano do pnpm para o projeto, sem credenciais
+.netrc export-ignore
+.pypirc export-ignore
+*.pem export-ignore
+*.key export-ignore
+*.p12 export-ignore
+*.pfx export-ignore
+*.keystore export-ignore
+id_rsa export-ignore
+id_dsa export-ignore
+id_ecdsa export-ignore
+id_ed25519 export-ignore
+credentials.json export-ignore
+service-account*.json export-ignore
+secrets/ export-ignore
+private/ export-ignore
+.local/ export-ignore
+localhost-cert.pem export-ignore
+localhost-key.pem export-ignore
 
-# Saídas geradas não pertencem ao template exportado.
-.next export-ignore
-coverage export-ignore
-security-reports export-ignore
-.lighthouseci export-ignore
+# Arquivos locais que podem conter sessões, cookies ou dados privados
+*storage-state*.json export-ignore
+*playwright-auth*.json export-ignore
+*.har export-ignore
+*.log export-ignore
+*.sqlite export-ignore
+*.sqlite3 export-ignore
+*.db export-ignore
+*.dump export-ignore
+*.sql.gz export-ignore
+*.bak export-ignore
+*.backup export-ignore
+*.orig export-ignore
+*.rej export-ignore
+*~ export-ignore
+.DS_Store export-ignore
+Thumbs.db export-ignore
 
-# Artefatos de auditoria/processo não pertencem ao template exportado.
-# Caminhos antigos (raiz) referenciam o estado pré-2026-10-10; os novos
-# estão sob docs/ e scripts/, pelo mesmo critério de export-ignore.
+# ---------------------------------------------------------------------------
+# Documentação e saídas temporais de auditoria/processo fora do template
+# ---------------------------------------------------------------------------
 docs/audits/2026-10-07-1350-BRANCHES.md export-ignore
 docs/audits/2026-10-07-1350-plano-atualizacao-auditoria.md export-ignore
 docs/audits/2026-10-08-2228-revalidacao-3fd3e50.md export-ignore
@@ -43,6 +108,11 @@ revalidacao-3fd3e50.md export-ignore
 GUIA-RAPIDO-SKILLS.md export-ignore
 skills-load-config.md export-ignore
 verify-result.json export-ignore
-localhost-cert.pem export-ignore
-localhost-key.pem export-ignore
 docs.zip export-ignore
+2026-10-10-0717-state-build.patch export-ignore
+docs/reviews/2026-10-07-1040-2026-10-07-md0002-inventario-diff.patch export-ignore
+
+# ---------------------------------------------------------------------------
+# Exemplos de configuração devem continuar disponíveis no template.
+# Não adicionar `.env.example` nem exemplos fictícios a listas de exclusão.
+# ---------------------------------------------------------------------------

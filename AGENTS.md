@@ -265,9 +265,11 @@ Formato obrigatório do bloco final:
 
 ## Portão de qualidade
 
-`pnpm check:all` é o que a CI roda, na mesma ordem: typecheck, lint,
-formatação, testes. Hook de commit roda a checagem de vazamento de env, a
+`pnpm check:all` é o que a CI e os ganchos locais rodam, na mesma ordem:
+typecheck, lint, formatação, testes e segurança estática (Gitleaks e Semgrep via `security:all`). Hook de commit roda a checagem de vazamento de env, a
 formatação dos arquivos staged e o typecheck; commit não pode custar minutos.
+O hook de pré-push (`.husky/pre-push`) e o comando `pnpm deploy:full` bloqueiam
+qualquer envio caso `check:all` ou a segurança estática falhem.
 A CI tem seis jobs: quality (check:all, typecheck E2E, `pnpm audit
 --audit-level=high` e OSV scan), security (gitleaks sobre o histórico
 inteiro e semgrep), e2e, database (pgTAP), lighthouse e check-gate. Ela roda
@@ -278,7 +280,7 @@ minutos/mês) sem rodar a mesma árvore duas vezes.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
 Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
-ficam em 60. Medido em 2026-10-17: 858 testes em 83 suites Vitest (sendo 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros e 5 de integração de concorrência e idempotência com banco de dados real local), 171 testes pgTAP em 6 arquivos no banco local Supabase,
+ficam em 60. Medido em 2026-10-18: 859 testes em 83 suites Vitest (sendo 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros, 10 de utilitários de stream e respostas de erro da API e 5 de integração de concorrência e idempotência com banco de dados real local), 171 testes pgTAP em 6 arquivos no banco local Supabase,
 26 testes Playwright Editorial (2 suites), 7 testes Playwright Admin Auth/Recovery real (3 Auth e 4 Recovery), 1 teste Playwright Admin Operational Dashboard exit 0, 4 testes Playwright de auditoria de SEO em `e2e/seo-audit.spec.ts` contra build de produção e 7 testes Playwright de busca e recorte em `e2e/search-flow.spec.ts` (totalizando 45 testes Playwright). Subir o piso acima do que o
 projeto mede esconde o número em vez de avisar.
 

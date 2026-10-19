@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "bcdccfbb7914f6ced419397fdef216d580493f15",
+  "evaluatedTree": "afdf4cd16010fa169fbf3273ee7c7d9fe1b75f84",
+  "spec": {
+    "path": "docs/specs/2026-10-18-1725-0026-rotas-tratamento-erros.md",
+    "sha256": "88d69aeec77b844ff86060fad64ec024501bddff732505741b21847ba13160db"
+  },
+  "acs": [
+    {
+      "id": "route-clean/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1745-0026-rotas-tratamento-erros/ac-01-streaming-limit.md",
+      "evidenceSha256": "437ae4fb9ddd5f69e7abf19a2b4300f435225591dea7585c9b926886758df41c"
+    },
+    {
+      "id": "route-clean/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1745-0026-rotas-tratamento-erros/ac-02-rpc-sanitization.md",
+      "evidenceSha256": "45e5e2b7da3ceafee4c8a64fa932e35249d193bcace3e48c01ff6bfd7542c13a"
+    },
+    {
+      "id": "route-clean/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1745-0026-rotas-tratamento-erros/ac-03-api-error-response.md",
+      "evidenceSha256": "e04f99b134871ff623ed1097420834df162b0b03c02519b86f09f131811ca382"
+    },
+    {
+      "id": "route-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1745-0026-rotas-tratamento-erros/ac-04-require-admin-session.md",
+      "evidenceSha256": "1e8260aed1a590d33e63ff3d55bde3545e0145cfad0f98157ed923b69ccbd9d2"
+    },
+    {
+      "id": "route-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-1745-0026-rotas-tratamento-erros/ac-05-check-all-clean.md",
+      "evidenceSha256": "67ae2d23fbb5fbbd3d46f142a69652f197ac456f0397eca75b6fe775e8a8ef01"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Consumo progressivo de streams implementado com Web Streams nativo sem dependencias externas protegendo a memoria do Worker."
+    },
+    {
+      "severity": "INFO",
+      "description": "Sanitizacao de erros de banco de dados mascara detalhes de esquema nas respostas de erro de ofertas."
+    }
+  ]
+}

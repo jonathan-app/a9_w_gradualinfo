@@ -17,6 +17,7 @@ cupons, canonização de evidências e retenção imutável WORM.
 - `outlier-classifier.ts`: classificador de preços anômalos (> 50% relativo com salvaguarda cumulativa de R$ 25 para itens < R$ 50) blindando a mediana.
 - `verified-price-pipeline.ts`: integrador do pipeline transacional com expiração máxima de 24 horas.
 - `evidence-canonicalizer.ts`: serialização canônica pura compatível com RFC 8785 (JCS) e digest SHA-256.
+- `ingest-auth.ts`: autenticação e verificação de assinatura HMAC para coletores de ofertas com cálculo compartilhado de digest e comparação em tempo constante via `safeCompareHexSignatures`.
 - `webhook-auth.ts`: verificação de assinatura HMAC-SHA256 com janela de 300s e `MemoryNonceCache` anti-replay (auto-sweep a cada 60s e teto FIFO de 5000 entradas).
 - `service-client.ts`: cliente isolado com `server-only` consumindo `service_role` com cookies e sessões desativadas para execução segura de RPCs com privilégio elevado (`evaluate_and_set_verified_price`).
 - `storage/evidence-storage-adapter.ts`: contratos tipados e classes de erro do storage probatório.

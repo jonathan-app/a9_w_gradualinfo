@@ -1,0 +1,4 @@
+react-icons in package.json dependencies: false
+react-icons in package.json devDependencies: false
+react-icons in pnpm-lock.yaml: false
+[PASS] Dependencia react-icons removida com sucesso de package.json e pnpm-lock.yaml.

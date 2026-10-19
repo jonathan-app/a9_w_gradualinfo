@@ -98,8 +98,8 @@ export async function createClient(
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       totp: {
-        secret: 'MOCK_SECRET_KEY',
-        uri: 'otpauth://totp/GradualInfo:admin?secret=MOCK_SECRET_KEY&issuer=GradualInfo',
+        secret: '',
+        uri: '',
       },
     };
 

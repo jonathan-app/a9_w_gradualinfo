@@ -23,12 +23,26 @@ supabase/.branches/
 supabase/.temp/
 supabase/volumes/
 
+# Bancos de dados e despejos locais
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
 # testing
 coverage/
 playwright-report/
+blob-report/
 test-results/
 ci-results/
+verify-result.json
+.lighthouseci/
 *.lcov
+# Arquivos de sessao, cookies e gravacoes de rede de testes
+*storage-state*.json
+*playwright-auth*.json
+*.har
 
 # storybook
 storybook-static/
@@ -37,6 +51,13 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
+Thumbs.db
+# Residuos de mesclagem, edicao e copias temporarias
+*.bak
+*.backup
+*.orig
+*.rej
+*~
 
 # Environment files and backups, inclusive em subpastas.
 .env*
@@ -50,6 +71,12 @@ storybook-static/
 *.p12
 *.pfx
 *.keystore
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+.netrc
+.pypirc
 secrets/
 secrets.*
 credentials/
@@ -58,9 +85,14 @@ service-account*.json
 *.secret
 *.secrets
 *.credentials
+private/
+.local/
 
-# Vercel
+# Vercel & Caches / Cloud
 .vercel/
+.turbo/
+.terraform/
+.serverless/
 
 # TypeScript
 *.tsbuildinfo

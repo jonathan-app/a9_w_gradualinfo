@@ -1,0 +1,70 @@
+$ next build --turbopack
+▲ Next.js 16.4.0 (Turbopack)
+- Environments: .env.local
+The Next Bundle Analyzer is not compatible with Turbopack builds, no report will be generated.
+
+Consider trying the new Turbopack analyzer via `next analyze`.
+
+See https://nextjs.org/docs/app/guides/package-bundling for more information
+
+To run this analysis pass the `--webpack` flag to `next build`
+✓ Running next.config.ts took 31ms
+- Experiments (use with caution):
+  ✓ authInterrupts
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1062ms
+  Running TypeScript ...
+  Finished TypeScript in 3.3s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/23) ...
+  Generating static pages using 11 workers (5/23) 
+  Generating static pages using 11 workers (11/23) 
+  Generating static pages using 11 workers (17/23) 
+✓ Generating static pages using 11 workers (23/23) in 1333ms
+  Finalizing page optimization ...
+
+Route (app)                                      Revalidate  Expire
+┌ ƒ /
+├ ○ /_not-found                                          1m      1y
+├ ƒ /admin-dashboard
+├ ƒ /admin-dashboard/login
+├ ƒ /admin-dashboard/mfa/setup
+├ ƒ /admin-dashboard/mfa/verify
+├ ƒ /admin-dashboard/recovery/request
+├ ƒ /admin-dashboard/recovery/update-password
+├ ƒ /api/admin/auth/login
+├ ƒ /api/admin/auth/logout
+├ ƒ /api/admin/auth/mfa/enroll
+├ ƒ /api/admin/auth/mfa/verify
+├ ƒ /api/admin/auth/recovery
+├ ƒ /api/admin/auth/recovery/callback
+├ ƒ /api/admin/auth/recovery/update-password
+├ ƒ /api/admin/dashboard/health
+├ ƒ /api/admin/dashboard/rotinas/refresh-health
+├ ƒ /api/admin/evidencias/[hash]
+├ ƒ /api/admin/ofertas/[id]/avaliar-selo
+├ ƒ /api/admin/preview
+├ ƒ /api/health
+├ ƒ /api/ingest/ofertas
+├ ƒ /api/ofertas
+├ ƒ /api/out/[id]
+├ ƒ /api/preview
+├ ƒ /api/preview/logout
+├ ○ /apple-icon.png
+├ ƒ /artigos/[slug]
+├ ƒ /busca
+├ ○ /exemplo                                             1m      1y
+├ ○ /icon.png
+├ ○ /opengraph-image.png
+├ ƒ /preview
+├ ○ /robots.txt
+├ ƒ /sitemap.xml
+└ ƒ /sitemap/[editoria]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

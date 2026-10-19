@@ -21,6 +21,9 @@ export default async function ProtectedAdminLayout({
   children: React.ReactNode;
 }) {
   const auth = await checkAdminUser();
+  if (auth instanceof Response) {
+    throw new Error('Admissão administrativa indisponível.');
+  }
 
   if (!auth.ok) {
     if (auth.reason === 'unauthenticated') {

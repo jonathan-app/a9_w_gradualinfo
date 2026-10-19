@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "340e0895251912f1bc171026f07fa64bd71cb458",
+  "evaluatedTree": "c1f4c9f408968a9ac21b3e192045fe867bd37e1c",
+  "spec": {
+    "path": "docs/specs/2026-10-18-2100-0028-consolidacao-faxina-backend.md",
+    "sha256": "6ae6ed5d03b27f001ad7c73685f4eac1febc8744ea60aab7f62d482b91d6fb65"
+  },
+  "acs": [
+    {
+      "id": "consolidate-clean/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-2110-0028-consolidacao-faxina/ac-01-check-all.txt",
+      "evidenceSha256": "78d9f8d37e0190d0945ef83ac8c6a4b7a4a2620ac86b8adb7b991ab399c5db63"
+    },
+    {
+      "id": "consolidate-clean/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-2110-0028-consolidacao-faxina/ac-02-supabase-test.txt",
+      "evidenceSha256": "462fe296ad0d82949c0c87c5cd11aed1d650fb34c5a71f2f69c5b4f617bbf3fd"
+    },
+    {
+      "id": "consolidate-clean/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-2110-0028-consolidacao-faxina/ac-03-security-secrets.txt",
+      "evidenceSha256": "88f4eff965acf19b19f43c322cbda073f01e3692faf405aa016dac2f80c5ac99"
+    },
+    {
+      "id": "consolidate-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-2110-0028-consolidacao-faxina/ac-04-build-next.txt",
+      "evidenceSha256": "72a0ecfae97a3798b4e8a22d763501e01bc32b6681dd90921e556a09af0d5762"
+    },
+    {
+      "id": "consolidate-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-18-2110-0028-consolidacao-faxina/ac-05-consolidation-report.txt",
+      "evidenceSha256": "cd9cff79624b10e8e5e6e39c84037727c39a13cb5cc9403bf47267a79e1396bf"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Portao consolidado local check:all aprovado com 859 testes Vitest em 83 suites e zero achados de segredos."
+    },
+    {
+      "severity": "INFO",
+      "description": "Bateria de 171 testes pgTAP no Supabase local aprovada integralmente com zero alteracoes em migrations."
+    },
+    {
+      "severity": "INFO",
+      "description": "Compilacao de producao Turbopack aprovada com 23 rotas e zero erros de tipo."
+    }
+  ]
+}

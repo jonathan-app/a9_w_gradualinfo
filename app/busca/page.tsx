@@ -2,11 +2,12 @@
  * @fileoverview Página pública de pesquisa de artigos.
  * @module app/busca/page
  * @description Pesquisa por título, resumo, editoria e texto nos artigos com recorte por categoria e tolerância a erros de digitação.
- * @dependencies lib/services/posts, lib/utils/search-posts, lib/supabase/server.
+ * @dependencies lib/services/posts, lib/utils/search-posts, lib/supabase/server,
+ *   components/shared/icons.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LuArrowUpRight, LuSearch } from 'react-icons/lu';
+import { ArrowUpRightIcon, SearchIcon } from '@/components/shared/icons';
 import { getPublishedPosts, type Post } from '@/lib/services/posts';
 import { createPublicClient } from '@/lib/supabase/server';
 import { searchPostsWithFilters } from '@/lib/utils/search-posts';
@@ -82,7 +83,7 @@ export default async function SearchPage({
     <main className={styles.page}>
       <div className={styles.intro}>
         <span className={styles.eyebrow}>
-          <LuSearch aria-hidden="true" /> EXPLORE O GRADUALINFO
+          <SearchIcon aria-hidden="true" /> EXPLORE O GRADUALINFO
         </span>
         <h1>O que você quer aprender hoje?</h1>
         <p>Busque por assunto, tecnologia ou uma dúvida de programação.</p>
@@ -90,7 +91,7 @@ export default async function SearchPage({
           <label className="sr-only" htmlFor="article-search">
             Pesquisar artigos
           </label>
-          <LuSearch aria-hidden="true" />
+          <SearchIcon aria-hidden="true" />
           <input
             id="article-search"
             name="q"
@@ -182,7 +183,7 @@ export default async function SearchPage({
                       <h3>
                         <Link href={`/artigos/${post.slug}`}>
                           {post.title}
-                          <LuArrowUpRight aria-hidden="true" />
+                          <ArrowUpRightIcon aria-hidden="true" />
                         </Link>
                       </h3>
                       {post.excerpt && <p>{post.excerpt}</p>}

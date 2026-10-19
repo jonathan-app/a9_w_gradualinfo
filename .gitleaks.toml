@@ -33,12 +33,15 @@ paths = [
   '''\.agents/''',
   '''node_modules/''',
   '''\.next/''',
+  '''\.next-editorial/''',
   '''security-reports/''',
   '''coverage/''',
-  # supabase/.temp é stack local descartável e já está no .gitignore; o
-  # próprio scan `dir` não deveria subir por ali, mas ainda subia porque a
-  # varredura atual não respeita .gitignore.
   '''supabase/.temp''',
+  # Saídas de compilação e bundles intermediários do Cloudflare Worker / OpenNext.
+  # Já estão no .gitignore; paths allowlistados impedem falsos positivos em scan dir direto.
+  '''\.open-next/''',
+  '''open-next/''',
+  '''\.wrangler/''',
   # Mapa skill → sha256 no arquivo de quarentena (algorithm sha256-path-content-v1).
   # O gitleaks lê o valor hexadecimal como token Sentry — falso positivo,
   # não é credencial.

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "340e0895251912f1bc171026f07fa64bd71cb458",
+  "evaluatedTree": "c30608b28fcb9a038b4808417e124c4b639a27ce",
+  "spec": {
+    "path": "docs/specs/2026-10-19-0930-0030-racionalizacao-icones-ui-svg.md",
+    "sha256": "6f7adb9a23f77d66a77c7f2fdd5f595e590913e2143f272874f5c9d17150d400"
+  },
+  "acs": [
+    {
+      "id": "icon-clean/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1050-0030-racionalizacao-icones/ac-01-svg-components.txt",
+      "evidenceSha256": "34aa4a893751b6f6c3cdacfc80da0915ca415c7913c33ce5ed3a8be5dc01c260"
+    },
+    {
+      "id": "icon-clean/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1050-0030-racionalizacao-icones/ac-02-app-busca.txt",
+      "evidenceSha256": "df0701cd31b9b16aedfb4d127bc28c80e76ae17042eaf6160ee33cd8e33a9d21"
+    },
+    {
+      "id": "icon-clean/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1050-0030-racionalizacao-icones/ac-03-header-theme.txt",
+      "evidenceSha256": "b81591f299d87e70e46ce41486d83f43ff3238c65ae33a9e7fa71fd5c296586f"
+    },
+    {
+      "id": "icon-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1050-0030-racionalizacao-icones/ac-04-dependency-removal.txt",
+      "evidenceSha256": "ee9127f12af9201fa561b75ccdb4087721a0cedcf7b7d327a6231928a053f682"
+    },
+    {
+      "id": "icon-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1050-0030-racionalizacao-icones/ac-05-check-all.txt",
+      "evidenceSha256": "15021d4a99fb800476cfe02e0447da0c2af0ce1c916af9e3a73181618418ff6e"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Criados 5 componentes SVG nativos isolados em components/shared/icons com currentColor e propriedades de acessibilidade."
+    },
+    {
+      "severity": "INFO",
+      "description": "Migrados com sucesso todos os consumidores em app/busca, site-header e theme-toggle, mantendo 100 por cento de fidelidade visual."
+    },
+    {
+      "severity": "INFO",
+      "description": "Pacote react-icons removido integralmente de package.json e pnpm-lock.yaml sem nenhum import residual no codigo fonte."
+    },
+    {
+      "severity": "INFO",
+      "description": "Portao consolidado local check:all aprovado com 865 testes Vitest em 84 suites, typecheck limpo, lint limpo, formatacao e zero segredos."
+    }
+  ]
+}

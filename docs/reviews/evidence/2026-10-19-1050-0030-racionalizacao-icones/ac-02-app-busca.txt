@@ -1,0 +1,17 @@
+hasSearchIconImport: true
+hasReactIcons: false
+hasLuSearch: false
+hasLuArrow: false
+usesSearchIcon count: 2
+usesArrowIcon count: 1
+[PASS] app/busca/page.tsx verificado com sucesso.
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/app-busca.test.tsx (13 tests) 413ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  10:52:31
+   Duration  1.46s (environment 47%, tests 32%, import 10%, setup 8%, transform 2%, worker 1%)
+

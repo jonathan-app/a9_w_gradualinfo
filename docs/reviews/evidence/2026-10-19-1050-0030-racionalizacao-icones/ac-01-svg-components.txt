@@ -1,0 +1,24 @@
+Arquivos em components/shared/icons: [
+  'arrow-up-right-icon.tsx',
+  'home-icon.tsx',
+  'index.ts',
+  'moon-icon.tsx',
+  'search-icon.tsx',
+  'sun-icon.tsx',
+  'types.ts'
+]
+[PASS] arrow-up-right-icon.tsx: viewBox=true, currentColor=true, strokeWidth=true, fillNone=true, aria=true, size=true
+[PASS] home-icon.tsx: viewBox=true, currentColor=true, strokeWidth=true, fillNone=true, aria=true, size=true
+[PASS] moon-icon.tsx: viewBox=true, currentColor=true, strokeWidth=true, fillNone=true, aria=true, size=true
+[PASS] search-icon.tsx: viewBox=true, currentColor=true, strokeWidth=true, fillNone=true, aria=true, size=true
+[PASS] sun-icon.tsx: viewBox=true, currentColor=true, strokeWidth=true, fillNone=true, aria=true, size=true
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/icons.test.tsx (6 tests) 49ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  10:52:15
+   Duration  986ms (environment 74%, setup 13%, tests 6%, import 4%, transform 2%, worker 1%)
+

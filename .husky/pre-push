@@ -22,7 +22,15 @@ echo "  [3/4] Verificando formatação (Prettier)..."
 pnpm format:check
 
 # 4. Testes Unitários
-echo "  [4/4] Executando suíte de testes (Vitest)..."
+echo "  [4/6] Executando suíte de testes (Vitest)..."
 pnpm test:run
+
+# 5. Varredura de Segredos
+echo "  [5/6] Verificando segredos e credenciais (Gitleaks)..."
+pnpm security:secrets
+
+# 6. Análise Estática de Segurança
+echo "  [6/6] Executando análise estática de segurança (Semgrep)..."
+pnpm security:sast
 
 echo "✅ Todas as verificações e testes passaram com sucesso! Liberando o push."

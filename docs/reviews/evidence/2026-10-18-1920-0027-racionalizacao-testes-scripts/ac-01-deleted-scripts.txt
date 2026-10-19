@@ -1,0 +1,11 @@
+scripts/deploy-version.py: exists=False
+scripts/compare-versions.py: exists=False
+scripts/check-version-readonly.py: exists=False
+test_deploy_version.py: exists=False
+scripts/verify-spec-0016.mjs: exists=False
+Git status: D  scripts/check-version-readonly.py
+Git status: D  scripts/compare-versions.py
+Git status: D  scripts/deploy-version.py
+Git status: D  scripts/verify-spec-0016.mjs
+Git status: D  test_deploy_version.py
+AC-01 VERIFIED PASS: All 5 dead scripts removed from disk and staged in git.

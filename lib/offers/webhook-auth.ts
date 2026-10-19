@@ -6,12 +6,14 @@
  * @dependencies node:crypto
  */
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac } from 'node:crypto';
+import { safeCompareHexSignatures } from './ingest-auth';
 
 /**
- * Cache em memória de nonces para mitigação de replay em ambiente monoprocesso / testes locais.
- * Dívida técnica consciente: em ambiente distribuído multi-edge de produção,
- * este cache deve ser substituído por Cloudflare KV, Durable Objects ou tabela no PostgreSQL.
+ * Cache em memória de nonces para mitigação de replay estritamente em ambiente monoprocesso / testes locais.
+ * ATENÇÃO: utilitário exclusivo para testes unitários ou desenvolvimento local.
+ * Em ambiente distribuído multi-edge de produção (Cloudflare Workers), a ingestão de coletores
+ * exige persistência no PostgreSQL (tabela offers_ingest_nonces) conforme Spec 0021 / Spec 0025.
  */
 export class MemoryNonceCache {
   private readonly nonces = new Map<string, number>();
@@ -185,14 +187,7 @@ export async function verifyWebhookSignature(
     return { valid: false, reason: 'invalid_webhook_signature' };
   }
 
-  // Comparação segura em tempo constante contra timing attacks
-  const computedBuf = Buffer.from(computedHex.toLowerCase(), 'utf8');
-  const providedBuf = Buffer.from(cleanSignature.toLowerCase(), 'utf8');
-
-  if (
-    computedBuf.length !== providedBuf.length ||
-    !timingSafeEqual(computedBuf, providedBuf)
-  ) {
+  if (!safeCompareHexSignatures(computedHex, cleanSignature)) {
     return { valid: false, reason: 'invalid_webhook_signature' };
   }
 

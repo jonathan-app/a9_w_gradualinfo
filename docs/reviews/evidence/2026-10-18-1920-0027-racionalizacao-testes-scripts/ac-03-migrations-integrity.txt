@@ -1,0 +1,13 @@
+Total migration files: 10
+ - 20261003000000_profiles_foundation.sql
+ - 20261004000000_posts_exemplo.sql
+ - 20261005000000_posts_schema_editorial.sql
+ - 20261005000001_posts_rls_preview.sql
+ - 20261005000002_posts_comment_correction.sql
+ - 20261013000000_modulo_ofertas_historico_precos.sql
+ - 20261013010000_modulo_ofertas_classificador_outliers.sql
+ - 20261013020000_modulo_ofertas_elegibilidade_frete.sql
+ - 20261013030000_modulo_ofertas_pipeline_selo_cupons.sql
+ - 20261016230000_modulo_ofertas_ingest_idempotencia.sql
+Git status on supabase/migrations: CLEAN (no modifications)
+AC-03 VERIFIED PASS: All 10 SQL migrations intact, zero diff.

@@ -73,7 +73,7 @@ export default function RootLayout({
     // `suppressHydrationWarning`: o next-themes escreve a classe `dark`/`light`
     // no <html> antes do React hidratar. A diferença entre o HTML do servidor
     // e o do cliente neste atributo é esperada, não é bug.
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning className="dark">
       <head>
         <link
           rel="preconnect"

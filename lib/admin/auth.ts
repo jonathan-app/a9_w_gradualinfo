@@ -270,8 +270,9 @@ export async function checkAdminUser(
   customClient?: ReturnType<typeof createClient> extends Promise<infer T>
     ? T
     : never,
-): Promise<AdminAuthResult> {
-  if (guardAdminAccess()) return { ok: false, reason: 'access_unavailable' };
+): Promise<AdminAuthResult | Response> {
+  const admissionFailure = guardAdminAccess();
+  if (admissionFailure) return admissionFailure;
   const adminId = env.adminUserId.trim();
 
   // Fail-closed absoluto: configuração ausente nunca pode abrir o painel
@@ -353,7 +354,7 @@ export async function assertAdminApiAuth(request?: Request): Promise<
   }
 
   const auth = await checkAdminUser();
-
+  if (auth instanceof Response) return { ok: false, response: auth };
   if (auth.ok) {
     return { ok: true, user: auth.user };
   }
@@ -403,6 +404,11 @@ export async function assertAdminApiAuth(request?: Request): Promise<
     ),
   };
 }
+
+/**
+ * Alias de conveniência para assertAdminApiAuth, unificando a guarda de sessão administrativa.
+ */
+export const requireAdminSession = assertAdminApiAuth;
 
 /**
  * Guarda especializada para mutações sob a sessão de recuperação (/api/admin/auth/recovery/update-password).

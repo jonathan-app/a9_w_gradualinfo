@@ -9,15 +9,15 @@ Respostas de recusa montadas à mão passam por `lib/security-headers.ts`.
 
 ## Key files
 
-| File                                 | Owns                                                            |
-| ------------------------------------ | --------------------------------------------------------------- |
-| `access.ts`                          | Classifica path, valida JWT/JWKS, monta `accessFailureResponse` |
-| `access-worker.ts`                   | Gate no entrypoint Worker antes do OpenNext                     |
-| `access-guard.ts`                    | Guarda interna: exige contexto Access congelado no env          |
-| `auth.ts`                            | `ADMIN_USER_ID` + escada MFA (AAL2); `getUser()` para autorizar |
-| `rate-limit.ts` / `rate-limit-do.ts` | Quota administrativa via Durable Object                         |
-| `rate-limit-protocol.ts`             | Contrato JSON limitado entre app e DO                           |
-| `session-response.ts`                | Formatação de respostas de sessão admin                         |
+| File                                 | Owns                                                                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `access.ts`                          | Classifica path, valida JWT/JWKS, monta `accessFailureResponse`                                                       |
+| `access-worker.ts`                   | Gate no entrypoint Worker antes do OpenNext                                                                           |
+| `access-guard.ts`                    | Guarda interna: exige contexto Access congelado no env                                                                |
+| `auth.ts`                            | `ADMIN_USER_ID` + escada MFA (AAL2); `getUser()` para autorizar; exporta `assertAdminApiAuth` e `requireAdminSession` |
+| `rate-limit.ts` / `rate-limit-do.ts` | Quota administrativa via Durable Object                                                                               |
+| `rate-limit-protocol.ts`             | Contrato JSON limitado entre app e DO                                                                                 |
+| `session-response.ts`                | Formatação de respostas de sessão admin                                                                               |
 
 ## Commands
 

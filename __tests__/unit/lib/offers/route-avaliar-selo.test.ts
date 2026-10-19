@@ -413,4 +413,33 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     expect(spyPut).not.toHaveBeenCalled();
     expect(mockDb.getCapturedRpc()).toBeNull();
   });
+
+  it('mascara mensagem de erro de RPC que vaza detalhes internos de SQL', async () => {
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: true,
+      user: { id: 'admin-123' } as any,
+    });
+
+    const mockDb = mockSupabase(sampleOfferData, null, {
+      message:
+        'duplicate key value violates unique constraint "offers_pkey" on table "offers"',
+      code: '23505',
+    });
+
+    const req = createAdminRequest(validBody);
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(422);
+    const json = await res.json();
+    expect(json.error).toBe('evaluation_transaction_failed');
+    expect(json.message).toBe(
+      'Não foi possível concluir a avaliação da oferta no banco de dados.',
+    );
+    expect(json.message).not.toContain('offers_pkey');
+    expect(json.code).toBeUndefined();
+  });
 });

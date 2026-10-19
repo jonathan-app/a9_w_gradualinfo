@@ -1,0 +1,5 @@
+Header: import: true react-icons: false LuHouse: false LuSearch: false
+Header: HomeIcon count: 2 SearchIcon count: 4
+Theme: import: true react-icons: false LuMoon: false LuSun: false
+Theme: MoonIcon count: 1 SunIcon count: 1
+[PASS] site-header.tsx e theme-toggle.tsx verificados com sucesso.

@@ -22,6 +22,11 @@ import {
 } from '@/lib/offers/storage/evidence-storage-adapter';
 import { getOffersEvidenceStorage } from '@/lib/offers/storage/storage-factory';
 import { getOffersServiceClient } from '@/lib/offers/service-client';
+import { readLimitedTextBody } from '@/lib/utils/http-stream';
+import {
+  apiErrorResponse,
+  sanitizeRpcErrorMessage,
+} from '@/lib/utils/api-response';
 
 const UUID_V4_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -84,30 +89,15 @@ export async function handleIngestOfertas(
     );
   }
 
-  const contentLengthHeader = request.headers.get('content-length');
-  if (contentLengthHeader) {
-    const contentLength = Number.parseInt(contentLengthHeader, 10);
-    if (contentLength > MAX_PAYLOAD_BYTES) {
-      return NextResponse.json(
-        {
-          error: 'payload_too_large',
-          message: `O corpo da requisição excede o limite máximo permitido de ${MAX_PAYLOAD_BYTES} bytes.`,
-        },
-        { status: 413 },
-      );
-    }
-  }
-
-  const rawBodyText = await request.text();
-  if (Buffer.byteLength(rawBodyText, 'utf8') > MAX_PAYLOAD_BYTES) {
-    return NextResponse.json(
-      {
-        error: 'payload_too_large',
-        message: `O corpo da requisição excede o limite máximo permitido de ${MAX_PAYLOAD_BYTES} bytes.`,
-      },
-      { status: 413 },
+  const bodyResult = await readLimitedTextBody(request, MAX_PAYLOAD_BYTES);
+  if (!bodyResult.ok) {
+    return apiErrorResponse(
+      bodyResult.status,
+      bodyResult.error,
+      bodyResult.message,
     );
   }
+  const rawBodyText = bodyResult.text;
 
   const secret = deps.secret ?? process.env.OFFERS_INGEST_SECRET;
   if (!secret || secret.trim().length === 0) {
@@ -479,22 +469,28 @@ export async function handleIngestOfertas(
       rpcError.message?.includes('operation_key_payload_conflict');
 
     if (isPayloadConflict) {
-      return NextResponse.json(
-        {
-          error: 'operation_key_payload_conflict',
-          message: rpcError.message,
-        },
-        { status: 409 },
+      return apiErrorResponse(
+        409,
+        'operation_key_payload_conflict',
+        sanitizeRpcErrorMessage(
+          rpcError.message,
+          'Conflito de carga para a mesma chave de operação (operation_key_payload_conflict).',
+        ),
       );
     }
 
-    return NextResponse.json(
-      {
-        error: 'evaluation_transaction_failed',
-        message: rpcError.message,
-        code: rpcError.code,
-      },
-      { status: 422 },
+    console.error('Falha na transação RPC evaluate_and_set_verified_price:', {
+      message: rpcError.message,
+      code: rpcError.code,
+    });
+
+    return apiErrorResponse(
+      422,
+      'evaluation_transaction_failed',
+      sanitizeRpcErrorMessage(
+        rpcError.message,
+        'Não foi possível concluir a avaliação da oferta no banco de dados.',
+      ),
     );
   }
 

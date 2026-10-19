@@ -23,6 +23,11 @@ import { getOffersEvidenceStorage } from '@/lib/offers/storage/storage-factory';
 import { getOffersServiceClient } from '@/lib/offers/service-client';
 import { verifyWebhookSignature } from '@/lib/offers/webhook-auth';
 import { createClient } from '@/lib/supabase/server';
+import { readLimitedTextBody } from '@/lib/utils/http-stream';
+import {
+  apiErrorResponse,
+  sanitizeRpcErrorMessage,
+} from '@/lib/utils/api-response';
 
 const UUID_V4_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -78,32 +83,15 @@ export async function handleAvaliarSelo(
     );
   }
 
-  // Validação de limite de tamanho de payload (máx 512 KB)
-  const contentLengthHeader = request.headers.get('content-length');
-  if (contentLengthHeader) {
-    const contentLength = Number.parseInt(contentLengthHeader, 10);
-    if (contentLength > MAX_PAYLOAD_BYTES) {
-      return NextResponse.json(
-        {
-          error: 'payload_too_large',
-          message: `O corpo da requisição excede o limite máximo permitido de ${MAX_PAYLOAD_BYTES} bytes.`,
-        },
-        { status: 413 },
-      );
-    }
-  }
-
-  const rawBodyText = await request.text();
-  const rawByteLength = Buffer.byteLength(rawBodyText, 'utf8');
-  if (rawByteLength > MAX_PAYLOAD_BYTES) {
-    return NextResponse.json(
-      {
-        error: 'payload_too_large',
-        message: `O corpo da requisição excede o limite máximo permitido de ${MAX_PAYLOAD_BYTES} bytes.`,
-      },
-      { status: 413 },
+  const bodyResult = await readLimitedTextBody(request, MAX_PAYLOAD_BYTES);
+  if (!bodyResult.ok) {
+    return apiErrorResponse(
+      bodyResult.status,
+      bodyResult.error,
+      bodyResult.message,
     );
   }
+  const rawBodyText = bodyResult.text;
 
   let actorId: string;
   let origin: 'admin_aal2' | 'signed_webhook';
@@ -383,15 +371,22 @@ export async function handleAvaliarSelo(
   }
 
   // Execução transacional da RPC no Supabase com permissão de serviço (Spec 0021 AC-01)
-  const privilegedClient =
-    deps.supabaseClient ||
-    (() => {
-      try {
-        return getOffersServiceClient();
-      } catch {
-        return supabase;
-      }
-    })();
+  let privilegedClient;
+  if (deps.supabaseClient) {
+    privilegedClient = deps.supabaseClient;
+  } else {
+    try {
+      privilegedClient = getOffersServiceClient();
+    } catch {
+      return NextResponse.json(
+        {
+          error: 'service_client_unavailable',
+          message: 'Cliente de serviço Supabase indisponível no runtime.',
+        },
+        { status: 503 },
+      );
+    }
+  }
 
   const { data: rpcRows, error: rpcError } = await privilegedClient.rpc(
     'evaluate_and_set_verified_price',
@@ -414,14 +409,21 @@ export async function handleAvaliarSelo(
   );
 
   if (rpcError) {
-    // Erros de violação de regra ou restrição
-    return NextResponse.json(
+    console.error(
+      'Falha na transação RPC evaluate_and_set_verified_price (avaliar-selo):',
       {
-        error: 'evaluation_transaction_failed',
         message: rpcError.message,
         code: rpcError.code,
       },
-      { status: 422 },
+    );
+
+    return apiErrorResponse(
+      422,
+      'evaluation_transaction_failed',
+      sanitizeRpcErrorMessage(
+        rpcError.message,
+        'Não foi possível concluir a avaliação da oferta no banco de dados.',
+      ),
     );
   }
 
