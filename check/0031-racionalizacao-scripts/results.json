@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "4c56892d067bd78d747f558fdf0e233a6fe89928",
+  "evaluatedTree": "c9243c6cc00b14e78d710f06874fc674a8048184",
+  "spec": {
+    "path": "docs/specs/2026-10-19-1835-0031-racionalizacao-scripts-lote-r1.md",
+    "sha256": "f4c1c6c62dd7ed9d4adc931f0f6dbaf304ed6d11279eda3294b51b1a191bf894"
+  },
+  "acs": [
+    {
+      "id": "script-clean/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1830-0031-racionalizacao-scripts/ac-01-scripts-removidos.txt",
+      "evidenceSha256": "380c0ccb727711f6fa143a3b498e32d6845ec294e53cc039de70739246fa22c4"
+    },
+    {
+      "id": "script-clean/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1830-0031-racionalizacao-scripts/ac-02-editorial-parity-test.txt",
+      "evidenceSha256": "ea3210ffe175c724a1b8d8490ff464d3031de6627ce0baaf352f69c722de96cd"
+    },
+    {
+      "id": "script-clean/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1830-0031-racionalizacao-scripts/ac-03-verify-editorial-parity-removido.txt",
+      "evidenceSha256": "e717d841e819e45c1193adfacaf0ed48250a47259c167e2758e0565995369de5"
+    },
+    {
+      "id": "script-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1830-0031-racionalizacao-scripts/ac-04-check-all.txt",
+      "evidenceSha256": "bd690ff2e5f2aff547da1ce5f03cf27fb469b59888b2017470e277fa400e32c2"
+    },
+    {
+      "id": "script-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-1830-0031-racionalizacao-scripts/ac-05-scripts-preservados.txt",
+      "evidenceSha256": "5b7d9f32fa3ab11a92815aa0506d2161d270b2fcb7d38df42bd1f288b694f821"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Removidos scripts orfaos de risco nulo client-preflight.mjs e verify-test-draft.py com 405 linhas descartadas."
+    },
+    {
+      "severity": "INFO",
+      "description": "Criada suite unitaria de paridade editorial em __tests__/unit/editorial-parity.test.ts cobrindo os 17 artigos Markdown."
+    },
+    {
+      "severity": "INFO",
+      "description": "Removido o script avulso verify-editorial-parity.mjs apos absorcao da regra pelos testes unitarios automatizados."
+    },
+    {
+      "severity": "INFO",
+      "description": "Portao consolidado local check:all 100 por cento verde com 871 testes Vitest em 86 arquivos, zero segredos Gitleaks e zero erros Semgrep."
+    }
+  ]
+}

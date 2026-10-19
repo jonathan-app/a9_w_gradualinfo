@@ -1,0 +1,48 @@
+=== AC-05: Preservacao estrita dos 33 scripts criticos e ferramentas Sanity ===
+Data: 2026-10-19T18:24:00-03:00
+
+1. Grupo A (Seguranca e CI - 17 scripts intactos):
+- run-gitleaks.mjs: PRESENTE
+- run-semgrep.mjs: PRESENTE
+- check-env-leak.mjs: PRESENTE
+- security-baseline.mjs: PRESENTE
+- security-free-doctor.mjs: PRESENTE
+- check-contract.mjs: PRESENTE
+- check-decision.mjs: PRESENTE
+- check-gate.mjs: PRESENTE
+- ci-assess.mjs: PRESENTE
+- ci-check-results.mjs: PRESENTE
+- ci-check-matrix.mjs: PRESENTE
+- ci-check-branch.mjs: PRESENTE
+- ci-fixtures.mjs: PRESENTE
+- ci-revision.mjs: PRESENTE
+- prepare-e2e-db.mjs: PRESENTE
+- wait-http.mjs: PRESENTE
+- run-osv-scanner.mjs: PRESENTE
+
+2. Grupo B (Operacionais e Suporte - 16 scripts intactos):
+- dev-editorial.mjs: PRESENTE
+- sync-editorial.mjs: PRESENTE
+- e2e-server.mjs: PRESENTE
+- e2e-fault-proxy.mjs: PRESENTE
+- seed-e2e-offers.mjs: PRESENTE
+- enforce-pnpm.js: PRESENTE
+- materialize-skills.mjs: PRESENTE
+- check-skills.mjs: PRESENTE
+- check-portability.mjs: PRESENTE
+- check-mcp-config.mjs: PRESENTE
+- check-targets.mjs: PRESENTE
+- quarantine-skills.mjs: PRESENTE
+- admin-reset-mfa.mjs: PRESENTE
+- config-admin-access.mjs: PRESENTE
+- validate-admin-access.mjs: PRESENTE
+- export-template.mjs: PRESENTE
+- pagespeed-monitor.js: PRESENTE
+- sync-gitattributes.mjs: PRESENTE
+- cloudflare-worker.ts: PRESENTE
+
+3. Ferramentas de migracao Sanity preservadas:
+- seed-sanity-drafts.py: PRESENTE
+- publish-sanity-drafts.py: PRESENTE
+
+Conclusao: script-clean/AC-05 PASS.

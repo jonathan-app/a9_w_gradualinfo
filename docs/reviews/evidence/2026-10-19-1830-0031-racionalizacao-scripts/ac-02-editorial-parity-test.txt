@@ -1,0 +1,21 @@
+=== AC-02: Execucao da suite unitaria de paridade editorial no Vitest ===
+Data: 2026-10-19T18:24:00-03:00
+
+Comando: pnpm vitest run __tests__/unit/editorial-parity.test.ts
+Saida:
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/editorial-parity.test.ts (2 tests) 20ms
+   ✓ Paridade editorial (Spec 0031 - script-clean/AC-02) (2)
+     ✓ deve encontrar o catálogo local e arquivos Markdown com contagens idênticas 4ms
+     ✓ deve comprovar paridade campo a campo para todos os artigos Markdown locais 16ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  999ms
+
+Validacao:
+- 17/17 arquivos Markdown em docs/rascunhos-editoriais/ validados.
+- Paridade 100% comprovada nos campos: title, slug, excerpt, editoria, author, cover, content e sources.
+
+Conclusao: script-clean/AC-02 PASS.

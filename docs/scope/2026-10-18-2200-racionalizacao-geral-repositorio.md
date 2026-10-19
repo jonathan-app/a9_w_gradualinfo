@@ -29,7 +29,7 @@
 Auditoria profunda em package.json, scripts operacionais e componentes de interface, mapeando imports e utilidade comprovada.  
 **Done when:** todas as dependencias, scripts e icones estao catalogados e classificados como manter, investigar, substituir ou candidato a remocao, sem nenhuma exclusao precipitada.
 
-### Lote R1: Inventario e Classificacao de Scripts Operacionais
+### Lote R1: Inventario e Classificacao de Scripts Operacionais (done)
 
 Mapeamento exaustivo dos 46 scripts em scripts/ divididos por criticidade e frequencia de uso:
 
@@ -39,6 +39,17 @@ Mapeamento exaustivo dos 46 scripts em scripts/ divididos por criticidade e freq
 
 - [x] Inventario inicial dos 46 scripts executado via analise estatica de referencias
 - [x] Relatorio detalhado de classificacao publicado em docs/audits/2026-10-19-1145-inventario-scripts-lote-r1.md
+- [x] Design it (spec): `/architect racionalizacao de scripts operacionais`
+      Spec 0031 Accepted · `docs/specs/2026-10-19-1835-0031-racionalizacao-scripts-lote-r1.md`
+- [x] Build it: `/develop racionalizacao de scripts operacionais`
+  - [x] Criar teste de paridade editorial em **tests**/unit/editorial-parity.test.ts (AC-02)
+  - [x] Remover scripts orfaos client-preflight.mjs e verify-test-draft.py (AC-01)
+  - [x] Remover verify-editorial-parity.mjs e validar portao consolidado (AC-03, AC-04, AC-05)
+- [x] Verify it: `/check verify racionalizacao de scripts operacionais` (APROVADO em check/0031-racionalizacao-scripts/results.json)
+- [x] Review it: `/check review racionalizacao de scripts operacionais` (docs/reviews/2026-10-19-1830-0031-racionalizacao-scripts.md)
+- [x] Audit security: `/security racionalizacao de scripts operacionais` (pnpm security:all verde com 0 segredos e 0 erros SAST)
+- [x] Document it: `/document pr` (docs/reviews/2026-10-19-1840-0031-racionalizacao-scripts-pr.md)
+- [x] Sync it: `/sync` (AGENTS.md, STATE.md e escopo reconciliados)
 
 ### Lote R2: Racionalizacao de Icones e Dependencias de UI (done)
 

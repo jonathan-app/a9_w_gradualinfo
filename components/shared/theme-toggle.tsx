@@ -43,16 +43,16 @@ export function ThemeToggle({ className }: { className?: string } = {}) {
       role="group"
       aria-label="Selecionar tema de exibição"
       className={cn(
-        'relative inline-flex h-8 w-[92px] shrink-0 items-center rounded-full bg-[#18181b]/90 p-0.5 border border-white/15 shadow-inner backdrop-blur-xs select-none',
+        'relative inline-flex h-8 w-[88px] shrink-0 items-center rounded-full bg-black/30 p-0.5 backdrop-blur-sm select-none',
         className,
       )}>
-      {/* Indicador deslizante ativo (círculo iluminado atrás do ícone selecionado) */}
+      {/* Indicador deslizante ativo sem contornos cinzas */}
       <span
         className={cn(
-          'pointer-events-none absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white/20 border border-white/25 shadow-sm transition-transform duration-300 ease-in-out',
+          'pointer-events-none absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white/25 transition-transform duration-300 ease-in-out',
           currentTheme === 'light' && 'translate-x-0',
-          currentTheme === 'dark' && 'translate-x-[29px]',
-          currentTheme === 'system' && 'translate-x-[58px]',
+          currentTheme === 'dark' && 'translate-x-[28px]',
+          currentTheme === 'system' && 'translate-x-[56px]',
         )}
         aria-hidden="true"
       />
@@ -65,30 +65,24 @@ export function ThemeToggle({ className }: { className?: string } = {}) {
         title="Tema claro"
         onClick={() => setTheme('light')}
         className={cn(
-          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
+          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
           currentTheme === 'light'
-            ? 'text-white'
-            : 'text-zinc-400 hover:text-zinc-200',
+            ? 'text-amber-300 drop-shadow-[0_0_6px_rgba(253,224,71,0.5)] scale-105'
+            : 'text-white/55 hover:text-white/85 hover:bg-white/5',
         )}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          fill="currentColor"
           className="h-3.5 w-3.5"
           aria-hidden="true">
-          <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
-          <line x1="12" y1="2" x2="12" y2="4.5" />
-          <line x1="12" y1="19.5" x2="12" y2="22" />
-          <line x1="2" y1="12" x2="4.5" y2="12" />
-          <line x1="19.5" y1="12" x2="22" y2="12" />
-          <line x1="4.93" y1="4.93" x2="6.7" y2="6.7" />
-          <line x1="17.3" y1="17.3" x2="19.07" y2="19.07" />
-          <line x1="4.93" y1="19.07" x2="6.7" y2="17.3" />
-          <line x1="17.3" y1="6.7" x2="19.07" y2="4.93" />
+          <circle cx="12" cy="12" r="4" />
+          <path
+            d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
 
@@ -100,10 +94,10 @@ export function ThemeToggle({ className }: { className?: string } = {}) {
         title="Tema escuro"
         onClick={() => setTheme('dark')}
         className={cn(
-          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
+          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
           currentTheme === 'dark'
-            ? 'text-white'
-            : 'text-zinc-400 hover:text-zinc-200',
+            ? 'text-sky-200 drop-shadow-[0_0_6px_rgba(186,230,253,0.5)] scale-105'
+            : 'text-white/55 hover:text-white/85 hover:bg-white/5',
         )}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -123,10 +117,10 @@ export function ThemeToggle({ className }: { className?: string } = {}) {
         title="Tema do sistema"
         onClick={() => setTheme('system')}
         className={cn(
-          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
+          'relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
           currentTheme === 'system'
-            ? 'text-white'
-            : 'text-zinc-400 hover:text-zinc-200',
+            ? 'text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.4)] scale-105'
+            : 'text-white/55 hover:text-white/85 hover:bg-white/5',
         )}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

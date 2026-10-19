@@ -1,0 +1,13 @@
+=== AC-04: Aprovacao integral do portao consolidado pnpm check:all ===
+Data: 2026-10-19T18:24:00-03:00
+
+Comando: pnpm check:all
+Saida resumida:
+- tsc --noEmit: exit 0 (zero erros de tipos)
+- eslint .: exit 0 (zero avisos ou erros)
+- prettier --check .: exit 0 (100% dos arquivos em conformidade)
+- vitest run: 86 passed (86 files), 871 passed (871 tests) (exit 0)
+- run-gitleaks.mjs: 0 findings redigidos (exit 0)
+- run-semgrep.mjs: 0 findings ERROR (exit 0)
+
+Conclusao: script-clean/AC-04 PASS.

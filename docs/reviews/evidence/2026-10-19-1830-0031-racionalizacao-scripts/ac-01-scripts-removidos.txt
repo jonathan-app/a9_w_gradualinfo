@@ -1,0 +1,16 @@
+=== AC-01: Prova de remocao de scripts orfaos (client-preflight.mjs e verify-test-draft.py) ===
+Data: 2026-10-19T18:24:00-03:00
+
+1. Conferencia de ausencia no sistema de arquivos:
+[client-preflight.mjs]: NAO ENCONTRADO (removido com sucesso)
+[verify-test-draft.py]: NAO ENCONTRADO (removido com sucesso)
+
+2. Saida do git status:
+D scripts/client-preflight.mjs
+D scripts/verify-test-draft.py
+
+3. Conferencia de chamadores no package.json e ganchos:
+- client-preflight.mjs: 0 ocorrencias em package.json, workflows CI ou hooks Husky.
+- verify-test-draft.py: 0 ocorrencias em package.json, workflows CI ou hooks Husky.
+
+Conclusao: script-clean/AC-01 PASS.

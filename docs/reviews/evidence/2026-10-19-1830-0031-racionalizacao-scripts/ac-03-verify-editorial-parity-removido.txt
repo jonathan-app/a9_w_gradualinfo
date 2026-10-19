@@ -1,0 +1,13 @@
+=== AC-03: Prova de remocao do script avulso verify-editorial-parity.mjs ===
+Data: 2026-10-19T18:24:00-03:00
+
+1. Conferencia de ausencia no sistema de arquivos:
+[verify-editorial-parity.mjs]: NAO ENCONTRADO (removido com sucesso)
+
+2. Saida do git status:
+D scripts/verify-editorial-parity.mjs
+
+3. Substituicao oficial:
+A regra foi totalmente migrada para __tests__/unit/editorial-parity.test.ts e roda nativamente no Vitest a cada execucao de teste e CI.
+
+Conclusao: script-clean/AC-03 PASS.
