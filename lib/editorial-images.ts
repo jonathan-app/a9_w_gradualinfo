@@ -25,6 +25,7 @@ export function approvedCoverImageUrl(value: string): string | null {
   // O catálogo local e os documentos antigos do Sanity usam caminhos do próprio site.
   // A forma estrita evita que uma URL protocol-relative ou um path arbitrário vire imagem.
   if (
+    value === '/editorial-cover.svg' ||
     /^\/artigos\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpe?g|png|webp)$/i.test(value)
   ) {
     return value;
@@ -32,12 +33,16 @@ export function approvedCoverImageUrl(value: string): string | null {
   try {
     const source = new URL(value);
     const storage = new URL(env.supabase.url);
+    const isLoopback = ['localhost', '127.0.0.1', '[::1]'].includes(
+      site.hostname,
+    );
     const publicPath = `/storage/v1/object/public/${encodeURIComponent(env.editorialImageBucket)}/`;
     const sanityPath = env.sanity?.projectId
       ? `/images/${encodeURIComponent(env.sanity.projectId)}/${encodeURIComponent(env.sanity.dataset)}/`
       : null;
-    // Allowlist de origem e caminho público configurado; https sempre, http só fora de produção (o
-    // Supabase local não tem TLS). Fora dos dois, cai no return do fim.
+    // Allowlist de origem e caminho público configurado; https sempre, http só fora de produção
+    // ou em loopback local de desenvolvimento e CI (o Supabase local e o servidor de teste não têm TLS).
+    // Fora dos dois, cai no return do fim.
     if (
       (source.origin === site.origin ||
         (env.editorialImageBucket &&
@@ -47,7 +52,7 @@ export function approvedCoverImageUrl(value: string): string | null {
           source.origin === 'https://cdn.sanity.io' &&
           source.pathname.startsWith(sanityPath))) &&
       (source.protocol === 'https:' ||
-        (!env.isProduction && source.protocol === 'http:'))
+        ((!env.isProduction || isLoopback) && source.protocol === 'http:'))
     ) {
       // new URL(...) preserves encoded pathname; static files in public/ use decoded paths.
       // Build the full URL manually to keep decoded pathname.

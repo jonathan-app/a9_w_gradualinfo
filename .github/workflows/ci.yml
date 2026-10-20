@@ -281,7 +281,11 @@ jobs:
         run: pnpm next start --port 3000 &
         shell: bash
       - name: Aguardar servidor
-        run: node scripts/wait-http.mjs http://localhost:3000/api/health
+        run: |
+          node scripts/wait-http.mjs http://localhost:3000/api/health
+          curl -s http://localhost:3000/ > /dev/null || true
+          curl -s http://localhost:3000/artigos/fixture-publicado > /dev/null || true
+          curl -s http://localhost:3000/busca > /dev/null || true
       - name: Lighthouse CI
         run: pnpm dlx @lhci/cli@0.15.1 autorun --config=lighthouserc.cjs
       - name: Preservar relatório Lighthouse

@@ -32,6 +32,8 @@ export function EditorialCover({
       unoptimized
       sizes={sizes}
       priority={priority}
+      fetchPriority={priority ? 'high' : undefined}
+      loading={priority ? 'eager' : 'lazy'}
       className="object-cover"
       onError={() => setFailedSource(src)}
     />
