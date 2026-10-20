@@ -125,6 +125,9 @@ const upstreamProcess = useWorker
         stdio: 'inherit',
         env: {
           ...process.env,
+          ADMIN_USER_ID:
+            process.env.ADMIN_USER_ID || '11111111-1111-1111-1111-111111111111',
+          ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'ana@exemplo.dev',
           OFFERS_INGEST_SECRET:
             process.env.OFFERS_INGEST_SECRET ||
             'test-collector-secret-32-chars-long',

@@ -121,6 +121,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   test('administrador autenticado sem TOTP é forçado para matrícula MFA, com axe e teclado no formulário (AC-04, AC-13)', async ({
     page,
   }) => {
+    test.skip(
+      process.env.E2E_PRODUCTION === '1',
+      'simulação com mock role desativada em servidor compilado por segurança',
+    );
     await seedE2eRole(page, 'admin_no_mfa');
     await page.goto('/admin-dashboard');
 
@@ -153,6 +157,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   test('sessão AAL1 (fator pendente) é forçada ao desafio TOTP, bloqueia preview e passa no axe/teclado (AC-04, AC-10, AC-13)', async ({
     page,
   }) => {
+    test.skip(
+      process.env.E2E_PRODUCTION === '1',
+      'simulação com mock role desativada em servidor compilado por segurança',
+    );
     await seedE2eRole(page, 'admin_aal1');
     await page.goto('/admin-dashboard');
 
@@ -189,6 +197,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   test('sessão AAL2 acessa dashboard, renderiza identidade e links, passa no axe/teclado e autoriza preview (AC-04, AC-10, AC-13)', async ({
     page,
   }) => {
+    test.skip(
+      process.env.E2E_PRODUCTION === '1',
+      'simulação com mock role desativada em servidor compilado por segurança',
+    );
     await seedE2eRole(page, 'admin_aal2');
     const response = await page.goto('/admin-dashboard');
     expect(response?.status()).toBe(200);
@@ -236,6 +248,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   test('usuário autenticado com UUID divergente tem acesso negado com status HTTP 403 no layout e nas APIs (AC-02, AC-03)', async ({
     page,
   }) => {
+    test.skip(
+      process.env.E2E_PRODUCTION === '1',
+      'simulação com mock role desativada em servidor compilado por segurança',
+    );
     await seedE2eRole(page, 'other_user');
     const response = await page.goto('/admin-dashboard');
     expect([200, 403]).toContain(response?.status());
@@ -254,6 +270,10 @@ test.describe('Painel Administrativo — Fluxos autenticados (Spec 0007)', () =>
   test('logout a partir do dashboard encerra a sessão e bloqueia acessos subsequentes (AC-12)', async ({
     page,
   }) => {
+    test.skip(
+      process.env.E2E_PRODUCTION === '1',
+      'simulação com mock role desativada em servidor compilado por segurança',
+    );
     await seedE2eRole(page, 'admin_aal2');
     await page.goto('/admin-dashboard');
     await expect(

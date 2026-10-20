@@ -49,14 +49,20 @@ export function guardAdminAccess(request?: Request): Response | null {
     // Servidor compilado local nos testes E2E executa em processo Node sem bindings Worker da Cloudflare.
     // Permite admissão apenas em harness de teste com URL de loopback, nunca em produção remota.
     const siteUrl = String(process.env.NEXT_PUBLIC_SITE_URL ?? '');
+    let hostname = '';
+    try {
+      hostname = new URL(siteUrl).hostname;
+    } catch {
+      // URL malformada não é loopback: recusa.
+    }
     const isLoopback =
-      siteUrl.includes('localhost') ||
-      siteUrl.includes('127.0.0.1') ||
-      siteUrl.includes('[::1]');
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '[::1]';
     if (
       process.env.E2E_PRODUCTION === '1' &&
       isLoopback &&
-      !siteUrl.includes('gradualinfo.com.br')
+      hostname !== 'gradualinfo.com.br'
     ) {
       return null;
     }

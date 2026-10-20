@@ -44,6 +44,7 @@ type RunOptions = {
   withGithubEnv?: boolean;
   networkFaults?: boolean;
   origin?: string;
+  offersIngestSecret?: string;
 };
 
 type RunResult = {
@@ -147,6 +148,11 @@ function runFixtures(options: RunOptions = {}): Promise<RunResult> {
   if (options.origin) {
     env.CI_FIXTURE_ORIGIN = options.origin;
   }
+  if (options.offersIngestSecret) {
+    env.OFFERS_INGEST_SECRET = options.offersIngestSecret;
+  } else {
+    delete env.OFFERS_INGEST_SECRET;
+  }
 
   return new Promise((resolve) => {
     const child = spawn(process.execPath, [SCRIPT_PATH, statusPath], {
@@ -212,6 +218,7 @@ describe('scripts/ci-fixtures.mjs', () => {
     const envContents = await readFile(envPath, 'utf8');
     const env = parseGithubEnv(envContents);
     expect(env.get('CI_LOCAL_SERVICE_ROLE')).toBe(SERVICE_ROLE_KEY);
+    expect(env.get('SUPABASE_SERVICE_ROLE_KEY')).toBe(SERVICE_ROLE_KEY);
     expect(env.get('NEXT_PUBLIC_SUPABASE_ANON_KEY')).toBe(ANON_KEY);
     expect(env.get('NEXT_PUBLIC_SUPABASE_URL')).toBe('http://127.0.0.1:3110');
     expect(env.get('E2E_SUPABASE_UPSTREAM')).toBe(serverUrl);
@@ -226,12 +233,14 @@ describe('scripts/ci-fixtures.mjs', () => {
     const previewToken = env.get('SUPABASE_PREVIEW_TOKEN');
     const previewPassword = env.get('SUPABASE_PREVIEW_PASSWORD');
     const faultSecret = env.get('E2E_FAULT_SECRET');
+    const offersSecret = env.get('OFFERS_INGEST_SECRET');
     const noClaim = env.get('E2E_NO_CLAIM');
     const otherIdentity = env.get('E2E_OTHER_IDENTITY');
 
     expect(previewToken).toBeTruthy();
     expect(previewPassword).toBeTruthy();
     expect(faultSecret).toBeTruthy();
+    expect(offersSecret).toMatch(/^[a-f0-9]{64}$/);
     expect(noClaim).toBeTruthy();
     expect(otherIdentity).toBeTruthy();
 
@@ -241,6 +250,7 @@ describe('scripts/ci-fixtures.mjs', () => {
         previewToken,
         previewPassword,
         faultSecret,
+        offersSecret,
         noClaim,
         otherIdentity,
       ].filter((value): value is string => Boolean(value)),
@@ -253,6 +263,18 @@ describe('scripts/ci-fixtures.mjs', () => {
       const user = JSON.parse(json!) as { password: string };
       expect(result.stdout).toContain(`::add-mask::${user.password}`);
     }
+  });
+
+  it('reutiliza OFFERS_INGEST_SECRET fornecido e o mascara', async () => {
+    const providedSecret = 'collector-secret-fornecido-32-chars';
+    const result = await runFixtures({ offersIngestSecret: providedSecret });
+
+    expect(result.stderr).toBe('');
+    expect(result.status).toBe(0);
+
+    const env = parseGithubEnv(await readFile(envPath, 'utf8'));
+    expect(env.get('OFFERS_INGEST_SECRET')).toBe(providedSecret);
+    expect(result.stdout).toContain(`::add-mask::${providedSecret}`);
   });
 
   it('recusa API_URL fora de loopback mesmo com GITHUB_ENV', async () => {

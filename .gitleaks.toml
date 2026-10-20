@@ -50,6 +50,11 @@ paths = [
   # não uma credencial real. O histórico contém a versão antiga com entropia
   # alta (commit a7f5eec); allowlistar o caminho cobre histórico e árvore.
   '''__tests__/unit/preview-route\.test\.ts''',
+  # Fixture de teste: `collector-secret-fornecido-32-chars` é um segredo falso
+  # injetado pelo caso que comprova reutilização e mascaramento do
+  # OFFERS_INGEST_SECRET em scripts/ci-fixtures.mjs. Não é credencial real e
+  # o valor nunca vai para o repositório como segredo vivo.
+  '''__tests__/integration/ci-fixtures\.test\.ts''',
   # Manifesto de evidência com o sha256 do conteúdo de cada arquivo avaliado,
   # usado pelo /check para amarrar resultado ao código testado. Os valores são
   # hashes de fonte, não credencial: a regra generic-api-key acende para dois

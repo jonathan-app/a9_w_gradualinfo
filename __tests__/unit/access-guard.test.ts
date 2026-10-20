@@ -7,7 +7,7 @@
  * @dependencies vitest, @/lib/admin/access-guard, @opennextjs/cloudflare (mock),
  *   @/lib/env (mock), @/lib/admin/access (mock parcial).
  */
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest';
 
 const getCloudflareContextMock = vi.hoisted(() =>
   vi.fn(() => ({ env: {} as Record<string, unknown> })),
@@ -73,13 +73,29 @@ function setupEnv(env: Record<string, unknown>) {
   getCloudflareContextMock.mockReturnValue({ env });
 }
 
+function setupE2EHarness(siteUrl: string | undefined) {
+  if (siteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+  else process.env.NEXT_PUBLIC_SITE_URL = siteUrl;
+  process.env.E2E_PRODUCTION = '1';
+  getCloudflareContextMock.mockImplementationOnce(() => {
+    throw new Error('no context');
+  });
+}
+
 function makeRequest(pathname = '/admin-dashboard', method = 'GET') {
   return { method, url: `https://gradualinfo.com.br${pathname}` } as Request;
 }
 
+afterEach(() => {
+  delete process.env.E2E_PRODUCTION;
+  delete process.env.NEXT_PUBLIC_SITE_URL;
+});
+
 describe('guardAdminAccess', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    delete process.env.E2E_PRODUCTION;
+    delete process.env.NEXT_PUBLIC_SITE_URL;
     getCloudflareContextMock.mockReturnValue({ env: {} });
   });
 
@@ -210,6 +226,48 @@ describe('guardAdminAccess', () => {
     getCloudflareContextMock.mockImplementationOnce(() => {
       throw new Error('no context');
     });
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it.each([
+    ['localhost', 'http://localhost:3100'],
+    ['127.0.0.1', 'http://127.0.0.1:3100'],
+    ['IPv6 loopback', 'http://[::1]:3100'],
+  ])('retorna null no harness E2E com %s', (_name, siteUrl) => {
+    setupE2EHarness(siteUrl);
+    expect(guardAdminAccess()).toBeNull();
+  });
+
+  it('retorna 503 no harness E2E sem E2E_PRODUCTION', () => {
+    process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3100';
+    getCloudflareContextMock.mockImplementationOnce(() => {
+      throw new Error('no context');
+    });
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it('retorna 503 no harness E2E com host remoto', () => {
+    setupE2EHarness('https://example.com');
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it('retorna 503 no harness E2E com domínio de produção', () => {
+    setupE2EHarness('https://gradualinfo.com.br');
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it('retorna 503 no harness E2E sem URL do site', () => {
+    setupE2EHarness(undefined);
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it('retorna 503 no harness E2E com URL malformada', () => {
+    setupE2EHarness('nao-e-uma-url');
+    expect(guardAdminAccess()?.status).toBe(503);
+  });
+
+  it('retorna 503 quando localhost aparece em um host remoto', () => {
+    setupE2EHarness('https://localhost.evil.example');
     expect(guardAdminAccess()?.status).toBe(503);
   });
 });

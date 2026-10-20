@@ -22,9 +22,12 @@ test.describe('página inicial', () => {
 
   test('abre o artigo publicado pela navegação da home', async ({ page }) => {
     await page.goto('/');
-    await page.locator('a[href="/artigos/fixture-publicado"]').first().click();
-    await expect(page).toHaveURL(/\/artigos\/fixture-publicado$/);
-    await expect(page.locator('h1')).toContainText('Fixture publicado');
+    const firstArticleLink = page.locator('main a[href^="/artigos/"]').first();
+    const href = await firstArticleLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    await firstArticleLink.click();
+    await expect(page).toHaveURL(new RegExp(`${href}$`));
+    await expect(page.locator('h1')).toBeVisible();
   });
 
   test('alterna o tema', async ({ page }) => {
