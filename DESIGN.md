@@ -9,6 +9,7 @@ colors:
   border: 'oklch(0.92 0.005 264)'
   brand-50: 'oklch(0.97 0.02 250)'
   brand-100: 'oklch(0.93 0.04 250)'
+  brand-400: 'oklch(0.78 0.14 250)'
   brand-500: 'oklch(0.62 0.17 250)'
   brand-600: 'oklch(0.55 0.17 250)'
   brand-700: 'oklch(0.47 0.15 250)'
