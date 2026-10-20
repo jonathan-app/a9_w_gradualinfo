@@ -20,6 +20,11 @@ export interface AdminRateBindings {
   };
 }
 
+const localRateLimits = new Map<
+  AdminRateOperation,
+  { count: number; expiresAt: number }
+>();
+
 /**
  * Consulta o singleton com prazo que cobre fetch, leitura e validação.
  * @param operation - Operação escolhida pelo handler, nunca pelo corpo recebido do usuário.
@@ -32,9 +37,36 @@ export async function consumeAdminRateLimit(
   const abort = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const binding = (getCloudflareContext().env as unknown as AdminRateBindings)
-      .ADMIN_RATE_LIMIT_DO;
-    if (!binding) return unavailable;
+    let binding: AdminRateBindings['ADMIN_RATE_LIMIT_DO'] | undefined;
+    try {
+      binding = (getCloudflareContext().env as unknown as AdminRateBindings)
+        ?.ADMIN_RATE_LIMIT_DO;
+    } catch {
+      // Fora do runtime Cloudflare Workers em ambiente Node local ou teste E2E
+    }
+    if (!binding) {
+      if (process.env.E2E_REAL_SUPABASE === '1') {
+        const now = Date.now();
+        const current = localRateLimits.get(operation);
+        if (!current || now >= current.expiresAt) {
+          localRateLimits.set(operation, {
+            count: 1,
+            expiresAt: now + 60_000,
+          });
+          return { status: 200 };
+        }
+        if (current.count < 5) {
+          current.count += 1;
+          return { status: 200 };
+        }
+        const retryAfter = Math.max(
+          1,
+          Math.ceil((current.expiresAt - now) / 1000),
+        );
+        return { status: 429, retryAfter };
+      }
+      return unavailable;
+    }
     const stub = binding.get(binding.idFromName('admin-auth-rate-limit:v1'));
     const deadline = new Promise<never>((_, reject) => {
       timer = setTimeout(() => {
