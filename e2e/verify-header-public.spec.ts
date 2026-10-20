@@ -38,7 +38,7 @@ test.describe('cabeçalho público', () => {
         // Em telas pequenas o <summary> se revela como `group: Menu` na árvore de
         // acessibilidade, mas o próprio role não existe no DOM. O seletor por
         // tag é o estável: o clique nele toggleia o `<details>`.
-        const trigger = page.locator('summary');
+        const trigger = page.locator('summary[aria-label="menu-btn"]');
         await trigger.click();
         await expect(
           page.getByRole('link', { name: 'Recentes' }),
@@ -62,14 +62,14 @@ test.describe('cabeçalho público', () => {
       page.getByRole('link', { name: /Área administrativa|Login/i }),
     ).toHaveCount(0);
     // O trigger do menu móvel está no DOM mas ocultado pelo CSS (display none)
-    await expect(page.locator('summary')).toHaveCount(1);
+    await expect(page.locator('summary[aria-label="menu-btn"]')).toBeAttached();
   });
 
   test('menu móvel abre e fecha com o/details', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
 
-    const trigger = page.locator('summary');
+    const trigger = page.locator('summary[aria-label="menu-btn"]');
     await expect(trigger).toBeVisible();
 
     // Inicia fechado: os links do painel ainda não estão no accessible tree
@@ -131,7 +131,7 @@ test.describe('cabeçalho público', () => {
 
     await page.keyboard.press('Tab');
     await expect(
-      page.getByRole('button', { name: /tema (claro|escuro)/i }),
+      page.getByRole('button', { name: 'Tema claro' }),
     ).toBeFocused();
   });
 
@@ -148,7 +148,7 @@ test.describe('cabeçalho público', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
-    const toggle = page.getByRole('button', { name: /tema (claro|escuro)/i });
+    const toggle = page.getByRole('button', { name: 'Tema claro' });
     await expect(toggle).toBeVisible();
     await expect(toggle.locator('svg')).toBeVisible();
 
@@ -157,7 +157,7 @@ test.describe('cabeçalho público', () => {
     await expect(page.locator('html')).not.toHaveClass(antes ?? '');
 
     // Restaura para não afetar testes seguintes
-    await toggle.click();
+    await page.getByRole('button', { name: 'Tema escuro' }).click();
   });
 
   test('a marca é um link de degraus, não texto plano', async ({ page }) => {

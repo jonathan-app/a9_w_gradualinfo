@@ -108,6 +108,9 @@ const { error: insertError } = await admin
 if (insertError) throw new Error('Falha ao preparar artigos descartáveis.');
 const values = {
   CI_LOCAL_SERVICE_ROLE: config.SERVICE_ROLE_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: config.SERVICE_ROLE_KEY,
+  OFFERS_INGEST_SECRET:
+    process.env.OFFERS_INGEST_SECRET || randomBytes(32).toString('hex'),
   // Com falhas de rede ligadas, o browser aponta para o proxy de falhas (3110), e o servidor
   // guarda o upstream real para o proxy rotear — é assim que o e2e simula rede ruim sem
   // derrubar a stack.
@@ -140,6 +143,8 @@ for (const secretVal of [
   values.E2E_OTHER_IDENTITY,
   values.SUPABASE_PREVIEW_TOKEN,
   values.SUPABASE_PREVIEW_PASSWORD,
+  values.SUPABASE_SERVICE_ROLE_KEY,
+  values.OFFERS_INGEST_SECRET,
 ]) {
   if (secretVal && typeof secretVal === 'string') {
     console.log(`::add-mask::${secretVal}`);

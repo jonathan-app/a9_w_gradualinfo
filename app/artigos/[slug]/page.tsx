@@ -201,7 +201,7 @@ export default async function ArticlePage(props: Props) {
                     href={fonte.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-brand-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-sm">
+                    className="text-brand-600 dark:text-brand-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-sm">
                     {fonte.titulo}
                   </a>
                 </li>
