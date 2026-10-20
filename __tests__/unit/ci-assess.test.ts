@@ -12,7 +12,11 @@
  */
 import { expect, test } from 'vitest';
 // @ts-expect-error Módulo Node executado sem compilação TypeScript.
-import { assessAC, assessDatabase } from '../../scripts/ci-assess.mjs';
+import {
+  assessAC,
+  assessDatabase,
+  requiredCases,
+} from '../../scripts/ci-assess.mjs';
 // Fábrica do relatório mínimo na forma que o Playwright emite: uma única suíte, um spec e um
 // teste. `status` troca apenas o resultado — o resto do formato fica idêntico nos testes, para
 // que cada asserção varie uma única dimensão por vez.
@@ -23,7 +27,7 @@ const report = (status = 'passed') => ({
       specs: [
         {
           title:
-            'md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite',
+            'md-0002/AC-01, AC-04: composição Cambridge, destaque e limites',
           tests: [
             {
               expectedStatus: 'passed',
@@ -37,12 +41,50 @@ const report = (status = 'passed') => ({
   ],
   errors: [],
 });
+
+const reportFor = (id: keyof typeof requiredCases) => ({
+  suites: [
+    {
+      file: 'e2e/evidence.spec.ts',
+      specs: requiredCases[id].map((title) => ({
+        title: `${id}: ${title}`,
+        tests: [
+          {
+            expectedStatus: 'passed',
+            status: 'expected',
+            results: [{ status: 'passed' }],
+          },
+        ],
+      })),
+    },
+  ],
+  errors: [],
+});
 test('prova específica passada recebe PASS', () =>
   expect(assessAC('md-0002/AC-01', report())).toBe('PASS'));
+test('prova genérica não substitui o caso específico do AC', () => {
+  const data = report();
+  data.suites[0]!.specs[0]!.title = 'carrega o título principal';
+  expect(assessAC('md-0002/AC-01', data)).toBe('UNVERIFIABLE');
+});
 // AC-03 tem dois casos exigidos e o relatório só traz um: nada no relatório fala do caso que
 // falta, então a avaliação não pode inferir que ele passou.
 test('ausência de caso exigido nunca recebe PASS', () =>
   expect(assessAC('md-0002/AC-03', report())).toBe('UNVERIFIABLE'));
+test.each([
+  'md-0002/AC-02',
+  'md-0002/AC-06',
+  'md-0002/AC-10',
+  'md-0002/AC-13',
+] as const)('%s exige todas as provas específicas', (id) => {
+  const complete = reportFor(id);
+  expect(assessAC(id, complete)).toBe('PASS');
+  for (let index = 0; index < complete.suites[0].specs.length; index++) {
+    const missing = reportFor(id);
+    missing.suites[0].specs.splice(index, 1);
+    expect(assessAC(id, missing)).toBe('UNVERIFIABLE');
+  }
+});
 test('falha real recebe FAIL', () =>
   expect(assessAC('md-0002/AC-01', report('failed'))).toBe('FAIL'));
 test('teste ignorado não prova AC', () =>

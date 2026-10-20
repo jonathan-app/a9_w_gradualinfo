@@ -1,0 +1,9 @@
+2026-10-20 14:18 America/Sao_Paulo
+./node_modules/.bin/vitest run __tests__/unit/ci-assess.test.ts: PASS (12/12)
+./node_modules/.bin/tsc --noEmit: PASS
+./node_modules/.bin/eslint (arquivos alterados): PASS
+./node_modules/.bin/prettier --check (arquivos alterados): PASS
+./node_modules/.bin/playwright test e2e/verify-md0002-tarefa4.spec.ts e2e/verify-md0002-tarefa5.spec.ts --list: PASS (12 casos em 2 arquivos)
+node scripts/check-targets.mjs: PASS (1 spec exigida, conjunto completo)
+git diff --check: PASS
+Playwright real: NÃO EXECUTADO; requer stack Supabase local descartável e credenciais efêmeras produzidas pela CI.

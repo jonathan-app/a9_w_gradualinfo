@@ -20,6 +20,7 @@ As regras locais em AGENTS.md e docs/workflow/governance.md continuam mandatoria
 | 5   | Procedimento controlado de recuperacao administrativa                  | Phase 2 | done    |
 | 6   | Dashboard operacional de administracao                                 | Phase 3 | done    |
 | 7   | Pipeline de ofertas com permissao de servico e persistencia probatoria | Phase 4 | done    |
+| 10  | Acesso delegado e rastreabilidade administrativa                       | Phase 5 | planned |
 | 8   | Defesa de borda, sanitizacao publica e ciclo de vida de nonces         | Phase 5 | planned |
 | 9   | Concorrencia transacional, isolamento de privilegios e reconciliacao   | Phase 5 | planned |
 
@@ -113,6 +114,13 @@ Corrigir a permissao de execucao da RPC de avaliacao de selo, substituir o adapt
 ---
 
 ## Phase 5: Endurecimento do Pipeline de Ingestao de Ofertas e Idempotencia
+
+### 10. Acesso delegado e rastreabilidade administrativa · needs a decision · GA
+
+Alinhar a admissao do Cloudflare Access com os papeis delegados do produto e preservar credenciais e eventos administrativos no runtime distribuido.
+**Done when:** um operador admitido pelo Access chega a autorizacao por papel e MFA, codigos de recuperacao nao aparecem nos logs da plataforma, e login, logout, preview, avaliacao de oferta e rotinas administrativas produzem registros duraveis antes do fim da requisicao.
+
+- [ ] Design it (spec): `/architect acesso delegado e rastreabilidade administrativa`
 
 ### 8. Defesa de borda, sanitizacao publica e ciclo de vida de nonces · needs a decision
 

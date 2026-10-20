@@ -2,11 +2,13 @@
 
 **Date**: 2026-10-09 20:38, America/Sao_Paulo.
 **Status**: Accepted
-**Decision source**: Escolhas explícitas do proprietário nesta conversa: spec complementar, home e artigo primeiro, plano escrito e DESIGN.md, três publicações mais recentes, categorias adiadas, tipografia atual, dez artigos sem repetição, bloco neutro e capa decorativa, estrutura administrativa preservada, composição recomendada do artigo e referências somente do projeto. O proprietário autorizou aplicar R1 a R5 da revisão independente registrada em `2026-10-09-2059-0010-revisao-layout-editorial.md`. Aceite integral explícito do proprietário em 2026-10-09: “Aceitar e implementar localmente”. Atualizada em 2026-10-16 (Revisão 2) via /architect, a pedido do proprietário, para alinhar o contrato da home à composição unificada Cambridge efetivamente aprovada e verificada em 2026-10-16 (relatório `docs/reviews/2026-10-16-2001-home-pendentes-verify.md`, 10/10 PASS): incorpora a spec 0013 (que passa a Superseded) e registra o cabeçalho com busca e faixa de letreiro, até então sem spec própria. O contrato de leitura do artigo permanece como aceito em 2026-10-09. Sem autorização de merge ou deploy.
+**Decision source**: Escolhas explícitas do proprietário nesta conversa: spec complementar, home e artigo primeiro, plano escrito e DESIGN.md, três publicações mais recentes, categorias adiadas, tipografia atual, dez artigos sem repetição, bloco neutro e capa decorativa, estrutura administrativa preservada, composição recomendada do artigo e referências somente do projeto. O proprietário autorizou aplicar R1 a R5 da revisão independente registrada em `2026-10-09-2059-0010-revisao-layout-editorial.md`. Aceite integral explícito do proprietário em 2026-10-09: “Aceitar e implementar localmente”. Atualizada em 2026-10-16 (Revisão 2) via /architect, a pedido do proprietário, para alinhar o contrato da home à composição unificada Cambridge efetivamente aprovada e verificada em 2026-10-16 (relatório `docs/reviews/2026-10-16-2001-home-pendentes-verify.md`, 10/10 PASS): incorpora a spec 0013 (que passa a Superseded) e registra o cabeçalho com busca e faixa de letreiro, até então sem spec própria. Revisão 3 aceita em 2026-10-20 por solicitação explícita de reconciliação do proprietário: torna inequívoca a precedência sobre `md-0002/AC-01`, `AC-02`, `AC-04` e `AC-13`, sem alterar `AC-06` nem `AC-10`. Sem autorização de commit, merge ou deploy.
 
 ## Summary
 
 Organizar a home como revista digital com matéria de capa, até quatro destaques secundários em grade 2×2, seção própria de Últimas leituras com até quatro artigos e grade de recentes com até dezesseis. Melhorar a leitura do artigo com resumo e metadados antes da capa e texto limitado a 720 px. O cabeçalho mantém a marca, a navegação pública, a busca e a faixa de letreiro. Usar os dados e a identidade visual existentes, sem contas de leitores ou curadoria manual.
+
+Esta spec é a fonte vigente para composição visual da home e do artigo. A MD 0002 continua vigente para segurança, Markdown, SEO, visibilidade e estados que não sejam especializados aqui.
 
 ## Context
 
@@ -18,7 +20,7 @@ O bloqueio editorial de 2026-10-09 (home sob falha da fonte exibindo interface d
 
 ## Requirements
 
-- **layout-editorial/AC-01**: A home consulta getPublishedPosts uma única vez, com limite 60. A distribuição não repete artigos: índice 0 na matéria de capa, índices 1 a 4 nos destaques secundários e índices 5 a 8 em Últimas leituras; a grade de recentes recebe, em paralelo, os dezesseis artigos mais recentes por published_at em ordem não crescente. Cada artigo aparece uma única vez por seção.
+- **layout-editorial/AC-01**: A home consulta getPublishedPosts uma única vez, com limite 60. A matéria de capa usa o índice 0, os destaques usam os índices 1 a 4 e Últimas leituras usa os índices 5 a 8, sem repetição entre esses três blocos. A grade de recentes recebe, em paralelo, os dezesseis artigos mais recentes por published_at em ordem não crescente. Um artigo aparece no máximo uma vez dentro de cada seção, mas pode aparecer uma vez no topo e outra na grade de recentes.
 - **layout-editorial/AC-02**: Com conteúdo suficiente, desktop amplo mostra a matéria de capa ao lado de até quatro destaques em duas colunas de dois cards (grade 2×2, coluna única quando houver até dois destaques), a seção Últimas leituras com até quatro artigos em grade horizontal (editoria, título, resumo e autoria) e a grade de recentes com até dezesseis cards em quatro colunas, com links reais para /artigos/{slug}. Não há conteúdo fixo de demonstração.
 - **layout-editorial/AC-03**: Com zero, um, dois, três, quatro ou cinco artigos, a home mantém o h1 institucional, mostra somente artigos existentes e omite blocos vazios: zero usa o estado vazio existente; um mostra só a matéria de capa em largura útil cheia; dois ou três usam coluna única de destaques; quatro ou cinco dispensam Últimas leituras quando ela não tiver artigos. Não duplica artigos para preencher espaços.
 - **layout-editorial/AC-04**: Layout funciona em larguras de 320, 375, 768, 1024 e 1440 px sem rolagem horizontal da página. Em mobile a ordem é capa, destaques, últimas leituras e recentes; a grade de recentes usa uma coluna no celular e até quatro no desktop. A âncora /#recentes rola até a grade.
@@ -41,23 +43,26 @@ Inclui campos de destaque, categorias e pesquisa. Vantagem: maior controle edito
 
 ## Decision
 
-**Chosen option**: Opção 1, ajuste da apresentação sobre os serviços atuais. Nova spec complementar, sem substituir md-0002 integralmente. Após o aceite desta proposta, as disposições abaixo têm precedência somente no escopo visual de home e artigo. Identidade definida por DESIGN.md, sem fontes externas ou paleta paralela. Revisão 2 (2026-10-16): a composição da home descrita nesta spec é a composição Cambridge aprovada e verificada, e a spec 0013 está incorporada por ela. (basis: DESIGN.md, AGENTS.md, decisões do proprietário)
+**Chosen option**: Opção 1, ajuste da apresentação sobre os serviços atuais. Esta spec substitui pontualmente as cláusulas visuais conflitantes da MD 0002, sem substituir seus contratos de segurança, dados, SEO e visibilidade. A composição Cambridge descrita aqui é a fonte vigente. Identidade definida por DESIGN.md, sem fontes externas ou paleta paralela. (basis: DESIGN.md, AGENTS.md, decisões do proprietário)
 
 **Detalhes de implementação recomendados**: manter Server Components para leitura e composição; folhas interativas somente para controles existentes e fallback de imagem quando necessário. Reutilizar o componente de card onde couber e criar variantes editoriais, sem consultas por card. Alternativa considerada: componentes duplicados independentes, que multiplicariam regras de imagem e metadados. (basis: AGENTS.md, components/shared/post-card.tsx)
 
 ### Precedência pontual após aceite
 
-| Contrato anterior | Disposição especializada pela 0010                                                                                                              | Contrato preservado                         |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| md-0002/AC-02     | Campos por variante conforme tabela abaixo; recentes sem resumo                                                                                 | Dados reais, links e visibilidade           |
-| md-0002/AC-04     | Consulta única de até 60 artigos: capa, até quatro destaques 2×2, Últimas leituras e grade de até dezesseis recentes; quatro colunas no desktop | Ordem por recência e estado vazio           |
-| md-0002/AC-13     | Autor e data antes da capa; fontes após o corpo, sem repetir assinatura ao final                                                                | Fontes citadas e identidade editorial reais |
+| Contrato anterior | Disposição especializada pela 0010                                                                                                              | Contrato preservado                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| md-0002/AC-01     | A consulta lê até 60 artigos e a home pode renderizar até 25 instâncias de card, correspondentes a até 16 artigos distintos                     | Ordem por recência e exclusão de não públicos |
+| md-0002/AC-02     | Campos por variante conforme tabela abaixo; recentes sem resumo                                                                                 | Dados reais, links e visibilidade             |
+| md-0002/AC-04     | Consulta única de até 60 artigos: capa, até quatro destaques 2×2, Últimas leituras e grade de até dezesseis recentes; quatro colunas no desktop | Ordem por recência e estado vazio             |
+| md-0002/AC-13     | Autor e data antes da capa; fontes após o corpo, sem repetir assinatura ao final                                                                | Fontes citadas e identidade editorial reais   |
+
+`md-0002/AC-06` e `md-0002/AC-10` não são especializados por esta decisão. A proibição de `dangerouslySetInnerHTML` no caminho Markdown, a exceção exclusiva do JSON-LD seguro, o canonical e a igualdade entre `lastModified` e `published_at` permanecem integrais.
 
 Demais disposições de md-0002 continuam vigentes. A transição editorial e o mecanismo vigente de preview são regidos por `2026-10-08-2228-0006-transicao-editorial-sanity.md` e seus contratos especializados; esta spec não reintroduz o mecanismo antigo de preview descrito em md-0002. Não promove fonte editorial, não altera segurança nem aprova os gates pendentes.
 
 ## Rationale
 
-O objetivo atual é melhorar a apresentação do conteúdo existente. A seleção por recência e o limite de dez permitem a composição pedida sem mudar o trabalho do editor. Preservar as fontes e os tokens mantém coerência com o tema e evita dependências de carregamento adicionais. Uma reformulação de dados e navegação pode ser feita depois com contrato próprio.
+O objetivo atual é melhorar a apresentação do conteúdo existente. Uma consulta de até 60 artigos alimenta a composição Cambridge com uma única leitura e deixa a grade recente selecionar até dezesseis itens sem consulta adicional. Preservar as fontes e os tokens mantém coerência com o tema e evita dependências de carregamento adicionais. Uma reformulação de dados e navegação pode ser feita depois com contrato próprio.
 
 ## Feature design
 
@@ -67,7 +72,7 @@ Nenhuma tabela, campo, relação, persistência, API ou variável de ambiente no
 
 | Valor                          | Origem e tratamento                                                        |
 | ------------------------------ | -------------------------------------------------------------------------- |
-| Ordem e seleção da home        | Lista de getPublishedPosts(cliente público, 10), fatias do AC-01           |
+| Ordem e seleção da home        | Lista de getPublishedPosts(cliente público, 60), fatias do AC-01           |
 | Destino do artigo              | /artigos/ concatenado ao slug existente                                    |
 | Título e corpo                 | Post.title e Post.content, Markdown pelo renderer existente                |
 | Resumo                         | Post.excerpt, omitir se vazio                                              |
@@ -91,11 +96,17 @@ Nenhuma tabela, campo, relação, persistência, API ou variável de ambiente no
 | Card de recente     | Imagem decorativa, editoria, título e autoria com data            |
 | Cabeçalho do artigo | Editoria, título, resumo, autor e data                            |
 
-Autor aparece somente no artigo. Ausências seguem a tabela de origem, sem valores inventados e sem separadores órfãos.
+Autoria aparece nas variantes indicadas e no cabeçalho do artigo. Ausências seguem a tabela de origem, sem valores inventados e sem separadores órfãos.
+
+Os campos são obrigatórios por variante, não uniformes em todos os cards. Resumo aparece na capa e em Últimas leituras. Destaques e recentes não recebem resumo. Capa aparece na matéria de capa, nos destaques e nos recentes. Últimas leituras é a variante textual sem capa.
 
 ### Composição e limites
 
 Home conserva h1 institucional (visualmente oculto). A área de destaque (âncora #artigos) tem a matéria de capa com imagem 16:9, editoria, título, lead e autoria, ao lado da grade 2×2 de até quatro destaques com imagem, editoria, título e autoria; em telas grandes a segunda coluna do 2×2 é separada por borda vertical. A seção Últimas leituras (âncora #ultimas-leituras) tem cabeçalho próprio com contador e grade horizontal de até quatro artigos com editoria, título, resumo e autoria. A grade de recentes (âncora #recentes) lista até dezesseis cards com imagem, editoria, título e autoria. Textos ausentes não geram separadores órfãos. Títulos não são truncados de forma a ocultar o nome acessível do link.
+
+O máximo visual é 25 instâncias de card: uma matéria de capa, quatro destaques, quatro últimas leituras e dezesseis recentes. Como a grade recente é uma visão paralela, a home representa no máximo dezesseis artigos distintos. A repetição entre o topo e a grade recente é intencional. Repetição dentro da mesma seção continua proibida.
+
+No artigo, a ordem vigente é cabeçalho com editoria, título, resumo, autor e data, depois capa, corpo Markdown e fontes. Não existe uma segunda assinatura depois das fontes.
 
 Composição responsiva: uma coluna de destaques em telas estreitas e duas colunas (capa maior + 2×2) em telas largas, com Últimas leituras abaixo; a grade de recentes vai de uma coluna no celular a quatro no desktop. Artigo mantém capa 16:9 e corpo central de até 720 px.
 
@@ -125,12 +136,13 @@ Abordagem Tracer Bullet, com conteúdo real pela camada de serviços, sem dados 
 2. Entregue na unificação Cambridge (0013, 2026-10-11/14): capa, grade 2×2 de destaques, Últimas leituras, grade de recentes e resolução de imagens. Atende AC-01 a AC-04 e AC-06.
 3. Entregue e verificada em 2026-10-16 (10/10 PASS): cabeçalho com marca, busca sem acentos, âncoras e faixa de letreiro, com prova visual e de navegação. Atende AC-04, AC-07 e AC-09.
 4. Pendente, pertence ao ciclo /check: verificação formal do contrato desta Revisão 2 com o gate `scripts/check-decision.mjs --spec docs/specs/2026-10-09-2038-0010-layout-editorial-home-artigo.md` e evidência por AC na árvore avaliada. Confirma AC-01 a AC-10.
+5. Corrigir as provas da baseline MD 0002 para respeitar esta precedência: preservar AC-06 e AC-10, validar campos por variante e remover as expectativas antigas de dez itens totais e autoria depois das fontes. Satisfaz **layout-editorial/AC-01**, **layout-editorial/AC-02**, **layout-editorial/AC-05** e **layout-editorial/AC-10**.
 
 Arquivos de partida: app/page.tsx, app/artigos/[slug]/page.tsx, app/busca/page.tsx, components/home/*, components/layout/site-header.tsx, lib/editorial-images.ts. Ler o layout raiz e os helpers de imagem e data para compatibilidade; não alterar a ativação das fontes editoriais.
 
 ## Critical test scenarios
 
-- AC-01 a AC-03: listas com 0, 1, 2, 3, 4, 5, 6 e 10 artigos; conferir fatias disjuntas, ordem por data, destinos e ausência de repetição.
+- AC-01 a AC-03: listas com 0, 1, 2, 3, 4, 5, 6, 10, 16 e 60 artigos; conferir fatias disjuntas no topo, repetição intencional entre topo e recentes, ordem por data, destinos e ausência de repetição dentro de cada seção.
 - AC-04, AC-05 e AC-07: provas visuais em cinco larguras, dois temas, teclado, âncoras /#artigos e /#recentes e Markdown com tabela larga.
 - AC-06: capa vazia, URL rejeitada e resposta de imagem 404; espaço neutro, raio e link permanecem utilizáveis.
 - AC-08 e AC-09: comparação visual do login/painel antes e depois, artigo público, rascunho sem e com preview, slug inexistente, falha da fonte com bloco honesto, busca com e sem resultado e faixa de letreiro com links; preservar status e cache contratados.

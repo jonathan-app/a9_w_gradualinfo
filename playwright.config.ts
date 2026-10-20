@@ -27,11 +27,12 @@ export default defineConfig({
       ? []
       : [
           '**/editorial-local/**',
-          '**/verify-*.spec.ts',
           '**/admin-panel.spec.ts',
           '**/critical-flows.spec.ts',
-          '**/accessibility.spec.ts',
           '**/offers-ingest-worker.spec.ts',
+          '**/verify-header-public.spec.ts',
+          '**/verify-home-pendentes.spec.ts',
+          '**/verify-md0002-acessibilidade.spec.ts',
         ],
 
   // Sem isso, um teste que passa por acaso em rerun não é sinal de nada.
