@@ -261,7 +261,7 @@ export function resolveSafeRedirectBase(request: Request): string {
 
   // Se não houver cabeçalho Host explícito, usa a origem da própria requisição se válida, ou SITE_ORIGIN
   if (!host) {
-    if (!env.isProduction) {
+    if (!env.isProduction || process.env.E2E_REAL_SUPABASE === '1') {
       try {
         const reqUrl = new URL(request.url);
         if (reqUrl.origin && reqUrl.origin !== 'null') {
@@ -293,12 +293,15 @@ export function resolveSafeRedirectBase(request: Request): string {
       (candidateUrl.port === allowedSiteUrl.port ||
         (!candidateUrl.port && !allowedSiteUrl.port))
     ) {
+      if (allowedSiteUrl.protocol === 'https:' && proto !== 'https') {
+        return allowedSiteUrl.origin;
+      }
       return candidateUrl.origin;
     }
 
     // 2. Exceção de localhost e 127.0.0.1 estritamente restrita a desenvolvimento e teste
     if (
-      !env.isProduction &&
+      (!env.isProduction || process.env.E2E_REAL_SUPABASE === '1') &&
       ['localhost', '127.0.0.1'].includes(candidateHostname)
     ) {
       try {
@@ -306,6 +309,12 @@ export function resolveSafeRedirectBase(request: Request): string {
         if (
           ['localhost', '127.0.0.1'].includes(reqUrl.hostname.toLowerCase())
         ) {
+          if (
+            allowedSiteUrl.protocol === 'https:' &&
+            candidateHostname === allowedSiteUrl.hostname.toLowerCase()
+          ) {
+            return allowedSiteUrl.origin;
+          }
           return candidateUrl.origin;
         }
       } catch {
