@@ -51,7 +51,7 @@ export async function consumeAdminRateLimit(
         if (!current || now >= current.expiresAt) {
           localRateLimits.set(operation, {
             count: 1,
-            expiresAt: now + 60_000,
+            expiresAt: now + 3_000,
           });
           return { status: 200 };
         }

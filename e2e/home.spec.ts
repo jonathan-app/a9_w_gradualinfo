@@ -27,7 +27,7 @@ test.describe('página inicial', () => {
     expect(href).toBeTruthy();
     await firstArticleLink.click();
     await expect(page).toHaveURL(new RegExp(`${href}$`));
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('h1').first()).toBeVisible();
   });
 
   test('alterna o tema', async ({ page }) => {
