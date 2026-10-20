@@ -30,7 +30,7 @@ test.describe('página inicial', () => {
   test('alterna o tema', async ({ page }) => {
     await page.goto('/');
 
-    const toggle = page.getByRole('button', { name: /tema (claro|escuro)/i });
+    const toggle = page.getByRole('button', { name: 'Tema claro' });
     await expect(toggle).toBeVisible();
 
     // O ícone só é renderizado no browser (o servidor não sabe o tema), então

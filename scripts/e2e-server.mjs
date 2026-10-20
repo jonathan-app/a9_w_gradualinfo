@@ -121,7 +121,15 @@ const upstreamProcess = useWorker
   : spawn(
       process.execPath,
       ['node_modules/next/dist/bin/next', 'start', '--port', '3101'],
-      { stdio: 'inherit' },
+      {
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          OFFERS_INGEST_SECRET:
+            process.env.OFFERS_INGEST_SECRET ||
+            'test-collector-secret-32-chars-long',
+        },
+      },
     );
 
 const handleRequest = (incoming, outgoing) => {
