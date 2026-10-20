@@ -160,10 +160,10 @@ real é apenas que o corpo não executa componente — o que é uma boa propried
 | N   | Primeira jornada: guia do notebook         | Slice 4    | done        |
 | O   | SEO aprofundado e auditoria                | Slice 4    | done        |
 | P   | Busca e recorte                            | Slice 4    | done        |
-| R   | Revisão editorial dos seis rascunhos       | Slice 4    | in-progress |
+| R   | Revisão editorial dos seis rascunhos       | Slice 4    | done        |
 | S   | Revisão editorial dos dez novos rascunhos  | Slice 4    | done        |
 | T   | Manutenção das suítes e2e públicas         | Slice 5    | planned     |
-| U   | Polimento visual da home (inspeção taste)  | Slice 5    | in-progress |
+| U   | Polimento visual da home (inspeção taste)  | Slice 5    | planned     |
 
 ## Foundations
 
@@ -363,7 +363,7 @@ Spec [`0024`](../specs/2026-10-17-1547-0024-busca-recorte-editoria.md) · code e
 - [x] Document it: `/document pr` (2026-10-17; rascunho em docs/reviews/2026-10-17-1645-0024-busca-recorte-pr.md)
 - [x] Sync it: `/sync` (2026-10-17; AGENTS.md atualizado com 858/83 testes Vitest e 44 testes Playwright, escopo reconciliado para done)
 
-### R. Revisão editorial dos seis rascunhos · in-progress
+### R. Revisão editorial dos seis rascunhos (0015) · done
 
 Revisão técnica e editorial dos seis rascunhos em `docs/rascunhos-editoriais/`, utilizando o artigo de referência `diagnosticar-erro-500-503-site.md` como padrão de qualidade:
 
@@ -373,6 +373,7 @@ Revisão técnica e editorial dos seis rascunhos em `docs/rascunhos-editoriais/`
 4. Definição explícita dos critérios de aprovação editorial e estabelecimento da ordem sequencial recomendada de publicação.
    Tudo sem alterar o layout aprovado da aplicação. Sanity, publicação e deploy permanecem em etapas futuras desacopladas.
    **Done when:** os seis rascunhos em Markdown atendem integralmente ao padrão do artigo de referência, com fontes verificadas, metadados consistentes, checklist de aprovação editorial cumprido e ordem de publicação documentada.
+   Spec `0015` · rascunhos em `docs/rascunhos-editoriais/`
 
 - [x] Design it (spec): [`0015` Accepted](../specs/2026-10-12-0828-0015-revisao-editorial-seis-rascunhos.md)
       Build, verify e review concluídos em 2026-10-12 (gate APROVADO) e aceite editorial do proprietário em 2026-10-13; aguarda `/sync` para virar `done`.
@@ -423,7 +424,7 @@ Atualizar as expectativas defasadas da verificação do cabeçalho público para
 
 - [ ] Fechar a manutenção: `/develop manutenção das suítes e2e`
 
-### U. Polimento visual da home (inspeção taste) · in-progress
+### U. Polimento visual da home (inspeção taste) · planned
 
 Polimento visual aplicado em 2026-10-16 na Home e no Header (degradês sintéticos, sombras e emojis removidos; apontamentos da inspeção caíram de 11 para 6 FAIL; registro em `workflow/STATE.md` linha 585). Resta triar os apontamentos remanescentes do relatório local (`.taste-skill/inspect/report.json`) contra o design aprovado (o H1 oculto visualmente, por exemplo, é intencional) e corrigir apenas o que melhorar de verdade: link padrão, medida de leitura e quebras de manchete no celular estão entre os candidatos.
 **Done when:** cada observação tem veredito registrado (corrigida ou dispensada com razão) e as correções aplicadas passam em `pnpm check:all` e na verificação visual.
