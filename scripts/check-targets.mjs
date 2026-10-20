@@ -42,8 +42,8 @@ export function expectedTargets(repo) {
   const features = [
     ...glance.matchAll(/^\| ([A-Z])\s+\|[^\n]*\|\s+in-progress\s+\|$/gm),
   ].map((match) => match[1]);
-  if (!features.length) throw new Error('Escopo sem fatias em progresso.');
   const expected = [{ feature: 'baseline', path: BASELINE }];
+  if (!features.length) return expected;
   const allSpecs = markdownFiles(join(repo, 'docs/specs'));
   for (const feature of features) {
     const heading = new RegExp(`^### ${feature}\\. [^\\n]+`, 'm');

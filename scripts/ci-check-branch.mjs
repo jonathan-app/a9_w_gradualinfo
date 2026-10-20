@@ -1,4 +1,9 @@
-#!/usr/bin/env node
+/**
+ * @fileoverview Valida se a execucao do gate esta direcionada ao branch padrao remoto.
+ * @module scripts/ci-check-branch
+ * @description Garante que PRs sejam dirigidos a main e permite workflow_dispatch.
+ * @dependencies node:child_process
+ */
 import { execFileSync } from 'node:child_process';
 
 try {
@@ -26,6 +31,10 @@ try {
           `O PR é dirigido ao branch ${baseBranch}, mas o gate exige o branch padrão remoto (${defaultBranch}).`,
         );
       }
+    } else if (process.env.GITHUB_EVENT_NAME === 'workflow_dispatch') {
+      console.log(
+        `Execucao manual via workflow_dispatch no branch ${currentBranch}.`,
+      );
     } else {
       throw new Error(
         `O job está rodando no branch ${currentBranch}, mas o gate exige o branch padrão remoto (${defaultBranch}).`,

@@ -65,7 +65,7 @@ test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
     for (const slug of ['absent-slug', 'fixture-rascunho', 'fixture-agendado'])
       expect((await page.goto(`/artigos/${slug}`))?.status()).toBe(404);
   });
-  test('md-0002/AC-10: canonical existe e o sitemap só cobre públicos', async ({
+  test('md-0002/AC-10: canonical e sitemap só incluem públicos', async ({
     page,
     request,
     baseURL,

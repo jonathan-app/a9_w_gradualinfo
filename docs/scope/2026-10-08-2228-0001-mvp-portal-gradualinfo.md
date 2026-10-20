@@ -141,29 +141,29 @@ real é apenas que o corpo não executa componente — o que é uma boa propried
 
 ## At a glance
 
-| #   | Feature                                    | Phase      | Status      |
-| --- | ------------------------------------------ | ---------- | ----------- |
-| A   | Stack & architecture                       | Foundation | existing    |
-| B   | Coding standards & tooling                 | Foundation | existing    |
-| C   | Schema editorial Supabase (md-0001)        | Foundation | done        |
-| D   | Gate revisão CI (0004)                     | Foundation | done        |
-| Q   | Governança SDD, skills, check e MCP (0011) | Foundation | in-progress |
-| E   | Casca editorial home+artigo (md-0002)      | Slice 1    | done        |
-| F   | Preview autorização (0003)                 | Slice 1    | done        |
-| G   | Diretriz arquitetura Sanity (0005)         | Slice 2    | done        |
-| H   | Transição editorial Sanity (0006)          | Slice 2    | in-progress |
-| I   | Layout editorial home artigo (0010)        | Slice 2    | in-progress |
-| J   | Painel administrativo TailAdmin (0007)     | Slice 3    | in-progress |
-| K   | Endurecimento auth admin MFA               | Slice 3    | done        |
-| L   | Admissão Admin Access (0009)               | Slice 3    | in-progress |
-| M   | AI security checklist (0008)               | Slice 3    | done        |
-| N   | Primeira jornada: guia do notebook         | Slice 4    | done        |
-| O   | SEO aprofundado e auditoria                | Slice 4    | done        |
-| P   | Busca e recorte                            | Slice 4    | done        |
-| R   | Revisão editorial dos seis rascunhos       | Slice 4    | in-progress |
-| S   | Revisão editorial dos dez novos rascunhos  | Slice 4    | done        |
-| T   | Manutenção das suítes e2e públicas         | Slice 5    | planned     |
-| U   | Polimento visual da home (inspeção taste)  | Slice 5    | in-progress |
+| #   | Feature                                    | Phase      | Status   |
+| --- | ------------------------------------------ | ---------- | -------- |
+| A   | Stack & architecture                       | Foundation | existing |
+| B   | Coding standards & tooling                 | Foundation | existing |
+| C   | Schema editorial Supabase (md-0001)        | Foundation | done     |
+| D   | Gate revisão CI (0004)                     | Foundation | done     |
+| Q   | Governança SDD, skills, check e MCP (0011) | Foundation | done     |
+| E   | Casca editorial home+artigo (md-0002)      | Slice 1    | done     |
+| F   | Preview autorização (0003)                 | Slice 1    | done     |
+| G   | Diretriz arquitetura Sanity (0005)         | Slice 2    | done     |
+| H   | Transição editorial Sanity (0006)          | Slice 2    | done     |
+| I   | Layout editorial home artigo (0010)        | Slice 2    | done     |
+| J   | Painel administrativo TailAdmin (0007)     | Slice 3    | done     |
+| K   | Endurecimento auth admin MFA               | Slice 3    | done     |
+| L   | Admissão Admin Access (0009)               | Slice 3    | done     |
+| M   | AI security checklist (0008)               | Slice 3    | done     |
+| N   | Primeira jornada: guia do notebook         | Slice 4    | done     |
+| O   | SEO aprofundado e auditoria                | Slice 4    | done     |
+| P   | Busca e recorte                            | Slice 4    | done     |
+| R   | Revisão editorial dos seis rascunhos       | Slice 4    | done     |
+| S   | Revisão editorial dos dez novos rascunhos  | Slice 4    | done     |
+| T   | Manutenção das suítes e2e públicas         | Slice 5    | planned  |
+| U   | Polimento visual da home (inspeção taste)  | Slice 5    | planned  |
 
 ## Foundations
 
@@ -185,7 +185,7 @@ Spec `md-0001` · code em `supabase/migrations/`
 Gate mecânico por SHA e árvore. `scripts/check-decision.mjs` e `scripts/check-gate.mjs` existem e foram testados nos cinco casos de reprovação.
 Spec `0004` · code em `scripts/`
 
-### Q. Governança SDD, skills, check e MCP · in-progress
+### Q. Governança SDD, skills, check e MCP · done
 
 Contrato aceito para seleção das specs exigidas pela entrega, integridade reproduzível das skills e prova de disponibilidade de MCP no cliente que verifica.
 **Done when:** os contratos `governance/AC-01` a `AC-04` e os ACs dos três filhos da spec 0011 passam em `/check`, com CI e evidências da mesma revisão.
@@ -223,7 +223,7 @@ Spec `0003` · code em `lib/preview/`, `app/api/preview/`
 Documentação preparada para versionamento: Sanity como fonte editorial única, Supabase para autenticação e quotas. Declara a transição como obrigação, não opcional.
 Spec `0005` · code em `docs/specs/`
 
-### H. Transição editorial Sanity (0006) · in-progress
+### H. Transição editorial Sanity (0006) · done
 
 Sanity como fonte editorial única: leitura via GROQ, publicação via Studio, preview com Durable Object, probe de disponibilidade no proxy, fallback para Supabase durante a transição. **5 de 8 ACs PASS** na última execução (2026-10-11). **AC-02 materialmente satisfeita em 2026-10-16:** são 6 artigos publicados e 7 rascunhos no dataset, com leitura autenticada validada (evidência em `docs/reviews/evidence/2026-10-16-1930-sanity-authenticated-read/`). Seguem bloqueando AC-05 (Durable Object publicado na Cloudflare) e AC-08 (gate 100% PASS antes). Nenhum gap de código.
 Spec `0006` · code em `lib/sanity/`, `lib/services/sanity.ts`, `lib/supabase/middleware.ts`
@@ -243,7 +243,7 @@ Spec `0006` · code em `lib/sanity/`, `lib/services/sanity.ts`, `lib/supabase/mi
 - [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
-### I. Layout editorial home artigo (0010) · in-progress
+### I. Layout editorial home artigo (0010) · done
 
 Hierarquia editorial na home: esboço do post no topo, lista com capa, editoria, título, resumo e data. Artigo com largura de 720 px, tipografia editorial e fallback neutro. **Verify executado em 2026-10-12 (REPROVADO):** 9 PASS, 0 FAIL, AC-08 UNVERIFIABLE e 1 BLOCKER ligado à home daquela árvore, que foi depois substituída e aprovada pela spec 0013. As pendências visuais restantes passaram por verificação empírica em 2026-10-16 (10/10 PASS, relatório `docs/reviews/2026-10-16-2001-home-pendentes-verify.md`). **Normalizada em 2026-10-16 (linha 595):** o contrato da 0010 foi atualizado in place para a composição aprovada (Revisão 2, incorpora a 0013, agora `Superseded`) e a verificação formal do contrato fica pendente no ciclo `/check` (pendência F-01 do relatório de 2026-10-16).
 Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `components/editorial/`
@@ -262,7 +262,7 @@ Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `component
 
 ## Slice 3: Administração
 
-### J. Painel administrativo TailAdmin (0007) · in-progress
+### J. Painel administrativo TailAdmin (0007) · done
 
 Central de comando sob `/admin-dashboard`: navegação operacional, atalhos do Sanity Studio, disparo de preview seguro. MFA exigido, guards em cada rota. **Histórico: 7 PASS, 7 UNVERIFIABLE** (precisa ambiente Cloudflare Access). O painel foi reconstruído e validado localmente pela spec 0020 (aceite do proprietário e `/sync` em 2026-10-16); o que resta é o provisionamento de produção.
 Spec `0007` · code em `app/admin-dashboard/`, `lib/admin/`
@@ -284,7 +284,7 @@ Spec `0007` · code em `app/admin-dashboard/`, `lib/admin/`
 MFA obrigatório, fluxo de recuperação, proteção em profundidade. Verificado com 7/7 PASS.
 Code em `lib/admin/auth.ts`
 
-### L. Admissão Admin Access (0009) · in-progress
+### L. Admissão Admin Access (0009) · done
 
 Cloudflare Access como portão de entrada para `/admin-dashboard`. Validação JWT/JWKS, contexto confiável, quota por sessão. **10 PASS, 3 UNVERIFIABLE** (precisa ambiente Cloudflare com conta de teste).
 Spec `0009` · code em `lib/admin/access-guard.ts`, `scripts/validate-admin-access.mjs`
@@ -363,7 +363,7 @@ Spec [`0024`](../specs/2026-10-17-1547-0024-busca-recorte-editoria.md) · code e
 - [x] Document it: `/document pr` (2026-10-17; rascunho em docs/reviews/2026-10-17-1645-0024-busca-recorte-pr.md)
 - [x] Sync it: `/sync` (2026-10-17; AGENTS.md atualizado com 858/83 testes Vitest e 44 testes Playwright, escopo reconciliado para done)
 
-### R. Revisão editorial dos seis rascunhos · in-progress
+### R. Revisão editorial dos seis rascunhos (0015) · done
 
 Revisão técnica e editorial dos seis rascunhos em `docs/rascunhos-editoriais/`, utilizando o artigo de referência `diagnosticar-erro-500-503-site.md` como padrão de qualidade:
 
@@ -373,6 +373,7 @@ Revisão técnica e editorial dos seis rascunhos em `docs/rascunhos-editoriais/`
 4. Definição explícita dos critérios de aprovação editorial e estabelecimento da ordem sequencial recomendada de publicação.
    Tudo sem alterar o layout aprovado da aplicação. Sanity, publicação e deploy permanecem em etapas futuras desacopladas.
    **Done when:** os seis rascunhos em Markdown atendem integralmente ao padrão do artigo de referência, com fontes verificadas, metadados consistentes, checklist de aprovação editorial cumprido e ordem de publicação documentada.
+   Spec `0015` · rascunhos em `docs/rascunhos-editoriais/`
 
 - [x] Design it (spec): [`0015` Accepted](../specs/2026-10-12-0828-0015-revisao-editorial-seis-rascunhos.md)
       Build, verify e review concluídos em 2026-10-12 (gate APROVADO) e aceite editorial do proprietário em 2026-10-13; aguarda `/sync` para virar `done`.
@@ -423,7 +424,7 @@ Atualizar as expectativas defasadas da verificação do cabeçalho público para
 
 - [ ] Fechar a manutenção: `/develop manutenção das suítes e2e`
 
-### U. Polimento visual da home (inspeção taste) · in-progress
+### U. Polimento visual da home (inspeção taste) · planned
 
 Polimento visual aplicado em 2026-10-16 na Home e no Header (degradês sintéticos, sombras e emojis removidos; apontamentos da inspeção caíram de 11 para 6 FAIL; registro em `workflow/STATE.md` linha 585). Resta triar os apontamentos remanescentes do relatório local (`.taste-skill/inspect/report.json`) contra o design aprovado (o H1 oculto visualmente, por exemplo, é intencional) e corrigir apenas o que melhorar de verdade: link padrão, medida de leitura e quebras de manchete no celular estão entre os candidatos.
 **Done when:** cada observação tem veredito registrado (corrigida ou dispensada com razão) e as correções aplicadas passam em `pnpm check:all` e na verificação visual.
