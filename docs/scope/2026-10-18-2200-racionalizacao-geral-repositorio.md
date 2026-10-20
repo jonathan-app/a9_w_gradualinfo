@@ -77,11 +77,10 @@ O painel administrativo ja utiliza icones SVG nativos sem depender de react-icon
 
 ### Lote R3: Auditoria de Dependencias de Desenvolvimento
 
-Auditoria em pacotes auxiliares de desenvolvimento no package.json (Storybook, Spotlight, Concurrently, analise de bundle) para verificar compatibilidade plena com o build Turbopack do Next.js 16 e garantir que ferramentas nao utilizadas nao onerem o tempo de instalacao.
+Auditoria em pacotes auxiliares do `package.json`, incluindo Storybook, Spotlight, Concurrently, analise de bundle e `ponytail`, para retirar o que nao tem consumidor real sem prejudicar o fluxo local.
+**Done when:** cada pacote investigado possui consumidor comprovado ou e removido com lockfile reconciliado, e os comandos de build, teste e skills continuam operando.
 
-- [ ] Auditoria de compatibilidade do bundle-analyzer com Turbopack
-- [ ] Verificacao de uso dos pacotes Storybook e Chromatic
-- [ ] Emissao de parecer tecnico sobre dependencias opcionais
+- [ ] Design it (spec): `/architect auditoria de dependencias auxiliares`
 
 ---
 

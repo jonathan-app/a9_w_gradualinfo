@@ -84,20 +84,20 @@ const rows = [
     content: 'Artigo sem fontes.',
     fontes_citadas: [],
   },
-  // Doze artigos com `published_at` decrescentes (hoje menos 1..12 dias): provam limite de
-  // página e ordem de listagem sem depender de horário real de inserção.
-  ...Array.from({ length: 12 }, (_, index) => ({
+  // Dezesseis artigos com datas e campos distintos provam o limite da grade e impedem que
+  // valores fixos na apresentação passem por coincidência.
+  ...Array.from({ length: 16 }, (_, index) => ({
     title: `Fixture ordenação ${index}`,
     slug: `fixture-ordenacao-${index}`,
     content: 'Artigo para provar limite e ordem.',
     fontes_citadas: [],
     published_at: new Date(Date.now() - (index + 1) * 86400000).toISOString(),
   })),
-].map((post) => ({
+].map((post, index) => ({
   ...post,
-  excerpt: 'Resumo de teste',
-  cover_image_url: `${origin}/editorial-cover.svg`,
-  editoria: 'Programação',
+  excerpt: `Resumo de teste ${index}`,
+  cover_image_url: `${origin}/editorial-cover.svg?fixture=${index}`,
+  editoria: `Programação ${index}`,
   author_name: 'Autor de teste',
   status: 'publicado',
   published_at: post.published_at ?? new Date().toISOString(),

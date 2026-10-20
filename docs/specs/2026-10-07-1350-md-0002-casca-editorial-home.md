@@ -6,6 +6,7 @@
 
 - **Aceite da spec md-0002**: Aprovada pelo dono anteriormente na definição do contrato da casca editorial e política de cache (`no-store` por requisição).
 - **Emenda do AC-06 (2026-10-07)**: O dono respondeu explicitamente `1` na sessão de 2026-10-07, aprovando pontualmente a exceção exclusiva para JSON-LD estruturado (`<script type="application/ld+json">`) com serialização segura e escape Unicode, mantendo proibido `dangerouslySetInnerHTML` no corpo Markdown do artigo.
+- **Especialização visual vigente (2026-10-20)**: a spec aceita `2026-10-09-2038-0010-layout-editorial-home-artigo.md`, Revisão 3, substitui pontualmente as cláusulas visuais de `AC-01`, `AC-02`, `AC-04` e `AC-13`. O texto original abaixo permanece como histórico. `AC-06` e `AC-10` continuam integrais.
 
 **Preview**: especializado por `0003-preview-autorizacao.md`, Accepted por autorização de execução do plano em 2026-10-07.
 
@@ -68,17 +69,17 @@ caro do que decidir agora.
 **Acceptance criteria** (o contrato; `/develop` constrói para cá, `/check verify`
 confere contra isto):
 
-- **md-0002/AC-01**: a home lista no máximo 10 artigos publicados, do mais
+- **md-0002/AC-01** (especializado pela spec 0010): a home lista no máximo 10 artigos publicados, do mais
   recente para o mais antigo, e **não lista rascunho nem artigo com data
   futura**, verificado com um banco semeado que contenha os dois casos.
-- **md-0002/AC-02**: cada card da home exibe capa, editoria, título, resumo e
+- **md-0002/AC-02** (especializado pela spec 0010): cada card da home exibe capa, editoria, título, resumo e
   data, e cada valor vem da coluna nomeada em `## Value sourcing`.
 - **md-0002/AC-03**: com 0 artigos publicados a home mostra o estado vazio
   (mensagem explícita, não uma grade silenciosamente vazia); com falha de
   leitura do banco ela mostra a página de erro — **as duas mensagens são
   diferentes**, porque "não tem artigo" e "deu erro" são respostas diferentes
   para o leitor.
-- **md-0002/AC-04**: a home tem um esboço do artigo mais recente no topo,
+- **md-0002/AC-04** (especializado pela spec 0010): a home tem um esboço do artigo mais recente no topo,
   acima da grade, e o limite de 10 vale para a grade.
 - **md-0002/AC-05**: `/artigos/[slug]` renderiza o título em um único `<h1>` e
   o corpo Markdown convertido em HTML, sem nenhuma sintaxe Markdown crua
@@ -114,7 +115,7 @@ confere contra isto):
 - **md-0002/AC-12**: a home e o artigo passam no `@axe-core/playwright` já
   configurado em `e2e/accessibility.spec.ts`, e a navegação por teclado
   funciona com foco visível.
-- **md-0002/AC-13**: a página de artigo exibe as `fontes_citadas` do `md-0001`
+- **md-0002/AC-13** (especializado pela spec 0010): a página de artigo exibe as `fontes_citadas` do `md-0001`
   em uma **seção "Fontes" ao final do corpo**, depois do último parágrafo e
   **antes** dos metadados de autoria; cada fonte é um link com o texto de
   `titulo` e o `href` de `url`, em URL absoluta; artigo com lista vazia renderiza

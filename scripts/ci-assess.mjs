@@ -24,89 +24,47 @@
  * declarar a prova dele e não apenas deixar o job passar.
  */
 export const requiredCases = {
-  'md-0002/AC-01': [
-    ['carrega o título principal', 'cards completos, destaque e limite'],
-  ],
-  'md-0002/AC-02': [
-    [
-      'abre o artigo publicado pela navegação da home',
-      'cards completos, destaque e limite',
-    ],
-  ],
+  'md-0002/AC-01': ['composição Cambridge, destaque e limites'],
+  'md-0002/AC-02': ['variantes refletem os campos próprios do banco'],
   'md-0002/AC-03': [
-    ['responde 200 na sonda de saúde', 'lista vazia mostra mensagem própria'],
-    [
-      'home pública responde HTTP 200 com headers de segurança',
-      'falha real de transporte mostra erro, não vazio',
-    ],
+    'lista vazia mostra mensagem própria',
+    'falha real de transporte mostra erro, não vazio',
   ],
-  'md-0002/AC-04': [
-    ['carrega o título principal', 'cards completos, destaque e limite'],
-  ],
-  'md-0002/AC-05': [
-    [
-      'artigo publicado emite Article completo e BreadcrumbList de dois itens',
-      'HTML malicioso permanece dado',
-    ],
-  ],
+  'md-0002/AC-04': ['composição Cambridge, destaque e limites'],
+  'md-0002/AC-05': ['HTML malicioso permanece dado'],
   'md-0002/AC-06': [
-    [
-      'devolve 404 com conteúdo útil em URL inexistente',
-      'HTML malicioso permanece dado',
-    ],
+    'HTML malicioso permanece dado',
+    'caminho Markdown não usa dangerouslySetInnerHTML',
   ],
   'md-0002/AC-07': [
-    [
-      'slug de artigo inexistente devolve status HTTP 404 real na rede',
-      'inexistente, rascunho e agendado devolvem 404',
-    ],
-    [
-      'tentativa de acesso direto a rascunho sem preview devolve HTTP 404 real',
-      'rascunho anônimo retorna HTTP 404',
-    ],
+    'inexistente, rascunho e agendado devolvem 404',
+    'rascunho anônimo retorna HTTP 404',
   ],
   'md-0002/AC-08': [
-    [
-      'tentativa de acesso direto a rascunho sem preview devolve HTTP 404 real',
-      'GET antigo não autentica e POST inválido falha',
-    ],
-    [
-      'respostas de erro 404 emitem cabeçalho de cache no-store',
-      'sessão válida lê rascunho, sem indexação e sem cache',
-    ],
+    'GET antigo não autentica e POST inválido falha',
+    'sessão válida lê rascunho, sem indexação e sem cache',
+    'autorização vencida nega rascunho mantendo a sessão Supabase',
+    'outra identidade com claim válida não lê rascunho',
+    'identidade permitida sem claim não lê rascunho',
+    'conta sem claim com sessão real permanece pública',
+    'falha real de logout responde 503 e remove autorização local',
+    'sessão Auth realmente expirada nega rascunho sem apagar cookies',
+    'logout remove cookies e nega leitura',
+    'cookies preservam HttpOnly, Secure e prazo em HTTPS',
   ],
-  'md-0002/AC-09': [
-    [
-      'home emite WebSite com SearchAction e Organization com logo absoluto',
-      'HTML malicioso permanece dado',
-    ],
-    [
-      'artigo publicado emite Article completo e BreadcrumbList de dois itens',
-      'HTML malicioso permanece dado',
-    ],
-  ],
+  'md-0002/AC-09': ['HTML malicioso permanece dado'],
   'md-0002/AC-10': [
-    [
-      'robots.txt aponta o sitemap e mantém API e painel fora',
-      'canonical e sitemap só incluem públicos',
-    ],
-    [
-      'sitemap em índice cobre os publicados e ignora os não públicos',
-      'canonical existe e o sitemap só cobre públicos',
-    ],
+    'canonical e sitemap só incluem públicos',
+    'sitemap preserva published_at em lastmod',
   ],
   'md-0002/AC-12': [
-    ['alterna o tema', 'página inicial'],
-    [
-      'carrega o título principal',
-      'teclado chega ao conteúdo com foco visível',
-    ],
+    'página inicial',
+    'artigo publicado',
+    'teclado chega ao conteúdo com foco visível',
   ],
   'md-0002/AC-13': [
-    [
-      'abre o artigo publicado pela navegação da home',
-      'fontes aparecem somente quando presentes',
-    ],
+    'fontes preservam dados e isolamento do Markdown',
+    'artigo sem fontes omite a seção',
   ],
 };
 /**
@@ -153,18 +111,12 @@ export function assessAC(id, report) {
   if (!required || !report || report.errors?.length) return 'UNVERIFIABLE';
   const cases = collectCases(report);
   let failure = false;
-  for (const entry of required) {
-    const candidates = Array.isArray(entry) ? entry : [entry];
-    let matching = [];
-    for (const title of candidates) {
-      const found = cases.filter(
-        (item) => item.title === title || item.title.endsWith(`: ${title}`),
-      );
-      if (found.length === 1 && found[0].tests.length) {
-        matching = found;
-        break;
-      }
-    }
+  for (const title of required) {
+    // O Playwright prefixa o título do spec com o describe, então casa o título exato ou
+    // o sufixo ": título" — a mesma flexibilidade para o id do AC viver no nome do spec.
+    const matching = cases.filter(
+      (item) => item.title === title || item.title.endsWith(`: ${title}`),
+    );
     // Exatamente um caso com aquele título: zero significa que a suíte nem roda o cenário,
     // e mais de um significa título ambíguo (duas specs iguais). Nos dois casos a prova é
     // inexistente ou imprecisa, e o gate não pode escolher qual delas valeria.

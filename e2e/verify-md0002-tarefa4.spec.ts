@@ -100,37 +100,87 @@ test.describe('home editorial', () => {
     }
   });
 
-  test('md-0002/AC-01, AC-02, AC-04: cards completos, destaque e limite', async ({
+  test('md-0002/AC-01, AC-04: composição Cambridge, destaque e limites', async ({
     page,
   }) => {
     await page.goto('/');
-    const cards = page.locator('main a[href^="/artigos/"]');
-    // Limite de 10 por página: `toHaveCount` aguarda a estabilização do DOM (auto-waiting),
-    // eliminando leituras transitórias de nós duplicados durante o streaming do SSR.
-    await expect(cards).toHaveCount(10);
-    // Ordenação conferida sobre os atributos <time>: mais novo primeiro é o contrato
-    // editorial que o card em destaque também pressupõe.
-    const dates = await page
-      .locator('main time[datetime]')
-      .evaluateAll((elements) =>
-        elements.map((element) => element.getAttribute('datetime')!),
-      );
-    expect(dates).toEqual([...dates].sort().reverse());
     await expect(
-      page.locator('section[aria-label="Artigo em Destaque"]'),
-    ).toBeVisible();
+      page.getByRole('region', { name: 'Matéria de capa' }),
+    ).toHaveCount(1);
+    await expect(
+      page
+        .getByRole('region', { name: 'Destaques editoriais' })
+        .locator('article'),
+    ).toHaveCount(4);
+    await expect(
+      page.getByRole('region', { name: 'Últimas leituras' }).locator('article'),
+    ).toHaveCount(4);
+    await expect(page.locator('#recentes article')).toHaveCount(16);
     await expect(
       page.locator('main a[href="/artigos/fixture-rascunho"]'),
     ).toHaveCount(0);
     await expect(
       page.locator('main a[href="/artigos/fixture-agendado"]'),
     ).toHaveCount(0);
-    await expect(
-      page.locator('[data-slot="post-card-featured"] img'),
-    ).toBeVisible();
-    await expect(
-      page.locator('[data-slot="post-card-featured"] time'),
-    ).toBeVisible();
+  });
+  test('md-0002/AC-02: variantes refletem os campos próprios do banco', async ({
+    page,
+  }) => {
+    const admin = localAdmin();
+    const { data: posts, error } = await admin
+      .from('posts')
+      .select('slug,title,excerpt,cover_image_url,editoria,published_at')
+      .eq('status', 'publicado')
+      .lte('published_at', new Date().toISOString())
+      .order('published_at', { ascending: false })
+      .limit(60);
+    if (error || !posts)
+      throw new Error('Falha ao ler as fixtures editoriais.');
+
+    await page.goto('/');
+    const sections = [
+      {
+        root: page.getByRole('region', { name: 'Matéria de capa' }),
+        posts: posts.slice(0, 1),
+        excerpt: true,
+        cover: true,
+      },
+      {
+        root: page.getByRole('region', { name: 'Destaques editoriais' }),
+        posts: posts.slice(1, 5),
+        excerpt: false,
+        cover: true,
+      },
+      {
+        root: page.getByRole('region', { name: 'Últimas leituras' }),
+        posts: posts.slice(5, 9),
+        excerpt: true,
+        cover: false,
+      },
+      {
+        root: page.locator('#recentes'),
+        posts: posts.slice(0, 16),
+        excerpt: false,
+        cover: true,
+      },
+    ];
+    for (const section of sections) {
+      for (const post of section.posts) {
+        const link = section.root.locator(`a[href="/artigos/${post.slug}"]`);
+        const card = link.locator('xpath=ancestor::article[1]');
+        await expect(link).toContainText(post.title);
+        await expect(card).toContainText(post.editoria);
+        if (section.excerpt) await expect(card).toContainText(post.excerpt);
+        await expect(
+          card.locator(`time[datetime="${post.published_at}"]`),
+        ).toBeVisible();
+        if (section.cover) {
+          const src = await card.locator('img').getAttribute('src');
+          expect(src).toBeTruthy();
+          expect(new URL(src!, page.url()).href).toBe(post.cover_image_url);
+        }
+      }
+    }
   });
   test('md-0002/AC-03: lista vazia mostra mensagem própria', async ({
     page,

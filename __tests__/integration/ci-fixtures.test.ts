@@ -36,6 +36,7 @@ let server: Server;
 let serverUrl = '';
 let authCalls = 0;
 let postCalls = 0;
+let insertedPosts: Array<Record<string, unknown>> = [];
 let tempDir = '';
 let statusPath = '';
 let envPath = '';
@@ -82,8 +83,18 @@ beforeAll(async () => {
       request.url?.startsWith('/rest/v1/posts')
     ) {
       postCalls += 1;
-      response.writeHead(201, { 'content-type': 'application/json' });
-      response.end('[]');
+      let body = '';
+      request.setEncoding('utf8');
+      request.on('data', (chunk) => {
+        body += chunk;
+      });
+      request.on('end', () => {
+        insertedPosts = JSON.parse(body || '[]') as Array<
+          Record<string, unknown>
+        >;
+        response.writeHead(201, { 'content-type': 'application/json' });
+        response.end('[]');
+      });
       return;
     }
 
@@ -114,6 +125,7 @@ beforeEach(async () => {
   envPath = join(tempDir, 'github-env');
   authCalls = 0;
   postCalls = 0;
+  insertedPosts = [];
   await writeFile(envPath, '');
   await writeStatus(serverUrl);
 });
@@ -214,6 +226,9 @@ describe('scripts/ci-fixtures.mjs', () => {
     expect(result.status).toBe(0);
     expect(authCalls).toBe(3);
     expect(postCalls).toBe(1);
+    expect(insertedPosts).toHaveLength(18);
+    for (const field of ['excerpt', 'cover_image_url', 'editoria'])
+      expect(new Set(insertedPosts.map((post) => post[field])).size).toBe(18);
 
     const envContents = await readFile(envPath, 'utf8');
     const env = parseGithubEnv(envContents);

@@ -141,29 +141,29 @@ real é apenas que o corpo não executa componente — o que é uma boa propried
 
 ## At a glance
 
-| #   | Feature                                    | Phase      | Status   |
-| --- | ------------------------------------------ | ---------- | -------- |
-| A   | Stack & architecture                       | Foundation | existing |
-| B   | Coding standards & tooling                 | Foundation | existing |
-| C   | Schema editorial Supabase (md-0001)        | Foundation | done     |
-| D   | Gate revisão CI (0004)                     | Foundation | done     |
-| Q   | Governança SDD, skills, check e MCP (0011) | Foundation | done     |
-| E   | Casca editorial home+artigo (md-0002)      | Slice 1    | done     |
-| F   | Preview autorização (0003)                 | Slice 1    | done     |
-| G   | Diretriz arquitetura Sanity (0005)         | Slice 2    | done     |
-| H   | Transição editorial Sanity (0006)          | Slice 2    | done     |
-| I   | Layout editorial home artigo (0010)        | Slice 2    | done     |
-| J   | Painel administrativo TailAdmin (0007)     | Slice 3    | done     |
-| K   | Endurecimento auth admin MFA               | Slice 3    | done     |
-| L   | Admissão Admin Access (0009)               | Slice 3    | done     |
-| M   | AI security checklist (0008)               | Slice 3    | done     |
-| N   | Primeira jornada: guia do notebook         | Slice 4    | done     |
-| O   | SEO aprofundado e auditoria                | Slice 4    | done     |
-| P   | Busca e recorte                            | Slice 4    | done     |
-| R   | Revisão editorial dos seis rascunhos       | Slice 4    | done     |
-| S   | Revisão editorial dos dez novos rascunhos  | Slice 4    | done     |
-| T   | Manutenção das suítes e2e públicas         | Slice 5    | planned  |
-| U   | Polimento visual da home (inspeção taste)  | Slice 5    | planned  |
+| #   | Feature                                    | Phase      | Status      |
+| --- | ------------------------------------------ | ---------- | ----------- |
+| A   | Stack & architecture                       | Foundation | existing    |
+| B   | Coding standards & tooling                 | Foundation | existing    |
+| C   | Schema editorial Supabase (md-0001)        | Foundation | done        |
+| D   | Gate revisão CI (0004)                     | Foundation | done        |
+| Q   | Governança SDD, skills, check e MCP (0011) | Foundation | done        |
+| E   | Casca editorial home+artigo (md-0002)      | Slice 1    | done        |
+| F   | Preview autorização (0003)                 | Slice 1    | done        |
+| G   | Diretriz arquitetura Sanity (0005)         | Slice 2    | done        |
+| H   | Transição editorial Sanity (0006)          | Slice 2    | done        |
+| I   | Layout editorial home artigo (0010)        | Slice 2    | in-progress |
+| J   | Painel administrativo TailAdmin (0007)     | Slice 3    | done        |
+| K   | Endurecimento auth admin MFA               | Slice 3    | done        |
+| L   | Admissão Admin Access (0009)               | Slice 3    | done        |
+| M   | AI security checklist (0008)               | Slice 3    | done        |
+| N   | Primeira jornada: guia do notebook         | Slice 4    | done        |
+| O   | SEO aprofundado e auditoria                | Slice 4    | done        |
+| P   | Busca e recorte                            | Slice 4    | done        |
+| R   | Revisão editorial dos seis rascunhos       | Slice 4    | done        |
+| S   | Revisão editorial dos dez novos rascunhos  | Slice 4    | done        |
+| T   | Manutenção das suítes e2e públicas         | Slice 5    | planned     |
+| U   | Polimento visual da home (inspeção taste)  | Slice 5    | planned     |
 
 ## Foundations
 
@@ -243,7 +243,7 @@ Spec `0006` · code em `lib/sanity/`, `lib/services/sanity.ts`, `lib/supabase/mi
 - [x] Document it: `/document pr`
 - [x] Sync it: `/sync`
 
-### I. Layout editorial home artigo (0010) · done
+### I. Layout editorial home artigo (0010) · in-progress
 
 Hierarquia editorial na home: esboço do post no topo, lista com capa, editoria, título, resumo e data. Artigo com largura de 720 px, tipografia editorial e fallback neutro. **Verify executado em 2026-10-12 (REPROVADO):** 9 PASS, 0 FAIL, AC-08 UNVERIFIABLE e 1 BLOCKER ligado à home daquela árvore, que foi depois substituída e aprovada pela spec 0013. As pendências visuais restantes passaram por verificação empírica em 2026-10-16 (10/10 PASS, relatório `docs/reviews/2026-10-16-2001-home-pendentes-verify.md`). **Normalizada em 2026-10-16 (linha 595):** o contrato da 0010 foi atualizado in place para a composição aprovada (Revisão 2, incorpora a 0013, agora `Superseded`) e a verificação formal do contrato fica pendente no ciclo `/check` (pendência F-01 do relatório de 2026-10-16).
 Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `components/editorial/`
@@ -253,6 +253,7 @@ Spec `0010` · code em `app/page.tsx`, `app/artigos/[slug]/page.tsx`, `component
   - [x] Home com esboço + lista editorial
   - [x] Artigo com 720 px e tipografia
   - [x] Fallback neutro para capa ausente
+  - [x] Alinhar as provas da MD 0002 à precedência da Revisão 3 (layout-editorial/AC-01, AC-02, AC-05 e AC-10)
 - [ ] Verify it: `/check verify layout editorial home artigo`
 - [ ] Review it: `/check review layout editorial home artigo`
 - [ ] Audit security: `/security layout editorial home artigo`
