@@ -1,8 +1,8 @@
 /**
  * @fileoverview Testes do middleware de sessão (`lib/supabase/middleware.ts`).
  * @module __tests__/unit/supabase-middleware
- * @description Comprova headers em rotas protegidas e de preview, probe da
- *   home e bloqueio de artigo inacessível.
+ * @description Comprova headers em rotas protegidas e de preview, renovação
+ *   condicionada ao cookie de sessão e bloqueio de artigo inacessível.
  * @dependencies vitest, next/server, @/lib/supabase/middleware.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
@@ -34,6 +34,11 @@ vi.mock('@supabase/ssr', () => ({
 const probeSanityAvailability = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock('@/lib/sanity/client', () => ({
   probeSanityAvailability,
+}));
+
+const loggerError = vi.hoisted(() => vi.fn());
+vi.mock('@/lib/logger', () => ({
+  logger: { info: vi.fn(), error: loggerError },
 }));
 
 const isArticleAccessible = vi.hoisted(() => vi.fn(async () => true));
@@ -70,14 +75,21 @@ describe('updateSession', () => {
     verifyPreviewSession.mockResolvedValue(false);
   });
 
-  it('chama getUser em toda requisição', async () => {
-    await updateSession(makeRequest('/'));
+  it('chama getUser quando há cookie de sessão', async () => {
+    await updateSession(makeRequest('/', { 'sb-xyz-auth-token': 'token' }));
     expect(getUser).toHaveBeenCalled();
+  });
+
+  it('não chama getUser sem cookie de sessão', async () => {
+    await updateSession(makeRequest('/'));
+    expect(getUser).not.toHaveBeenCalled();
   });
 
   it('sobrevive a falha do getUser', async () => {
     getUser.mockRejectedValue(new Error('rede'));
-    const res = await updateSession(makeRequest('/'));
+    const res = await updateSession(
+      makeRequest('/', { 'sb-xyz-auth-token': 'token' }),
+    );
     expect(res.status).toBe(200);
   });
 
@@ -108,13 +120,21 @@ describe('updateSession', () => {
     expect(res.headers.get('x-robots-tag')).toBe('noindex, nofollow');
   });
 
-  it('retorna 503 quando o Sanity falha na home', async () => {
+  it('retorna 503 quando o Sanity falha na home e registra o motivo', async () => {
     const { ContentUnavailableError } = await import('@/lib/preview/auth');
     probeSanityAvailability.mockRejectedValue(
-      new ContentUnavailableError('fora'),
+      new ContentUnavailableError('timeout de 800ms'),
     );
     const res = await updateSession(makeRequest('/'));
     expect(res.status).toBe(503);
+    expect(loggerError).toHaveBeenCalledWith(
+      'sanity/probe',
+      expect.objectContaining({
+        path: '/',
+        message: 'timeout de 800ms',
+        cfRay: null,
+      }),
+    );
   });
 
   it('relança erro não ContentUnavailableError da sonda', async () => {

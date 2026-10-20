@@ -1,7 +1,8 @@
 /**
  * @fileoverview Renovação de sessão e bloqueio de artigos sem autorização.
  * @module lib/supabase/middleware
- * @description Preserva cookies de sessão também nas respostas de bloqueio.
+ * @description Preserva cookies de sessão também nas respostas de bloqueio e
+ *   evita ida ao Auth quando a requisição não traz cookie de sessão.
  * @dependencies @supabase/ssr, next/server, lib/env e lib/preview.
  */
 import { createServerClient } from '@supabase/ssr';
@@ -17,6 +18,7 @@ import {
   ContentUnavailableError,
 } from '@/lib/preview/auth';
 import { securityHeaders } from '@/lib/security-headers';
+import { logger } from '@/lib/logger';
 
 /**
  * Monta a resposta 503 de indisponibilidade, fixa antes de o streaming começar.
@@ -54,15 +56,16 @@ function unavailableResponse(response: NextResponse): NextResponse {
 }
 
 /**
- * lib/supabase/middleware.ts — renova a sessão a cada requisição e protege rotas
+ * lib/supabase/middleware.ts — renova a sessão quando há cookie e protege rotas
  *
- * Por que isso roda em TODAS as requisições
+ * Por que isso roda em toda requisição que pode ter sessão
  * O token de acesso do Supabase é curto. Se ninguém o renovar, o usuário é
  * deslogado sozinho no meio da navegação — e o pior sintoma é intermitente:
  * funciona, derruba, funciona. Este arquivo é a rede de segurança: ele lê o
  * cookie, chama `getUser()` (que valida o token no servidor do Supabase e
  * devolve um token novo se estiver perto de expirar) e reescreve o cookie na
- * resposta.
+ * resposta. Sem cookie de sessão não há token a renovar: pular a chamada evita
+ * uma ida inútil ao Auth em toda visita anônima.
  *
  * Por que `getUser()` e não `getSession()`
  * `getSession()` devolve o conteúdo do cookie sem contatar o Supabase — ou
@@ -109,11 +112,19 @@ export async function updateSession(request: NextRequest) {
 
   // A chamada em si é o que dispara o refresh. O retorno é descartado de
   // propósito: o objetivo aqui não é o usuário, é o cookie renovado.
+  // Sem cookie `sb-<ref>-auth-token` (inclusive chunks `.0`, `.1`) não existe
+  // sessão a renovar; a ida ao Auth só custaria latência e CPU na home pública.
   // As rotas públicas não dependem de Auth disponível para filtrar publicados.
-  try {
-    await supabase.auth.getUser();
-  } catch {
-    /* leitura protegida falha fechada */
+  const hasSessionCookie = request.cookies
+    .getAll()
+    .some(({ name }) => name.startsWith('sb-') && name.includes('-auth-token'));
+
+  if (hasSessionCookie) {
+    try {
+      await supabase.auth.getUser();
+    } catch {
+      /* leitura protegida falha fechada */
+    }
   }
 
   if (
@@ -141,10 +152,19 @@ export async function updateSession(request: NextRequest) {
   // Só executa quando o Sanity está configurado/ativo; com rollback para Supabase, a sonda é pulada.
   if (request.nextUrl.pathname === '/') {
     if (isSanityConfigured) {
+      const probeStartedAt = Date.now();
       try {
         await probeSanityAvailability();
       } catch (error) {
         if (error instanceof ContentUnavailableError) {
+          // Sem o motivo, o 503 intermitente fica indistinguível de timeout,
+          // 401 do token ou erro HTTP do Content Lake. Nenhum segredo entra aqui.
+          logger.error('sanity/probe', {
+            path: request.nextUrl.pathname,
+            message: error.message,
+            durationMs: Date.now() - probeStartedAt,
+            cfRay: request.headers.get('cf-ray'),
+          });
           return unavailableResponse(response);
         }
         throw error;

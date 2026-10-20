@@ -58,6 +58,14 @@
     "NEXT_PUBLIC_SANITY_PROJECT_ID": "4iipvaar",
     "SANITY_PROJECT_ID": "4iipvaar",
   },
+  // Cache ISR da home no plano Free. O R2 não está habilitado na conta;
+  // KV cobre o volume com 300 s de revalidação e fica dentro da cota diária.
+  "kv_namespaces": [
+    {
+      "binding": "NEXT_INC_CACHE_KV",
+      "id": "9c0a1f79fa4848e086201ae24a4b36aa",
+    },
+  ],
   "durable_objects": {
     "bindings": [
       {

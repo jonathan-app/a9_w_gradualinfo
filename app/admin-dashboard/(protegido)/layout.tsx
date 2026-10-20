@@ -13,6 +13,7 @@
 
 import { AdminShell } from '@/components/admin/admin-shell';
 import { checkAdminUser } from '@/lib/admin/auth';
+import { env } from '@/lib/env';
 import { forbidden, redirect } from 'next/navigation';
 
 export default async function ProtectedAdminLayout({
@@ -70,7 +71,9 @@ export default async function ProtectedAdminLayout({
   }
 
   return (
-    <AdminShell userEmail={auth.user.email || 'admin@gradualinfo.dev'}>
+    <AdminShell
+      userEmail={auth.user.email || 'admin@gradualinfo.dev'}
+      sanityStudioUrl={env.sanityStudioUrl}>
       {children}
     </AdminShell>
   );

@@ -3,12 +3,11 @@
  * @module components/admin/admin-sidebar
  * @description Sidebar adaptada do TailAdmin: navegação operacional limpa com atalhos para
  *   dashboard, Sanity Studio (externo), preview de artigos, setup de MFA e portal público.
- * @dependencies react, next/link, next/navigation, @/lib/env, @/lib/utils/cn
+ * @dependencies react, next/link, next/navigation, @/lib/utils/cn
  */
 
 'use client';
 
-import { env } from '@/lib/env';
 import { cn } from '@/lib/utils/cn';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,9 +15,14 @@ import { usePathname } from 'next/navigation';
 interface AdminSidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  sanityStudioUrl: string;
 }
 
-export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
+export function AdminSidebar({
+  isOpen = false,
+  onClose,
+  sanityStudioUrl,
+}: AdminSidebarProps) {
   const pathname = usePathname();
 
   const links = [
@@ -43,7 +47,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
     },
     {
       label: 'CMS Sanity Studio',
-      href: env.sanityStudioUrl,
+      href: sanityStudioUrl,
       isExternal: true,
       icon: (
         <svg

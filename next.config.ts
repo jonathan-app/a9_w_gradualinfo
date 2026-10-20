@@ -57,6 +57,8 @@ const nextConfig: NextConfig = {
     ).map(([key, value]) => ({ key, value }));
 
     return [
+      // A home é ISR no OpenNext; `no-store` impede o cache de borda de
+      // misturar HTML e RSC, que compartilham a URL mas não o corpo.
       { source: '/', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
       {
         source: '/sitemap.xml',

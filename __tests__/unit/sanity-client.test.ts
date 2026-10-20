@@ -217,7 +217,7 @@ describe('Cliente Sanity Server-Side (spec 0006 - Leitura Editorial)', () => {
       // Confirma que NÃO enviou cabeçalho Authorization em consulta pública
       expect(callOptions.headers).not.toHaveProperty('Authorization');
       // Home page usa revalidação de 60s; leitura pública sem cache intermediário
-      expect(callOptions.next).toEqual({ revalidate: 60 });
+      expect(callOptions.next).toEqual({ revalidate: 300 });
     });
 
     it('inclui o limite padrão e o parâmetro $now no corpo da consulta pública', async () => {

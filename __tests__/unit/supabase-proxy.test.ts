@@ -68,7 +68,12 @@ describe('proteção de rotas no proxy (preview/AC-03 e AC-05)', () => {
   });
 
   it('bloqueia artigo com 404, sem continuidade e preserva cookie renovado', async () => {
-    const request = new NextRequest('https://example.invalid/artigos/rascunho');
+    const request = new NextRequest(
+      'https://example.invalid/artigos/rascunho',
+      {
+        headers: { cookie: 'sb-test-auth-token=antigo' },
+      },
+    );
     const response = await proxy(request);
     expect(response.status).toBe(404);
     expect(response.headers.get('x-middleware-next')).toBeNull();
@@ -90,12 +95,15 @@ describe('proteção de rotas no proxy (preview/AC-03 e AC-05)', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
     expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(mocks.refresh).not.toHaveBeenCalled();
   });
 
   it('falha de Auth não libera artigo privado', async () => {
     mocks.refresh.mockRejectedValue(new Error('Auth indisponível'));
     const response = await proxy(
-      new NextRequest('https://example.invalid/artigos/rascunho'),
+      new NextRequest('https://example.invalid/artigos/rascunho', {
+        headers: { cookie: 'sb-test-auth-token=antigo' },
+      }),
     );
     expect(response.status).toBe(404);
     expect(mocks.accessible).toHaveBeenCalledWith(

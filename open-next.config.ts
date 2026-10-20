@@ -16,8 +16,14 @@
  * Referência: https://opennext.js.org/cloudflare
  */
 import { defineCloudflareConfig } from '@opennextjs/cloudflare';
+import kvIncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache';
+
+// A home é ISR de 300 s. Sem cache incremental o OpenNext re-renderiza a
+// página a cada visita e os 42 ms de CPU estouram o teto de 10 ms do plano
+// Free. O R2 não está habilitado na conta; KV atende com cerca de 576
+// gravações/dia (ISR + lista), abaixo do limite gratuito de 1.000.
 const config = {
-  ...defineCloudflareConfig(),
+  ...defineCloudflareConfig({ incrementalCache: kvIncrementalCache }),
   buildCommand: 'pnpm build:webpack',
 };
 

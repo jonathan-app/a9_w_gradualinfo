@@ -14,10 +14,15 @@ import { useState } from 'react';
 
 interface AdminShellProps {
   userEmail: string;
+  sanityStudioUrl: string;
   children: React.ReactNode;
 }
 
-export function AdminShell({ userEmail, children }: AdminShellProps) {
+export function AdminShell({
+  userEmail,
+  sanityStudioUrl,
+  children,
+}: AdminShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -25,6 +30,7 @@ export function AdminShell({ userEmail, children }: AdminShellProps) {
       <AdminSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        sanityStudioUrl={sanityStudioUrl}
       />
 
       <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
