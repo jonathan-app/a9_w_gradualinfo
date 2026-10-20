@@ -18,7 +18,7 @@
 | #   | Feature                                            | Phase  | Status      |
 | --- | -------------------------------------------------- | ------ | ----------- |
 | 1   | Inventario Exaustivo de Dependencias, Scripts e UI | Fase 1 | in-progress |
-| 2   | Consolidacao dos Controles de Seguranca Existentes | Fase 2 | planned     |
+| 2   | Consolidacao dos Controles de Seguranca Existentes | Fase 2 | in-progress |
 | 3   | Racionalizacao de Componentes e Bibliotecas de UI  | Fase 3 | planned     |
 | 4   | Validacao E2E dos Fluxos Criticos e CI Enxuta      | Fase 4 | planned     |
 
@@ -51,7 +51,7 @@ Mapeamento exaustivo dos 46 scripts em scripts/ divididos por criticidade e freq
 - [x] Document it: `/document pr` (docs/reviews/2026-10-19-1840-0031-racionalizacao-scripts-pr.md)
 - [x] Sync it: `/sync` (AGENTS.md, STATE.md e escopo reconciliados)
 
-### Lote R2: Racionalizacao de Icones e Dependencias de UI (done)
+### Lote R2: Racionalizacao de Icones e Dependencias de UI (in-progress)
 
 Diagnostico: a biblioteca react-icons (versao 5.7.0) esta instalada no projeto mas e importada em apenas 3 arquivos para renderizar exatamente 5 icones da familia Lucide:
 

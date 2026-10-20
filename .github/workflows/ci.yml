@@ -72,8 +72,10 @@ jobs:
       - name: Validar catálogo MCP
         run: node scripts/check-mcp-config.mjs
 
-      - name: Checks locais completos
-        run: pnpm check:all
+      # `check:all` inclui `security:all`, mas os scanners rodam no job
+      # `security` com o binário pinado. Aqui ficam só os checks de código.
+      - name: Checks locais de código
+        run: pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
       - name: Typecheck E2E
         run: pnpm typecheck:e2e
       - name: pnpm audit
@@ -165,7 +167,7 @@ jobs:
       - name: Iniciar banco descartável e aplicar seed
         run: |
           node scripts/prepare-e2e-db.mjs
-          pnpm supabase:start --workdir "$RUNNER_TEMP/e2e-db"
+          pnpm supabase:start --workdir "$RUNNER_TEMP/e2e-db" || (sleep 10 && pnpm supabase:start --workdir "$RUNNER_TEMP/e2e-db")
           pnpm supabase:reset --local --workdir "$RUNNER_TEMP/e2e-db"
           pnpm --silent supabase:status --workdir "$RUNNER_TEMP/e2e-db" > "$RUNNER_TEMP/supabase-status.json"
       - name: Provisionar preview e artigos de teste
@@ -176,6 +178,8 @@ jobs:
           echo "E2E_TLS_KEY=$RUNNER_TEMP/e2e.key" >> "$GITHUB_ENV"
           echo "E2E_TLS_CERT=$RUNNER_TEMP/e2e.crt" >> "$GITHUB_ENV"
       - name: Build e tipos E2E
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ env.E2E_SUPABASE_UPSTREAM || 'http://127.0.0.1:54321' }}
         run: |
           pnpm typecheck:e2e
           pnpm build:next
@@ -189,7 +193,9 @@ jobs:
         if: always()
         run: |
           mkdir -p test-results
-          cp "$RUNNER_TEMP/e2e-revision.json" test-results/e2e-revision.json
+          if [ -f "$RUNNER_TEMP/e2e-revision.json" ]; then
+            cp "$RUNNER_TEMP/e2e-revision.json" test-results/e2e-revision.json
+          fi
       - name: Encerrar banco descartável
         if: always()
         run: pnpm supabase:stop --no-backup --workdir "$RUNNER_TEMP/e2e-db"
@@ -220,7 +226,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Iniciar stack descartável
-        run: pnpm supabase:start
+        run: pnpm supabase:start || (sleep 10 && pnpm supabase:start)
       - name: Aplicar migrations e seed local
         run: pnpm supabase:reset --local
       - name: Executar pgTAP
@@ -230,6 +236,8 @@ jobs:
           mkdir -p ci-results
           node scripts/ci-revision.mjs ci-results/database-revision.json
           pnpm supabase:test 2>&1 | tee ci-results/pgtap.log
+      - name: Testes de integração com banco real (Vitest)
+        run: pnpm vitest run __tests__/integration/spec-0021-real-db-concurrency.test.ts
       - name: Preservar resultado do pgTAP
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -261,7 +269,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Preparar banco e fixtures no runner
         run: |
-          pnpm supabase:start
+          pnpm supabase:start || (sleep 10 && pnpm supabase:start)
           pnpm supabase:reset --local
           pnpm --silent supabase:status > "$RUNNER_TEMP/supabase-status.json"
           node scripts/ci-fixtures.mjs "$RUNNER_TEMP/supabase-status.json"

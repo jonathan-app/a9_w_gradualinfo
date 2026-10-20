@@ -128,6 +128,24 @@ const values = {
   E2E_BASE_URL: origin,
   E2E_PRODUCTION: '1',
 };
+// Mascaramento de credenciais efêmeras nos logs do runner do GitHub Actions
+for (const secretVal of [
+  config.SERVICE_ROLE_KEY,
+  token,
+  password,
+  otherUsers.noClaim?.password,
+  otherUsers.otherIdentity?.password,
+  values.E2E_FAULT_SECRET,
+  values.E2E_NO_CLAIM,
+  values.E2E_OTHER_IDENTITY,
+  values.SUPABASE_PREVIEW_TOKEN,
+  values.SUPABASE_PREVIEW_PASSWORD,
+]) {
+  if (secretVal && typeof secretVal === 'string') {
+    console.log(`::add-mask::${secretVal}`);
+  }
+}
+
 // GITHUB_ENV é o canal de passagem entre passos do job: as credenciais nascem aqui e
 // morrem com o runner — nada disso toca o repositório nem vira artefato.
 appendFileSync(

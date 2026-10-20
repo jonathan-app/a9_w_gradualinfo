@@ -20,8 +20,8 @@
 | 1   | Fase 1: Auditoria Direcionada e Prontidao       | Mapear rotas, auth, tabelas, RLS e lacunas reais da base atual      | done        |
 | 2   | Fase 2: Arquitetura, RBAC e Trilha Duravel      | Definir papeis, contratos de mutacao e persistencia de auditoria    | done        |
 | 3   | Fase 3: Implementacao do Dashboard Profissional | Construir visual do mockup, mesa editorial e atalhos operacionais   | in-progress |
-| 4   | Fase 4: Validacao e Testes de Resiliencia       | Testes de controle de acesso, expiracao, RLS e isolamento publico   | planned     |
-| 5   | Fase 5: Documentacao, Procedimentos e Entrega   | Guias de contingencia, migracao e checklist de homologacao na nuvem | planned     |
+| 4   | Fase 4: Validacao e Testes de Resiliencia       | Testes de controle de acesso, expiracao, RLS e isolamento publico   | done        |
+| 5   | Fase 5: Documentacao, Procedimentos e Entrega   | Guias de contingencia, migracao e checklist de homologacao na nuvem | in-progress |
 
 ---
 
@@ -50,7 +50,7 @@
 - [x] Audit security: `pnpm security:secrets` e `pnpm security:sast` (nao existe skill de seguranca neste repo)
 - [x] Test it: `/test RBAC e auditoria persistente` (testes pgTAP, Vitest e integracao, AC-10)
 
-### Fase 3: Implementacao do Dashboard Profissional (done)
+### Fase 3: Implementacao do Dashboard Profissional (in-progress)
 
 - [x] Design it (spec): `/architect formalizacao do dashboard profissional visual`
       Spec 0033 Aceita · `docs/specs/2026-10-19-2140-0033-dashboard-profissional-visual.md`
@@ -62,18 +62,23 @@
   - [x] Painel lateral com acessos rapidos e timeline de atividade recente conectada a admin_audit_log
 - [x] Verify it: `/check verify visual e funcional do dashboard profissional`
 - [x] Review it: `/check review dashboard profissional`
-- [ ] Document it: `/document pr`
+- [x] Document it: `/document pr`
+      PR #15 mergeado em 2026-10-20, commit `2049ee2`; proposta em `docs/reviews/2026-10-19-2305-0033-consolidado-admin-fases-2-3-4-pr.md`.
 - [ ] Sync it: `/sync`
 
-### Fase 4: Validacao e Testes de Resiliencia (planned)
+### Fase 4: Validacao e Testes de Resiliencia (done)
 
-- [ ] Testes unitarios e de integracao para rejeicao de chamadas com AAL1 em rotas AAL2
-- [ ] Testes pgTAP para politicas RLS da tabela de auditoria e registros de operacao
-- [ ] Testes E2E com Playwright cobrindo navegacao no novo layout do dashboard
-- [ ] Validacao de fail-closed para sessao expirada e tentativas de acesso direto
+- [x] Testes unitarios e de integracao para rejeicao de chamadas com AAL1 em rotas AAL2 (Spec 0032)
+- [x] Testes pgTAP para politicas RLS da tabela de auditoria e registros de operacao (197 assercoes em 7 arquivos)
+- [x] Testes E2E com Playwright cobrindo navegacao no novo layout do dashboard (8 testes em 2026-10-19)
+- [x] Validacao de fail-closed para sessao expirada e tentativas de acesso direto (suites de sessao e recuperacao)
 
-### Fase 5: Documentacao, Procedimentos e Entrega (planned)
+### Fase 5: Documentacao, Procedimentos e Entrega (in-progress)
 
 - [ ] Relatorio final de conformidade e seguranca
 - [ ] Procedimento operacional de criacao e gestao de usuarios administrativos
-- [ ] Rascunho de Pull Request e preparacao para homologacao
+- [x] Rascunho de Pull Request e preparacao para homologacao (PR #15 mergeado em 2026-10-20)
+
+## Proxima etapa
+
+O PR #15 foi mergeado em 2026-10-20T02:22:22Z, no commit `2049ee2`. O branch local `feat/admin-fases-2-3-4-consolidado` tem o commit `ca5f19f` ainda nao enviado, com a correcao dos jobs de CI e o mascaramento dos segredos de teste. O primeiro passo e enviar esse commit e abrir um novo Pull Request, ou mover o commit para uma branch nova. Depois, `/sync` fecha a Fase 3; a Fase 5 produz o relatorio final e o procedimento de gestao de usuarios administrativos.
