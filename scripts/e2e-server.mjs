@@ -25,7 +25,7 @@ import { startFaultProxy } from './e2e-fault-proxy.mjs';
 const closeFaultProxy =
   process.env.E2E_NETWORK_FAULTS === '1' ? startFaultProxy() : () => {};
 const useWorker =
-  process.env.E2E_USE_WORKER === '1' || process.env.E2E_REAL_SUPABASE === '1';
+  process.env.E2E_USE_WORKER === '1' && existsSync('.open-next/assets');
 
 let sanityReadToken = process.env.SANITY_API_READ_TOKEN || '';
 if (!sanityReadToken && existsSync('.env.local')) {
