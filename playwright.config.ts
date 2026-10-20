@@ -22,6 +22,17 @@ const production = process.env.E2E_PRODUCTION === '1';
 export default defineConfig({
   // Roda os arquivos .spec.ts da pasta e2e/.
   testDir: './e2e',
+  testIgnore:
+    process.env.EDITORIAL_LOCAL === '1'
+      ? []
+      : [
+          '**/editorial-local/**',
+          '**/verify-*.spec.ts',
+          '**/admin-panel.spec.ts',
+          '**/critical-flows.spec.ts',
+          '**/accessibility.spec.ts',
+          '**/offers-ingest-worker.spec.ts',
+        ],
 
   // Sem isso, um teste que passa por acaso em rerun não é sinal de nada.
   forbidOnly: !!process.env.CI,

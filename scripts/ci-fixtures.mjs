@@ -130,6 +130,9 @@ const values = {
   NEXT_PUBLIC_SITE_URL: origin,
   E2E_BASE_URL: origin,
   E2E_PRODUCTION: '1',
+  E2E_REAL_SUPABASE: '1',
+  ADMIN_USER_ID: '11111111-1111-1111-1111-111111111111',
+  ADMIN_EMAIL: 'ana@exemplo.dev',
 };
 // Mascaramento de credenciais efêmeras nos logs do runner do GitHub Actions
 for (const secretVal of [

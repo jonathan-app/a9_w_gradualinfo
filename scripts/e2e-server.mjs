@@ -25,7 +25,7 @@ import { startFaultProxy } from './e2e-fault-proxy.mjs';
 const closeFaultProxy =
   process.env.E2E_NETWORK_FAULTS === '1' ? startFaultProxy() : () => {};
 const useWorker =
-  process.env.E2E_USE_WORKER === '1' || process.env.E2E_REAL_SUPABASE === '1';
+  process.env.E2E_USE_WORKER === '1' && existsSync('.open-next/assets');
 
 let sanityReadToken = process.env.SANITY_API_READ_TOKEN || '';
 if (!sanityReadToken && existsSync('.env.local')) {
@@ -109,6 +109,12 @@ if (typeof sanityReadToken !== 'undefined' && sanityReadToken) {
 workerEnv.OFFERS_INGEST_SECRET =
   process.env.OFFERS_INGEST_SECRET || 'test-collector-secret-32-chars-long';
 
+const hasTls =
+  process.env.E2E_TLS_KEY &&
+  process.env.E2E_TLS_CERT &&
+  existsSync(process.env.E2E_TLS_KEY) &&
+  existsSync(process.env.E2E_TLS_CERT);
+
 const upstreamProcess = useWorker
   ? spawn(
       'npx',
@@ -125,6 +131,12 @@ const upstreamProcess = useWorker
         stdio: 'inherit',
         env: {
           ...process.env,
+          NEXT_PUBLIC_SITE_URL:
+            process.env.NEXT_PUBLIC_SITE_URL ||
+            (hasTls ? 'https://localhost:3100' : 'http://localhost:3100'),
+          ADMIN_USER_ID:
+            process.env.ADMIN_USER_ID || '11111111-1111-1111-1111-111111111111',
+          ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'ana@exemplo.dev',
           OFFERS_INGEST_SECRET:
             process.env.OFFERS_INGEST_SECRET ||
             'test-collector-secret-32-chars-long',
@@ -133,13 +145,17 @@ const upstreamProcess = useWorker
     );
 
 const handleRequest = (incoming, outgoing) => {
+  const headers = { ...incoming.headers };
+  if (hasTls && !headers['x-forwarded-proto']) {
+    headers['x-forwarded-proto'] = 'https';
+  }
   const upstream = request(
     {
       hostname: '127.0.0.1',
       port: 3101,
       path: incoming.url,
       method: incoming.method,
-      headers: incoming.headers,
+      headers,
     },
     (response) => {
       outgoing.writeHead(response.statusCode || 502, response.headers);
@@ -154,12 +170,6 @@ const handleRequest = (incoming, outgoing) => {
   });
   incoming.pipe(upstream);
 };
-
-const hasTls =
-  process.env.E2E_TLS_KEY &&
-  process.env.E2E_TLS_CERT &&
-  existsSync(process.env.E2E_TLS_KEY) &&
-  existsSync(process.env.E2E_TLS_CERT);
 
 const server = hasTls
   ? createHttpsServer(
