@@ -288,9 +288,9 @@ typecheck, lint, formatação, testes e segurança estática (Gitleaks e Semgrep
 formatação dos arquivos staged e o typecheck; commit não pode custar minutos.
 O hook de pré-push (`.husky/pre-push`) e o comando `pnpm deploy:full` bloqueiam
 qualquer envio caso `check:all` ou a segurança estática falhem.
-A CI tem seis jobs: quality (check:all, typecheck E2E, `pnpm audit
---audit-level=high` e OSV scan), security (gitleaks sobre o histórico
-inteiro e semgrep), e2e, database (pgTAP), lighthouse e check-gate. Ela roda
+A CI tem seis jobs: quality (typecheck, lint, prettier e testes, typecheck
+E2E, `pnpm audit --audit-level=high` e OSV scan), security (gitleaks sobre o
+histórico inteiro e semgrep), e2e, database (pgTAP), lighthouse e check-gate. Ela roda
 em pull requests para a main e em execução manual (`workflow_dispatch`);
 PR que só toca `docs/`, `workflow/`, `check/` ou arquivos `.md` não aciona
 a CI, e o gatilho de `push` saiu para caber no plano Free (2.000

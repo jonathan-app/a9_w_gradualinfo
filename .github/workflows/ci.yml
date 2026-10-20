@@ -72,8 +72,10 @@ jobs:
       - name: Validar catálogo MCP
         run: node scripts/check-mcp-config.mjs
 
-      - name: Checks locais completos
-        run: pnpm check:all
+      # `check:all` inclui `security:all`, mas os scanners rodam no job
+      # `security` com o binário pinado. Aqui ficam só os checks de código.
+      - name: Checks locais de código
+        run: pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run
       - name: Typecheck E2E
         run: pnpm typecheck:e2e
       - name: pnpm audit

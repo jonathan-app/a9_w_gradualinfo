@@ -11,14 +11,14 @@ As regras em AGENTS.md e docs/workflow/governance.md sao mandatorias. Migrations
 
 ## At a glance
 
-| #   | Lote | Objetivo                                                | Status      |
-| --- | ---- | ------------------------------------------------------- | ----------- |
-| 1   | L0   | Inventario exaustivo e protecao da linha de base        | done        |
-| 2   | L1   | Residuos, imports mortos e duplicacoes comprovadas      | done        |
-| 3   | L2   | Organizacao de bibliotecas, adaptadores e helpers       | done        |
-| 4   | L3   | Uniformizacao de rotas, contratos e tratamento de erros | done        |
-| 5   | L4   | Racionalizacao de testes, funcoes SQL e dependencias    | done        |
-| 6   | L5   | Verificacao final contra linha de base e consolidacao   | in-progress |
+| #   | Lote | Objetivo                                                | Status |
+| --- | ---- | ------------------------------------------------------- | ------ |
+| 1   | L0   | Inventario exaustivo e protecao da linha de base        | done   |
+| 2   | L1   | Residuos, imports mortos e duplicacoes comprovadas      | done   |
+| 3   | L2   | Organizacao de bibliotecas, adaptadores e helpers       | done   |
+| 4   | L3   | Uniformizacao de rotas, contratos e tratamento de erros | done   |
+| 5   | L4   | Racionalizacao de testes, funcoes SQL e dependencias    | done   |
+| 6   | L5   | Verificacao final contra linha de base e consolidacao   | done   |
 
 ---
 
