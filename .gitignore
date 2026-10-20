@@ -7,6 +7,9 @@ node_modules/
 .next/
 .next-editorial/
 out/
+# A rota /api/out é código-fonte; o padrão acima é só para artefatos de build.
+!app/api/out/
+!app/api/out/**
 build/
 dist/*
 .open-next/

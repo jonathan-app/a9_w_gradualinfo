@@ -43,13 +43,19 @@ describe('Spec 0006 (Seção 3.C) — Indisponibilidade Editorial em Duas Camada
 
   describe('1. Sonda de Disponibilidade (probeSanityAvailability)', () => {
     it('executa sem erro quando o Sanity responde 200 OK com array válido', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      const fetchMock = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ result: ['post-id-123'] }),
       } as Response);
+      global.fetch = fetchMock;
 
       await expect(probeSanityAvailability()).resolves.toBeUndefined();
-      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+        headers: {
+          Authorization: 'Bearer token-privado',
+        },
+      });
     });
 
     it('lança ContentUnavailableError quando o Sanity responde HTTP 500/503', async () => {

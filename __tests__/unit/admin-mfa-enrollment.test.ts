@@ -36,6 +36,13 @@ vi.mock('@/lib/supabase/server', () => ({
         challengeAndVerify: state.challenge,
       },
     },
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+        })),
+      })),
+    })),
   }),
 }));
 vi.mock('@/lib/admin/session-response', async () => {

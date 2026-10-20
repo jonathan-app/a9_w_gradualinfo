@@ -16,6 +16,9 @@ vi.mock('@/lib/admin/auth', () => ({
   validateAdminRequestOrigin: vi.fn(() => true),
   resolveSafeRedirectBase: vi.fn(() => 'https://gradualinfo.com.br'),
   sanitizeAdminRedirect: vi.fn((x: string) => x || '/admin-dashboard'),
+  resolveAdminRole: vi.fn(async (_sb: unknown, user: { id: string }) => {
+    return user?.id === '11111111-1111-4111-8111-111111111111' ? 'admin' : null;
+  }),
 }));
 vi.mock('@/lib/env', () => ({
   env: {

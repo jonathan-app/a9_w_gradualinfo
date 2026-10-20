@@ -1,7 +1,7 @@
 /**
  * @fileoverview Home Cambridge: capa, destaques, últimas leituras e artigos recentes.
  * @module app/page
- * @description Server Component dinâmico: busca até 60 artigos visíveis para a home com o cliente público —
+ * @description Server Component com ISR: busca até 60 artigos visíveis para a home com o cliente público —
  *   leitor anônimo enxerga só o que já é publicado, porque a regra de
  *   visibilidade mora na consulta e no RLS. Sem artigos, cai para o estado
  *   vazio mantendo o H1 institucional.
@@ -25,9 +25,13 @@ import { EditorialIndisponivel } from './editorial-indisponivel';
 import { ContentUnavailableError } from '@/lib/errors/content';
 import * as Sentry from '@sentry/nextjs';
 
-// No ar a cada requisição: a home não pode congelar no build com a lista da
-// hora do deploy — publicado um artigo, ele tem que aparecer sem novo build.
-export const dynamic = 'force-dynamic';
+// ISR de 300s: o artigo publicado aparece sem novo build dentro da janela de
+// revalidação, e a página deixa de ser renderizada a cada visita — no plano
+// Free da Cloudflare, os 42 ms de CPU medidos na home estouravam o teto de 10 ms.
+// 300s também mantém as gravações no KV abaixo da cota gratuita diária.
+// O cache do OpenNext guarda a página; o header `no-store` do next.config evita
+// cache de borda com as variantes RSC, que não compartilham a mesma URL.
+export const revalidate = 300;
 
 /**
  * Metadados da home: canonical aponta para o apex do site.

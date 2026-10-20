@@ -14,6 +14,7 @@ import {
   resolveSafeRedirectBase,
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
+import { recordAdminAudit } from '@/lib/admin/audit-service';
 import { createAdminSessionResponse } from '@/lib/admin/session-response';
 import { NextResponse } from 'next/server';
 
@@ -31,6 +32,18 @@ export async function POST(request: Request) {
   }
 
   const { supabase, finish } = await createAdminSessionResponse();
+  const { data: userData } = await supabase.auth.getUser();
+  if (userData?.user) {
+    void recordAdminAudit({
+      actorType: 'admin',
+      actorId: userData.user.id,
+      actorEmail: userData.user.email,
+      actorRole: null,
+      action: 'auth.logout',
+      resourceType: 'auth',
+      ipAddress: request.headers.get('cf-connecting-ip'),
+    });
+  }
   await supabase.auth.signOut();
 
   const isApiRequest =

@@ -112,13 +112,14 @@ export function mapSanityDocumentToPost(doc: SanityPostDocument): Post {
  * @param query - String da consulta GROQ.
  * @param params - Parâmetros da consulta.
  * @param isPreview - Se verdadeiro, inclui token de leitura privado para acessar rascunhos.
+ * @param options - Timeout, revalidação e uso explícito do read token em leitura pública.
  * @returns Array de documentos tipados.
  */
 export async function executeSanityQuery<T = unknown>(
   query: string,
   params: Record<string, string | number | boolean> = {},
   isPreview = false,
-  options?: { timeoutMs?: number; revalidate?: number },
+  options?: { timeoutMs?: number; revalidate?: number; useReadToken?: boolean },
 ): Promise<T[]> {
   if (!isSanityConfigured) {
     return [];
@@ -138,7 +139,7 @@ export async function executeSanityQuery<T = unknown>(
     Accept: 'application/json',
   };
 
-  if (isPreview && readToken) {
+  if ((isPreview || options?.useReadToken) && readToken) {
     headers.Authorization = `Bearer ${readToken}`;
   }
 
@@ -187,14 +188,20 @@ export async function executeSanityQuery<T = unknown>(
 /**
  * Sonda leve de disponibilidade da fonte Sanity para uso no proxy antes do streaming da Home.
  *
- * Executa uma consulta GROQ mínima com timeout rígido de 800ms sem cache.
+ * Executa uma consulta GROQ mínima com timeout rígido de 800ms sem cache e
+ * envia o read token configurado, como exige a spec 0006 (seção 3.C). Sem o
+ * token, a leitura pública fica sujeita ao limite anônimo do Content Lake e a
+ * sonda pode falhar mesmo com o dataset disponível.
  *
  * @throws ContentUnavailableError quando a fonte não responder ou estourar o timeout de 800ms.
  */
 export async function probeSanityAvailability(): Promise<void> {
   const query =
     '*[_type in ["post", "artigo"] && (!defined(status) || status == "publicado")][0]._id';
-  await executeSanityQuery(query, {}, false, { timeoutMs: 800 });
+  await executeSanityQuery(query, {}, false, {
+    timeoutMs: 800,
+    useReadToken: true,
+  });
 }
 
 /**
@@ -207,11 +214,13 @@ export async function getSanityPublishedPosts(limit = 10): Promise<Post[]> {
   const now = new Date().toISOString();
   // Exclui rascunhos, posts agendados no futuro e posts com status diferente de publicado
   const query = `*[_type in ["post", "artigo"] && !(_id in path("drafts.**")) && (!defined(status) || status == "publicado") && (!defined(publishedAt) || publishedAt <= $now) && defined(slug.current)] | order(publishedAt desc, _createdAt desc)[0...${limit}]`;
+  // 300 s alinha a lista pública com o ISR da home e evita gravações de
+  // cache acima da cota gratuita do KV quando o header aparece em toda página.
   const docs = await executeSanityQuery<SanityPostDocument>(
     query,
     { now },
     false,
-    { revalidate: 60 },
+    { revalidate: 300 },
   );
   return docs.map(mapSanityDocumentToPost);
 }

@@ -26,7 +26,7 @@ export async function handleGetEvidencia(
   context: { params: Promise<{ hash: string }> },
   deps: EvidenciaRouteDependencies = {},
 ): Promise<Response> {
-  const auth = await assertAdminApiAuth(request);
+  const auth = await assertAdminApiAuth(request, 'admin');
   if (!auth.ok) {
     return auth.response;
   }

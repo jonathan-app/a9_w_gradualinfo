@@ -21,5 +21,19 @@ function info(scope: string, event: object): void {
   }
 }
 
-/** Logger estruturado, com saída informativa no console do runtime. */
-export const logger = { info };
+/**
+ * Emite um registro de erro sem lançar exceção, para não mascarar a falha original.
+ * @param scope - Origem do registro, sem credenciais.
+ * @param event - Campos do evento, sem tokens ou segredos.
+ * @returns Nenhum valor, a saída é uma linha JSON no console.
+ */
+function error(scope: string, event: object): void {
+  try {
+    console.error(JSON.stringify({ level: 'error', scope, event }));
+  } catch {
+    // A indisponibilidade da trilha não deve interromper a resposta de erro.
+  }
+}
+
+/** Logger estruturado, com saída informativa e de erro no console do runtime. */
+export const logger = { info, error };

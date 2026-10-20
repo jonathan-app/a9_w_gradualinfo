@@ -2,6 +2,7 @@
 
 **Date**: 2026-10-14  
 **Status**: Accepted  
+**Parcialmente alterada pela Spec 0032**: o AC-04 deixa de exigir identidade exclusivamente igual a `ADMIN_USER_ID`; login e MFA passam a aceitar a raiz ou um usuário com papel em `admin_user_roles`, mantendo AAL2. O restante desta spec permanece válido.
 **Decision source**: Aprovado pelo proprietário após correções de Access, logout e diferenciação AAL1
 
 ## Summary

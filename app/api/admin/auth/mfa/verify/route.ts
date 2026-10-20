@@ -9,6 +9,7 @@
 import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import {
+  resolveAdminRole,
   resolveSafeRedirectBase,
   sanitizeAdminRedirect,
   validateAdminRequestOrigin,
@@ -53,7 +54,8 @@ export async function POST(request: Request) {
     });
   }
 
-  if (authData.user.id !== adminId) {
+  const role = await resolveAdminRole(supabase, authData.user);
+  if (!role) {
     return new NextResponse('Não autorizado.', {
       status: 403,
       headers: { 'Cache-Control': 'private, no-store' },

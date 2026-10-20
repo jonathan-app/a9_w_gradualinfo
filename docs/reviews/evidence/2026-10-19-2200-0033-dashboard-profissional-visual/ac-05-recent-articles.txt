@@ -1,0 +1,12 @@
+[dash-ui/AC-05] Validacao da Mesa de Artigos Recentes com Miniaturas e Status
+
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/admin-dashboard-visual.test.tsx (12 tests | 10 skipped) 93ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 10 skipped (12)
+   Start at  22:00:05
+   Duration  1.23s (environment 62%, import 13%, setup 11%, tests 9%, transform 4%, worker 1%)
+

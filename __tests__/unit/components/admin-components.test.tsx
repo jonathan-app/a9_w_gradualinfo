@@ -137,7 +137,12 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
 
   describe('2. AdminSidebar', () => {
     it('renderiza navegação para visão geral e configuração de MFA', () => {
-      render(<AdminSidebar isOpen={true} />);
+      render(
+        <AdminSidebar
+          isOpen={true}
+          sanityStudioUrl="https://gradualinfo.sanity.studio"
+        />,
+      );
 
       expect(
         screen.getByRole('link', { name: /visão geral/i }),
@@ -149,7 +154,12 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
     });
 
     it('renderiza link externo seguro para o CMS Sanity Studio', () => {
-      render(<AdminSidebar isOpen={true} />);
+      render(
+        <AdminSidebar
+          isOpen={true}
+          sanityStudioUrl="https://gradualinfo.sanity.studio"
+        />,
+      );
 
       const sanityLink = screen.getByRole('link', {
         name: /cms sanity studio/i,
@@ -164,7 +174,13 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
 
     it('chama onClose ao acionar o botão de fechar a navegação', async () => {
       const onClose = vi.fn();
-      render(<AdminSidebar isOpen={true} onClose={onClose} />);
+      render(
+        <AdminSidebar
+          isOpen={true}
+          onClose={onClose}
+          sanityStudioUrl="https://gradualinfo.sanity.studio"
+        />,
+      );
 
       const closeButton = screen.getByRole('button', {
         name: 'Fechar navegação',
@@ -178,7 +194,9 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
   describe('3. AdminShell', () => {
     it('renderiza o conteúdo filho envelopado pela barra superior e menu lateral', () => {
       render(
-        <AdminShell userEmail="a3qua96@gmail.com">
+        <AdminShell
+          userEmail="a3qua96@gmail.com"
+          sanityStudioUrl="https://gradualinfo.sanity.studio">
           <div data-testid="conteudo-operacional">Área Operacional Teste</div>
         </AdminShell>,
       );
@@ -190,7 +208,9 @@ describe('Componentes do Painel Administrativo (TailAdmin Adaptado)', () => {
 
     it('alterna o estado do sidebar ao clicar no botão mobile', async () => {
       render(
-        <AdminShell userEmail="a3qua96@gmail.com">
+        <AdminShell
+          userEmail="a3qua96@gmail.com"
+          sanityStudioUrl="https://gradualinfo.sanity.studio">
           <div>conteúdo</div>
         </AdminShell>,
       );

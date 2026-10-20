@@ -13,11 +13,20 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { POST } from '@/app/api/admin/auth/logout/route';
 
+vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin/audit-service', () => ({
+  recordAdminAudit: vi.fn(),
+}));
+
 const signOutMock = vi.fn().mockResolvedValue({ error: null });
+const getUserMock = vi
+  .fn()
+  .mockResolvedValue({ data: { user: null }, error: null });
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn().mockImplementation(async () => ({
     auth: {
+      getUser: getUserMock,
       signOut: signOutMock,
     },
   })),

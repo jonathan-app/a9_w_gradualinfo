@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET as getHealth } from '@/app/api/admin/dashboard/health/route';
 import { POST as refreshHealth } from '@/app/api/admin/dashboard/rotinas/refresh-health/route';
 
+vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin/audit-service', () => ({
+  recordAdminAudit: vi.fn(),
+}));
+
 vi.mock('@/lib/admin/auth', () => ({
   assertAdminApiAuth: vi.fn(),
 }));

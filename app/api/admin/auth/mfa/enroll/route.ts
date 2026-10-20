@@ -6,7 +6,7 @@
  */
 import { guardAdminAccess } from '@/lib/admin/access-guard';
 import { NextResponse } from 'next/server';
-import { validateAdminRequestOrigin } from '@/lib/admin/auth';
+import { resolveAdminRole, validateAdminRequestOrigin } from '@/lib/admin/auth';
 import { createAdminSessionResponse } from '@/lib/admin/session-response';
 import { env } from '@/lib/env';
 import { UUID_PATTERN } from '@/lib/preview/session';
@@ -37,7 +37,9 @@ export async function POST(request: Request) {
     const reply = (status: number, error: string, next?: string) =>
       finish(fail(status, error, next));
     const { data: user, error: userError } = await supabase.auth.getUser();
-    if (userError || user.user?.id !== adminId) return reply(403, 'forbidden');
+    if (userError || !user?.user) return reply(403, 'forbidden');
+    const role = await resolveAdminRole(supabase, user.user);
+    if (!role) return reply(403, 'forbidden');
     if (
       request.headers.get('content-type')?.split(';')[0]?.trim() !==
       'application/json'

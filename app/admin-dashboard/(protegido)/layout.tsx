@@ -13,6 +13,7 @@
 
 import { AdminShell } from '@/components/admin/admin-shell';
 import { checkAdminUser } from '@/lib/admin/auth';
+import { env } from '@/lib/env';
 import { forbidden, redirect } from 'next/navigation';
 
 export default async function ProtectedAdminLayout({
@@ -49,6 +50,25 @@ export default async function ProtectedAdminLayout({
       );
     }
 
+    if (auth.reason === 'role_unavailable') {
+      return (
+        <div className="flex min-h-screen items-center justify-center p-6 bg-gray-50 dark:bg-gray-950">
+          <div className="max-w-md rounded-2xl border border-amber-200 bg-white p-6 shadow-sm dark:border-amber-900/50 dark:bg-gray-900">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+              ⚠️
+            </div>
+            <h1 className="text-base font-bold text-gray-900 dark:text-white">
+              Serviço de Autorização Indisponível
+            </h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Não foi possível validar suas permissões administrativas no
+              momento. Tente novamente em alguns instantes.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     // config_missing: fail-closed absoluto
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-50 dark:bg-gray-950">
@@ -70,7 +90,10 @@ export default async function ProtectedAdminLayout({
   }
 
   return (
-    <AdminShell userEmail={auth.user.email || 'admin@gradualinfo.dev'}>
+    <AdminShell
+      userEmail={auth.user.email || 'admin@gradualinfo.dev'}
+      userRole={auth.role}
+      sanityStudioUrl={env.sanityStudioUrl}>
       {children}
     </AdminShell>
   );

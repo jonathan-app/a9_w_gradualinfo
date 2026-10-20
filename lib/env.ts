@@ -19,9 +19,10 @@
  * ler durante o build. Qualquer chamada autenticada contra ela é rejeitada
  * pelo servidor — que é exatamente o comportamento desejado.
  *
- * Cuidado com o prefixo NEXT_PUBLIC_: o Next substitui a referência por uma
- * string literal no bundle. Ler `process.env` inteiro em código de cliente
- * vazaria todas as variáveis.
+ * Cuidado com o prefixo NEXT_PUBLIC_: o Next substitui a referência direta
+ * por uma string literal no bundle. Por isso as variáveis do Supabase são
+ * lidas por colchetes: o valor vem do binding/segredo do Worker em runtime,
+ * e o navegador não recebe a configuração local usada no build.
  */
 
 /** Exige ativação explícita, desenvolvimento e origem local. */
@@ -49,6 +50,18 @@ const PLACEHOLDER_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjo0MTAyNDQ0ODAwfQ.local-development-placeholder-signature';
 
 /**
+ * Lê uma variável no runtime do Worker sem deixar o Next trocá-la por uma
+ * literal de build. O acesso por colchetes impede o inlining de `NEXT_PUBLIC_*`
+ * e faz o valor vir do binding ou segredo configurado no Worker.
+ * @param name - Nome da variável de ambiente.
+ * @returns Valor atual, ou `undefined` quando não há runtime disponível.
+ */
+function readRuntimeEnv(name: string): string | undefined {
+  if (typeof process === 'undefined' || !process.env) return undefined;
+  return process.env[name];
+}
+
+/**
  * Leitura tipada de todas as variáveis do app. Cada entrada usa `??` — falta
  * de `.env` nunca lança, cai no default documentado no cabeçalho. `as const`
  * mantém os defaults estreitos para o type checker e impede reatribuição.
@@ -60,9 +73,10 @@ export const env = {
     process.env.NEXT_PUBLIC_SITE_URL,
   ),
   supabase: {
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321',
-    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? PLACEHOLDER_ANON_KEY,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
+    url: readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL') ?? 'http://127.0.0.1:54321',
+    anonKey:
+      readRuntimeEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') ?? PLACEHOLDER_ANON_KEY,
+    serviceRoleKey: readRuntimeEnv('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   },
   sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
@@ -115,8 +129,8 @@ export const env = {
  * deixar o usuário bater num erro de rede.
  */
 export const isSupabaseConfigured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL') &&
+  readRuntimeEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
 );
 
 /**
@@ -133,7 +147,7 @@ export const isSanityConfigured = Boolean(
  */
 export const isSupabaseServiceRoleConfigured = Boolean(
   (
-    process.env.SUPABASE_SERVICE_ROLE_KEY ?? env.supabase.serviceRoleKey
+    readRuntimeEnv('SUPABASE_SERVICE_ROLE_KEY') ?? env.supabase.serviceRoleKey
   )?.trim(),
 );
 

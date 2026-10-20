@@ -1,0 +1,15 @@
+CRITERIO: admin-rbac/AC-05 (Schema de auditoria append-only)
+EVIDENCIA:
+- Tabela public.admin_audit_log criada com campos estruturados, indices e RLS ativa.
+- Trigger tg_prevent_admin_audit_mutation ativo levantando excecao 55000 em UPDATE e DELETE.
+- Revogacao de UPDATE, DELETE e TRUNCATE inclusive de service_role.
+- 26 assercoes pgTAP passam com sucesso:
+Connecting to local database...
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/admin_rbac.test.sql .. ok
+All tests successful.
+Files=1, Tests=26,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Result: PASS
+A new version of Supabase CLI is available: v2.121.0 (currently installed v2.119.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
+Done in 1.5s using pnpm v12.5.1

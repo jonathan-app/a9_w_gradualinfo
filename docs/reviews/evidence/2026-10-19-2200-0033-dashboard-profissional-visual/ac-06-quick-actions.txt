@@ -1,0 +1,12 @@
+[dash-ui/AC-06] Validacao dos 5 Acessos Rapidos Operacionais
+
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/admin-dashboard-visual.test.tsx (12 tests | 10 skipped) 264ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 10 skipped (12)
+   Start at  22:00:07
+   Duration  1.41s (environment 53%, tests 22%, import 11%, setup 10%, transform 4%, worker 1%)
+
