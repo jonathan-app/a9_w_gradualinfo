@@ -19,6 +19,14 @@ ofertas).
 - Corpo editorial em Markdown.
 - Preview e publicação seguem os contratos atuais.
 
+## Administração e auditoria
+
+A conta raiz em `ADMIN_USER_ID` é sempre `admin`. Outros operadores entram por
+`admin_user_roles` com os papéis `admin`, `editor` e `revisor`; a hierarquia é
+cumulativa e as APIs de negócio exigem papel mínimo em `assertAdminApiAuth`.
+Eventos administrativos são gravados em `admin_audit_log`, uma trilha append
+only (WORM) com operações em duas fases para ações críticas.
+
 **Arquitetura-alvo aprovada:**
 
 - Sanity será a fonte editorial única após migração autorizada (artigos, autores, editorias, fontes, mídia).
@@ -46,6 +54,12 @@ ofertas).
 ## Build approach
 
 Tracer Bullet — vertical end to end slices, thin but complete through every layer
+
+## Render e cache
+
+A home usa renderização incremental (ISR) com `revalidate = 300`; o cache do
+OpenNext fica no KV `NEXT_INC_CACHE_KV`, não no cache de borda. O
+`Cache-Control: no-store` em `next.config.ts` é intencional e não desliga o ISR.
 
 ## Comandos que importam
 
@@ -86,7 +100,7 @@ lib/
   seo/            Dados estruturados (JSON-LD) e construção do sitemap em índice.
   editorial/      Catálogo local de rascunhos e lógica de leitura dos artigos.
   offers/         Módulo de ofertas: selo verificado, cupons, WORM e canonização.
-  admin/          Autenticação admin (ADMIN_USER_ID + AAL2), rate limit DO, access guard, session response.
+  admin/          Conta raiz, papéis, auditoria WORM, MFA AAL2, rate limit DO, guards e sessão.
   preview/        Durable Object para sessões de preview (criação, revogação, verificação).
   errors/         Erros tipados (ContentUnavailableError) — contrato entre camadas.
   services/       Queries de posts (Sanity), leitura do dashboard e suporte editorial.
@@ -224,6 +238,10 @@ Formato obrigatório do bloco final:
 
 ## Onde as coisas quebram com mais frequência
 
+- **`NEXT_PUBLIC_*` é inlinado no build.** Referência direta vira literal no
+  bundle. No Worker, as variáveis do Supabase são lidas por colchetes em
+  `readRuntimeEnv` (`lib/env.ts`), então o valor vem do binding ou segredo em
+  runtime. Não use `process.env.NEXT_PUBLIC_*` direto no código de produção.
 - **Cookie não salvo em Server Component.** `setAll` é ignorado ali; o
   refresh acontece no `proxy.ts`. É esperado, e o `try/catch` em
   `lib/supabase/server.ts` existe por isso.
@@ -280,7 +298,7 @@ minutos/mês) sem rodar a mesma árvore duas vezes.
 
 Limites de cobertura estão em `vitest.config.mts` e `test-preferences.json`:
 Piso de branches em 80 (subiu de 60 em 2026-10-10); as outras dimensões
-ficam em 60. Medido em 2026-10-19: 871 testes em 86 suites Vitest (sendo 2 testes de paridade editorial de Markdown local em `__tests__/unit/editorial-parity.test.ts`, 6 testes de componentes SVG nativos em `__tests__/unit/components/icons.test.tsx`, 3 de ThemeToggle, 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros, 10 de utilitários de stream e respostas de erro da API e 5 de integração de concorrência e idempotência com banco de dados real local), 171 testes pgTAP em 6 arquivos no banco local Supabase,
+ficam em 60. Medido em 2026-10-19: 902 testes em 88 suites Vitest (sendo 2 testes de paridade editorial de Markdown local em `__tests__/unit/editorial-parity.test.ts`, 6 testes de componentes SVG nativos em `__tests__/unit/components/icons.test.tsx`, 3 de ThemeToggle, 134 testes no módulo de ofertas, 16 de integração Auth real, 14 de integração Recuperação/Contingência, 12 de componentes/serviços do Dashboard operacional, 15 de SEO, 12 de busca e tolerância a erros, 10 de utilitários de stream e respostas de erro da API e 5 de integração de concorrência e idempotência com banco de dados real local), 197 testes pgTAP em 7 arquivos no banco local Supabase,
 26 testes Playwright Editorial (2 suites), 7 testes Playwright Admin Auth/Recovery real (3 Auth e 4 Recovery), 1 teste Playwright Admin Operational Dashboard exit 0, 4 testes Playwright de auditoria de SEO em `e2e/seo-audit.spec.ts` contra build de produção e 7 testes Playwright de busca e recorte em `e2e/search-flow.spec.ts` (totalizando 45 testes Playwright). Subir o piso acima do que o
 projeto mede esconde o número em vez de avisar.
 
@@ -302,7 +320,7 @@ diferentes, que devem ser conferidos no ambiente utilizado. O ciclo inclui
 - [`scope`](.agents/skills/scope/SKILL.md): `JavaScript-Mastery-Pro/skills` — plano grosseiro em docs/scope/, reconciliação.
 - [`sync`](.agents/skills/sync/SKILL.md): `JavaScript-Mastery-Pro/skills` — AGENTS.md, scope, STATE.md cirúrgicos.
 - [`test`](.agents/skills/test/SKILL.md): `JavaScript-Mastery-Pro/skills` — suíte de testes após build.
-- [`jwt-validate`](.agents/skills/jwt-validate/SKILL.md): `jsonwebtoken/jwt-skills` (Okta, Apache-2.0) — validação de JWT: assinatura, `algorithms` allowlist, `iss`/`aud`/`exp`/`nbf`/`iat`, 60s de tolerância e JWKS. Complementar, não substitui a autorização por `ADMIN_USER_ID` e AAL2 em `lib/admin/auth.ts`.
+- [`jwt-validate`](.agents/skills/jwt-validate/SKILL.md): `jsonwebtoken/jwt-skills` (Okta, Apache-2.0) — validação de JWT: assinatura, `algorithms` allowlist, `iss`/`aud`/`exp`/`nbf`/`iat`, 60s de tolerância e JWKS. Complementar, não substitui a autorização por `ADMIN_USER_ID`, papéis e AAL2 em `lib/admin/auth.ts`.
 
 Quem escreve o quê, para ninguém gravar estado no lugar errado:
 
@@ -319,7 +337,7 @@ estados; a presença de um arquivo não comprova aprovação ou execução.
 
 ## Context files
 
-- [lib/admin/AGENTS.md](lib/admin/AGENTS.md) (Access, MFA AAL2, rate limit DO, guards admin)
+- [lib/admin/AGENTS.md](lib/admin/AGENTS.md) (Access, MFA AAL2, papéis e auditoria WORM, rate limit DO, guards admin)
 - [lib/editorial/AGENTS.md](lib/editorial/AGENTS.md) (catálogo de rascunhos locais e lógica de leitura dos artigos)
 - [lib/offers/AGENTS.md](lib/offers/AGENTS.md) (módulo de ofertas, selo verificado, cupons, WORM e canonização RFC 8785)
 - [lib/preview/AGENTS.md](lib/preview/AGENTS.md) (cookie de preview e PreviewSessionDO)
