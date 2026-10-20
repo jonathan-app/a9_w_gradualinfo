@@ -9,6 +9,7 @@
 import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import { assertAdminApiAuth } from '@/lib/admin/auth';
+import { recordAdminAudit } from '@/lib/admin/audit-service';
 import { env } from '@/lib/env';
 import { previewCookieOptions } from '@/lib/preview/config';
 import { getPreviewSessionStore } from '@/lib/preview/durable-object';
@@ -23,8 +24,8 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   const admissionFailure = guardAdminAccess(request);
   if (admissionFailure) return admissionFailure;
-  // 1. Guarda estrita de autorização administrativa (UUID + AAL2 + Origem)
-  const auth = await assertAdminApiAuth(request);
+  // 1. Guarda estrita de autorização administrativa (papel + AAL2 + Origem)
+  const auth = await assertAdminApiAuth(request, 'revisor');
   if (!auth.ok) {
     return auth.response;
   }
@@ -86,6 +87,17 @@ export async function POST(request: Request) {
   response.cookies.set(PREVIEW_COOKIE, cookieValue, {
     ...previewCookieOptions,
     maxAge: PREVIEW_TTL,
+  });
+
+  void recordAdminAudit({
+    actorType: 'admin',
+    actorId: auth.user.id,
+    actorEmail: auth.user.email,
+    actorRole: auth.role,
+    action: 'preview.issued',
+    resourceType: 'preview',
+    resourceId: slug || 'global',
+    ipAddress: request.headers.get('cf-connecting-ip'),
   });
 
   return response;

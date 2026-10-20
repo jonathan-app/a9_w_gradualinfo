@@ -2,6 +2,7 @@
 
 **Date**: 2026-10-16
 **Status**: Accepted
+**Parcialmente alterada pela Spec 0032**: o AC-01 deixa de exigir identidade exclusivamente igual a `ADMIN_USER_ID`; o acesso passa a aceitar a raiz ou um usuário com papel compatível em `admin_user_roles`, mantendo AAL2. O restante desta spec permanece válido.
 **Decision source**: Aceite formal do proprietário em 2026-10-16 para a Phase 3 do escopo de backend
 
 ## Summary

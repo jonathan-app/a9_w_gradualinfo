@@ -1,0 +1,15 @@
+[dash-ui/AC-01] Validacao da Sidebar Escura #0B132B e Navegacao
+
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/admin-components.test.tsx (17 tests | 14 skipped) 289ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 14 skipped (17)
+   Start at  21:59:57
+   Duration  1.43s (environment 52%, tests 23%, import 12%, setup 10%, transform 3%, worker 1%)
+
+
+
+Classes e layout inspecionados em components/admin/admin-sidebar.tsx

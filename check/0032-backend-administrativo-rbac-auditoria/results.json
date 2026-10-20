@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "d9f80e9cb0fb42ffc0f089ee92c1b0d1ab85747a",
+  "evaluatedTree": "965a463b78a6dce1b475c8b00f6dac686959f940",
+  "spec": {
+    "path": "docs/specs/2026-10-19-2050-0032-backend-administrativo-rbac-auditoria.md",
+    "sha256": "c15dc7a0c0c0b9a6c9a86e949f3f0357fb075a8061e738c27f423457f88a2460"
+  },
+  "acs": [
+    {
+      "id": "admin-rbac/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-01-tabela-papeis-rls.txt",
+      "evidenceSha256": "fa1caa80210b45d70c8b0cf86861bdaa5f09cd5f198572bc207d31ae9a7a7b8e"
+    },
+    {
+      "id": "admin-rbac/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-02-raiz-resolucao-papel.txt",
+      "evidenceSha256": "1c9a07e9a54241d0aeca8b6f06bb2103794389153437fbc7a50d10ea1378bec0"
+    },
+    {
+      "id": "admin-rbac/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-03-admissao-multiusuario.txt",
+      "evidenceSha256": "586722b012fb9f4d543de97a515edd00740e3787e7b8984b1e9cdc6e5bb217ca"
+    },
+    {
+      "id": "admin-rbac/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-04-guarda-rotas.txt",
+      "evidenceSha256": "79297a99fac69d59389cbcd67ae535be715299577345b7f6b3aac01fd68f3707"
+    },
+    {
+      "id": "admin-rbac/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-05-schema-auditoria-worm.txt",
+      "evidenceSha256": "e0c960fb584ac8e9a1862399977a625ac64903fdf5e3888c7057f5bf3775c219"
+    },
+    {
+      "id": "admin-rbac/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-06-servico-auditoria-sanitizacao.txt",
+      "evidenceSha256": "15f33cd3bccd12f3ab4398942a237f897b4d1028ecf05f18be401ec51f1aebd9"
+    },
+    {
+      "id": "admin-rbac/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-07-gestao-papeis-rpc.txt",
+      "evidenceSha256": "71b1ddcda5e62fb7498fa45739847f1e213b37d1168613ed09f844d644a7d030"
+    },
+    {
+      "id": "admin-rbac/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-08-contratos-mutacao.txt",
+      "evidenceSha256": "d55ba36b1ff080b0fd9d30a06aa51d1ac81f9c2cf1610d052b1d80699a88adb7"
+    },
+    {
+      "id": "admin-rbac/AC-09",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-09-falha-concorrencia-idempotencia.txt",
+      "evidenceSha256": "c1bddacbf2731acbde601a591430e3bf2ac0a1f015c02c302c7d1a372937cf48"
+    },
+    {
+      "id": "admin-rbac/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2130-0032-backend-administrativo-rbac-auditoria/ac-10-testes-pgtap-checkall.txt",
+      "evidenceSha256": "31ec05761dacd0c4db5558f80b444a2ed5ca717ba6ad2233e6c60ab338e08ff8"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INFO",
+      "description": "Schema SQL de RBAC e auditoria duravel aplicado com 26 assercoes pgTAP no Supabase local."
+    },
+    {
+      "severity": "INFO",
+      "description": "WORM logico assegurado por trigger append-only com erro 55000 e revogacao de mutacao para service_role."
+    },
+    {
+      "severity": "INFO",
+      "description": "Admissao multiusuario no login e MFA com resolucao de papeis hierarquica cumulativa e fail-closed."
+    },
+    {
+      "severity": "INFO",
+      "description": "Portao de qualidade pnpm check:all 100 por cento aprovado com 888 testes Vitest e 197 testes pgTAP."
+    }
+  ]
+}

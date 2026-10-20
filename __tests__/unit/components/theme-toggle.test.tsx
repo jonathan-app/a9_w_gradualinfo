@@ -73,4 +73,20 @@ describe('ThemeToggle com 3 opções', () => {
     await user.click(screen.getByRole('button', { name: 'Tema escuro' }));
     expect(mockSetTheme).toHaveBeenCalledWith('dark');
   });
+
+  it('permite ciclar temas pelo botão compacto mobile', async () => {
+    mockTheme = 'dark';
+    mockSetTheme.mockClear();
+    const user = userEvent.setup();
+
+    render(<ThemeToggle />);
+
+    const mobileBtn = screen.getByRole('button', {
+      name: /Alternar tema \(atual: dark\)/i,
+    });
+    expect(mobileBtn).toBeInTheDocument();
+
+    await user.click(mobileBtn);
+    expect(mockSetTheme).toHaveBeenCalledWith('system');
+  });
 });

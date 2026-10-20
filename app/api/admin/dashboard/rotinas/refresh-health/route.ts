@@ -6,14 +6,25 @@
  */
 
 import { assertAdminApiAuth } from '@/lib/admin/auth';
+import { recordAdminAudit } from '@/lib/admin/audit-service';
 import { getDashboardHealthData } from '@/lib/services/health-dashboard';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  const auth = await assertAdminApiAuth(request);
+  const auth = await assertAdminApiAuth(request, 'editor');
   if (!auth.ok) {
     return auth.response;
   }
+
+  void recordAdminAudit({
+    actorType: 'admin',
+    actorId: auth.user.id,
+    actorEmail: auth.user.email,
+    actorRole: auth.role,
+    action: 'health.refreshed',
+    resourceType: 'system',
+    ipAddress: request.headers.get('cf-connecting-ip'),
+  });
 
   try {
     const health = await getDashboardHealthData();

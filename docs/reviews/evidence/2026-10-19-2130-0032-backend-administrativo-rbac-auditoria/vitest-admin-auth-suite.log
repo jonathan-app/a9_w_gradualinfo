@@ -1,0 +1,36 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+(node:3242443) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node-22 --trace-warnings ...` to show where the warning was created)
+ ✓ __tests__/unit/admin-e2e-guard.test.ts (5 tests) 100ms
+ ✓ __tests__/unit/admin-rate-limit-protocol.test.ts (8 tests) 96ms
+ ✓ __tests__/unit/admin-rate-limit.test.ts (17 tests) 106ms
+ ✓ __tests__/unit/admin-auth-lifecycle.test.ts (13 tests) 79ms
+ ✓ __tests__/unit/admin-auth.test.ts (29 tests) 52ms
+ ✓ __tests__/unit/admin-session-response.test.ts (6 tests) 23ms
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+ ✓ __tests__/unit/admin-hardening.test.ts (16 tests) 55ms
+ ✓ __tests__/unit/admin-access-crypto.test.ts (11 tests) 267ms
+ ✓ __tests__/unit/admin-mfa-enrollment.test.ts (16 tests) 77ms
+ ✓ __tests__/unit/admin-logout.test.ts (3 tests) 21ms
+ ✓ __tests__/unit/admin-auth-utils.test.ts (24 tests) 25ms
+ ✓ __tests__/unit/admin-dashboard-routes.test.ts (3 tests) 14ms
+ ✓ __tests__/unit/admin-rbac.test.ts (17 tests) 31ms
+ ✓ __tests__/unit/admin-access.test.ts (20 tests) 16ms
+ ✓ __tests__/unit/admin-login-route.test.ts (6 tests) 17ms
+ ✓ __tests__/unit/admin-access-worker.test.ts (5 tests) 14ms
+
+ Test Files  16 passed (16)
+      Tests  199 passed (199)
+   Start at  21:25:43
+   Duration  2.19s (environment 39%, setup 33%, import 14%, tests 8%, transform 4%, worker 2%)
+
+    Isolate  16 workers spawned · ~586ms startup each (spawn + environment, per file)
+             at least ~267ms faster with isolate: false — reuses workers across files instead of one per file
+

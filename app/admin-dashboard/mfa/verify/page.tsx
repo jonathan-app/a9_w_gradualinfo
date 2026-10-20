@@ -8,7 +8,11 @@
  */
 import { requireAdminAccessPage } from '@/lib/admin/access-guard';
 
-import { resolveAdminMfaLadder, sanitizeAdminRedirect } from '@/lib/admin/auth';
+import {
+  resolveAdminMfaLadder,
+  resolveAdminRole,
+  sanitizeAdminRedirect,
+} from '@/lib/admin/auth';
 import { env } from '@/lib/env';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
@@ -48,8 +52,9 @@ export default async function AdminMfaVerifyPage({
     );
   }
 
-  // Se não for o administrador único, oculta existência (404)
-  if (authData.user.id !== adminId) {
+  // Verifica se o usuário autenticado tem papel administrativo no painel
+  const role = await resolveAdminRole(supabase, authData.user);
+  if (!role) {
     notFound();
   }
 

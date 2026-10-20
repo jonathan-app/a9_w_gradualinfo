@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "d9f80e9cb0fb42ffc0f089ee92c1b0d1ab85747a",
+  "evaluatedTree": "965a463b78a6dce1b475c8b00f6dac686959f940",
+  "spec": {
+    "path": "docs/specs/2026-10-19-2140-0033-dashboard-profissional-visual.md",
+    "sha256": "9b9376b755246911deef039bdd75d7c01224e8e5f999b456f56a29b65dce2013"
+  },
+  "acs": [
+    {
+      "id": "dash-ui/AC-01",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-01-casca-sidebar.txt",
+      "evidenceSha256": "fbc7ca71c273ba8914e65db3af9331799c5ae76d08b3fd0747961540be493858"
+    },
+    {
+      "id": "dash-ui/AC-02",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-02-header-contextual.txt",
+      "evidenceSha256": "3a20ce6aa3d741ffd5694df074727ceb05a117b3fe62052feabd993b5de43d0a"
+    },
+    {
+      "id": "dash-ui/AC-03",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-03-metric-cards.txt",
+      "evidenceSha256": "205f0f927ff44181c82bdc1dd8c3b6a826cae7a1092fdf2f482d58903e029d63"
+    },
+    {
+      "id": "dash-ui/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-04-publication-chart.txt",
+      "evidenceSha256": "aaad6317c990f2182c91dd3fdc7ceb4b95a60269a5a52c436824b6089e322a36"
+    },
+    {
+      "id": "dash-ui/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-05-recent-articles.txt",
+      "evidenceSha256": "53bacc3f4e0c57e69bf65683ccfc6cc857a8a823aec00df7558705034feffda5"
+    },
+    {
+      "id": "dash-ui/AC-06",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-06-quick-actions.txt",
+      "evidenceSha256": "3c577144aeccdc25bc143c904fc9c5a63a5ae20129351fb8fe416ab39347c12b"
+    },
+    {
+      "id": "dash-ui/AC-07",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-07-recent-activity.txt",
+      "evidenceSha256": "6102241ae0dd2e18e5751c6f783c8776cf97f06e7706abc0e7450801fb64e264"
+    },
+    {
+      "id": "dash-ui/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-19-2200-0033-dashboard-profissional-visual/ac-08-portao-qualidade.txt",
+      "evidenceSha256": "832ce8c237009e1bc633e61be6b1d879c53963c5229ce2ea61f0e43537617ade"
+    }
+  ],
+  "findings": []
+}

@@ -110,6 +110,13 @@ vi.mock('@supabase/ssr', () => ({
           },
         },
       },
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: async () => ({ data: null, error: null }),
+          }),
+        }),
+      }),
     };
   },
 }));

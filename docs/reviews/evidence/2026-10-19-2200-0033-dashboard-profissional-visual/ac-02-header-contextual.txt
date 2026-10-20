@@ -1,0 +1,15 @@
+[dash-ui/AC-02] Validacao do Cabecalho Contextual com ThemeToggle e Sessao AAL2
+
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/admin-components.test.tsx (17 tests | 10 skipped) 344ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed | 10 skipped (17)
+   Start at  21:59:59
+   Duration  1.48s (environment 49%, tests 27%, import 12%, setup 9%, transform 3%, worker 1%)
+
+
+
+Componente inspecionado em components/admin/admin-header.tsx

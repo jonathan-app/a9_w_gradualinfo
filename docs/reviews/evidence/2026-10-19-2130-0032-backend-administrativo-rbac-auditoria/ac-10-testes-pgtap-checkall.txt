@@ -1,0 +1,232 @@
+CRITERIO: admin-rbac/AC-10 (Testes e limite de escopo)
+EVIDENCIA:
+- 197 testes pgTAP em 7 arquivos passando (PASS 100%):
+$ pnpm dlx supabase@2.119.0 test db
+Connecting to local database...
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/admin_rbac.test.sql .................. ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/offers_ingest_idempotencia.test.sql .. ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/offers_module.test.sql ............... ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/offers_outliers.test.sql ............. ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/offers_pipeline.test.sql ............. ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/database/shipping_eligibility.test.sql ........ ok
+/home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/supabase/tests/rls_posts_test.sql ............................ ok
+All tests successful.
+Files=7, Tests=197,  1 wallclock secs ( 0.03 usr  0.01 sys +  0.04 cusr  0.02 csys =  0.10 CPU)
+Result: PASS
+A new version of Supabase CLI is available: v2.121.0 (currently installed v2.119.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
+Done in 1.8s using pnpm v12.5.1
+
+- Portao de qualidade pnpm check:all aprovado (888 testes vitest, typecheck, eslint, prettier e SAST):
+$ pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run && pnpm security:all
+$ tsc --noEmit
+$ eslint .
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+$ vitest run
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:11:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/integration/spec-0021-real-db-concurrency.test.ts (5 tests) 551ms
+ ✓ __tests__/unit/app-article-page.test.tsx (6 tests) 448ms
+ ✓ __tests__/unit/components/theme-toggle.test.tsx (3 tests) 530ms
+Not implemented: navigation to another Document
+ ✓ __tests__/unit/editorial-reading.test.tsx (18 tests) 476ms
+Not implemented: navigation to another Document
+ ✓ __tests__/unit/app-home.test.tsx (11 tests) 911ms
+   ✓ HomePage (11)
+     ✓ renderiza artigos quando existem 390ms
+ ✓ __tests__/unit/access-logic.test.ts (29 tests) 1130ms
+ ✓ __tests__/unit/app-busca.test.tsx (13 tests) 1044ms
+   ✓ SearchPage (13)
+     ✓ lista o resultado com contagem no singular e link para o artigo 315ms
+ ✓ __tests__/unit/components/admin-components.test.tsx (17 tests) 1113ms
+ ✓ __tests__/unit/mfa-enrollment-ui.test.tsx (6 tests) 574ms
+   ✓ não consulta matrícula ao renderizar e pede POST somente no clique 387ms
+ ✓ __tests__/integration/spec-0018-real-auth.test.ts (16 tests) 2956ms
+   ✓ Spec 0018 — Verificação Empírica Integrada (AC-01 a AC-08) (16)
+     ✓ AC-02: Rejeição na admissão do Worker de tokens inválidos (5)
+       ✓ ignora ADMIN_ACCESS_KEY_PAIR e recusa quando bindings indicam produção (NODE_ENV=production ou gradualinfo.com.br) 560ms
+     ✓ AC-05: Escada de MFA e elevação para AAL2 contra GoTrue local (3)
+       ✓ eleva sessão para AAL2 com código TOTP válido e impede reutilização imediata 636ms
+     ✓ AC-07: Logout seguro no Supabase GoTrue local (1)
+       ✓ revoga a sessão no GoTrue e invalida tokens associados 336ms
+ ✓ __tests__/unit/admin-access-crypto.test.ts (11 tests) 348ms
+ ✓ __tests__/unit/sanity-client.test.ts (14 tests) 111ms
+ERRO: ADMIN_USER_ID inválido ou ausente. Um UUID fixo válido é obrigatório.
+[ADMIN-MFA-RESET] Consultando fatores cadastrados para o usuário: 11111111-1111-1111-1111-111111111111
+[ADMIN-MFA-RESET] Nenhum fator TOTP encontrado para o usuário 11111111-1111-1111-1111-111111111111. Nenhuma ação necessária.
+ ✓ __tests__/integration/spec-0019-recovery.test.ts (17 tests) 323ms
+stderr | __tests__/unit/components/editorial-components.test.tsx > EditorialStory > renderiza variante lead com título e link
+Received `true` for a non-boolean attribute `fill`.
+
+If you want to write it to the DOM, pass a string instead: fill="true" or fill={value.toString()}.
+Received `true` for a non-boolean attribute `unoptimized`.
+
+If you want to write it to the DOM, pass a string instead: unoptimized="true" or unoptimized={value.toString()}.
+Received `true` for a non-boolean attribute `priority`.
+
+If you want to write it to the DOM, pass a string instead: priority="true" or priority={value.toString()}.
+
+(node:3244720) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node-22 --trace-warnings ...` to show where the warning was created)
+ ✓ __tests__/unit/components/editorial-components.test.tsx (11 tests) 538ms
+   ✓ EditorialStory (6)
+     ✓ renderiza variante lead com título e link 340ms
+ ✓ __tests__/unit/components/button.test.tsx (5 tests) 450ms
+   ✓ Button (5)
+     ✓ renderiza como button por padrão 315ms
+ ✓ __tests__/unit/admin-rate-limit.test.ts (17 tests) 133ms
+ ✓ __tests__/unit/admin-e2e-guard.test.ts (5 tests) 135ms
+ ✓ __tests__/unit/lib/offers/spec-0021-worm-pipeline.test.ts (15 tests) 539ms
+   ✓ Spec 0021: WORM durável e infraestrutura do pipeline (15)
+     ✓ FilesystemEvidenceStorageAdapter (AC-02 e AC-04) (12)
+       ✓ trata dois processos independentes sincronizados por barreira disputando a mesma chave com payload idêntico (AC-02 e AC-04) 474ms
+ ✓ __tests__/unit/admin-rate-limit-protocol.test.ts (8 tests) 116ms
+ ✓ __tests__/unit/sanity-probe-home.test.tsx (5 tests) 303ms
+ ✓ __tests__/unit/admin-auth-lifecycle.test.ts (13 tests) 55ms
+stderr | __tests__/unit/components/google-analytics.test.tsx > GoogleAnalytics > renderiza os scripts quando measurementId estiver configurado
+Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+ ✓ __tests__/unit/components/google-analytics.test.tsx (2 tests) 108ms
+ ✓ __tests__/unit/config-admin-access.test.ts (21 tests) 5525ms
+   ✓ dry-run: validacao sem publicar (4)
+     ✓ aceita lista de hosts com espacos apos a virgula 320ms
+   ✓ publicacao: wrangler secret put (2)
+     ✓ envia cada valor pelo stdin do wrangler, um secret por nome 1089ms
+     ✓ interrompe na primeira falha do wrangler sem publicar os demais 375ms
+ ✓ __tests__/unit/editorial-logs-reader.test.tsx (1 test) 163ms
+ ✓ __tests__/unit/admin-mfa-enrollment.test.ts (16 tests) 88ms
+ ✓ __tests__/unit/components/google-tag-manager.test.tsx (2 tests) 116ms
+ ✓ __tests__/unit/preview-security.test.ts (10 tests) 57ms
+ ✓ __tests__/unit/skills-check.test.ts (4 tests) 27ms
+ ✓ __tests__/unit/preview-failure-status.test.ts (12 tests) 59ms
+ ✓ __tests__/unit/lib/format.test.ts (28 tests) 58ms
+ ✓ __tests__/unit/components/icons.test.tsx (7 tests) 115ms
+ ✓ __tests__/unit/supabase-proxy.test.ts (12 tests) 60ms
+ ✓ __tests__/unit/structured-data.test.tsx (5 tests) 78ms
+ ✓ __tests__/unit/mfa-verify-route.test.ts (18 tests) 69ms
+ ✓ __tests__/unit/preview-logout.test.ts (3 tests) 26ms
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+ ✓ __tests__/unit/admin-hardening.test.ts (16 tests) 71ms
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+[admin_audit_log_failure] Chave SUPABASE_SERVICE_ROLE_KEY ausente ou nao configurada no servidor.
+stderr | __tests__/unit/lib/offers/route-avaliar-selo.test.ts > handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo) > retorna 422 Unprocessable Entity se a RPC falhar com erro de negócio ou restrição SQL
+Falha na transação RPC evaluate_and_set_verified_price (avaliar-selo): { message: 'coupon_scope_mismatch', code: '22023' }
+
+stderr | __tests__/unit/lib/offers/route-avaliar-selo.test.ts > handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo) > mascara mensagem de erro de RPC que vaza detalhes internos de SQL
+Falha na transação RPC evaluate_and_set_verified_price (avaliar-selo): {
+  message: 'duplicate key value violates unique constraint "offers_pkey" on table "offers"',
+  code: '23505'
+}
+
+ ✓ __tests__/unit/lib/offers/route-avaliar-selo.test.ts (12 tests) 96ms
+stderr | __tests__/unit/lib/offers/route-ingest-ofertas.test.ts > handleIngestOfertas (POST /api/ingest/ofertas) > sanitiza vazamento de erro de banco de dados no retorno 422 da RPC
+Falha na transação RPC evaluate_and_set_verified_price: {
+  message: 'violates foreign key constraint "fk_offers_merchants" on table "offers"',
+  code: '23503'
+}
+
+ ✓ __tests__/unit/lib/offers/route-ingest-ofertas.test.ts (10 tests) 61ms
+ ✓ __tests__/unit/admin-auth.test.ts (29 tests) 48ms
+ ✓ __tests__/integration/preview-cookie-reuse.test.ts (12 tests) 61ms
+ ✓ __tests__/unit/editorial-parity.test.ts (2 tests) 19ms
+ ✓ __tests__/unit/supabase-middleware.test.ts (15 tests) 47ms
+ ✓ __tests__/unit/durable-object.test.ts (25 tests) 61ms
+ ✓ __tests__/unit/access-guard.test.ts (17 tests) 23ms
+ ✓ __tests__/unit/gates.test.ts (18 tests) 9742ms
+   ✓ gate completo por revisão (18)
+     ✓ aprova revisão limpa com conjunto completo e decisão recalculada 582ms
+     ✓ rejeita missing 547ms
+     ✓ rejeita duplicate 490ms
+     ✓ rejeita extra 472ms
+     ✓ rejeita fail 528ms
+     ✓ rejeita unverifiable 493ms
+     ✓ rejeita missing-proof 460ms
+     ✓ rejeita bad-hash 466ms
+     ✓ rejeita blocker 613ms
+     ✓ rejeita malformed 562ms
+     ✓ rejeita adulteração de commit 479ms
+     ✓ rejeita adulteração de tree 502ms
+     ✓ rejeita adulteração de spec 545ms
+     ✓ rejeita adulteração de counts 506ms
+     ✓ rejeita aprovação antiga com --commit atual após commit real 677ms
+     ✓ rejeita árvore suja mesmo sem alterar o SHA 485ms
+     ✓ rejeita artefato ausente, JSON inválido e Markdown legado 980ms
+     ✓ rejeita spec Proposed mesmo com hash correspondente 350ms
+ ✓ __tests__/unit/lib/offers/route-out-redirect.test.ts (14 tests) 28ms
+ ✓ __tests__/unit/preview-route.test.ts (12 tests) 81ms
+ ✓ __tests__/unit/lib/offers/evidence-canonicalizer.test.ts (7 tests) 14ms
+ ✓ __tests__/unit/sitemap.test.ts (16 tests) 53ms
+ ✓ __tests__/unit/lib/search-posts.test.ts (10 tests) 50ms
+ ✓ __tests__/unit/lib/utils/http-stream.test.ts (5 tests) 17ms
+ ✓ __tests__/unit/admin-rbac.test.ts (17 tests) 81ms
+ ✓ __tests__/unit/lib/services/posts.test.ts (15 tests) 41ms
+ ✓ __tests__/unit/preview-auth-accessible.test.ts (10 tests) 25ms
+ ✓ __tests__/unit/lib/local-editorial-covers.test.ts (2 tests) 19ms
+stdout | __tests__/unit/lib/offers/route-ofertas.test.ts > handleGetOfertas (GET /api/ofertas - Spec 0021) > sanitiza erros do banco e retorna HTTP 503 opaco fail-closed (AC-05)
+{"level":"info","scope":"api/ofertas","event":{"event":"query_error","code":"42P01"}}
+
+ ✓ __tests__/unit/lib/offers/route-ofertas.test.ts (4 tests) 32ms
+ ✓ __tests__/unit/lib/offers/memory-adapter.test.ts (10 tests) 20ms
+ ✓ __tests__/unit/admin-session-response.test.ts (6 tests) 23ms
+ ✓ __tests__/unit/lib/editorial-dashboard.test.ts (3 tests) 14ms
+ ✓ __tests__/unit/preview-durable-object.test.ts (7 tests) 65ms
+ ✓ __tests__/unit/lib/offers/r2-adapter.test.ts (12 tests) 30ms
+ ✓ __tests__/unit/lib/offers/route-evidencias.test.ts (5 tests) 49ms
+ ✓ __tests__/unit/admin-auth-utils.test.ts (24 tests) 44ms
+ ✓ __tests__/unit/lib/commercial-dashboard.test.ts (4 tests) 17ms
+ ✓ __tests__/unit/lib/cn.test.ts (6 tests) 16ms
+ ✓ __tests__/unit/admin-logout.test.ts (3 tests) 51ms
+ ✓ __tests__/unit/supabase-server.test.ts (12 tests) 21ms
+ ✓ __tests__/unit/ci-assess.test.ts (7 tests) 14ms
+ ✓ __tests__/unit/logger.test.ts (3 tests) 16ms
+ ✓ __tests__/unit/lib/offers/webhook-auth.test.ts (8 tests) 23ms
+ ✓ __tests__/unit/lib/editorial-images.test.ts (15 tests) 26ms
+ ✓ __tests__/unit/lib/utils/api-response.test.ts (5 tests) 33ms
+ ✓ __tests__/unit/proxy.test.ts (6 tests) 20ms
+ ✓ __tests__/unit/lib/offers/shipping-validation.test.ts (12 tests) 57ms
+ ✓ __tests__/unit/security-headers.test.ts (9 tests) 23ms
+ ✓ __tests__/unit/admin-login-route.test.ts (6 tests) 33ms
+ ✓ __tests__/unit/admin-access.test.ts (20 tests) 28ms
+ ✓ __tests__/unit/audit-logger.test.ts (2 tests) 18ms
+ ✓ __tests__/unit/admin-access-worker.test.ts (5 tests) 34ms
+ ✓ __tests__/unit/admin-dashboard-routes.test.ts (3 tests) 25ms
+ ✓ __tests__/unit/lib/offers/outlier-classifier.test.ts (13 tests) 11ms
+ ✓ __tests__/unit/preview-session.test.ts (4 tests) 8ms
+ ✓ __tests__/unit/lib/offers/verified-price-pipeline.test.ts (5 tests) 10ms
+ ✓ __tests__/unit/lib/offers/coupon-validation.test.ts (6 tests) 8ms
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+ ✓ __tests__/unit/lib/offers/variant-validation.test.ts (4 tests) 6ms
+ ✓ __tests__/unit/lib/health-dashboard.test.ts (2 tests) 7ms
+ ✓ __tests__/unit/seo-metadata.test.ts (7 tests) 10ms
+
+ Test Files  87 passed (87)
+      Tests  888 passed (888)
+   Start at  21:26:16
+   Duration  17.44s (environment 55%, tests 21%, setup 15%, import 7%, worker 2%, transform 2%)
+
+Environment  jsdom was created 87 times · 81.85s total, 55% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+$ pnpm security:secrets && pnpm security:sast
+$ node scripts/run-gitleaks.mjs
+Gitleaks: 0 findings redigidos, histórico e árvore.
+$ node scripts/run-semgrep.mjs
+Semgrep: 0 findings ERROR.

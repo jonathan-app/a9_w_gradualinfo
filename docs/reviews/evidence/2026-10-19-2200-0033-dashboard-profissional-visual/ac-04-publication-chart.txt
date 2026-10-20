@@ -1,0 +1,12 @@
+[dash-ui/AC-04] Validacao do Grafico Temporal SVG com Alternador 7D/14D/30D
+
+
+ RUN  v5.0.4 /home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo
+
+ ✓ __tests__/unit/components/admin-dashboard-visual.test.tsx (12 tests | 9 skipped) 251ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 9 skipped (12)
+   Start at  22:00:03
+   Duration  1.39s (environment 54%, tests 21%, import 11%, setup 10%, transform 4%, worker 1%)
+

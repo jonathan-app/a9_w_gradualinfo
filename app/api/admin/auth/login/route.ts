@@ -10,10 +10,12 @@ import { guardAdminAccess } from '@/lib/admin/access-guard';
 
 import {
   resolveAdminMfaLadder,
+  resolveAdminRole,
   resolveSafeRedirectBase,
   sanitizeAdminRedirect,
   validateAdminRequestOrigin,
 } from '@/lib/admin/auth';
+import { recordAdminAudit } from '@/lib/admin/audit-service';
 import { createAdminSessionResponse } from '@/lib/admin/session-response';
 import { env } from '@/lib/env';
 import { UUID_PATTERN } from '@/lib/preview/session';
@@ -115,8 +117,28 @@ export async function POST(request: Request) {
     return finish(NextResponse.redirect(loginUrl, 303), true);
   }
 
-  if (data.user.id !== adminId) {
-    // Nunca emitir a sessão recém-criada de outra identidade, mesmo se signOut falhar.
+  // 4. Resolucao de papel administrativo (raiz ou delegado com papel ativo)
+  let userRole;
+  try {
+    userRole = await resolveAdminRole(supabase, data.user);
+  } catch {
+    return finish(
+      new NextResponse(
+        'Serviço de autenticação temporariamente indisponível.',
+        {
+          status: 503,
+          headers: {
+            'Cache-Control': 'private, no-store',
+            'Retry-After': '5',
+          },
+        },
+      ),
+      true,
+    );
+  }
+
+  if (!userRole) {
+    // Nunca emitir a sessão recém-criada de identidade sem papel no painel
     try {
       await supabase.auth.signOut({ scope: 'local' });
     } catch {
@@ -125,6 +147,16 @@ export async function POST(request: Request) {
     loginUrl.searchParams.set('error', 'invalid_credentials');
     return finish(NextResponse.redirect(loginUrl, 303), true);
   }
+
+  void recordAdminAudit({
+    actorType: 'admin',
+    actorId: data.user.id,
+    actorEmail: data.user.email,
+    actorRole: userRole,
+    action: 'auth.login',
+    resourceType: 'auth',
+    ipAddress: request.headers.get('cf-connecting-ip'),
+  });
 
   // Helper para propagar cookies de sessão do Supabase no redirecionamento
   const createRedirectWithCookies = async (target: URL) => {

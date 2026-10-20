@@ -14,12 +14,14 @@ import { useState } from 'react';
 
 interface AdminShellProps {
   userEmail: string;
+  userRole?: string;
   sanityStudioUrl: string;
   children: React.ReactNode;
 }
 
 export function AdminShell({
   userEmail,
+  userRole = 'admin',
   sanityStudioUrl,
   children,
 }: AdminShellProps) {
@@ -36,6 +38,7 @@ export function AdminShell({
       <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <AdminHeader
           userEmail={userEmail}
+          userRole={userRole}
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
         />
 

@@ -66,9 +66,20 @@ const mockSupabaseAuth = vi.hoisted(() => ({
   },
 }));
 
+vi.mock('@/lib/admin/audit-service', () => ({
+  recordAdminAudit: vi.fn(),
+}));
+
 vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({
     auth: mockSupabaseAuth,
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+        })),
+      })),
+    })),
   }),
 }));
 
@@ -313,6 +324,13 @@ describe('Painel Administrativo — Autorização e MFA (Spec 0007)', () => {
             error: null,
           }),
         },
+        from: vi.fn(() => ({
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+            })),
+          })),
+        })),
       } as any;
 
       const result = await checkAdminUser(mockClient);
@@ -647,7 +665,7 @@ describe('Painel Administrativo — Autorização e MFA (Spec 0007)', () => {
         },
       );
 
-      const res = await assertAdminApiAuth(invalidOriginRequest);
+      const res = await assertAdminApiAuth(invalidOriginRequest, 'admin');
       expect(res.ok).toBe(false);
       if (!res.ok) {
         expect(res.response.status).toBe(403);

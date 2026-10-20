@@ -10,7 +10,7 @@ import { getDashboardHealthData } from '@/lib/services/health-dashboard';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const auth = await assertAdminApiAuth(request);
+  const auth = await assertAdminApiAuth(request, 'revisor');
   if (!auth.ok) {
     return auth.response;
   }

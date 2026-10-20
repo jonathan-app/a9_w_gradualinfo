@@ -77,6 +77,11 @@ vi.mock('@/lib/admin/rate-limit', () => ({
   adminRateLimitResponse: vi.fn(() => null),
 }));
 
+vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin/audit-service', () => ({
+  recordAdminAudit: vi.fn(),
+}));
+
 import { POST as loginPost } from '@/app/api/admin/auth/login/route';
 import { POST as mfaVerifyPost } from '@/app/api/admin/auth/mfa/verify/route';
 import { POST as logoutPost } from '@/app/api/admin/auth/logout/route';
@@ -197,7 +202,16 @@ function createMockSupabaseClient(state: {
   };
 
   return {
-    client: { auth },
+    client: {
+      auth,
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+          })),
+        })),
+      })),
+    },
     onCookiesCallback(cb: (cookies: any[]) => void) {
       onCookiesHandler = cb;
     },
@@ -376,7 +390,7 @@ describe('Ciclo Integrado de Autenticação Real e MFA (Spec 0018 AC-04 a AC-08)
         },
       );
 
-      const apiAuth = await assertAdminApiAuth(request);
+      const apiAuth = await assertAdminApiAuth(request, 'admin');
 
       expect(apiAuth.ok).toBe(false);
       if (!apiAuth.ok) {
@@ -495,7 +509,7 @@ describe('Ciclo Integrado de Autenticação Real e MFA (Spec 0018 AC-04 a AC-08)
         },
       );
 
-      const apiAuth = await assertAdminApiAuth(request);
+      const apiAuth = await assertAdminApiAuth(request, 'admin');
       expect(apiAuth.ok).toBe(true);
       if (apiAuth.ok) {
         expect(apiAuth.user.id).toBe(ADMIN_ID);

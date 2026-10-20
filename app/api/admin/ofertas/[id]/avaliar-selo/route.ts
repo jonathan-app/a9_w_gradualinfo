@@ -9,6 +9,7 @@
 
 import { NextResponse } from 'next/server';
 import { assertAdminApiAuth } from '@/lib/admin/auth';
+import { recordAdminAudit } from '@/lib/admin/audit-service';
 import {
   digestEvidence,
   type CanonicalEvidencePayload,
@@ -113,12 +114,22 @@ export async function handleAvaliarSelo(
     actorId = webhookAuth.actorId!;
   } else {
     // 2. Sessão administrativa com MFA AAL2
-    const adminAuth = await assertAdminApiAuth(request);
+    const adminAuth = await assertAdminApiAuth(request, 'editor');
     if (!adminAuth.ok) {
       return adminAuth.response;
     }
     origin = 'admin_aal2';
     actorId = adminAuth.user.id;
+    void recordAdminAudit({
+      actorType: 'admin',
+      actorId: adminAuth.user.id,
+      actorEmail: adminAuth.user.email,
+      actorRole: adminAuth.role,
+      action: 'offer.badge_evaluated',
+      resourceType: 'offer',
+      resourceId: offerId,
+      ipAddress: request.headers.get('cf-connecting-ip'),
+    });
   }
 
   // Parse do corpo JSON

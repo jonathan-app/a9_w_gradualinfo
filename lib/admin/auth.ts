@@ -14,16 +14,19 @@ import { SITE_ORIGIN } from '@/lib/site-config';
 import { createClient } from '@/lib/supabase/server';
 import type { User } from '@supabase/supabase-js';
 
+export type AdminRole = 'admin' | 'editor' | 'revisor';
+
 export type AdminAuthFailureReason =
   | 'access_unavailable'
   | 'config_missing'
   | 'unauthenticated'
   | 'unauthorized'
+  | 'role_unavailable'
   | 'mfa_enrollment_required'
   | 'mfa_challenge_required';
 
 export type AdminAuthResult =
-  | { ok: true; user: User; aal: 'aal2' }
+  | { ok: true; user: User; role: AdminRole; aal: 'aal2' }
   | {
       ok: false;
       reason: AdminAuthFailureReason;
@@ -32,7 +35,7 @@ export type AdminAuthResult =
     };
 
 /** Cliente Supabase do servidor, conforme `createClient` de `@/lib/supabase/server`. */
-type AdminSupabaseClient = Awaited<ReturnType<typeof createClient>>;
+export type AdminSupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
 /**
  * Resultado da avaliação da escada de MFA de uma sessão administrativa.
@@ -41,6 +44,74 @@ export type AdminMfaLadder =
   | { action: 'ok' }
   | { action: 'setup'; currentAal: string }
   | { action: 'verify'; currentAal: string };
+
+/**
+ * Valida se um papel concedido satisfaz a exigencia hierarquica minima.
+ * A hierarquia cumulativa define que admin satisfaz tudo, editor satisfaz editor e revisor,
+ * e revisor satisfaz unicamente revisor.
+ *
+ * @param actual - Papel atual atribuido ao operador.
+ * @param required - Papel minimo exigido pela rota ou operacao.
+ * @returns Verdadeiro caso o papel atenda aos privilegios requeridos.
+ */
+export function roleSatisfies(actual: AdminRole, required: AdminRole): boolean {
+  if (actual === 'admin') return true;
+  if (actual === 'editor')
+    return required === 'editor' || required === 'revisor';
+  if (actual === 'revisor') return required === 'revisor';
+  return false;
+}
+
+/**
+ * Resolve o papel administrativo de um usuario autenticado.
+ * A conta raiz definida em env.adminUserId e sempre reconhecida como admin.
+ * Demais usuarios tem seu papel consultado na tabela isolada admin_user_roles.
+ *
+ * @param supabase - Cliente Supabase do servidor.
+ * @param user - Objeto de usuario autenticado do Supabase Auth.
+ * @returns Papel atribuido ou null se o usuario nao tiver papel no painel.
+ */
+export async function resolveAdminRole(
+  supabase: AdminSupabaseClient,
+  user: User,
+): Promise<AdminRole | null> {
+  const adminId = env.adminUserId.trim();
+  if (adminId && user.id === adminId) {
+    return 'admin';
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('admin_user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Falha ao consultar papel do usuario: ${error.message}`);
+    }
+
+    if (
+      data?.role === 'admin' ||
+      data?.role === 'editor' ||
+      data?.role === 'revisor'
+    ) {
+      return data.role;
+    }
+
+    return null;
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith('Falha ao consultar')) {
+      throw err;
+    }
+    throw new Error(
+      'Falha de infraestrutura ao resolver papel administrativo.',
+      {
+        cause: err,
+      },
+    );
+  }
+}
 
 /**
  * Decide o próximo degrau da escada MFA a partir do estado real da sessão.
@@ -275,7 +346,7 @@ export async function checkAdminUser(
   if (admissionFailure) return admissionFailure;
   const adminId = env.adminUserId.trim();
 
-  // Fail-closed absoluto: configuração ausente nunca pode abrir o painel
+  // Fail-closed absoluto: configuracao ausente nunca pode abrir o painel
   if (!adminId) {
     return { ok: false, reason: 'config_missing' };
   }
@@ -287,17 +358,24 @@ export async function checkAdminUser(
     return { ok: false, reason: 'unauthenticated' };
   }
 
-  // Autorização estrita por UUID fixo do administrador
-  if (data.user.id !== adminId) {
+  // Resolucao de papel administrativo (conta raiz permanente ou registro no banco)
+  let role: AdminRole | null;
+  try {
+    role = await resolveAdminRole(supabase, data.user);
+  } catch {
+    return { ok: false, reason: 'role_unavailable', user: data.user };
+  }
+
+  if (!role) {
     return { ok: false, reason: 'unauthorized', user: data.user };
   }
 
-  // Avaliação de MFA (Multi-Factor Authentication)
+  // Avaliacao de MFA (Multi-Factor Authentication)
   try {
     const ladder = await resolveAdminMfaLadder(supabase);
 
     if (ladder.action === 'ok') {
-      return { ok: true, user: data.user, aal: 'aal2' as const };
+      return { ok: true, user: data.user, role, aal: 'aal2' as const };
     }
 
     return {
@@ -327,15 +405,18 @@ export const requireAdminAuth = checkAdminUser;
 /**
  * Guarda especializada para Route Handlers e mutações sob `/api/admin/*`.
  *
- * Avalia validação de origem (CSRF) e autorização cumulativa (UUID fixo + AAL2).
- * Se a verificação falhar, produz imediatamente um NextResponse com código de status e
- * cabeçalhos restritivos adequados.
+ * Avalia validação de origem (CSRF), autorização cumulativa (papel + AAL2) e hierarquia de acesso.
+ * O segundo argumento requiredRole é estritamente obrigatório, sem papel padrão permissivo.
  *
  * @param request - Requisição HTTP opcional para verificação de origem.
- * @returns Objeto com `ok: true` e `user`, ou `ok: false` com `response` formatado.
+ * @param requiredRole - Papel mínimo exigido para autorizar a operação.
+ * @returns Objeto com `ok: true`, `user` e `role`, ou `ok: false` com `response` formatado.
  */
-export async function assertAdminApiAuth(request?: Request): Promise<
-  | { ok: true; user: User }
+export async function assertAdminApiAuth(
+  request: Request | undefined,
+  requiredRole: AdminRole,
+): Promise<
+  | { ok: true; user: User; role: AdminRole }
   | {
       ok: false;
       response: Response;
@@ -356,7 +437,16 @@ export async function assertAdminApiAuth(request?: Request): Promise<
   const auth = await checkAdminUser();
   if (auth instanceof Response) return { ok: false, response: auth };
   if (auth.ok) {
-    return { ok: true, user: auth.user };
+    if (!roleSatisfies(auth.role, requiredRole)) {
+      return {
+        ok: false,
+        response: new Response('Papel insuficiente para esta operação.', {
+          status: 403,
+          headers: { 'Cache-Control': 'private, no-store' },
+        }),
+      };
+    }
+    return { ok: true, user: auth.user, role: auth.role };
   }
 
   if (auth.reason === 'config_missing') {
@@ -377,6 +467,16 @@ export async function assertAdminApiAuth(request?: Request): Promise<
       ok: false,
       response: new Response('Autenticação necessária.', {
         status: 401,
+        headers: { 'Cache-Control': 'private, no-store' },
+      }),
+    };
+  }
+
+  if (auth.reason === 'role_unavailable') {
+    return {
+      ok: false,
+      response: new Response('Serviço de autorização indisponível.', {
+        status: 503,
         headers: { 'Cache-Control': 'private, no-store' },
       }),
     };
