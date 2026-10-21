@@ -3,7 +3,7 @@
  * @module app/api/admin/ofertas/[id]/avaliar-selo/route
  * @description Route handler para ingestão de evidências comerciais, persistência WORM fail-closed
  *   e execução transacional da RPC evaluate_and_set_verified_price da Spec 0017 (Fatia 4).
- * @dependencies @/lib/admin/auth, @/lib/offers/evidence-canonicalizer, @/lib/offers/storage/memory-adapter,
+ * @dependencies @/lib/admin/auth, @/lib/offers/evidence-canonicalizer, @/lib/offers/storage/storage-factory,
  *   @/lib/offers/webhook-auth, @/lib/supabase/server
  */
 

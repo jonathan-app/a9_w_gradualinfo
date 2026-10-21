@@ -15,8 +15,8 @@ vi.mock('@/lib/admin/auth', () => ({
   })),
 }));
 
-vi.mock('@/lib/offers/storage/memory-adapter', () => ({
-  getEvidenceStorage: vi.fn(() => ({
+vi.mock('@/lib/offers/storage/storage-factory', () => ({
+  getOffersEvidenceStorage: vi.fn(() => ({
     headEvidence: vi.fn(async () => ({ exists: false, byte_size: 0 })),
     getPresignedUrl: vi.fn(
       async () => 'https://storage.example.com/signed-url',
@@ -65,9 +65,9 @@ describe('handleGetEvidencia', () => {
       ok: true,
       user: { id: 'actor-1', email: 'actor@example.com', role: 'admin' },
     } as any);
-    const { getEvidenceStorage } =
-      await import('@/lib/offers/storage/memory-adapter');
-    vi.mocked(getEvidenceStorage).mockReturnValueOnce({
+    const { getOffersEvidenceStorage } =
+      await import('@/lib/offers/storage/storage-factory');
+    vi.mocked(getOffersEvidenceStorage).mockReturnValueOnce({
       headEvidence: vi.fn(async () => ({ exists: false, byte_size: 0 })),
     } as any);
 
@@ -92,9 +92,9 @@ describe('handleGetEvidencia', () => {
       ok: true,
       user: { id: 'actor-1', email: 'actor@example.com', role: 'admin' },
     } as any);
-    const { getEvidenceStorage } =
-      await import('@/lib/offers/storage/memory-adapter');
-    vi.mocked(getEvidenceStorage).mockReturnValueOnce({
+    const { getOffersEvidenceStorage } =
+      await import('@/lib/offers/storage/storage-factory');
+    vi.mocked(getOffersEvidenceStorage).mockReturnValueOnce({
       headEvidence: vi.fn(async () => ({ exists: true, byte_size: 1024 })),
       getPresignedUrl: vi.fn(
         async () => 'https://storage.example.com/signed-url',
@@ -128,9 +128,9 @@ describe('handleGetEvidencia', () => {
       ok: true,
       user: { id: 'actor-1', email: 'actor@example.com', role: 'admin' },
     } as any);
-    const { getEvidenceStorage } =
-      await import('@/lib/offers/storage/memory-adapter');
-    vi.mocked(getEvidenceStorage).mockReturnValueOnce({
+    const { getOffersEvidenceStorage } =
+      await import('@/lib/offers/storage/storage-factory');
+    vi.mocked(getOffersEvidenceStorage).mockReturnValueOnce({
       headEvidence: vi.fn(async () => {
         throw new (
           await import('@/lib/offers/storage/evidence-storage-adapter')

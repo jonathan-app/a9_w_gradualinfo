@@ -3,7 +3,7 @@
  * @module app/api/admin/evidencias/[hash]/route
  * @description Rota restrita para auditores com MFA AAL2 obterem links assinados temporários
  *   (máx 15 min) para conferência e download de evidências no storage WORM (Spec 0017 / Fatia 4).
- * @dependencies @/lib/admin/auth, @/lib/offers/storage/memory-adapter, @/lib/offers/storage/evidence-storage-adapter
+ * @dependencies @/lib/admin/auth, @/lib/offers/storage/storage-factory, @/lib/offers/storage/evidence-storage-adapter
  */
 
 import { NextResponse } from 'next/server';
@@ -13,7 +13,7 @@ import {
   EvidenceStorageUnavailableError,
   type EvidenceStorageAdapter,
 } from '@/lib/offers/storage/evidence-storage-adapter';
-import { getEvidenceStorage } from '@/lib/offers/storage/memory-adapter';
+import { getOffersEvidenceStorage } from '@/lib/offers/storage/storage-factory';
 import { apiErrorResponse } from '@/lib/utils/api-response';
 
 const HASH_REGEX = /^[a-f0-9]{64}$/;
@@ -46,7 +46,7 @@ export async function handleGetEvidencia(
     );
   }
 
-  const storage = deps.storage || getEvidenceStorage();
+  const storage = deps.storage || getOffersEvidenceStorage();
 
   try {
     const head = await storage.headEvidence(hash);
