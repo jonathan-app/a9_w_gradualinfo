@@ -11,6 +11,66 @@ import {
 } from '@/lib/offers/evidence-canonicalizer';
 
 describe('evidence-canonicalizer (RFC 8785 / JCS)', () => {
+  it('reproduz o exemplo normativo de serialização e ordenação das seções 3.2.2 e 3.2.3', () => {
+    const input = JSON.parse(
+      String.raw`{"numbers":[333333333.33333329,1E30,4.50,2e-3,0.000000000000000000000000001],"string":"\u20ac$\u000F\u000aA'\u0042\u0022\u005c\\\"\/","literals":[null,true,false]}`,
+    );
+
+    expect(canonicalizeJson(input)).toBe(
+      String.raw`{"literals":[null,true,false],"numbers":[333333333.3333333,1e+30,4.5,0.002,1e-27],"string":"€$\u000f\nA'B\"\\\\\"/"}`,
+    );
+  });
+
+  it('reproduz o vetor normativo de ordenação UTF-16 da seção 3.2.3', () => {
+    const input = {
+      '€': 'Euro Sign',
+      '\r': 'Carriage Return',
+      דּ: 'Hebrew Letter Dalet With Dagesh',
+      '1': 'One',
+      '😀': 'Emoji: Grinning Face',
+      '\u0080': 'Control',
+      ö: 'Latin Small Letter O With Diaeresis',
+    };
+
+    expect(canonicalizeJson(input)).toBe(
+      '{"\\r":"Carriage Return","1":"One","":"Control","ö":"Latin Small Letter O With Diaeresis","€":"Euro Sign","😀":"Emoji: Grinning Face","דּ":"Hebrew Letter Dalet With Dagesh"}',
+    );
+  });
+
+  it.each([
+    ['0000000000000000', '0'],
+    ['8000000000000000', '0'],
+    ['0000000000000001', '5e-324'],
+    ['8000000000000001', '-5e-324'],
+    ['7fefffffffffffff', '1.7976931348623157e+308'],
+    ['ffefffffffffffff', '-1.7976931348623157e+308'],
+    ['4340000000000000', '9007199254740992'],
+    ['c340000000000000', '-9007199254740992'],
+    ['4430000000000000', '295147905179352830000'],
+    ['44b52d02c7e14af5', '9.999999999999997e+22'],
+    ['44b52d02c7e14af6', '1e+23'],
+    ['44b52d02c7e14af7', '1.0000000000000001e+23'],
+    ['444b1ae4d6e2ef4e', '999999999999999700000'],
+    ['444b1ae4d6e2ef4f', '999999999999999900000'],
+    ['444b1ae4d6e2ef50', '1e+21'],
+    ['3eb0c6f7a0b5ed8c', '9.999999999999997e-7'],
+    ['3eb0c6f7a0b5ed8d', '0.000001'],
+    ['41b3de4355555553', '333333333.3333332'],
+    ['41b3de4355555554', '333333333.33333325'],
+    ['41b3de4355555555', '333333333.3333333'],
+    ['41b3de4355555556', '333333333.3333334'],
+    ['41b3de4355555557', '333333333.33333343'],
+    ['becbf647612f3696', '-0.0000033333333333333333'],
+    ['43143ff3c1cb0959', '1424953923781206.2'],
+  ])('reproduz o vetor numérico %s do Apêndice B', (hex, expected) => {
+    const bytes = Uint8Array.from(hex.match(/../g)!, (byte) =>
+      Number.parseInt(byte, 16),
+    );
+    const value = new DataView(bytes.buffer).getFloat64(0, false);
+
+    expect(canonicalizeJson(value)).toBe(expected);
+  });
+
   it('valida o Vetor 1 de ordenação de chaves e escapes exatos', () => {
     const input = {
       z: 'linha 1\nlinha 2',
@@ -116,6 +176,19 @@ describe('evidence-canonicalizer (RFC 8785 / JCS)', () => {
     expect(() => canonicalizeJson(() => {})).toThrow(
       InvalidEvidenceFormatError,
     );
+    expect(() => canonicalizeJson(1n)).toThrow(InvalidEvidenceFormatError);
+  });
+
+  it('rejeita surrogates UTF-16 isolados em valores e nomes de propriedade', () => {
+    expect(() => canonicalizeJson('\ud800')).toThrow(
+      InvalidEvidenceFormatError,
+    );
+    expect(() => canonicalizeJson('\udfff')).toThrow(
+      InvalidEvidenceFormatError,
+    );
+    expect(() => canonicalizeJson({ ['chave\ud800']: true })).toThrow(
+      InvalidEvidenceFormatError,
+    );
   });
 
   it('ordena recursivamente objetos aninhados e preserva ordem em arrays', () => {
@@ -190,5 +263,35 @@ describe('evidence-canonicalizer (RFC 8785 / JCS)', () => {
     expect(hashConcessao).not.toBe(hashRenovacao);
     expect(hashConcessao).not.toBe(hashRegion);
     expect(hashConcessao).not.toBe(hashSku);
+  });
+
+  it('rejeita arrays esparsos (lacunas de índice)', () => {
+    const sparse = new Array(2);
+    sparse[1] = 1;
+    expect(() => canonicalizeJson(sparse)).toThrow(InvalidEvidenceFormatError);
+    expect(() => canonicalizeJson(sparse)).toThrow(
+      'Arrays esparsos são proibidos',
+    );
+  });
+
+  it('rejeita arrays com lacuna intermediária', () => {
+    const arr = [1, 2];
+    arr[4] = 5; // Cria lacuna nos índices 2 e 3
+    expect(() => canonicalizeJson(arr)).toThrow(InvalidEvidenceFormatError);
+    expect(() => canonicalizeJson(arr)).toThrow(
+      'Arrays esparsos são proibidos',
+    );
+  });
+
+  it('aceita arrays densos com null explícito', () => {
+    const arr = [1, null, 3];
+    expect(canonicalizeJson(arr)).toBe('[1,null,3]');
+  });
+
+  it('aceita arrays densos válidos sem alterar canonicalização', () => {
+    const arr = [3, 2, 1];
+    expect(canonicalizeJson(arr)).toBe('[3,2,1]');
+    const nested = { a: [1, 2], b: [4, 5] };
+    expect(canonicalizeJson(nested)).toBe('{"a":[1,2],"b":[4,5]}');
   });
 });

@@ -80,17 +80,43 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
       },
     ],
     rpcError: any = null,
+    options: {
+      nonceConflict?: boolean;
+      nonceStorageError?: boolean;
+    } = {},
   ) {
     let capturedRpcParams: any = null;
+    const consumedNonces = new Set<string>();
 
     const client = {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: async () => ({ data: offerData, error: null }),
+      from: (table: string) => {
+        if (table === 'offers_ingest_nonces') {
+          return {
+            insert: async (row: { collector_id: string; nonce: string }) => {
+              if (options.nonceStorageError) {
+                return { error: { message: 'DB connection failure' } };
+              }
+              if (options.nonceConflict || consumedNonces.has(row.nonce)) {
+                return {
+                  error: {
+                    code: '23505',
+                    message: 'duplicate key value violates unique constraint',
+                  },
+                };
+              }
+              consumedNonces.add(row.nonce);
+              return { error: null };
+            },
+          };
+        }
+        return {
+          select: () => ({
+            eq: () => ({
+              single: async () => ({ data: offerData, error: null }),
+            }),
           }),
-        }),
-      }),
+        };
+      },
       rpc: async (name: string, params: any) => {
         capturedRpcParams = { name, params };
         if (rpcError) {
@@ -205,6 +231,44 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     expect(res.status).toBe(401);
     const json = await res.json();
     expect(json.error).toBe('invalid_webhook_signature');
+  });
+
+  it('rejeita com 409 quando o webhook repete um nonce já consumido no banco compartilhado', async () => {
+    const mockDb = mockSupabase(sampleOfferData, undefined, null, {
+      nonceConflict: true,
+    });
+    const req = createSignedWebhookRequest(validBody, {
+      nonce: 'already-used-nonce',
+    });
+
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(409);
+    const json = await res.json();
+    expect(json.error).toBe('nonce_already_consumed');
+  });
+
+  it('rejeita com 503 quando o banco compartilhado de nonces falha na rota de webhook', async () => {
+    const mockDb = mockSupabase(sampleOfferData, undefined, null, {
+      nonceStorageError: true,
+    });
+    const req = createSignedWebhookRequest(validBody, {
+      nonce: 'fresh-nonce-db-error',
+    });
+
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(503);
+    const json = await res.json();
+    expect(json.error).toBe('nonce_storage_error');
   });
 
   it('rejeita com 400 se o campo advertised_sku estiver em branco', async () => {

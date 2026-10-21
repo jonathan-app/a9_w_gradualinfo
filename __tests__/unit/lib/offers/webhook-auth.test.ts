@@ -144,6 +144,110 @@ describe('webhook-auth (HMAC-SHA256 e Anti-Replay)', () => {
     );
     expect(resultTampered.valid).toBe(false);
     expect(resultTampered.reason).toBe('invalid_webhook_signature');
+
+    // Comprova que o nonce NÃO foi queimado: uma requisição legítima com este mesmo nonce é aceita
+    const reqLegitimateWithSameNonce = createSignedRequest(sampleBody, {
+      nonce: 'nonce-for-tampered-signature',
+    });
+    const resultLegitimate = await verifyWebhookSignature(
+      reqLegitimateWithSameNonce,
+      sampleBody,
+      {
+        secret,
+        nonceCache,
+      },
+    );
+    expect(resultLegitimate.valid).toBe(true);
+  });
+
+  it('persiste e consome nonce via supabaseClient inserindo em offers_ingest_nonces', async () => {
+    let capturedRow: any = null;
+    const mockSupabase = {
+      from: (table: string) => {
+        expect(table).toBe('offers_ingest_nonces');
+        return {
+          insert: async (row: any) => {
+            capturedRow = row;
+            return { error: null };
+          },
+        };
+      },
+    };
+
+    const req = createSignedRequest(sampleBody, {
+      nonce: 'nonce-db-success-123',
+    });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(true);
+    expect(capturedRow).toEqual({
+      collector_id: 'webhook_collector',
+      nonce: 'nonce-db-success-123',
+    });
+  });
+
+  it('rejeita com replay quando supabaseClient acusa chave duplicada (código 23505)', async () => {
+    const mockSupabase = {
+      from: () => ({
+        insert: async () => ({
+          error: {
+            code: '23505',
+            message: 'duplicate key value violates unique constraint',
+          },
+        }),
+      }),
+    };
+
+    const req = createSignedRequest(sampleBody, { nonce: 'nonce-replay-db' });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe('webhook_nonce_replay_detected');
+  });
+
+  it('rejeita com webhook_nonce_storage_error quando supabaseClient acusa erro de infraestrutura', async () => {
+    const mockSupabase = {
+      from: () => ({
+        insert: async () => ({
+          error: { message: 'Database connection refused' },
+        }),
+      }),
+    };
+
+    const req = createSignedRequest(sampleBody, {
+      nonce: 'nonce-storage-error',
+    });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe('webhook_nonce_storage_error');
+  });
+
+  it('falha de forma fechada em produção quando supabaseClient não for fornecido', async () => {
+    const prevEnv = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = 'production';
+      const req = createSignedRequest(sampleBody, {
+        nonce: 'nonce-prod-no-db',
+      });
+      const result = await verifyWebhookSignature(req, sampleBody, {
+        secret,
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.reason).toBe('webhook_nonce_storage_error');
+    } finally {
+      process.env.NODE_ENV = prevEnv;
+    }
   });
 
   it('varre e limpa nonces expirados no MemoryNonceCache', () => {

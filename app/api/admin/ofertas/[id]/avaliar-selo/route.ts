@@ -22,7 +22,11 @@ import {
 } from '@/lib/offers/storage/evidence-storage-adapter';
 import { getOffersEvidenceStorage } from '@/lib/offers/storage/storage-factory';
 import { getOffersServiceClient } from '@/lib/offers/service-client';
-import { verifyWebhookSignature } from '@/lib/offers/webhook-auth';
+import {
+  verifyWebhookSignature,
+  type SupabaseClientForWebhookNonce,
+} from '@/lib/offers/webhook-auth';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { readLimitedTextBody } from '@/lib/utils/http-stream';
 import {
@@ -35,32 +39,15 @@ const UUID_V4_REGEX =
 
 const MAX_PAYLOAD_BYTES = 524_288; // 512 KB
 
-export interface SupabaseLikeClient {
-  from: (table: string) => {
-    select: (columns: string) => {
-      eq: (
-        column: string,
-        value: string,
-      ) => {
-        single: () => Promise<{
-          data: Record<string, unknown> | null;
-          error: unknown;
-        }>;
-      };
-    };
-  };
-  rpc: (
-    functionName: string,
-    params: Record<string, unknown>,
-  ) => Promise<{
-    data: unknown;
-    error: { message: string; code?: string } | null;
-  }>;
-}
+/**
+ * Cliente Supabase para a rota: usa o tipo real do Supabase JS SDK.
+ * O cast para SupabaseClientForWebhookNonce é feito apenas no ponto de chamada.
+ */
+export type AvaliarSeloSupabaseClient = SupabaseClient;
 
 export interface AvaliarSeloDependencies {
   storage?: EvidenceStorageAdapter;
-  supabaseClient?: SupabaseLikeClient;
+  supabaseClient?: AvaliarSeloSupabaseClient;
 }
 
 /**
@@ -100,8 +87,58 @@ export async function handleAvaliarSelo(
   // Autenticação dual (Fail-Closed):
   // 1. Webhook HMAC assinado por coletor
   if (request.headers.has('x-gradualinfo-signature')) {
-    const webhookAuth = await verifyWebhookSignature(request, rawBodyText);
+    let serviceClient: AvaliarSeloSupabaseClient | undefined =
+      deps.supabaseClient;
+    if (!serviceClient) {
+      try {
+        serviceClient = getOffersServiceClient();
+      } catch {
+        // Se serviceClient não estiver disponível em runtime, verifyWebhookSignature
+        // validará a assinatura e falhará de forma fechada (503) no consumo do nonce.
+      }
+    }
+
+    const webhookNonceClient: SupabaseClientForWebhookNonce | undefined =
+      serviceClient
+        ? {
+            from: () => ({
+              insert: async (values: {
+                collector_id: string;
+                nonce: string;
+              }) => {
+                const { error } = await serviceClient
+                  .from('offers_ingest_nonces')
+                  .insert(values as Record<string, unknown>);
+                return { error };
+              },
+            }),
+          }
+        : undefined;
+
+    const webhookAuth = await verifyWebhookSignature(request, rawBodyText, {
+      supabaseClient: webhookNonceClient,
+    });
     if (!webhookAuth.valid) {
+      if (webhookAuth.reason === 'webhook_nonce_replay_detected') {
+        return NextResponse.json(
+          {
+            error: 'nonce_already_consumed',
+            message:
+              'Tentativa de repetição detectada: este nonce já foi consumido por este coletor.',
+          },
+          { status: 409 },
+        );
+      }
+      if (webhookAuth.reason === 'webhook_nonce_storage_error') {
+        return NextResponse.json(
+          {
+            error: 'nonce_storage_error',
+            message:
+              'Falha de persistência ao consumir nonce no banco compartilhado.',
+          },
+          { status: 503 },
+        );
+      }
       return NextResponse.json(
         {
           error: webhookAuth.reason,

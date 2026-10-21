@@ -65,6 +65,24 @@ export interface CanonicalEvidencePayload {
  * @returns Representação JSON canônica da string incluindo as aspas delimitadoras.
  */
 function serializeString(str: string): string {
+  for (let index = 0; index < str.length; index += 1) {
+    const codeUnit = str.charCodeAt(index);
+    if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
+      const next = str.charCodeAt(index + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        index += 1;
+        continue;
+      }
+      throw new InvalidEvidenceFormatError(
+        'String contém surrogate UTF-16 isolado, proibido pela RFC 8785.',
+      );
+    }
+    if (codeUnit >= 0xdc00 && codeUnit <= 0xdfff) {
+      throw new InvalidEvidenceFormatError(
+        'String contém surrogate UTF-16 isolado, proibido pela RFC 8785.',
+      );
+    }
+  }
   // ECMAScript JSON.stringify atende rigorosamente à especificação de escape RFC 8785
   return JSON.stringify(str);
 }
@@ -122,6 +140,16 @@ export function canonicalizeJson(value: unknown): string {
   }
 
   if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return '[]';
+    }
+    for (let index = 0; index < value.length; index += 1) {
+      if (!(index in value)) {
+        throw new InvalidEvidenceFormatError(
+          'Arrays esparsos são proibidos na canonização RFC 8785.',
+        );
+      }
+    }
     const serializedItems = value.map((item) => canonicalizeJson(item));
     return `[${serializedItems.join(',')}]`;
   }
