@@ -293,4 +293,60 @@ describe('webhook-auth (HMAC-SHA256 e Anti-Replay)', () => {
     const canReconsumeN1 = cache.consume('n1', 1000, 10);
     expect(canReconsumeN1).toBe(true);
   });
+
+  it('aceita assinatura sem o prefixo v1= (apenas hex direto)', async () => {
+    const ts = Math.floor(Date.now() / 1000);
+    const nonce = 'nonce-hex-direct-123';
+    const rawSig = createHmac('sha256', secret)
+      .update(`v1:${ts}:${nonce}:${sampleBody}`, 'utf8')
+      .digest('hex');
+
+    const req = new Request(
+      'https://gradualinfo.com.br/api/admin/ofertas/123/avaliar-selo',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-gradualinfo-signature': rawSig,
+          'x-gradualinfo-timestamp': String(ts),
+          'x-gradualinfo-nonce': nonce,
+        },
+        body: sampleBody,
+      },
+    );
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nonceCache,
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejeita nonce exatamente no limite de expiração (exp <= now)', async () => {
+    const now = 1_700_000_000;
+    const nonce = 'nonce-at-expiry-boundary';
+
+    const req = createSignedRequest(sampleBody, {
+      timestamp: now,
+      nonce,
+      nonceCache,
+    });
+
+    // Primeira chamada com o nonce no limite exato deve ser aceita
+    const res1 = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nowSeconds: now,
+      nonceCache,
+    });
+    expect(res1.valid).toBe(true);
+
+    // Segunda chamada com o mesmo nonce deve ser rejeitada como replay
+    const res2 = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nowSeconds: now,
+      nonceCache,
+    });
+    expect(res2.valid).toBe(false);
+    expect(res2.reason).toBe('webhook_nonce_replay_detected');
+  });
 });

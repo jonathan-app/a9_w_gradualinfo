@@ -294,4 +294,35 @@ describe('evidence-canonicalizer (RFC 8785 / JCS)', () => {
     const nested = { a: [1, 2], b: [4, 5] };
     expect(canonicalizeJson(nested)).toBe('{"a":[1,2],"b":[4,5]}');
   });
+
+  it('serializa objeto vazio como chaves vazias', () => {
+    expect(canonicalizeJson({})).toBe('{}');
+  });
+
+  it('serializa array vazio como colchetes vazios', () => {
+    expect(canonicalizeJson([])).toBe('[]');
+  });
+
+  it('serializa arrays aninhados com ordem preservada em cada nível', () => {
+    const nested = [
+      [3, 2, 1],
+      [6, 5, 4],
+    ];
+    expect(canonicalizeJson(nested)).toBe('[[3,2,1],[6,5,4]]');
+    const mixed = { a: [2, 1], b: { c: [9, 8] } };
+    expect(canonicalizeJson(mixed)).toBe('{"a":[2,1],"b":{"c":[9,8]}}');
+  });
+
+  it('serializa valores booleanos como true e false', () => {
+    expect(canonicalizeJson({ ativo: true, inativo: false })).toBe(
+      '{"ativo":true,"inativo":false}',
+    );
+    expect(canonicalizeJson([true, false, true])).toBe('[true,false,true]');
+  });
+
+  it('serializa array com null explícito e booleanos mistos', () => {
+    expect(canonicalizeJson([null, true, null, false])).toBe(
+      '[null,true,null,false]',
+    );
+  });
 });
