@@ -45,7 +45,7 @@ describe('readBoundedJson', () => {
   it('lança erro quando stream falha', async () => {
     const request = new Request('http://localhost/api/test', {
       method: 'POST',
-      // @ts-ignore - sobrescreve body para forçar erro
+      // @ts-expect-error - sobrescreve body para forçar erro
       body: new ReadableStream({
         start(controller) {
           controller.error(new Error('stream falhou'));

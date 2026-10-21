@@ -59,7 +59,7 @@ describe('readLimitedTextBody', () => {
   it('retorna erro de leitura quando stream falha', async () => {
     const request = new Request('http://localhost/api/test', {
       method: 'POST',
-      // @ts-ignore - sobrescreve body para forçar erro
+      // @ts-expect-error - sobrescreve body para forçar erro
       body: new ReadableStream({
         start(controller) {
           controller.error(new Error('stream falhou'));
@@ -67,6 +67,7 @@ describe('readLimitedTextBody', () => {
       }),
       duplex: 'half',
     });
+    // @ts-expect-error - testando erro de stream
     const result = await readLimitedTextBody(request, 1024);
     expect(result.ok).toBe(false);
     expect(result.status).toBe(400);
