@@ -2,7 +2,8 @@
  * @fileoverview app/api/ofertas/route.ts — consulta pública de ofertas ativas
  * @module app/api/ofertas/route
  * @description Rota pública para listar ofertas ativas e verificadas consumindo a view
- *   active_offers_view com validação defensiva de parâmetros e sanitização fail-closed de erros (Spec 0021, AC-05 e AC-06).
+ *   active_offers_view com validação defensiva de parâmetros, rate-limit por IP
+ *   e sanitização fail-closed de erros (Spec 0021, AC-05 e AC-06).
  * @dependencies @/lib/supabase/server, @/lib/logger
  */
 
@@ -13,6 +14,25 @@ import { apiErrorResponse } from '@/lib/utils/api-response';
 
 const UUID_V4_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+// Rate-limit público: 60 requisições por minuto por IP (mitiga scraping)
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 60;
+const ipRequestMap = new Map<string, { count: number; windowStart: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = ipRequestMap.get(ip);
+  if (!entry || now - entry.windowStart >= RATE_LIMIT_WINDOW_MS) {
+    ipRequestMap.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return true;
+  }
+  entry.count += 1;
+  return false;
+}
 
 export interface OfertasRouteDependencies {
   supabaseClient?: unknown;
@@ -26,6 +46,25 @@ export async function handleGetOfertas(
   const productId = searchParams.get('product_id');
   const merchantId = searchParams.get('merchant_id');
   const limitParam = searchParams.get('limit');
+
+  // Rate-limit público: 60 req/min por IP (mitiga scraping)
+  // Desativado em ambiente de teste para não prejudicar suítes que fazem
+  // múltiplas requisições em sequência.
+  if (process.env.NODE_ENV !== 'test') {
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = forwarded
+      ? (forwarded.split(',')[0]?.trim() ?? 'unknown')
+      : 'unknown';
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        {
+          error: 'rate_limited',
+          message: 'Muitas requisições. Tente novamente mais tarde.',
+        },
+        { status: 429 },
+      );
+    }
+  }
 
   // Validação defensiva de UUIDv4 nos filtros
   if (productId && !UUID_V4_REGEX.test(productId)) {
