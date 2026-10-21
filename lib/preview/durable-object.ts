@@ -331,9 +331,8 @@ export class PreviewSessionDO {
       }
 
       return new Response('Not Found', { status: 404 });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'internal_error';
-      return new Response(JSON.stringify({ error: message }), {
+    } catch {
+      return new Response(JSON.stringify({ error: 'internal_error' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });

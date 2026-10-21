@@ -142,6 +142,21 @@ export async function recordAdminAudit(
   const ipAddress = sanitizeClientIp(payload.ipAddress);
   const status = payload.status || 'success';
 
+  // A constraint SQL admin_audit_actor_shape exige:
+  // actor_type = 'admin'  => actor_role NOT NULL
+  // actor_type = 'system' => actor_role IS NULL
+  // Garante essa invariante antes de gravar para evitar erro obscuro no banco.
+  // Quando actorRole nao e fornecido para admin, usa 'revisor' (papel mais
+  // restrito conservador) em vez de lançar, mantendo o comportamento de
+  // falha segura para telemetria ja adotado pelo servico.
+  let actorRole = payload.actorRole;
+  if (payload.actorType === 'admin' && !actorRole) {
+    actorRole = 'revisor';
+  }
+  if (payload.actorType === 'system' && actorRole != null) {
+    actorRole = null;
+  }
+
   try {
     const supabase = getAdminServiceClient();
     const { error } = await supabase.from('admin_audit_log').insert({
@@ -149,7 +164,7 @@ export async function recordAdminAudit(
       actor_type: payload.actorType,
       actor_id: payload.actorId,
       actor_email: payload.actorEmail || null,
-      actor_role: payload.actorRole || null,
+      actor_role: actorRole,
       action: payload.action,
       resource_type: payload.resourceType,
       resource_id: payload.resourceId || null,

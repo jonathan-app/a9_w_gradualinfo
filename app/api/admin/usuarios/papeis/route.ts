@@ -10,6 +10,7 @@ import { NextResponse } from 'next/server';
 import { assertAdminApiAuth, type AdminRole } from '@/lib/admin/auth';
 import { assignAdminRole, RoleMutationError } from '@/lib/admin/roles';
 import { env } from '@/lib/env';
+import { apiErrorResponse } from '@/lib/utils/api-response';
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -94,12 +95,10 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(
-      {
-        error: 'role_assignment_failed',
-        message: 'Falha ao processar a atribuicao de papel.',
-      },
-      { status: 500, headers: { 'Cache-Control': 'private, no-store' } },
+    return apiErrorResponse(
+      500,
+      'role_assignment_failed',
+      'Falha ao processar a atribuicao de papel.',
     );
   }
 }

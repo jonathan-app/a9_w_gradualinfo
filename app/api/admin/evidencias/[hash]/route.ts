@@ -14,6 +14,7 @@ import {
   type EvidenceStorageAdapter,
 } from '@/lib/offers/storage/evidence-storage-adapter';
 import { getEvidenceStorage } from '@/lib/offers/storage/memory-adapter';
+import { apiErrorResponse } from '@/lib/utils/api-response';
 
 const HASH_REGEX = /^[a-f0-9]{64}$/;
 
@@ -79,20 +80,16 @@ export async function handleGetEvidencia(
       );
     }
     if (err instanceof EvidenceStorageUnavailableError) {
-      return NextResponse.json(
-        {
-          error: 'storage_unavailable',
-          message: 'Storage de evidências temporariamente indisponível.',
-        },
-        { status: 503 },
+      return apiErrorResponse(
+        503,
+        'storage_unavailable',
+        'Storage de evidências temporariamente indisponível.',
       );
     }
-    return NextResponse.json(
-      {
-        error: 'internal_error',
-        message: 'Erro ao consultar evidência probatória.',
-      },
-      { status: 500 },
+    return apiErrorResponse(
+      500,
+      'internal_error',
+      'Erro ao consultar evidência probatória.',
     );
   }
 }

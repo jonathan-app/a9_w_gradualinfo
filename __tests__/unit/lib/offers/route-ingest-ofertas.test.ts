@@ -13,7 +13,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { handleIngestOfertas } from '@/app/api/ingest/ofertas/route';
+import { handleIngestOfertas, POST } from '@/app/api/ingest/ofertas/route';
 import {
   buildIngestStringToSign,
   computeIngestSignature,
@@ -534,5 +534,31 @@ describe('handleIngestOfertas (POST /api/ingest/ofertas)', () => {
       'Não foi possível concluir a avaliação da oferta no banco de dados.',
     );
     expect(json.code).toBeUndefined();
+  });
+
+  it('não expõe mensagem de exceção interna ou stack trace em erro 500 não tratado no POST', async () => {
+    const brokenReq = {
+      headers: {
+        get: () => {
+          throw new Error(
+            'postgresql://postgres:secret@127.0.0.1:54322/postgres relation "offers" failed\n    at internal (/app/route.ts:10:2)',
+          );
+        },
+      },
+    } as unknown as Request;
+
+    const res = await POST(brokenReq);
+    expect(res.status).toBe(500);
+    expect(res.headers.get('cache-control')).toBe('private, no-store');
+
+    const json = await res.json();
+    expect(json).toEqual({
+      error: 'internal_error',
+      message: 'Erro interno ao processar a ingestão da oferta.',
+    });
+    expect(JSON.stringify(json)).not.toContain('postgresql://');
+    expect(JSON.stringify(json)).not.toContain('offers');
+    expect(JSON.stringify(json)).not.toContain('/app/route.ts');
+    expect(json.details).toBeUndefined();
   });
 });

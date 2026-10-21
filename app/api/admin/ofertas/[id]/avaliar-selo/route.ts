@@ -130,13 +130,10 @@ export async function handleAvaliarSelo(
         );
       }
       if (webhookAuth.reason === 'webhook_nonce_storage_error') {
-        return NextResponse.json(
-          {
-            error: 'nonce_storage_error',
-            message:
-              'Falha de persistência ao consumir nonce no banco compartilhado.',
-          },
-          { status: 503 },
+        return apiErrorResponse(
+          503,
+          'nonce_storage_error',
+          'Falha de persistência ao consumir nonce no banco compartilhado.',
         );
       }
       return NextResponse.json(
@@ -376,21 +373,16 @@ export async function handleAvaliarSelo(
       );
     }
     if (err instanceof EvidenceStorageUnavailableError) {
-      return NextResponse.json(
-        {
-          error: 'storage_unavailable',
-          message:
-            'Falha ao persistir evidência WORM. Operação abortada sem mutação no banco.',
-        },
-        { status: 503 },
+      return apiErrorResponse(
+        503,
+        'storage_unavailable',
+        'Falha ao persistir evidência WORM. Operação abortada sem mutação no banco.',
       );
     }
-    return NextResponse.json(
-      {
-        error: 'storage_error',
-        message: 'Erro inesperado no subsistema de storage WORM.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'storage_error',
+      'Erro inesperado no subsistema de storage WORM.',
     );
   }
 
@@ -426,12 +418,10 @@ export async function handleAvaliarSelo(
     try {
       privilegedClient = getOffersServiceClient();
     } catch {
-      return NextResponse.json(
-        {
-          error: 'service_client_unavailable',
-          message: 'Cliente de serviço Supabase indisponível no runtime.',
-        },
-        { status: 503 },
+      return apiErrorResponse(
+        503,
+        'service_client_unavailable',
+        'Cliente de serviço Supabase indisponível no runtime.',
       );
     }
   }
@@ -460,8 +450,7 @@ export async function handleAvaliarSelo(
     console.error(
       'Falha na transação RPC evaluate_and_set_verified_price (avaliar-selo):',
       {
-        message: rpcError.message,
-        code: rpcError.code,
+        code: rpcError.code ?? 'unknown',
       },
     );
 
@@ -498,5 +487,19 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ): Promise<Response> {
-  return handleAvaliarSelo(request, context);
+  try {
+    return await handleAvaliarSelo(request, context);
+  } catch (err: unknown) {
+    console.error(
+      'Unhandled error in POST /api/admin/ofertas/[id]/avaliar-selo:',
+      {
+        name: err instanceof Error ? err.name : 'UnknownError',
+      },
+    );
+    return apiErrorResponse(
+      500,
+      'internal_error',
+      'Erro interno ao processar a avaliação do selo.',
+    );
+  }
 }

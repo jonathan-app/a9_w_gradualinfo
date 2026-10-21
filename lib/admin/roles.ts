@@ -8,6 +8,7 @@
 import 'server-only';
 
 import type { AdminRole } from './auth';
+import { sanitizeClientIp } from './audit-service';
 import { getAdminServiceClient } from './service-client';
 
 export interface AssignAdminRoleInput {
@@ -38,12 +39,15 @@ export async function assignAdminRole(
   input: AssignAdminRoleInput,
 ): Promise<void> {
   const supabase = getAdminServiceClient();
+  const cleanEmail = input.actorEmail
+    ? input.actorEmail.trim().slice(0, 320) || null
+    : null;
   const { error } = await supabase.rpc('assign_admin_role', {
     p_user_id: input.userId,
     p_role: input.role,
     p_actor_id: input.actorId,
-    p_actor_email: input.actorEmail || null,
-    p_ip_address: input.ipAddress || null,
+    p_actor_email: cleanEmail,
+    p_ip_address: sanitizeClientIp(input.ipAddress),
   });
 
   if (error) {
@@ -73,11 +77,14 @@ export async function revokeAdminRole(
   input: Omit<AssignAdminRoleInput, 'role'>,
 ): Promise<void> {
   const supabase = getAdminServiceClient();
+  const cleanEmail = input.actorEmail
+    ? input.actorEmail.trim().slice(0, 320) || null
+    : null;
   const { error } = await supabase.rpc('revoke_admin_role', {
     p_user_id: input.userId,
     p_actor_id: input.actorId,
-    p_actor_email: input.actorEmail || null,
-    p_ip_address: input.ipAddress || null,
+    p_actor_email: cleanEmail,
+    p_ip_address: sanitizeClientIp(input.ipAddress),
   });
 
   if (error) {

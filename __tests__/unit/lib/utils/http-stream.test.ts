@@ -101,4 +101,30 @@ describe('readLimitedTextBody', () => {
       expect(result.message).toContain('10 bytes');
     }
   });
+
+  it('retorna mensagem sanitizada em read_error quando a stream falha sem vazar erro interno', async () => {
+    const stream = new ReadableStream<Uint8Array>({
+      pull() {
+        throw new Error(
+          'internal socket reset ECONNRESET at /worker/stream.js:99',
+        );
+      },
+    });
+
+    const request = new Request('http://localhost/api/test', {
+      method: 'POST',
+      body: stream,
+      // @ts-expect-error duplex
+      duplex: 'half',
+    });
+
+    const result = await readLimitedTextBody(request, 100);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.status).toBe(400);
+      expect(result.error).toBe('read_error');
+      expect(result.message).toBe('Falha na leitura do corpo da requisição.');
+      expect(result.message).not.toContain('ECONNRESET');
+    }
+  });
 });

@@ -126,4 +126,30 @@ describe('handleGetOfertas (GET /api/ofertas - Spec 0021)', () => {
     expect(JSON.stringify(json)).not.toContain('42P01');
     expect(JSON.stringify(json)).not.toContain('active_offers_view');
   });
+
+  it('captura exceção lançada pelo cliente de banco e retorna 503 sanitizado sem vazar stack ou SQL', async () => {
+    const mockSupabase = {
+      from: () => ({
+        select: () => ({
+          limit: async () => {
+            throw new Error(
+              'connect ECONNREFUSED 127.0.0.1:54321 for table "active_offers_view"',
+            );
+          },
+        }),
+      }),
+    };
+
+    const req = new Request('https://gradualinfo.com.br/api/ofertas');
+    const res = await handleGetOfertas(req, { supabaseClient: mockSupabase });
+    expect(res.status).toBe(503);
+    expect(res.headers.get('cache-control')).toBe('private, no-store');
+    const json = await res.json();
+    expect(json).toEqual({
+      error: 'unavailable',
+      message: 'Serviço de ofertas temporariamente indisponível.',
+    });
+    expect(JSON.stringify(json)).not.toContain('ECONNREFUSED');
+    expect(JSON.stringify(json)).not.toContain('active_offers_view');
+  });
 });

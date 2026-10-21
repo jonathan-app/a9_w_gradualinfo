@@ -267,11 +267,14 @@ describe('PreviewSessionDO', () => {
     expect(res.status).toBe(404);
   });
 
-  it('retorna 500 em erro interno', async () => {
+  it('retorna 500 em erro interno sem expor mensagem da exceção', async () => {
     const state = makeState();
-    state.storage.get.mockRejectedValue(new Error('boom'));
+    state.storage.get.mockRejectedValue(new Error('boom_internal_do_leak'));
     const do_ = new PreviewSessionDO(state as never);
     const res = await do_.fetch(new Request('http://do/session/validate?id=x'));
     expect(res.status).toBe(500);
+    const body = await res.json();
+    expect(body).toEqual({ error: 'internal_error' });
+    expect(JSON.stringify(body)).not.toContain('boom_internal_do_leak');
   });
 });
