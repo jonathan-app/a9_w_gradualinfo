@@ -119,9 +119,16 @@ export class InMemoryPreviewSessionStore implements PreviewSessionStore {
 }
 
 /**
- * Instância singleton global para desenvolvimento/testes locais.
+ * Instância singleton global para desenvolvimento/testes locais, ancorada em
+ * `globalThis` para que todos os chunks do servidor Next (`next start`) compartilhem
+ * o mesmo armazenamento em memória quando o binding do Durable Object não existe.
  */
-const localStoreInstance = new InMemoryPreviewSessionStore();
+const globalPreviewStore = globalThis as typeof globalThis & {
+  __gradualinfoPreviewSessionStore?: InMemoryPreviewSessionStore;
+};
+const localStoreInstance =
+  (globalPreviewStore.__gradualinfoPreviewSessionStore ??=
+    new InMemoryPreviewSessionStore());
 
 export interface DurableObjectNamespaceLike {
   idFromName(name: string): unknown;

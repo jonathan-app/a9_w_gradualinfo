@@ -12,9 +12,44 @@
  * mutações transitórias em `posts` são rastreadas pontualmente em `mutatedPostIds` e
  * restauradas com segurança em `finally` e nos hooks `beforeEach`/`afterEach`/`afterAll`.
  */
-import { test, expect } from '@playwright/test';
+import { test, expect, type BrowserContext } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { setFault } from './support/faults';
 import { createClient } from '@supabase/supabase-js';
+
+/**
+ * Em build de produção (`next start`), `/` nasce pré-renderizada com ISR (`revalidate = 300`).
+ * Os testes de mutação transitória de estado (banco vazio e falha de transporte) injetam o
+ * cookie `__prerender_bypass` do `.next/prerender-manifest.json` apenas no contexto atual,
+ * forçando render fresco sem alterar `revalidate = 300` nem poluir o cache ISR das demais specs.
+ */
+async function bypassIsrCache(context: BrowserContext, baseURL: string) {
+  try {
+    const manifestRaw = await readFile(
+      resolve(process.cwd(), '.next/prerender-manifest.json'),
+      'utf8',
+    );
+    const manifest = JSON.parse(manifestRaw) as {
+      preview?: { previewModeId?: string };
+    };
+    const previewModeId = manifest.preview?.previewModeId;
+    if (!previewModeId) return;
+    await context.addCookies([
+      {
+        name: '__prerender_bypass',
+        value: previewModeId,
+        url: baseURL,
+        httpOnly: true,
+        secure: baseURL.startsWith('https:'),
+        sameSite: 'Lax',
+      },
+    ]);
+  } catch {
+    // Em dev server sem `.next/prerender-manifest.json`, o render já é dinâmico.
+  }
+}
+
 function localAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.CI_LOCAL_SERVICE_ROLE;
@@ -129,7 +164,9 @@ test.describe('home editorial', () => {
     const admin = localAdmin();
     const { data: posts, error } = await admin
       .from('posts')
-      .select('slug,title,excerpt,cover_image_url,editoria,published_at')
+      .select(
+        'slug,title,excerpt,cover_image_url,editoria,author_name,published_at',
+      )
       .eq('status', 'publicado')
       .lte('published_at', new Date().toISOString())
       .order('published_at', { ascending: false })
@@ -138,6 +175,7 @@ test.describe('home editorial', () => {
       throw new Error('Falha ao ler as fixtures editoriais.');
 
     await page.goto('/');
+    const siteOrigin = new URL(page.url()).origin;
     const sections = [
       {
         root: page.getByRole('region', { name: 'Matéria de capa' }),
@@ -165,25 +203,48 @@ test.describe('home editorial', () => {
       },
     ];
     for (const section of sections) {
+      const renderedHrefs = await section.root
+        .locator('article a[href^="/artigos/"]')
+        .evaluateAll((anchors) =>
+          [...new Set(anchors.map((a) => a.getAttribute('href')))].filter(
+            Boolean,
+          ),
+        );
+      expect(renderedHrefs).toEqual(
+        section.posts.map((post) => `/artigos/${post.slug}`),
+      );
       for (const post of section.posts) {
         const link = section.root.locator(`a[href="/artigos/${post.slug}"]`);
         const card = link.locator('xpath=ancestor::article[1]');
         await expect(link).toContainText(post.title);
         await expect(card).toContainText(post.editoria);
+        await expect(card).toContainText(post.author_name);
         if (section.excerpt) await expect(card).toContainText(post.excerpt);
         await expect(
           card.locator(`time[datetime="${post.published_at}"]`),
         ).toBeVisible();
         if (section.cover) {
-          const src = await card.locator('img').getAttribute('src');
-          expect(src).toBeTruthy();
-          expect(new URL(src!, page.url()).href).toBe(post.cover_image_url);
+          const isApprovedOrigin =
+            Boolean(post.cover_image_url) &&
+            new URL(post.cover_image_url!).origin === siteOrigin;
+          if (isApprovedOrigin) {
+            const src = await card.locator('img').getAttribute('src');
+            expect(src).toBeTruthy();
+            expect(new URL(src!, page.url()).href).toBe(post.cover_image_url);
+          } else {
+            await expect(card.locator('[data-cover-fallback]')).toHaveCount(1);
+            await expect(card.locator('img')).toHaveCount(0);
+          }
+        } else {
+          await expect(card.locator('img')).toHaveCount(0);
         }
       }
     }
   });
   test('md-0002/AC-03: lista vazia mostra mensagem própria', async ({
     page,
+    context,
+    baseURL,
   }) => {
     const admin = localAdmin();
     const { data: rows, error } = await admin
@@ -204,6 +265,7 @@ test.describe('home editorial', () => {
           rows.map((row) => row.id),
         );
       if (result.error) throw result.error;
+      await bypassIsrCache(context, baseURL!);
       await page.goto('/');
       // `getByRole` resolve sobre a árvore de acessibilidade (ignorando nós ocultos de streaming
       // marcados com hidden fora de main) e aguarda a visibilidade de forma estrita.
@@ -228,12 +290,15 @@ test.describe('home editorial', () => {
   test('md-0002/AC-03: falha real de transporte mostra erro, não vazio', async ({
     page,
     request,
+    context,
+    baseURL,
   }) => {
     // Injeção de falha de transporte real: o critério é a UI mostrar o estado de erro. Exibir
     // "Nenhum artigo publicado" durante uma falha mentiria ao usuário, que acharia que não
     // existe conteúdo — é por isso que vazio e erro são asserções separadas.
     await setFault(request, 'read');
     try {
+      await bypassIsrCache(context, baseURL!);
       await page.goto('/');
       await expect(
         page.getByRole('heading', { name: 'Algo deu errado' }),

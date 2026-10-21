@@ -1,8 +1,8 @@
 # 0034. Auditoria de dependências auxiliares
 
-**Date**: 2026-10-21  
-**Status**: Proposed  
-**Decision source**: Recomendações aprovadas pelo proprietário no chat em 2026-10-21, aguardando confirmação desta spec completa
+**Date**: 2026-10-21
+**Status**: Accepted
+**Decision source**: Aprovada formalmente pelo proprietário no chat em 2026-10-21 após revisão independente somente leitura (`/ponytail-review`), mantendo a execução isolada das correções da CI
 
 ## Summary
 

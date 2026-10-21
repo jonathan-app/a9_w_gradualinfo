@@ -75,12 +75,24 @@ O painel administrativo ja utiliza icones SVG nativos sem depender de react-icon
 - [ ] Document it: `/document pr`
 - [ ] Sync it: `/sync`
 
-### Lote R3: Auditoria de Dependencias de Desenvolvimento
+### Lote R3: Auditoria de Dependencias de Desenvolvimento (in-progress)
 
 Auditoria em pacotes auxiliares do `package.json`, incluindo Storybook, Spotlight, Concurrently, analise de bundle e `ponytail`, para retirar o que nao tem consumidor real sem prejudicar o fluxo local.
 **Done when:** cada pacote investigado possui consumidor comprovado ou e removido com lockfile reconciliado, e os comandos de build, teste e skills continuam operando.
 
-- [ ] Design it (spec): `/architect auditoria de dependencias auxiliares`
+- [x] Design it (spec): `/architect auditoria de dependencias auxiliares`
+      Spec 0034 Accepted · [0034](../specs/2026-10-21-1128-0034-auditoria-dependencias-auxiliares.md)
+- [ ] Build it: `/develop auditoria de dependencias auxiliares`
+  - [ ] Produzir inventario datado de todas as dependencias diretas e seus consumidores (dependency-clean/AC-01, AC-06)
+  - [ ] Remover `ponytail`, `@chromatic-com/storybook`, `@spotlightjs/spotlight`, `concurrently` e o script `dev:spotlight`, reconciliando `pnpm-lock.yaml` sem mudancas colaterais (dependency-clean/AC-02, AC-08)
+  - [ ] Validar preservacao da skill Ponytail, `pnpm build-storybook` e `pnpm bundle:analyze` (dependency-clean/AC-03, AC-04, AC-05)
+  - [ ] Validar instalacao com lockfile imutavel e `pnpm check:all` sem alteracoes fora do perimetro (dependency-clean/AC-07, AC-08)
+- [ ] Verify it: `/check verify auditoria de dependencias auxiliares`
+- [ ] Review it: `/check review auditoria de dependencias auxiliares`
+- [ ] Audit security: `/security auditoria de dependencias auxiliares`
+- [ ] Test it: `/test auditoria de dependencias auxiliares`
+- [ ] Document it: `/document pr`
+- [ ] Sync it: `/sync`
 
 ---
 

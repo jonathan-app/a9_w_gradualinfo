@@ -17,6 +17,7 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { randomUUID } from 'node:crypto';
+import { createServerClient } from '@supabase/ssr';
 import { env } from '@/lib/env';
 import { SITE_ORIGIN } from '@/lib/site-config';
 import { audit } from '@/lib/audit';
@@ -26,6 +27,7 @@ import {
   issuePreviewGrant,
   PREVIEW_COOKIE,
   PREVIEW_TTL,
+  UUID_PATTERN,
 } from '@/lib/preview/session';
 import { getPreviewSessionStore } from '@/lib/preview/durable-object';
 
@@ -125,7 +127,79 @@ export async function POST(request: NextRequest) {
   const now = Date.now();
   const issuedAt = Math.floor(now / 1000);
   const expiresAt = issuedAt + PREVIEW_TTL;
-  const sessionId = randomUUID();
+  let sessionId: string = randomUUID();
+  let subjectId: string = env.previewUserId || sessionId;
+  const supabaseCookies: Array<{
+    name: string;
+    value: string;
+    options?: Record<string, unknown>;
+  }> = [];
+
+  // Quando o Sanity não está ativo e as credenciais legadas do Supabase existem,
+  // autentica também a sessão Supabase para que a RLS (`posts_select_preview`)
+  // autorize a leitura de rascunhos sem service_role e o logout possa revogar no GoTrue.
+  if (
+    !(env.sanity?.projectId && env.sanity?.dataset) &&
+    Boolean(env.previewEmail && env.previewPassword && env.previewUserId)
+  ) {
+    const supabase = createServerClient(
+      env.supabase.url,
+      env.supabase.anonKey,
+      {
+        cookies: {
+          getAll: () => supabaseCookies,
+          setAll: (values) => {
+            for (const value of values) {
+              const previous = supabaseCookies.findIndex(
+                (cookie) => cookie.name === value.name,
+              );
+              if (previous >= 0) supabaseCookies.splice(previous, 1);
+              supabaseCookies.push(value);
+            }
+          },
+        },
+      },
+    );
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: env.previewEmail,
+        password: env.previewPassword,
+      });
+      if (error || !data.user) {
+        audit({ type: 'preview_login', ok: false });
+        return failure('Falha de autenticação.', 503);
+      }
+      const { data: verified, error: userError } =
+        await supabase.auth.getUser();
+      const user = verified.user;
+      if (
+        userError ||
+        !user ||
+        user.id !== env.previewUserId ||
+        ![true, 'true'].includes(user.app_metadata?.preview)
+      ) {
+        audit({ type: 'preview_login', ok: false });
+        return failure('Identidade não autorizada.', 403);
+      }
+      const { data: claims, error: claimsError } =
+        await supabase.auth.getClaims();
+      const claimedSessionId = claims?.claims?.session_id;
+      if (
+        claimsError ||
+        typeof claimedSessionId !== 'string' ||
+        !UUID_PATTERN.test(claimedSessionId) ||
+        claims?.claims?.sub !== user.id
+      ) {
+        audit({ type: 'preview_login', ok: false });
+        return failure('Sessão inválida.', 403);
+      }
+      sessionId = claimedSessionId;
+      subjectId = user.id;
+    } catch {
+      audit({ type: 'preview_login', ok: false });
+      return failure('Autenticação indisponível.', 503);
+    }
+  }
 
   // Criação da sessão antes de emitir cookie: persistência no Durable Object com consistência forte
   try {
@@ -142,7 +216,7 @@ export async function POST(request: NextRequest) {
 
   // Emissão do cookie assinado HMAC-SHA256
   const cookieValue = issuePreviewGrant(
-    env.previewUserId || sessionId,
+    subjectId,
     sessionId,
     env.previewSigningKey,
     now,
@@ -153,6 +227,12 @@ export async function POST(request: NextRequest) {
     303,
   );
   response.headers.set('Cache-Control', 'private, no-store');
+  for (const { name, value, options } of supabaseCookies) {
+    response.cookies.set(name, value, {
+      ...options,
+      ...previewCookieOptions,
+    });
+  }
   response.cookies.set(PREVIEW_COOKIE, cookieValue, {
     ...previewCookieOptions,
     maxAge: PREVIEW_TTL,
