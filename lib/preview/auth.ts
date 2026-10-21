@@ -119,32 +119,10 @@ export async function evaluateArticleAccess(params: {
   };
 }
 
-/**
- * Verificação legado do Supabase Auth (mantida para compatibilidade transitória).
- *
- * @param supabase - Cliente Supabase.
- * @param previewCookieValue - Valor do cookie.
- * @returns boolean indicando se a sessão é válida no Supabase Auth.
- * @throws PreviewStoreUnavailableError quando o DO não consegue validar o grant atual.
- */
-export async function verifyPreviewSession(
+async function verifySupabasePreviewGrant(
   supabase: SupabaseClient,
-  previewCookieValue?: string,
+  grant: ReturnType<typeof readPreviewGrant>,
 ): Promise<boolean> {
-  // Se houver grant assinado com a nova chave e DO ativo, avalia pelo DO
-  const doResult = await verifyDurableObjectPreviewSession(previewCookieValue);
-  if (doResult.status === 503) {
-    throw new PreviewStoreUnavailableError();
-  }
-  if (doResult.authorized) {
-    return true;
-  }
-
-  // Um grant do contrato atual não pode recuperar uma sessão revogada pelo legado.
-  if (readPreviewGrant(previewCookieValue, env.previewSigningKey)) return false;
-
-  if (!isPreviewConfigured()) return false;
-  const grant = readPreviewGrant(previewCookieValue, env.previewToken);
   if (!grant || grant.sub !== env.previewUserId) return false;
   try {
     const {
@@ -168,6 +146,38 @@ export async function verifyPreviewSession(
   } catch {
     return false;
   }
+}
+
+/**
+ * Verificação legado do Supabase Auth (mantida para compatibilidade transitória).
+ *
+ * @param supabase - Cliente Supabase.
+ * @param previewCookieValue - Valor do cookie.
+ * @returns boolean indicando se a sessão é válida no Supabase Auth.
+ * @throws PreviewStoreUnavailableError quando o DO não consegue validar o grant atual.
+ */
+export async function verifyPreviewSession(
+  supabase: SupabaseClient,
+  previewCookieValue?: string,
+): Promise<boolean> {
+  // Se houver grant assinado com a nova chave e DO ativo, avalia pelo DO
+  const doResult = await verifyDurableObjectPreviewSession(previewCookieValue);
+  if (doResult.status === 503) {
+    throw new PreviewStoreUnavailableError();
+  }
+  if (doResult.authorized) {
+    // DO é a fonte da verdade para sessões ativas; não cair no caminho legado
+    return true;
+  }
+
+  // Um grant do contrato atual não pode recuperar uma sessão revogada pelo legado.
+  if (readPreviewGrant(previewCookieValue, env.previewSigningKey)) return false;
+
+  if (!isPreviewConfigured()) return false;
+  return verifySupabasePreviewGrant(
+    supabase,
+    readPreviewGrant(previewCookieValue, env.previewToken),
+  );
 }
 
 /**

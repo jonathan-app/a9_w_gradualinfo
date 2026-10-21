@@ -1,10 +1,11 @@
 /**
  * lib/utils/format.ts — formatação de dado para exibição
  * @fileoverview Funções puras de formatação para exibição.
- *
- * Funções puras, sem React e sem `process.env` lido dentro: recebem o locale
- * por parâmetro e devolvem string. Isso as torna testáveis sem mock e
- * reutilizáveis em Server Component, Route Handler e Client Component.
+ * @module lib/utils/format
+ * @description Funções puras, sem React e sem `process.env` lido dentro: recebem
+ *   o locale por parâmetro e devolvem string. Isso as torna testáveis sem mock
+ *   e reutilizáveis em Server Component, Route Handler e Client Component.
+ * @dependencies nenhuma (módulo TypeScript puro).
  */
 
 /** Locale padrão do produto — evita repetir 'pt-BR' em cada assinatura opcional. */

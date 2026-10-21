@@ -9,6 +9,7 @@
 import { NextResponse } from 'next/server';
 import { createPublicClient } from '@/lib/supabase/server';
 import { logger } from '@/lib/logger';
+import { apiErrorResponse } from '@/lib/utils/api-response';
 
 const UUID_V4_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -107,19 +108,32 @@ export async function handleGetOfertas(
     query = query.eq('merchant_id', merchantId);
   }
 
-  const { data, error } = await query;
+  let data: unknown[] | null;
+  let error: { code?: string } | null;
+  try {
+    const result = await query;
+    data = result.data;
+    error = result.error;
+  } catch {
+    logger.info('api/ofertas', {
+      event: 'query_exception',
+    });
+    return apiErrorResponse(
+      503,
+      'unavailable',
+      'Serviço de ofertas temporariamente indisponível.',
+    );
+  }
 
   if (error) {
     logger.info('api/ofertas', {
       event: 'query_error',
       code: error.code,
     });
-    return NextResponse.json(
-      {
-        error: 'unavailable',
-        message: 'Serviço de ofertas temporariamente indisponível.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'unavailable',
+      'Serviço de ofertas temporariamente indisponível.',
     );
   }
 

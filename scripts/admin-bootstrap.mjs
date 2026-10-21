@@ -70,15 +70,14 @@ export async function runAdminBootstrap(args = argv.slice(2)) {
     return { ok: true, dryRun: true };
   }
 
-  // 2. Insere ou atualiza papel para 'admin' de forma idempotente
-  const { error: upsertError } = await supabase.from('admin_user_roles').upsert(
-    {
-      user_id: rootAdminId,
-      role: 'admin',
-      assigned_by: rootAdminId,
-    },
-    { onConflict: 'user_id' },
-  );
+  // 2. Insere ou atualiza papel para 'admin' de forma idempotente via RPC transacional (com auditoria WORM)
+  const { error: upsertError } = await supabase.rpc('assign_admin_role', {
+    p_user_id: rootAdminId,
+    p_role: 'admin',
+    p_actor_id: rootAdminId,
+    p_actor_email: userData.user.email || null,
+    p_ip_address: null,
+  });
 
   if (upsertError) {
     stdout.write(

@@ -1,27 +1,22 @@
+/**
+ * components/ui/button.tsx — o botão do design system
+ * @fileoverview Botão do design system.
+ * @module components/ui/button
+ * @description Por que `cva` e não uma condicional de className: as variantes
+ *   ficam declaradas uma vez, em um único lugar, e o TypeScript deriva o tipo
+ *   de `variant` e `size` delas. Escrever `<Button variant="x">` errado vira
+ *   erro de compilação, não um botão cinza silencioso. Por que `asChild`:
+ *   quando está ligado, o componente não renderiza um <button>: ele entrega as
+ *   classes e os props para o filho (geralmente uma <a>). Assim o link
+ *   continua sendo link — e é isso que o teclado, o leitor de tela e o "abrir
+ *   em nova aba" esperam.
+ * @dependencies @radix-ui/react-slot (renderização com `asChild`),
+ *   class-variance-authority (variantes), lib/utils/cn (merge de className).
+ */
 import type * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils/cn';
-
-/**
- * components/ui/button.tsx — o botão do design system
- *
- * Por que `cva` e não uma condicional de className
- * As variantes ficam declaradas uma vez, em um único lugar, e o TypeScript
- * deriva o tipo de `variant` e `size` delas. Escrever `<Button variant="x">`
- * errado vira erro de compilação, não um botão cinza silencioso.
- *
- * Por que `asChild`
- * Quando `asChild` está ligado, o componente não renderiza um <button>: ele
- * entrega as classes e os props para o filho (geralmente uma <a>). Assim o
- * link continua sendo link — e é isso que o teclado, o leitor de tela e o
- * "abrir em nova aba" esperam.
- *
- * @fileoverview Botão do design system.
- * @module components/ui/button
- * @dependencies @radix-ui/react-slot (renderização com `asChild`),
- *   class-variance-authority (variantes), lib/utils/cn (merge de className).
- */
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4',
   {

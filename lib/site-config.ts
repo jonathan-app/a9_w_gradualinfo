@@ -1,12 +1,13 @@
 /**
  * lib/site-config.ts
  * @fileoverview Centraliza URL pública, identidade da marca e verificação do Google.
- *
- * Normaliza a URL pública do site e centraliza os valores institucionais e a
- * verificação do Google nos metadados e nos dados estruturados. Toda URL
- * absoluta sai daqui: concatenar env solto espalha o default errado por arquivo.
+ * @module lib/site-config
+ * @description Normaliza a URL pública do site e centraliza os valores
+ *   institucionais e a verificação do Google nos metadados e nos dados
+ *   estruturados. Toda URL absoluta sai daqui: concatenar env solto espalha o
+ *   default errado por arquivo.
+ * @dependencies @/lib/env.
  */
-
 import { env } from '@/lib/env';
 
 // Tira as barras do fim para não duplicar "/" ao concatenar caminhos.

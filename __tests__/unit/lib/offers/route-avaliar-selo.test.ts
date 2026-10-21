@@ -7,8 +7,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { handleAvaliarSelo } from '@/app/api/admin/ofertas/[id]/avaliar-selo/route';
-import { createClient } from '@/lib/supabase/server';
+import {
+  handleAvaliarSelo,
+  POST,
+} from '@/app/api/admin/ofertas/[id]/avaliar-selo/route';
+import * as supabaseServer from '@/lib/supabase/server';
 import {
   MemoryEvidenceStorageAdapter,
   resetEvidenceStorage,
@@ -18,20 +21,6 @@ import { resetGlobalNonceCache } from '@/lib/offers/webhook-auth';
 // Mock de assertAdminApiAuth
 vi.mock('@/lib/admin/auth', () => ({
   assertAdminApiAuth: vi.fn(),
-}));
-
-// Mock de createClient para evitar cookies() fora do escopo Next em testes
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() => ({
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          single: async () => ({ data: null, error: null }),
-        }),
-      }),
-    }),
-    rpc: async () => ({ data: null, error: null }),
-  })),
 }));
 
 import { assertAdminApiAuth } from '@/lib/admin/auth';
@@ -47,6 +36,10 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     resetGlobalNonceCache();
     process.env.OFFERS_WEBHOOK_SECRET = webhookSecret;
     storage = new MemoryEvidenceStorageAdapter();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   const validBody = {
@@ -289,7 +282,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('rejeita com 400 se o campo advertised_sku estiver em branco', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const invalidSkuBody = { ...validBody, advertised_sku: '   ' };
@@ -308,7 +301,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('rejeita com 503 e NÃO executa a RPC se o storage WORM estiver indisponível (Fail-Closed)', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     storage.setSimulateUnavailable(true);
@@ -331,7 +324,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('executa com sucesso via autenticação admin AAL2 e invoca a RPC com os 12 parâmetros posicionais', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const mockDb = mockSupabase();
@@ -400,7 +393,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('responde de forma idempotente sem reinvocar a RPC se a evidência já foi gravada e o selo estiver ativo e vigente', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValue({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const activeOfferData = {
@@ -445,7 +438,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('retorna 422 Unprocessable Entity se a RPC falhar com erro de negócio ou restrição SQL', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const mockDb = mockSupabase(sampleOfferData, null, {
@@ -469,7 +462,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('retorna 422 se o lojista não possuir domínio válido, sem persistir evidência WORM nem chamar RPC', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const offerWithoutDomain = {
@@ -496,7 +489,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('mascara mensagem de erro de RPC que vaza detalhes internos de SQL', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const mockDb = mockSupabase(sampleOfferData, null, {
@@ -525,7 +518,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('avalia com ação de renovacao (action: renovacao)', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const renovacaoBody = { ...validBody, action: 'renovacao' };
@@ -545,12 +538,12 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('retorna 503 service_client_unavailable quando o cliente de serviço não está disponível', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     // Mock createClient para retornar a oferta (prossiga até a RPC),
     // depois getOffersServiceClient() lança por falta de SUPABASE_SERVICE_ROLE_KEY.
-    vi.mocked(createClient).mockImplementationOnce(() => ({
+    vi.spyOn(supabaseServer, 'createClient').mockImplementationOnce(() => ({
       from: () => ({
         select: () => ({
           eq: () => ({
@@ -578,7 +571,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('aceita advertised_ean nulo e não quebra a canonicalização', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const bodySemEan = { ...validBody, advertised_ean: null };
@@ -598,7 +591,7 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
   it('usa data atual quando captured_at está vazio ou ausente', async () => {
     vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
       ok: true,
-      user: { id: 'admin-123' } as any,
+      user: { id: 'admin-123', role: 'admin' } as any,
     });
 
     const bodySemCapturedAt = { ...validBody, captured_at: '' };
@@ -615,5 +608,29 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     expect(json.approved).toBe(true);
     // A evidência foi persistida com hash gerado a partir da data atual
     expect(json.evidence_hash).toHaveLength(64);
+  });
+
+  it('captura exceção não tratada em POST e retorna 500 sanitizado sem vazar detalhes internos', async () => {
+    const req = createAdminRequest(validBody);
+    const brokenContext = {
+      params: Promise.reject(
+        new Error(
+          'TypeError: falha interna em relation "offers" com token sb_secret_12345',
+        ),
+      ),
+    };
+
+    const res = await POST(req, brokenContext);
+    expect(res.status).toBe(500);
+    expect(res.headers.get('cache-control')).toBe('private, no-store');
+
+    const json = await res.json();
+    expect(json).toEqual({
+      error: 'internal_error',
+      message: 'Erro interno ao processar a avaliação do selo.',
+    });
+    expect(JSON.stringify(json)).not.toContain('sb_secret_');
+    expect(JSON.stringify(json)).not.toContain('relation');
+    expect(json.details).toBeUndefined();
   });
 });

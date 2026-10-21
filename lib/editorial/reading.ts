@@ -1,8 +1,11 @@
 /**
- * @fileoverview Mecânica editorial sem dependências de navegador.
+ * lib/editorial/reading.ts — mecânica editorial sem dependências de navegador
+ * @fileoverview Gera âncoras únicas de sumário e estimativa de tempo de leitura.
  * @module lib/editorial/reading
- * @description Gera âncoras únicas e estimativa de leitura.
- * @dependencies Tipo Post, slugify.
+ * @description Funciona sobre a árvore Markdown já parseada: extrai títulos para o
+ *   sumário com âncoras estáveis (sem repetir slugs), calcula minutos de leitura
+ *   ignorando links e monta artigos relacionados por editoria.
+ * @dependencies @/lib/services/posts (tipo Post), @/lib/utils/format (slugify).
  */
 import type { Post } from '@/lib/services/posts';
 import { slugify } from '@/lib/utils/format';

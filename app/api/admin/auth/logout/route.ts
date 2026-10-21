@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       actorType: 'admin',
       actorId: userData.user.id,
       actorEmail: userData.user.email,
-      actorRole: null,
+      actorRole: 'revisor',
       action: 'auth.logout',
       resourceType: 'auth',
       ipAddress: request.headers.get('cf-connecting-ip'),

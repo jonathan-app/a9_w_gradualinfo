@@ -78,15 +78,12 @@ export async function readLimitedTextBody(
         chunks.push(value);
       }
     }
-  } catch (err: unknown) {
+  } catch {
     return {
       ok: false,
       status: 400,
       error: 'read_error',
-      message:
-        err instanceof Error
-          ? err.message
-          : 'Falha na leitura do corpo da requisição.',
+      message: 'Falha na leitura do corpo da requisição.',
     };
   }
 

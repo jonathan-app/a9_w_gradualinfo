@@ -1,11 +1,9 @@
 /**
  * components/layout/site-footer.tsx — rodapé
- *
- * Server Component puro. Um ano corrente fixo no servidor é o suficiente: o
- * rodapé não precisa re-renderizar a cada virada de meia-noite.
- *
  * @fileoverview Rodapé do site.
  * @module components/layout/site-footer
+ * @description Server Component puro. Um ano corrente fixo no servidor é o
+ *   suficiente: o rodapé não precisa re-renderizar a cada virada de meia-noite.
  * @dependencies nenhum além do React (Server Component puro).
  */
 /**

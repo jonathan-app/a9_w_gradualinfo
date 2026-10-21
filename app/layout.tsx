@@ -1,3 +1,19 @@
+/**
+ * app/layout.tsx — o Invólucro (root layout)
+ * @fileoverview Root layout: o invólucro único de toda página do App Router.
+ * @module app/layout
+ * @description Server Component por padrão. Renderizado UMA vez no servidor e
+ *   o resultado é reenviado ao browser; o que for interativo precisa virar
+ *   Client Component explicitamente com 'use client'. Fontes:
+ *   `app/globals.css` aponta `--font-sans`/`--font-mono` para
+ *   `--font-geist-sans`/`--font-geist-mono`, mas nada no projeto define essas
+ *   variáveis (não há `next/font`, `@font-face` nem import de Google Fonts),
+ *   então vale o fallback `ui-sans-serif, system-ui` / `ui-monospace` — sem
+ *   requisição externa e sem layout shift, ao preço de não ter fonte própria.
+ * @dependencies ThemeProvider, SiteHeader, SiteFooter, GoogleAnalytics,
+ *   GoogleTagManager, lib/env (siteUrl), lib/site-config (verificação do
+ *   Google), app/globals.css (tokens, tema e fonte).
+ */
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/shared/theme-provider';
 import { GoogleAnalytics } from '@/components/shared/google-analytics';
@@ -11,26 +27,6 @@ import {
   SITE_NAME,
 } from '@/lib/site-config';
 import './globals.css';
-
-/**
- * app/layout.tsx — o Invólucro (root layout)
- *
- * Server Component por padrão. Ele é renderizado UMA vez no servidor e o
- * resultado é reenviado ao browser; o que for interativo precisa virar Client
- * Component explicitamente com 'use client'.
- *
- * Fontes: `app/globals.css` aponta `--font-sans`/`--font-mono` para
- * `--font-geist-sans`/`--font-geist-mono`, mas nada no projeto define essas
- * variáveis (não há `next/font`, `@font-face` nem import de Google Fonts), então
- * na prática vale o fallback `ui-sans-serif, system-ui` / `ui-monospace` — sem
- * requisição externa e sem layout shift, ao preço de não ter fonte própria.
- *
- * @fileoverview Root layout: o invólucro único de toda página do App Router.
- * @module app/layout
- * @dependencies ThemeProvider, SiteHeader, SiteFooter, GoogleAnalytics,
- *   GoogleTagManager, lib/env (siteUrl), lib/site-config (verificação do
- *   Google), app/globals.css (tokens, tema e fonte).
- */
 /**
  * Metadados base do site, herdados por todas as rotas.
  *

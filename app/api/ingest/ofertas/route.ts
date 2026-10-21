@@ -101,13 +101,10 @@ export async function handleIngestOfertas(
 
   const secret = deps.secret ?? process.env.OFFERS_INGEST_SECRET;
   if (!secret || secret.trim().length === 0) {
-    return NextResponse.json(
-      {
-        error: 'secret_missing',
-        message:
-          'Segredo de autenticação de coletores não configurado no servidor.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'secret_missing',
+      'Segredo de autenticação de coletores não configurado no servidor.',
     );
   }
 
@@ -152,12 +149,10 @@ export async function handleIngestOfertas(
       deps.supabaseClient ||
       (getOffersServiceClient() as unknown as SupabaseLikeClient);
   } catch {
-    return NextResponse.json(
-      {
-        error: 'service_client_unavailable',
-        message: 'Cliente de serviço Supabase indisponível no runtime.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'service_client_unavailable',
+      'Cliente de serviço Supabase indisponível no runtime.',
     );
   }
 
@@ -186,13 +181,10 @@ export async function handleIngestOfertas(
       );
     }
 
-    return NextResponse.json(
-      {
-        error: 'nonce_storage_error',
-        message:
-          'Falha de persistência ao consumir nonce no banco compartilhado.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'nonce_storage_error',
+      'Falha de persistência ao consumir nonce no banco compartilhado.',
     );
   }
 
@@ -423,21 +415,16 @@ export async function handleIngestOfertas(
       );
     }
     if (err instanceof EvidenceStorageUnavailableError) {
-      return NextResponse.json(
-        {
-          error: 'storage_unavailable',
-          message:
-            'Falha ao persistir evidência WORM. Operação abortada sem mutação no banco.',
-        },
-        { status: 503 },
+      return apiErrorResponse(
+        503,
+        'storage_unavailable',
+        'Falha ao persistir evidência WORM. Operação abortada sem mutação no banco.',
       );
     }
-    return NextResponse.json(
-      {
-        error: 'storage_error',
-        message: 'Erro no subsistema de storage WORM.',
-      },
-      { status: 503 },
+    return apiErrorResponse(
+      503,
+      'storage_error',
+      'Erro no subsistema de storage WORM.',
     );
   }
 
@@ -480,8 +467,7 @@ export async function handleIngestOfertas(
     }
 
     console.error('Falha na transação RPC evaluate_and_set_verified_price:', {
-      message: rpcError.message,
-      code: rpcError.code,
+      code: rpcError.code ?? 'unknown',
     });
 
     return apiErrorResponse(
@@ -526,13 +512,13 @@ export async function POST(request: Request): Promise<Response> {
   try {
     return await handleIngestOfertas(request);
   } catch (err: unknown) {
-    console.error('Unhandled error in POST /api/ingest/ofertas:', err);
-    return NextResponse.json(
-      {
-        error: 'internal_error',
-        message: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 },
+    console.error('Unhandled error in POST /api/ingest/ofertas:', {
+      name: err instanceof Error ? err.name : 'UnknownError',
+    });
+    return apiErrorResponse(
+      500,
+      'internal_error',
+      'Erro interno ao processar a ingestão da oferta.',
     );
   }
 }

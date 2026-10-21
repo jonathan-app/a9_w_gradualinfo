@@ -449,5 +449,114 @@ describe('Spec 0032 — RBAC e Trilha de Auditoria Duravel', () => {
         p_ip_address: null,
       });
     });
+
+    it('sanitiza IP acima de 45 caracteres antes de chamar a RPC transacional', async () => {
+      mockSupabaseRpc.mockResolvedValueOnce({ data: null, error: null });
+
+      const request = new Request(
+        'https://gradualinfo.com.br/api/admin/usuarios/papeis',
+        {
+          method: 'POST',
+          headers: {
+            origin: 'https://gradualinfo.com.br',
+            'content-type': 'application/json',
+            'cf-connecting-ip':
+              '  2001:0db8:85a3:0000:0000:8a2e:0370:7334:extra-long-ip-suffix  ',
+          },
+          body: JSON.stringify({
+            userId: DELEGATE_ID,
+            role: 'revisor',
+          }),
+        },
+      );
+
+      const authSpy = vi.spyOn(
+        await import('@/lib/admin/auth'),
+        'assertAdminApiAuth',
+      );
+      authSpy.mockResolvedValueOnce({
+        ok: true,
+        user: { id: ROOT_ADMIN_ID, email: '  admin@gradualinfo.dev  ' } as any,
+        role: 'admin',
+      });
+
+      const response = await assignRoleRoute(request);
+      expect(response.status).toBe(200);
+
+      const rpcArg = mockSupabaseRpc.mock.calls[0]?.[1];
+      expect(rpcArg.p_actor_email).toBe('admin@gradualinfo.dev');
+      expect(rpcArg.p_ip_address.length).toBeLessThanOrEqual(45);
+    });
+
+    it('retorna 404 user_not_found quando assign_admin_role rejeita usuario inexistente (P0002)', async () => {
+      mockSupabaseRpc.mockResolvedValueOnce({
+        data: null,
+        error: { code: 'P0002', message: 'admin_user_not_found' },
+      });
+
+      const request = new Request(
+        'https://gradualinfo.com.br/api/admin/usuarios/papeis',
+        {
+          method: 'POST',
+          headers: {
+            origin: 'https://gradualinfo.com.br',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: DELEGATE_ID,
+            role: 'editor',
+          }),
+        },
+      );
+
+      const authSpy = vi.spyOn(
+        await import('@/lib/admin/auth'),
+        'assertAdminApiAuth',
+      );
+      authSpy.mockResolvedValueOnce({
+        ok: true,
+        user: { id: ROOT_ADMIN_ID, email: 'admin@gradualinfo.dev' } as any,
+        role: 'admin',
+      });
+
+      const response = await assignRoleRoute(request);
+      expect(response.status).toBe(404);
+      const json = await response.json();
+      expect(json.error).toBe('user_not_found');
+    });
+
+    it('retorna 404 role_not_found quando revoke_admin_role rejeita papel inexistente (P0002)', async () => {
+      mockSupabaseRpc.mockResolvedValueOnce({
+        data: null,
+        error: { code: 'P0002', message: 'admin_role_not_found' },
+      });
+
+      const request = new Request(
+        `https://gradualinfo.com.br/api/admin/usuarios/papeis/${DELEGATE_ID}`,
+        {
+          method: 'DELETE',
+          headers: {
+            origin: 'https://gradualinfo.com.br',
+          },
+        },
+      );
+
+      const authSpy = vi.spyOn(
+        await import('@/lib/admin/auth'),
+        'assertAdminApiAuth',
+      );
+      authSpy.mockResolvedValueOnce({
+        ok: true,
+        user: { id: ROOT_ADMIN_ID, email: 'admin@gradualinfo.dev' } as any,
+        role: 'admin',
+      });
+
+      const response = await revokeRoleRoute(request, {
+        params: Promise.resolve({ userId: DELEGATE_ID }),
+      });
+      expect(response.status).toBe(404);
+      const json = await response.json();
+      expect(json.error).toBe('role_not_found');
+    });
   });
 });

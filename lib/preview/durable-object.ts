@@ -119,9 +119,16 @@ export class InMemoryPreviewSessionStore implements PreviewSessionStore {
 }
 
 /**
- * Instância singleton global para desenvolvimento/testes locais.
+ * Instância singleton global para desenvolvimento/testes locais, ancorada em
+ * `globalThis` para que todos os chunks do servidor Next (`next start`) compartilhem
+ * o mesmo armazenamento em memória quando o binding do Durable Object não existe.
  */
-const localStoreInstance = new InMemoryPreviewSessionStore();
+const globalPreviewStore = globalThis as typeof globalThis & {
+  __gradualinfoPreviewSessionStore?: InMemoryPreviewSessionStore;
+};
+const localStoreInstance =
+  (globalPreviewStore.__gradualinfoPreviewSessionStore ??=
+    new InMemoryPreviewSessionStore());
 
 export interface DurableObjectNamespaceLike {
   idFromName(name: string): unknown;
@@ -331,9 +338,8 @@ export class PreviewSessionDO {
       }
 
       return new Response('Not Found', { status: 404 });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'internal_error';
-      return new Response(JSON.stringify({ error: message }), {
+    } catch {
+      return new Response(JSON.stringify({ error: 'internal_error' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
