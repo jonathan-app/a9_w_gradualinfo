@@ -113,14 +113,26 @@ export interface WebhookAuthResult {
     | 'invalid_timestamp_format'
     | 'webhook_timestamp_out_of_window'
     | 'webhook_nonce_replay_detected'
+    | 'webhook_nonce_storage_error'
     | 'invalid_webhook_signature'
     | 'webhook_secret_missing';
   actorId?: string;
 }
 
+export interface SupabaseClientForWebhookNonce {
+  from: (table: string) => {
+    insert: (values: {
+      collector_id: string;
+      nonce: string;
+    }) => Promise<{ error: { code?: string; message?: string } | null }>;
+  };
+}
+
 export interface VerifyWebhookOptions {
   secret?: string;
   nonceCache?: MemoryNonceCache;
+  supabaseClient?: SupabaseClientForWebhookNonce;
+  collectorId?: string;
   nowSeconds?: number;
   maxClockSkewSeconds?: number;
 }
@@ -163,16 +175,7 @@ export async function verifyWebhookSignature(
     return { valid: false, reason: 'webhook_secret_missing' };
   }
 
-  // Verifica e consome o nonce no cache anti-replay
-  const cache = options.nonceCache ?? getGlobalNonceCache();
-  const nonceExpiresAt = timestamp + maxClockSkew + 60; // 1 minuto de margem após a janela
-  const isNonceFresh = cache.consume(nonceHeader, nonceExpiresAt, now);
-
-  if (!isNonceFresh) {
-    return { valid: false, reason: 'webhook_nonce_replay_detected' };
-  }
-
-  // Computa a assinatura HMAC esperada sobre o padrão: "v1:<timestamp>:<nonce>:<rawBody>"
+  // 1. Verificação da assinatura HMAC antes de consultar ou consumir o nonce
   const expectedPayload = `v1:${timestamp}:${nonceHeader}:${rawBodyText}`;
   const computedHex = createHmac('sha256', secret)
     .update(expectedPayload, 'utf8')
@@ -189,6 +192,41 @@ export async function verifyWebhookSignature(
 
   if (!safeCompareHexSignatures(computedHex, cleanSignature)) {
     return { valid: false, reason: 'invalid_webhook_signature' };
+  }
+
+  // 2. Consumo atômico do nonce APÓS autenticação da assinatura
+  if (options.supabaseClient) {
+    const collectorId = options.collectorId ?? 'webhook_collector';
+    const { error: nonceError } = await options.supabaseClient
+      .from('offers_ingest_nonces')
+      .insert({
+        collector_id: collectorId.trim(),
+        nonce: nonceHeader.trim(),
+      });
+
+    if (nonceError) {
+      const isConflict =
+        nonceError.code === '23505' ||
+        nonceError.message?.includes('duplicate key') ||
+        nonceError.message?.includes('unique constraint');
+
+      if (isConflict) {
+        return { valid: false, reason: 'webhook_nonce_replay_detected' };
+      }
+      return { valid: false, reason: 'webhook_nonce_storage_error' };
+    }
+  } else if (process.env.NODE_ENV === 'production') {
+    // Em produção distribuída multi-edge, fallback para Map em memória é proibido (fail-closed)
+    return { valid: false, reason: 'webhook_nonce_storage_error' };
+  } else {
+    // Ambiente local ou testes unitários sem banco: fallback em memória
+    const cache = options.nonceCache ?? getGlobalNonceCache();
+    const nonceExpiresAt = timestamp + maxClockSkew + 60; // 1 minuto de margem após a janela
+    const isNonceFresh = cache.consume(nonceHeader, nonceExpiresAt, now);
+
+    if (!isNonceFresh) {
+      return { valid: false, reason: 'webhook_nonce_replay_detected' };
+    }
   }
 
   return {

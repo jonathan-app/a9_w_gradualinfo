@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import { handleAvaliarSelo } from '@/app/api/admin/ofertas/[id]/avaliar-selo/route';
+import { createClient } from '@/lib/supabase/server';
 import {
   MemoryEvidenceStorageAdapter,
   resetEvidenceStorage,
@@ -17,6 +18,20 @@ import { resetGlobalNonceCache } from '@/lib/offers/webhook-auth';
 // Mock de assertAdminApiAuth
 vi.mock('@/lib/admin/auth', () => ({
   assertAdminApiAuth: vi.fn(),
+}));
+
+// Mock de createClient para evitar cookies() fora do escopo Next em testes
+vi.mock('@/lib/supabase/server', () => ({
+  createClient: vi.fn(() => ({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          single: async () => ({ data: null, error: null }),
+        }),
+      }),
+    }),
+    rpc: async () => ({ data: null, error: null }),
+  })),
 }));
 
 import { assertAdminApiAuth } from '@/lib/admin/auth';
@@ -80,17 +95,43 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
       },
     ],
     rpcError: any = null,
+    options: {
+      nonceConflict?: boolean;
+      nonceStorageError?: boolean;
+    } = {},
   ) {
     let capturedRpcParams: any = null;
+    const consumedNonces = new Set<string>();
 
     const client = {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: async () => ({ data: offerData, error: null }),
+      from: (table: string) => {
+        if (table === 'offers_ingest_nonces') {
+          return {
+            insert: async (row: { collector_id: string; nonce: string }) => {
+              if (options.nonceStorageError) {
+                return { error: { message: 'DB connection failure' } };
+              }
+              if (options.nonceConflict || consumedNonces.has(row.nonce)) {
+                return {
+                  error: {
+                    code: '23505',
+                    message: 'duplicate key value violates unique constraint',
+                  },
+                };
+              }
+              consumedNonces.add(row.nonce);
+              return { error: null };
+            },
+          };
+        }
+        return {
+          select: () => ({
+            eq: () => ({
+              single: async () => ({ data: offerData, error: null }),
+            }),
           }),
-        }),
-      }),
+        };
+      },
       rpc: async (name: string, params: any) => {
         capturedRpcParams = { name, params };
         if (rpcError) {
@@ -205,6 +246,44 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     expect(res.status).toBe(401);
     const json = await res.json();
     expect(json.error).toBe('invalid_webhook_signature');
+  });
+
+  it('rejeita com 409 quando o webhook repete um nonce já consumido no banco compartilhado', async () => {
+    const mockDb = mockSupabase(sampleOfferData, undefined, null, {
+      nonceConflict: true,
+    });
+    const req = createSignedWebhookRequest(validBody, {
+      nonce: 'already-used-nonce',
+    });
+
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(409);
+    const json = await res.json();
+    expect(json.error).toBe('nonce_already_consumed');
+  });
+
+  it('rejeita com 503 quando o banco compartilhado de nonces falha na rota de webhook', async () => {
+    const mockDb = mockSupabase(sampleOfferData, undefined, null, {
+      nonceStorageError: true,
+    });
+    const req = createSignedWebhookRequest(validBody, {
+      nonce: 'fresh-nonce-db-error',
+    });
+
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(503);
+    const json = await res.json();
+    expect(json.error).toBe('nonce_storage_error');
   });
 
   it('rejeita com 400 se o campo advertised_sku estiver em branco', async () => {
@@ -441,5 +520,100 @@ describe('handleAvaliarSelo (POST /api/admin/ofertas/[id]/avaliar-selo)', () => 
     );
     expect(json.message).not.toContain('offers_pkey');
     expect(json.code).toBeUndefined();
+  });
+
+  it('avalia com ação de renovacao (action: renovacao)', async () => {
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: true,
+      user: { id: 'admin-123' } as any,
+    });
+
+    const renovacaoBody = { ...validBody, action: 'renovacao' };
+    const mockDb = mockSupabase();
+    const req = createAdminRequest(renovacaoBody);
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(200);
+    const captured = mockDb.getCapturedRpc();
+    expect(captured.params.p_action).toBe('renovacao');
+  });
+
+  it('retorna 503 service_client_unavailable quando o cliente de serviço não está disponível', async () => {
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: true,
+      user: { id: 'admin-123' } as any,
+    });
+
+    // Mock createClient para retornar a oferta (prossiga até a RPC),
+    // depois getOffersServiceClient() lança por falta de SUPABASE_SERVICE_ROLE_KEY.
+    vi.mocked(createClient).mockImplementationOnce(() => ({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            single: async () => ({ data: sampleOfferData, error: null }),
+          }),
+        }),
+      }),
+      rpc: async () => ({ data: null, error: null }),
+    }));
+
+    // Sem deps.supabaseClient e sem cabeçalho de webhook: o caminho do admin
+    // tenta getOffersServiceClient(), que lança se a chave de serviço não estiver configurada.
+    const req = createAdminRequest(validBody);
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage },
+    );
+
+    expect(res.status).toBe(503);
+    const json = await res.json();
+    expect(json.error).toBe('service_client_unavailable');
+  });
+
+  it('aceita advertised_ean nulo e não quebra a canonicalização', async () => {
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: true,
+      user: { id: 'admin-123' } as any,
+    });
+
+    const bodySemEan = { ...validBody, advertised_ean: null };
+    const mockDb = mockSupabase();
+    const req = createAdminRequest(bodySemEan);
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(200);
+    const captured = mockDb.getCapturedRpc();
+    expect(captured.params.p_announced_ean).toBeNull();
+  });
+
+  it('usa data atual quando captured_at está vazio ou ausente', async () => {
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: true,
+      user: { id: 'admin-123' } as any,
+    });
+
+    const bodySemCapturedAt = { ...validBody, captured_at: '' };
+    const mockDb = mockSupabase();
+    const req = createAdminRequest(bodySemCapturedAt);
+    const res = await handleAvaliarSelo(
+      req,
+      { params: Promise.resolve({ id: validOfferId }) },
+      { storage, supabaseClient: mockDb },
+    );
+
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.approved).toBe(true);
+    // A evidência foi persistida com hash gerado a partir da data atual
+    expect(json.evidence_hash).toHaveLength(64);
   });
 });

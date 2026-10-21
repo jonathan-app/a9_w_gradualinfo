@@ -144,6 +144,110 @@ describe('webhook-auth (HMAC-SHA256 e Anti-Replay)', () => {
     );
     expect(resultTampered.valid).toBe(false);
     expect(resultTampered.reason).toBe('invalid_webhook_signature');
+
+    // Comprova que o nonce NÃO foi queimado: uma requisição legítima com este mesmo nonce é aceita
+    const reqLegitimateWithSameNonce = createSignedRequest(sampleBody, {
+      nonce: 'nonce-for-tampered-signature',
+    });
+    const resultLegitimate = await verifyWebhookSignature(
+      reqLegitimateWithSameNonce,
+      sampleBody,
+      {
+        secret,
+        nonceCache,
+      },
+    );
+    expect(resultLegitimate.valid).toBe(true);
+  });
+
+  it('persiste e consome nonce via supabaseClient inserindo em offers_ingest_nonces', async () => {
+    let capturedRow: any = null;
+    const mockSupabase = {
+      from: (table: string) => {
+        expect(table).toBe('offers_ingest_nonces');
+        return {
+          insert: async (row: any) => {
+            capturedRow = row;
+            return { error: null };
+          },
+        };
+      },
+    };
+
+    const req = createSignedRequest(sampleBody, {
+      nonce: 'nonce-db-success-123',
+    });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(true);
+    expect(capturedRow).toEqual({
+      collector_id: 'webhook_collector',
+      nonce: 'nonce-db-success-123',
+    });
+  });
+
+  it('rejeita com replay quando supabaseClient acusa chave duplicada (código 23505)', async () => {
+    const mockSupabase = {
+      from: () => ({
+        insert: async () => ({
+          error: {
+            code: '23505',
+            message: 'duplicate key value violates unique constraint',
+          },
+        }),
+      }),
+    };
+
+    const req = createSignedRequest(sampleBody, { nonce: 'nonce-replay-db' });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe('webhook_nonce_replay_detected');
+  });
+
+  it('rejeita com webhook_nonce_storage_error quando supabaseClient acusa erro de infraestrutura', async () => {
+    const mockSupabase = {
+      from: () => ({
+        insert: async () => ({
+          error: { message: 'Database connection refused' },
+        }),
+      }),
+    };
+
+    const req = createSignedRequest(sampleBody, {
+      nonce: 'nonce-storage-error',
+    });
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      supabaseClient: mockSupabase as any,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe('webhook_nonce_storage_error');
+  });
+
+  it('falha de forma fechada em produção quando supabaseClient não for fornecido', async () => {
+    const prevEnv = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = 'production';
+      const req = createSignedRequest(sampleBody, {
+        nonce: 'nonce-prod-no-db',
+      });
+      const result = await verifyWebhookSignature(req, sampleBody, {
+        secret,
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.reason).toBe('webhook_nonce_storage_error');
+    } finally {
+      process.env.NODE_ENV = prevEnv;
+    }
   });
 
   it('varre e limpa nonces expirados no MemoryNonceCache', () => {
@@ -188,5 +292,61 @@ describe('webhook-auth (HMAC-SHA256 e Anti-Replay)', () => {
     // n1 foi descartada, logo n1 pode ser consumida novamente
     const canReconsumeN1 = cache.consume('n1', 1000, 10);
     expect(canReconsumeN1).toBe(true);
+  });
+
+  it('aceita assinatura sem o prefixo v1= (apenas hex direto)', async () => {
+    const ts = Math.floor(Date.now() / 1000);
+    const nonce = 'nonce-hex-direct-123';
+    const rawSig = createHmac('sha256', secret)
+      .update(`v1:${ts}:${nonce}:${sampleBody}`, 'utf8')
+      .digest('hex');
+
+    const req = new Request(
+      'https://gradualinfo.com.br/api/admin/ofertas/123/avaliar-selo',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-gradualinfo-signature': rawSig,
+          'x-gradualinfo-timestamp': String(ts),
+          'x-gradualinfo-nonce': nonce,
+        },
+        body: sampleBody,
+      },
+    );
+    const result = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nonceCache,
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejeita nonce exatamente no limite de expiração (exp <= now)', async () => {
+    const now = 1_700_000_000;
+    const nonce = 'nonce-at-expiry-boundary';
+
+    const req = createSignedRequest(sampleBody, {
+      timestamp: now,
+      nonce,
+      nonceCache,
+    });
+
+    // Primeira chamada com o nonce no limite exato deve ser aceita
+    const res1 = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nowSeconds: now,
+      nonceCache,
+    });
+    expect(res1.valid).toBe(true);
+
+    // Segunda chamada com o mesmo nonce deve ser rejeitada como replay
+    const res2 = await verifyWebhookSignature(req, sampleBody, {
+      secret,
+      nowSeconds: now,
+      nonceCache,
+    });
+    expect(res2.valid).toBe(false);
+    expect(res2.reason).toBe('webhook_nonce_replay_detected');
   });
 });

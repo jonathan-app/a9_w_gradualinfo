@@ -172,7 +172,9 @@ test.describe('artigo, JSON-LD e sitemap, contrato md-0002', () => {
       'href',
       'https://supabase.com/docs',
     );
-    expect(new URL(await sourceLink.getAttribute('href')!)).toBeTruthy();
+    const href = await sourceLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    expect(new URL(href!)).toBeTruthy();
     await expect(page.locator('article.editorial-body')).not.toContainText(
       'Documentação do Supabase',
     );

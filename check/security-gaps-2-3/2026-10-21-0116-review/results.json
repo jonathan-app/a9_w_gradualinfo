@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "729d2500ff6d0fcf9d1e7a6fccd54cf9221a9242",
+  "evaluatedTree": "6936a29eda9c556c97337a93a9962d85e2839a43",
+  "spec": {
+    "path": "docs/specs/2026-10-16-2050-0021-pipeline-ofertas-worm-duravel.md",
+    "sha256": "27ad38f3a1a1bae6fd4fcbc72a5c7ae943b578679ad881187c8ef369b68dedfd"
+  },
+  "acs": [
+    {
+      "id": "ofertas-pipeline/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-08",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    },
+    {
+      "id": "ofertas-pipeline/AC-09",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-0116-review-lacunas-2-3/review-evidence.md",
+      "evidenceSha256": "209dd42e8928d51d495a35c169453b52eb85ef886d0ca9677ae91fe8437910bc"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "app/api/admin/ofertas/[id]/avaliar-selo/route.ts:118 introduz `serviceClient as any`; o ESLint obrigatório reprova com @typescript-eslint/no-explicit-any. Remover o cast e alinhar estruturalmente as interfaces antes do merge."
+    },
+    {
+      "severity": "BLOCKER",
+      "description": "lib/offers/evidence-canonicalizer.ts:142-144 usa Array.map, que ignora lacunas; um array esparso pode gerar JSON canônico inválido como `[,1]`. Rejeitar índices ausentes com InvalidEvidenceFormatError e adicionar regressão."
+    },
+    {
+      "severity": "WARNING",
+      "description": "O consumo concorrente do mesmo nonce não foi executado contra duas conexões Supabase reais nesta revisão; os mocks cobrem respostas e a chave primária fornece atomicidade estrutural, mas a homologação de produção continua pendente."
+    },
+    {
+      "severity": "WARNING",
+      "description": "O webhook legado persiste todos os nonces sob collector_id constante `webhook_collector` e propaga actorId derivado do nonce, não uma identidade autenticada do coletor; comportamento preexistente que impede declarar concluída a unificação da Spec 0021."
+    }
+  ]
+}

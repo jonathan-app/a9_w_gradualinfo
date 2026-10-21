@@ -71,5 +71,4 @@ peerDependencyRules:
     react: '19.3.1'
     react-dom: '19.3.1'
 
-patchedDependencies:
-  '@opennextjs/cloudflare@1.20.10': patches/@opennextjs__cloudflare@1.20.10.patch
+patchedDependencies: {}
