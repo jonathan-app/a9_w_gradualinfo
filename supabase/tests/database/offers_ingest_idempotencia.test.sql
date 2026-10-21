@@ -2,7 +2,7 @@
 -- Spec 0021 / AC-08: Testes pgTAP de ingestão de coletores, anti-replay e idempotência transacional no PostgreSQL.
 BEGIN;
 
-SELECT plan(24);
+SELECT plan(25);
 
 -- 1. Estruturas e tabelas da migração
 SELECT has_table('public', 'offers_ingest_nonces', 'tabela offers_ingest_nonces existe');
@@ -181,6 +181,11 @@ SELECT throws_ok(
   '22023',
   'retention_below_minimum_replay_window',
   'expurgo de nonces rejeita janela inferior a 10 minutos'
+);
+
+SELECT ok(
+  to_regprocedure('public.purge_expired_offers_ingest_nonces(integer)') IS NULL,
+  'expurgo de nonces não mantém sobrecarga integer sem validação'
 );
 
 SELECT * FROM finish();

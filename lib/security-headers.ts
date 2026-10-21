@@ -28,10 +28,10 @@
 export function contentSecurityPolicy(isProduction: boolean): string {
   return [
     "default-src 'self'",
-    // 'unsafe-eval' só fora de produção: o dev server do React precisa dele, e
-    // em produção ele abriria eval para qualquer script injetado — por isso
-    // some da string quando isProduction é true.
-    `script-src 'self' 'unsafe-inline'${isProduction ? '' : " 'unsafe-eval'"} https://va.vercel-scripts.com https://www.googletagmanager.com https://static.cloudflareinsights.com`,
+    // 'unsafe-inline' só fora de produção: em produção remove-se para evitar
+    // injeção de script arbitrário via qualquer ponto de injeção HTML; o dev
+    // server do React precisa de 'unsafe-inline' e 'unsafe-eval' para HMR.
+    `script-src 'self'${isProduction ? '' : " 'unsafe-inline'"} https://va.vercel-scripts.com https://www.googletagmanager.com https://static.cloudflareinsights.com${isProduction ? '' : " 'unsafe-eval'"}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",

@@ -57,9 +57,13 @@
     "NEXT_PUBLIC_SANITY_DATASET": "production",
     "NEXT_PUBLIC_SANITY_PROJECT_ID": "4iipvaar",
     "SANITY_PROJECT_ID": "4iipvaar",
+    "R2_EVIDENCE_BUCKET": "gradualinfo-evidencias",
+    "OFFERS_STORAGE_BACKEND": "r2",
+    // A homologação física do lock deve ocorrer antes de liberar selos.
+    "OFFERS_STORAGE_WORM_VERIFIED": "false",
   },
-  // Cache ISR da home no plano Free. O R2 não está habilitado na conta;
-  // KV cobre o volume com 300 s de revalidação e fica dentro da cota diária.
+  // O cache ISR permanece no KV para não misturar conteúdo regenerável com
+  // o bucket R2 dedicado às evidências imutáveis.
   "kv_namespaces": [
     {
       "binding": "NEXT_INC_CACHE_KV",
@@ -101,7 +105,7 @@
   "r2_buckets": [
     {
       "bucket_name": "gradualinfo-evidencias",
-      "binding": "gradualinfo_evidencias",
+      "binding": "EVIDENCE_BUCKET",
     },
   ],
 }

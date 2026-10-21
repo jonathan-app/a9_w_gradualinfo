@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "c92e1bb24ab209c530e34f77742722846d23fad1",
+  "evaluatedTree": "3ffb2299a5a3f3aab61298f38041047f6544b2af",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "acs": [
+    {
+      "id": "preview-s1",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-21-1732-preview-s1-s2/review-evidence.md",
+      "evidenceSha256": "9b2a996b2b464567e521a8c8364217d80b510c3a9dfc3a330a60a6f0f329d4b8"
+    },
+    {
+      "id": "preview-s2",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-21-1732-preview-s1-s2/review-evidence.md",
+      "evidenceSha256": "9b2a996b2b464567e521a8c8364217d80b510c3a9dfc3a330a60a6f0f329d4b8"
+    }
+  ],
+  "findings": []
+}

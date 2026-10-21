@@ -77,17 +77,20 @@ describe('securityHeaders', () => {
 });
 
 describe('contentSecurityPolicy', () => {
-  it('some com unsafe-eval em producao', () => {
+  it('some com unsafe-inline em producao', () => {
     const policy = contentSecurityPolicy(true);
 
-    expect(policy).not.toContain('unsafe-eval');
-    expect(policy).toContain("script-src 'self' 'unsafe-inline' https://");
+    const scriptSrc = policy.match(/script-src[^;]*/)?.[0] ?? '';
+    expect(scriptSrc).not.toContain('unsafe-inline');
+    expect(scriptSrc).not.toContain('unsafe-eval');
+    expect(scriptSrc).toContain("script-src 'self' https://");
   });
 
-  it('mantem unsafe-eval fora de producao, para o dev server do React', () => {
+  it('mantem unsafe-inline e unsafe-eval fora de producao, para o dev server do React', () => {
     const policy = contentSecurityPolicy(false);
 
-    expect(policy).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    expect(policy).toContain("script-src 'self' 'unsafe-inline'");
+    expect(policy).toContain("'unsafe-eval'");
   });
 
   it('libera as origens do beacon do Cloudflare Web Analytics', () => {

@@ -8,11 +8,11 @@
 2 · Provisionar R2 + Bucket Lock + vars de ambiente · 1 · planned
 3 · Corrigir rota /api/admin/evidencias/[hash] para storage-factory · 1 · planned
 4 · Rate-limit admin por IP/Turnstile (spec 0034) · 2 · planned
-5 · wrangler.jsonc observability.redact_query_string: true · 2 · planned
-6 · Retenção/limpeza de offers_ingest_nonces · 2 · planned
+5 · wrangler.jsonc observability.redact_query_string: true · 2 · in-progress
+6 · Retenção/limpeza de offers_ingest_nonces · 2 · in-progress
 7 · Rate-limit público em /api/ofertas · 3 · planned
-8 · CSP remover unsafe-inline em produção · 3 · planned
-9 · Documentar vars faltantes em .env.example · 3 · planned
+8 · CSP remover unsafe-inline em produção · 3 · done
+9 · Documentar vars faltantes em .env.example · 3 · done
 10 · Confirmar SMTP do Supabase para recovery · 3 · planned
 11 · Confirmar SANITY_API_READ_TOKEN como secret · 3 · planned
 
@@ -76,7 +76,7 @@ Definir `observability.redact_query_string: true` no `wrangler.jsonc` para evita
 
 Done when: Logs do Worker não contêm query strings sensíveis.
 
-- [ ] Editar wrangler.jsonc
+- [x] Editar wrangler.jsonc
 - [ ] Revalidar deploy
 
 ### 6. Retenção/limpeza de offers_ingest_nonces
@@ -87,7 +87,7 @@ Confirmar unique constraint de `offers_ingest_nonces` (se é `(collector_id, non
 
 Done when: Tabela de nonces tem retenção definida e não cresce sem limite.
 
-- [ ] Inspecionar migration da tabela
+- [x] Inspecionar migration da tabela
 - [ ] Adicionar limpeza periódica ou retention policy
 
 ## Fase 3 — Menor / verificação
@@ -111,8 +111,8 @@ Remover `'unsafe-inline'` do `script-src` da Content Security Policy em produç�
 
 Done when: CSP de produção não contém `'unsafe-inline'`.
 
-- [ ] Editar `lib/security-headers.ts`
-- [ ] Verificar que nada quebra no frontend
+- [x] Editar `lib/security-headers.ts`
+- [x] Verificar que nada quebra no frontend
 
 ### 9. Documentar vars faltantes em .env.example
 
@@ -122,7 +122,7 @@ Adicionar as variáveis de produção ausentes ao `.env.example` para não quebr
 
 Done when: `.env.example` lista todas as variáveis de produção exigidas pelo backend.
 
-- [ ] Atualizar .env.example
+- [x] Atualizar .env.example
 
 ### 10. Confirmar SMTP do Supabase para recovery
 
