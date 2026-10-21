@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "97b8441734f565480603c5ec892d03a07fb78b8e",
+  "evaluatedTree": "552041eba941bf0d1d87670a5d8c261dabe7a259",
+  "spec": {
+    "path": "docs/specs/2026-10-18-1825-0027-racionalizacao-testes-scripts-dependencias.md",
+    "sha256": "89154bf629eb64b24d10b30efcbb374b8185e530583c5cab18a7bbf815c3b538"
+  },
+  "acs": [
+    {
+      "id": "test-clean/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1123-review-remocao-ponytail/review-evidence.md",
+      "evidenceSha256": "8ed9c474cb552430d15ae48456fbe3cfdced1e865e19ca1b743d8df51683a599"
+    },
+    {
+      "id": "test-clean/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1123-review-remocao-ponytail/review-evidence.md",
+      "evidenceSha256": "8ed9c474cb552430d15ae48456fbe3cfdced1e865e19ca1b743d8df51683a599"
+    },
+    {
+      "id": "test-clean/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1123-review-remocao-ponytail/review-evidence.md",
+      "evidenceSha256": "8ed9c474cb552430d15ae48456fbe3cfdced1e865e19ca1b743d8df51683a599"
+    },
+    {
+      "id": "test-clean/AC-04",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-21-1123-review-remocao-ponytail/review-evidence.md",
+      "evidenceSha256": "8ed9c474cb552430d15ae48456fbe3cfdced1e865e19ca1b743d8df51683a599"
+    },
+    {
+      "id": "test-clean/AC-05",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-21-1123-review-remocao-ponytail/review-evidence.md",
+      "evidenceSha256": "8ed9c474cb552430d15ae48456fbe3cfdced1e865e19ca1b743d8df51683a599"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER",
+      "description": "O Lote R3 ainda não possui spec aceita correspondente: docs/scope/2026-10-18-2200-racionalizacao-geral-repositorio.md mantém Design it pendente, e a decisão da Spec 0027 limita a remoção aprovada a scripts específicos. Formalizar em /architect o contrato mínimo para auditar e remover dependências auxiliares antes do merge."
+    }
+  ]
+}

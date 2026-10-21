@@ -80,10 +80,10 @@ export default defineConfig({
       // regra do AGENTS.md é subir para 80 antes de virar gate de CI.
       thresholds: {
         global: {
-          branches: 80,
-          functions: 60,
-          lines: 60,
-          statements: 60,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90,
         },
       },
     },

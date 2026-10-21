@@ -418,4 +418,118 @@ describe('Spec 0021: Concorrência real e idempotência no banco de dados local'
 
     expect(opCount).toBe(1);
   });
+
+  it('6. Lacuna 5: assign_admin_role e revoke_admin_role serializam concorrência, fazem rollback em falha de auditoria e bloqueiam escrita direta', async (ctx) => {
+    if (!isSupabaseOnline) {
+      ctx.skip(
+        `Supabase local indisponível em ${supabaseUrl} (use REQUIRE_REAL_DB=1 para exigir banco real).`,
+      );
+      return;
+    }
+
+    const actorUserId = '11111111-1111-1111-1111-111111111111';
+    const targetUserId = '22222222-2222-2222-2222-222222222222';
+    const ipMarker = `198.51.100.${Math.floor(Math.random() * 200) + 10}`;
+
+    // Limpa papel prévio se existir via RPC transacional
+    await client1.rpc('revoke_admin_role', {
+      p_user_id: targetUserId,
+      p_actor_id: actorUserId,
+      p_actor_email: 'ana@exemplo.dev',
+      p_ip_address: '127.0.0.1',
+    });
+
+    // 6.1 Escrita direta na tabela admin_user_roles por service_role é bloqueada por privilégio (42501)
+    const directInsert = await client1.from('admin_user_roles').insert({
+      user_id: targetUserId,
+      role: 'revisor',
+      assigned_by: actorUserId,
+    });
+    expect(directInsert.error).not.toBeNull();
+    expect(directInsert.error?.code).toBe('42501');
+
+    // 6.2 Duas conexões concorrentes atribuindo papéis distintos ao mesmo usuário são serializadas
+    const [assignA, assignB] = await Promise.all([
+      client1.rpc('assign_admin_role', {
+        p_user_id: targetUserId,
+        p_role: 'revisor',
+        p_actor_id: actorUserId,
+        p_actor_email: 'ana@exemplo.dev',
+        p_ip_address: ipMarker,
+      }),
+      client2.rpc('assign_admin_role', {
+        p_user_id: targetUserId,
+        p_role: 'editor',
+        p_actor_id: actorUserId,
+        p_actor_email: 'ana@exemplo.dev',
+        p_ip_address: ipMarker,
+      }),
+    ]);
+
+    expect(assignA.error).toBeNull();
+    expect(assignB.error).toBeNull();
+
+    const { data: logs } = await client1
+      .from('admin_audit_log')
+      .select('action, metadata')
+      .eq('resource_id', targetUserId)
+      .eq('ip_address', ipMarker);
+
+    expect(logs).toHaveLength(2);
+    const actions = logs?.map((l) => l.action).sort();
+    expect(actions).toEqual(['user.role_assigned', 'user.role_changed']);
+
+    const { data: currentRoleRow } = await client1
+      .from('admin_user_roles')
+      .select('role')
+      .eq('user_id', targetUserId)
+      .single();
+
+    const currentRole = currentRoleRow?.role;
+    expect(['revisor', 'editor']).toContain(currentRole);
+
+    // 6.3 Falha intermediária na gravação da auditoria (actor_email > 320 chars) faz rollback do papel
+    const failedAssign = await client1.rpc('assign_admin_role', {
+      p_user_id: targetUserId,
+      p_role: 'admin',
+      p_actor_id: actorUserId,
+      p_actor_email: 'x'.repeat(325),
+      p_ip_address: ipMarker,
+    });
+    expect(failedAssign.error).not.toBeNull();
+    expect(failedAssign.error?.code).toBe('23514');
+
+    const { data: roleAfterFailedAssign } = await client1
+      .from('admin_user_roles')
+      .select('role')
+      .eq('user_id', targetUserId)
+      .single();
+    expect(roleAfterFailedAssign?.role).toBe(currentRole);
+
+    // 6.4 Falha intermediária na gravação da auditoria em revoke_admin_role faz rollback da remoção
+    const failedRevoke = await client1.rpc('revoke_admin_role', {
+      p_user_id: targetUserId,
+      p_actor_id: actorUserId,
+      p_actor_email: 'y'.repeat(325),
+      p_ip_address: ipMarker,
+    });
+    expect(failedRevoke.error).not.toBeNull();
+    expect(failedRevoke.error?.code).toBe('23514');
+
+    const { data: roleAfterFailedRevoke } = await client1
+      .from('admin_user_roles')
+      .select('role')
+      .eq('user_id', targetUserId)
+      .single();
+    expect(roleAfterFailedRevoke?.role).toBe(currentRole);
+
+    // 6.5 Limpeza final: revoga o papel com sucesso
+    const cleanRevoke = await client1.rpc('revoke_admin_role', {
+      p_user_id: targetUserId,
+      p_actor_id: actorUserId,
+      p_actor_email: 'ana@exemplo.dev',
+      p_ip_address: ipMarker,
+    });
+    expect(cleanRevoke.error).toBeNull();
+  });
 });

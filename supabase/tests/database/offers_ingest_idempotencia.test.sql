@@ -2,7 +2,7 @@
 -- Spec 0021 / AC-08: Testes pgTAP de ingestão de coletores, anti-replay e idempotência transacional no PostgreSQL.
 BEGIN;
 
-SELECT plan(19);
+SELECT plan(24);
 
 -- 1. Estruturas e tabelas da migração
 SELECT has_table('public', 'offers_ingest_nonces', 'tabela offers_ingest_nonces existe');
@@ -169,6 +169,19 @@ SELECT ok(EXISTS (
   SELECT 1 FROM public.offer_operation_keys
    WHERE operation_key = '33333333-3333-4333-8333-333333333333:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
 ), 'quando operation_key for nula, chave determinística offer_id:evidence_hash é registrada');
+
+-- 7. Lacuna 6 / SEC-03: Bloqueio de mutação direta em nonces/operation_keys e expurgo seguro
+SELECT ok(NOT has_table_privilege('service_role', 'public.offers_ingest_nonces', 'UPDATE'), 'service_role não tem UPDATE em offers_ingest_nonces');
+SELECT ok(NOT has_table_privilege('service_role', 'public.offers_ingest_nonces', 'DELETE'), 'service_role não tem DELETE direto em offers_ingest_nonces');
+SELECT ok(NOT has_table_privilege('service_role', 'public.offer_operation_keys', 'UPDATE'), 'service_role não tem UPDATE em offer_operation_keys');
+SELECT ok(NOT has_table_privilege('service_role', 'public.offer_operation_keys', 'DELETE'), 'service_role não tem DELETE em offer_operation_keys');
+
+SELECT throws_ok(
+  $$ SELECT public.purge_expired_offers_ingest_nonces(interval '5 minutes') $$,
+  '22023',
+  'retention_below_minimum_replay_window',
+  'expurgo de nonces rejeita janela inferior a 10 minutos'
+);
 
 SELECT * FROM finish();
 ROLLBACK;

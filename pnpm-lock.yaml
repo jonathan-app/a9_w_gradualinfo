@@ -205,9 +205,6 @@ importers:
       next-themes:
         specifier: ^1.0.0-beta.0
         version: 1.0.0-beta.0(next@16.4.2(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.64.1)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      ponytail:
-        specifier: ^1.0.57
-        version: 1.0.57
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -5127,9 +5124,6 @@ packages:
     resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==}
     engines: {node: '>=20'}
     hasBin: true
-
-  ponytail@1.0.57:
-    resolution: {integrity: sha512-GHlaSZo1IR2PFLx5BvGbt0czhFDeVPNK1eEpw4El7hkOkUhL3KRQltMqfX8hAGzGPlPqz4jd6CWWPFgt3+ZGwg==}
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -11369,8 +11363,6 @@ snapshots:
   playwright@1.64.1:
     dependencies:
       playwright-core: 1.64.0
-
-  ponytail@1.0.57: {}
 
   possible-typed-array-names@1.1.0: {}
 
