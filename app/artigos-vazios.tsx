@@ -1,12 +1,10 @@
 /**
  * app/artigos-vazios.tsx — estado vazio da listagem de artigos
- *
- * Server Component. Exibido quando a query de artigos publicados retorna array
- * vazio. Sem este componente, a home mostraria apenas o container vazio, o que
- * não comunica ao usuário o que aconteceu.
- *
  * @fileoverview Estado vazio da listagem de artigos publicados.
  * @module app/artigos-vazios
+ * @description Exibido quando a query de artigos publicados retorna array
+ *   vazio. Sem este componente, a home mostraria apenas o container vazio, o
+ *   que não comunica ao usuário o que aconteceu.
  * @dependencies nenhum além do React/JSX (Server Component puro).
  */
 /**

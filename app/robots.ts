@@ -1,16 +1,13 @@
-import type { MetadataRoute } from 'next';
-import { SITE_ORIGIN } from '@/lib/site-config';
-
 /**
  * app/robots.ts
- *
- * Gera robots.txt com as rotas sensíveis fora do índice. Orienta rastreadores;
- * não protege nada por si só — proteção é RLS e auth.
- *
  * @fileoverview Conteúdo de `/robots.txt`.
  * @module app/robots
+ * @description Gera robots.txt com as rotas sensíveis fora do índice. Orienta
+ *   rastreadores; não protege nada por si só — proteção é RLS e auth.
  * @dependencies next (MetadataRoute), lib/site-config (SITE_ORIGIN).
  */
+import type { MetadataRoute } from 'next';
+import { SITE_ORIGIN } from '@/lib/site-config';
 /**
  * Monta as regras de rastreamento do site.
  *

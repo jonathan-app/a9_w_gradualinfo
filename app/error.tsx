@@ -1,21 +1,17 @@
+/**
+ * app/error.tsx — erro de renderização dentro de um segmento
+ * @fileoverview Tela de erro de renderização dentro de um segmento.
+ * @module app/error
+ * @description Client Component por obrigação: o App Router mostra esta tela
+ *   depois que a renderização do servidor falhou, ou seja, já no browser.
+ *   `reset()` tenta renderizar de novo sem recarregar a página — é o que salva
+ *   o usuário de uma navegação desnecessária quando o erro é passageiro.
+ * @dependencies react (useEffect), components/ui/button.
+ */
 'use client';
 
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-
-/**
- * app/error.tsx — erro de renderização dentro de um segmento
- *
- * Client Component por obrigação: o App Router mostra esta tela depois que a
- * renderização do servidor falhou, ou seja, já no browser.
- *
- * `reset()` tenta renderizar de novo sem recarregar a página — é o que salva
- * o usuário de uma navegação desnecessária quando o erro é passageiro.
- *
- * @fileoverview Tela de erro de renderização dentro de um segmento.
- * @module app/error
- * @dependencies react (useEffect), components/ui/button.
- */
 /**
  * Fronteira de erro do segmento.
  *

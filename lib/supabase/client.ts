@@ -1,20 +1,20 @@
-import { createBrowserClient } from '@supabase/ssr';
-import { env } from '@/lib/env';
-
 /**
  * lib/supabase/client.ts — cliente Supabase para o navegador
  * @fileoverview Singleton do cliente Supabase para o navegador.
- *
- * Por que a instância é memorizada no módulo
- * `createBrowserClient` caches a sessão no cookie e dispara o refresh de token
- * quando o expira. Criar um cliente novo a cada render cria outro watcher: o
- * token é renewed em paralelo, o último a escrever ganha, e a sessão "pisca"
- * entre logado e deslogado. Guardar a instância em uma variável de módulo faz
- * o singleton existir uma vez por página.
+ * @module lib/supabase/client
+ * @description `createBrowserClient` faz cache da sessão no cookie e dispara o
+ *   refresh de token quando expira. Criar um cliente novo a cada render cria
+ *   outro watcher: o token é renovado em paralelo, o último a escrever ganha, e
+ *   a sessão "pisca" entre logado e deslogado. Guardar a instância em uma
+ *   variável de módulo faz o singleton existir uma vez por página.
+ * @dependencies @supabase/ssr, @/lib/env.
  *
  * Importar este arquivo a partir de um Server Component quebra: ele usa
  * `document`. No servidor, use `@/lib/supabase/server`.
  */
+import { createBrowserClient } from '@supabase/ssr';
+import { env } from '@/lib/env';
+
 let browserClient: ReturnType<typeof createBrowserClient> | undefined;
 
 /**

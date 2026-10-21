@@ -1,17 +1,14 @@
-import type * as React from 'react';
-import { cn } from '@/lib/utils/cn';
-
 /**
  * components/ui/card.tsx — o contêiner de conteúdo do design system
- *
- * Cada parte tem o prefixo `data-slot`: é o que permite estilizar por
- * contexto no CSS sem precisar variantar cada subcomponente, e o que dá um
- * alvo estável para teste e para o DevTools.
- *
  * @fileoverview Família de contêiner de conteúdo do design system (Card).
  * @module components/ui/card
+ * @description Cada parte tem o prefixo `data-slot`: é o que permite estilizar
+ *   por contexto no CSS sem precisar variantar cada subcomponente, e o que dá
+ *   um alvo estável para teste e para o DevTools.
  * @dependencies react, lib/utils/cn (merge de className).
  */
+import type * as React from 'react';
+import { cn } from '@/lib/utils/cn';
 /**
  * Contêiner raiz do card (moldura, fundo e sombra).
  *
