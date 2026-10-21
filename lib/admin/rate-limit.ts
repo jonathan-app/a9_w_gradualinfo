@@ -6,6 +6,7 @@
  */
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextResponse } from 'next/server';
+import { env } from '@/lib/env';
 import {
   readBoundedJson,
   type AdminRateDecision,
@@ -45,7 +46,24 @@ export async function consumeAdminRateLimit(
       // Fora do runtime Cloudflare Workers em ambiente Node local ou teste E2E
     }
     if (!binding) {
-      if (process.env.E2E_REAL_SUPABASE === '1') {
+      // A flag isolada nunca deve trocar a quota compartilhada por memória em nuvem.
+      const isLoopback = (value: string): boolean => {
+        try {
+          const url = new URL(value);
+          return (
+            ['http:', 'https:'].includes(url.protocol) &&
+            ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
+          );
+        } catch {
+          return false;
+        }
+      };
+      if (
+        process.env.E2E_REAL_SUPABASE === '1' &&
+        process.env.E2E_PRODUCTION === '1' &&
+        isLoopback(env.siteUrl) &&
+        isLoopback(env.supabase.url)
+      ) {
         const now = Date.now();
         const current = localRateLimits.get(operation);
         if (!current || now >= current.expiresAt) {

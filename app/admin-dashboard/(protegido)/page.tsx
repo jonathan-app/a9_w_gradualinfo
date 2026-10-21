@@ -12,6 +12,8 @@
  *   @/lib/services/commercial-dashboard, @/lib/services/dashboard-summary, @/components/admin/dashboard/*
  */
 
+import { checkAdminUser } from '@/lib/admin/auth';
+import { forbidden, redirect } from 'next/navigation';
 import { env } from '@/lib/env';
 import { getDashboardHealthData } from '@/lib/services/health-dashboard';
 import { getEditorialDashboardData } from '@/lib/services/editorial-dashboard';
@@ -39,6 +41,19 @@ interface PageProps {
 }
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
+  // Layouts e páginas podem executar em paralelo. Autoriza antes de qualquer consulta.
+  const auth = await checkAdminUser();
+  if (auth instanceof Response)
+    throw new Error('Admissão administrativa indisponível.');
+  if (!auth.ok) {
+    if (auth.reason === 'unauthenticated') redirect('/admin-dashboard/login');
+    if (auth.reason === 'unauthorized') forbidden();
+    if (auth.reason === 'mfa_enrollment_required')
+      redirect('/admin-dashboard/mfa/setup');
+    if (auth.reason === 'mfa_challenge_required')
+      redirect('/admin-dashboard/mfa/verify');
+    throw new Error('Autorização administrativa indisponível.');
+  }
   const params = await searchParams;
   const pageEditorial = Math.max(
     1,
@@ -70,7 +85,12 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl dark:text-white">
-              Olá, Administrador
+              Olá,{' '}
+              {auth.role === 'admin'
+                ? 'Administrador'
+                : auth.role === 'editor'
+                  ? 'Editor'
+                  : 'Revisor'}
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />

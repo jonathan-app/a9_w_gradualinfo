@@ -1,0 +1,1470 @@
+--- a/lib/services/dashboard-summary.ts
++++ b/lib/services/dashboard-summary.ts
+@@ -8,19 +8,22 @@
+  */
+ import 'server-only';
+ 
++import { checkAdminUser } from '@/lib/admin/auth';
++import { env } from '@/lib/env';
++
+ import { getAdminServiceClient } from '@/lib/admin/service-client';
+ import { getEditorialDashboardData } from '@/lib/services/editorial-dashboard';
+ import { getCommercialDashboardData } from '@/lib/services/commercial-dashboard';
+ 
+ export interface DashboardMetricSummary {
+-  totalArticles: number;
+-  articlesGrowth: number;
+-  totalViews: number;
+-  viewsGrowth: number;
+-  activeOffers: number;
+-  offersGrowth: number;
+-  registeredUsers: number;
+-  usersGrowth: number;
++  totalArticles: number | null;
++  articlesGrowth: number | null;
++  totalViews: number | null;
++  viewsGrowth: number | null;
++  activeOffers: number | null;
++  offersGrowth: number | null;
++  registeredUsers: number | null;
++  usersGrowth: number | null;
+ }
+ 
+ export interface PublicationDataPoint {
+@@ -42,19 +45,20 @@
+ /**
+  * Retorna contagem de usuários com papel ativo em admin_user_roles.
+  */
+-async function getAdminUsersCount(): Promise<number> {
++async function getAdminUsersCount(): Promise<number | null> {
+   try {
+     const client = getAdminServiceClient();
+-    if (!client) return 1;
++    if (!client) return null;
+ 
+     const { count, error } = await client
+       .from('admin_user_roles')
+-      .select('*', { count: 'exact', head: true });
+-
+-    if (error || typeof count !== 'number') return 1;
+-    return Math.max(1, count + 1); // +1 referente à raiz permanente
++      .select('*', { count: 'exact', head: true })
++      .neq('user_id', env.adminUserId.trim());
++
++    if (error || typeof count !== 'number') return null;
++    return count + 1; // Raiz permanente contada apenas uma vez.
+   } catch {
+-    return 1;
++    return null;
+   }
+ }
+ 
+@@ -62,25 +66,33 @@
+  * Retorna as métricas numéricas agregadas do topo do dashboard.
+  */
+ export async function getDashboardMetricSummary(): Promise<DashboardMetricSummary> {
++  const auth = await checkAdminUser();
++  if (auth instanceof Response || !auth.ok) {
++    throw new Error('Acesso administrativo indisponível.');
++  }
+   const [editorialData, commercialData, usersCount] = await Promise.all([
+     getEditorialDashboardData({ page: 1, pageSize: 50 }),
+     getCommercialDashboardData({ page: 1, pageSize: 50 }),
+-    getAdminUsersCount(),
++    auth.role === 'admin' ? getAdminUsersCount() : Promise.resolve(null),
+   ]);
+ 
+-  const totalArticles = editorialData.totalPosts || editorialData.posts.length;
+-  const activeOffers =
+-    commercialData.totalOffers || commercialData.offers.length;
++  // Zero confirmado é diferente de uma fonte indisponível.
++  const totalArticles = ['configured', 'empty'].includes(editorialData.status)
++    ? editorialData.totalPosts
++    : null;
++  const activeOffers = ['configured', 'empty'].includes(commercialData.status)
++    ? commercialData.totalOffers
++    : null;
+ 
+   return {
+-    totalArticles: Math.max(totalArticles, 17),
+-    articlesGrowth: 12,
+-    totalViews: 182450,
+-    viewsGrowth: 18,
+-    activeOffers: Math.max(activeOffers, 14),
+-    offersGrowth: 6,
+-    registeredUsers: Math.max(usersCount, 3),
+-    usersGrowth: 14,
++    totalArticles,
++    articlesGrowth: null,
++    totalViews: null,
++    viewsGrowth: null,
++    activeOffers,
++    offersGrowth: null,
++    registeredUsers: usersCount,
++    usersGrowth: null,
+   };
+ }
+ 
+@@ -90,6 +102,7 @@
+ function formatTimeAgo(isoDate: string): string {
+   try {
+     const date = new Date(isoDate);
++    if (!Number.isFinite(date.getTime())) return 'horário indisponível';
+     const now = new Date();
+     const diffMs = now.getTime() - date.getTime();
+     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+@@ -174,18 +187,25 @@
+   RecentActivityItem[]
+ > {
+   try {
++    const auth = await checkAdminUser();
++    if (auth instanceof Response || !auth.ok) return [];
+     const client = getAdminServiceClient();
+     if (!client) {
+-      return getDefaultRecentActivity();
++      return [];
+     }
+-    const { data, error } = await client
++    let query = client
+       .from('admin_audit_log')
+-      .select('id, action, resource_type, resource_id, metadata, created_at')
++      .select('id, action, resource_type, resource_id, created_at')
++      .eq('status', 'success');
++    // O cliente de serviço ignora RLS, portanto a restrição do ator é explícita.
++    if (auth.role !== 'admin') query = query.eq('actor_id', auth.user.id);
++    const { data, error } = await query
+       .order('created_at', { ascending: false })
++      .order('id', { ascending: false })
+       .limit(5);
+ 
+     if (error || !data || data.length === 0) {
+-      return getDefaultRecentActivity();
++      return [];
+     }
+ 
+     return data.map((item) => {
+@@ -203,95 +223,17 @@
+       };
+     });
+   } catch {
+-    return getDefaultRecentActivity();
+-  }
+-}
+-
+-/**
+- * Lista de atividade padrão de contingência visual alinhada ao mockup.
+- */
+-function getDefaultRecentActivity(): RecentActivityItem[] {
+-  return [
+-    {
+-      id: 'mock-1',
+-      title: 'Artigo publicado',
+-      description: 'Melhores notebooks para trabalhar em 2026',
+-      timeAgo: 'há 1h',
+-      type: 'article',
+-    },
+-    {
+-      id: 'mock-2',
+-      title: 'Novo usuário',
+-      description: 'Operador delegado cadastrado com sucesso',
+-      timeAgo: 'há 2h',
+-      type: 'user',
+-    },
+-    {
+-      id: 'mock-3',
+-      title: 'Oferta atualizada',
+-      description: 'Selo de preço verificado com evidência WORM',
+-      timeAgo: 'há 3h',
+-      type: 'offer',
+-    },
+-    {
+-      id: 'mock-4',
+-      title: 'Configuração alterada',
+-      description: 'Política de segurança de MFA renovada',
+-      timeAgo: 'há 5h',
+-      type: 'security',
+-    },
+-    {
+-      id: 'mock-5',
+-      title: 'Rascunho salvo',
+-      description: 'Guia completo de smart home e automação',
+-      timeAgo: 'há 6h',
+-      type: 'article',
+-    },
+-  ];
+-}
+-
+-/**
+- * Gera série temporal dos últimos 14 dias para o gráfico de publicações.
++    return [];
++  }
++}
++
++/**
++ * A fonte atual não oferece histórico de transições editoriais nem analytics.
++ * Retorna ausência de série em vez de gerar eventos que não aconteceram.
++ * @returns Série vazia até existir consulta temporal comprovada.
+  */
+ export function getDashboardPublicationHistory(): PublicationDataPoint[] {
+-  const days: PublicationDataPoint[] = [];
+-  const today = new Date();
+-
+-  // Histórico representativo de 14 dias
+-  const sampleValues = [
+-    { p: 4, r: 3, d: 2 },
+-    { p: 6, r: 4, d: 1 },
+-    { p: 5, r: 5, d: 2 },
+-    { p: 4, r: 3, d: 3 },
+-    { p: 7, r: 4, d: 2 },
+-    { p: 8, r: 3, d: 3 },
+-    { p: 6, r: 5, d: 2 },
+-    { p: 7, r: 4, d: 3 },
+-    { p: 9, r: 5, d: 4 },
+-    { p: 5, r: 4, d: 4 },
+-    { p: 8, r: 6, d: 3 },
+-    { p: 9, r: 5, d: 1 },
+-    { p: 12, r: 8, d: 5 },
+-    { p: 9, r: 4, d: 2 },
+-  ];
+-
+-  for (let i = 13; i >= 0; i--) {
+-    const d = new Date(today);
+-    d.setDate(today.getDate() - i);
+-    const day = String(d.getDate()).padStart(2, '0');
+-    const month = String(d.getMonth() + 1).padStart(2, '0');
+-    const sample = sampleValues[13 - i] || { p: 5, r: 3, d: 2 };
+-
+-    days.push({
+-      date: `${day}/${month}`,
+-      label: `${day}/${month}`,
+-      published: sample.p,
+-      review: sample.r,
+-      drafts: sample.d,
+-    });
+-  }
+-
+-  return days;
++  return [];
+ }
+ 
+ export interface DashboardSummaryData {
+--- a/components/admin/dashboard/metric-cards.tsx
++++ b/components/admin/dashboard/metric-cards.tsx
+@@ -18,7 +18,6 @@
+   value: string;
+   growth: string;
+   color: 'blue' | 'green' | 'purple' | 'cyan';
+-  sparklinePoints: string;
+   icon: React.ReactNode;
+ }
+ 
+@@ -27,10 +26,15 @@
+     {
+       id: 'articles',
+       label: 'Total de artigos',
+-      value: metrics.totalArticles.toLocaleString('pt-BR'),
+-      growth: `+${metrics.articlesGrowth}% vs. últimos 7 dias`,
++      value:
++        metrics.totalArticles === null
++          ? 'Indisponível'
++          : metrics.totalArticles.toLocaleString('pt-BR'),
++      growth:
++        metrics.articlesGrowth === null
++          ? 'Sem série histórica'
++          : `${metrics.articlesGrowth >= 0 ? '+' : ''}${metrics.articlesGrowth}% vs. últimos 7 dias`,
+       color: 'blue',
+-      sparklinePoints: '0,18 15,14 30,16 45,10 60,12 75,6 90,8 100,2',
+       icon: (
+         <svg
+           className="h-6 w-6 text-blue-600 dark:text-blue-400"
+@@ -49,10 +53,15 @@
+     {
+       id: 'views',
+       label: 'Visualizações',
+-      value: metrics.totalViews.toLocaleString('pt-BR'),
+-      growth: `+${metrics.viewsGrowth}% vs. últimos 7 dias`,
++      value:
++        metrics.totalViews === null
++          ? 'Indisponível'
++          : metrics.totalViews.toLocaleString('pt-BR'),
++      growth:
++        metrics.viewsGrowth === null
++          ? 'Sem série histórica'
++          : `${metrics.viewsGrowth >= 0 ? '+' : ''}${metrics.viewsGrowth}% vs. últimos 7 dias`,
+       color: 'green',
+-      sparklinePoints: '0,16 15,12 30,15 45,8 60,11 75,4 90,6 100,1',
+       icon: (
+         <svg
+           className="h-6 w-6 text-emerald-600 dark:text-emerald-400"
+@@ -77,10 +86,15 @@
+     {
+       id: 'offers',
+       label: 'Ofertas ativas',
+-      value: metrics.activeOffers.toLocaleString('pt-BR'),
+-      growth: `+${metrics.offersGrowth}% vs. últimos 7 dias`,
++      value:
++        metrics.activeOffers === null
++          ? 'Indisponível'
++          : metrics.activeOffers.toLocaleString('pt-BR'),
++      growth:
++        metrics.offersGrowth === null
++          ? 'Sem série histórica'
++          : `${metrics.offersGrowth >= 0 ? '+' : ''}${metrics.offersGrowth}% vs. últimos 7 dias`,
+       color: 'purple',
+-      sparklinePoints: '0,17 15,15 30,12 45,14 60,8 75,10 90,4 100,3',
+       icon: (
+         <svg
+           className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
+@@ -98,11 +112,16 @@
+     },
+     {
+       id: 'users',
+-      label: 'Usuários cadastrados',
+-      value: metrics.registeredUsers.toLocaleString('pt-BR'),
+-      growth: `+${metrics.usersGrowth}% vs. últimos 7 dias`,
++      label: 'Operadores com acesso',
++      value:
++        metrics.registeredUsers === null
++          ? 'Indisponível'
++          : metrics.registeredUsers.toLocaleString('pt-BR'),
++      growth:
++        metrics.usersGrowth === null
++          ? 'Sem série histórica'
++          : `${metrics.usersGrowth >= 0 ? '+' : ''}${metrics.usersGrowth}% vs. últimos 7 dias`,
+       color: 'cyan',
+-      sparklinePoints: '0,18 15,13 30,14 45,9 60,11 75,5 90,7 100,2',
+       icon: (
+         <svg
+           className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
+@@ -174,23 +193,6 @@
+               <span className={`text-xs font-semibold ${style.growthColor}`}>
+                 {card.growth}
+               </span>
+-
+-              {/* Sparkline SVG Nativo */}
+-              <div className="h-6 w-24">
+-                <svg
+-                  className="h-full w-full overflow-visible"
+-                  viewBox="0 0 100 20"
+-                  fill="none">
+-                  <polyline
+-                    fill="none"
+-                    stroke={style.stroke}
+-                    strokeWidth="2"
+-                    strokeLinecap="round"
+-                    strokeLinejoin="round"
+-                    points={card.sparklinePoints}
+-                  />
+-                </svg>
+-              </div>
+             </div>
+           </div>
+         );
+--- a/components/admin/dashboard/publication-chart.tsx
++++ b/components/admin/dashboard/publication-chart.tsx
+@@ -24,13 +24,13 @@
+ 
+   const sourceData = initialData || propData || [];
+   // Ajusta volume visível de dados de acordo com o período selecionado
+-  const data = period === '7' ? sourceData.slice(-7) : sourceData;
++  const data = sourceData.slice(-Number(period));
+ 
+   const maxTotal = Math.max(
+     ...(data.length > 0
+       ? data.map((d) => (d.published || 0) + (d.review || 0) + (d.drafts || 0))
+-      : [35]),
+-    35,
++      : [1]),
++    1,
+   );
+ 
+   return (
+@@ -42,7 +42,7 @@
+             Publicações por Período
+           </h2>
+           <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+-            Total de artigos publicados nos últimos {period} dias
++            Histórico editorial nos últimos {period} dias
+           </p>
+         </div>
+ 
+@@ -67,98 +67,108 @@
+         </div>
+       </div>
+ 
++      {data.length === 0 && (
++        <p
++          role="status"
++          className="mt-6 text-sm text-gray-500 dark:text-gray-400">
++          Histórico de publicações indisponível. Nenhuma série estimada é
++          exibida.
++        </p>
++      )}
+       {/* Área do Gráfico SVG */}
+-      <div className="mt-8 h-64 w-full">
+-        <svg className="h-full w-full" viewBox="0 0 600 200" fill="none">
+-          {/* Linhas de grade horizontais e rótulos do eixo Y */}
+-          {[0, 10, 20, 30, 40].map((val) => {
+-            const y = 170 - (val / 40) * 150;
+-            return (
+-              <g key={val}>
+-                <line
+-                  x1="35"
+-                  y1={y}
+-                  x2="590"
+-                  y2={y}
+-                  stroke="currentColor"
+-                  className="text-gray-100 dark:text-gray-800/80"
+-                  strokeDasharray="3 3"
+-                />
+-                <text
+-                  x="25"
+-                  y={y + 4}
+-                  textAnchor="end"
+-                  className="fill-gray-400 text-[10px] font-medium">
+-                  {val}
+-                </text>
+-              </g>
+-            );
+-          })}
++      {data.length > 0 && (
++        <div className="mt-8 h-64 w-full">
++          <svg className="h-full w-full" viewBox="0 0 600 200" fill="none">
++            {/* Linhas de grade horizontais e rótulos do eixo Y */}
++            {[0, 1, 2, 3, 4].map((tick) => {
++              const val = Math.ceil(maxTotal / 4) * tick;
++              const y = 170 - (tick / 4) * 150;
++              return (
++                <g key={val}>
++                  <line
++                    x1="35"
++                    y1={y}
++                    x2="590"
++                    y2={y}
++                    stroke="currentColor"
++                    className="text-gray-100 dark:text-gray-800/80"
++                    strokeDasharray="3 3"
++                  />
++                  <text
++                    x="25"
++                    y={y + 4}
++                    textAnchor="end"
++                    className="fill-gray-400 text-[10px] font-medium">
++                    {val}
++                  </text>
++                </g>
++              );
++            })}
+ 
+-          {/* Barras Verticais Empilhadas por Data */}
+-          {data.map((item, index) => {
+-            const count = data.length;
+-            const barWidth = Math.max(12, Math.min(22, 450 / count - 8));
+-            const availableWidth = 540;
+-            const step = availableWidth / count;
+-            const x = 45 + index * step + (step - barWidth) / 2;
++            {/* Barras Verticais Empilhadas por Data */}
++            {data.map((item, index) => {
++              const count = data.length;
++              const barWidth = Math.max(12, Math.min(22, 450 / count - 8));
++              const availableWidth = 540;
++              const step = availableWidth / count;
++              const x = 45 + index * step + (step - barWidth) / 2;
+ 
+-            // Alturas proporcionais com base em maxTotal
+-            const scale = 150 / Math.max(maxTotal, 1);
+-            const hPublished = item.published * scale;
+-            const hReview = item.review * scale;
+-            const hDrafts = item.drafts * scale;
++              // Alturas proporcionais com base em maxTotal
++              const scale = 150 / (Math.ceil(maxTotal / 4) * 4);
++              const hPublished = item.published * scale;
++              const hReview = item.review * scale;
++              const hDrafts = item.drafts * scale;
+ 
+-            const yPublished = 170 - hPublished;
+-            const yReview = yPublished - hReview;
+-            const yDrafts = yReview - hDrafts;
++              const yPublished = 170 - hPublished;
++              const yReview = yPublished - hReview;
++              const yDrafts = yReview - hDrafts;
+ 
+-            return (
+-              <g key={item.date} className="group">
+-                {/* 1. Publicados (Verde) */}
+-                <rect
+-                  x={x}
+-                  y={yPublished}
+-                  width={barWidth}
+-                  height={hPublished}
+-                  rx="3"
+-                  className="fill-emerald-500 transition-opacity hover:opacity-90"
+-                />
++              return (
++                <g key={item.date} className="group">
++                  {/* 1. Publicados (Verde) */}
++                  <rect
++                    x={x}
++                    y={yPublished}
++                    width={barWidth}
++                    height={hPublished}
++                    rx="3"
++                    className="fill-emerald-500 transition-opacity hover:opacity-90"
++                  />
+ 
+-                {/* 2. Em revisão (Azul) */}
+-                <rect
+-                  x={x}
+-                  y={yReview}
+-                  width={barWidth}
+-                  height={hReview}
+-                  rx="3"
+-                  className="fill-blue-500 transition-opacity hover:opacity-90"
+-                />
++                  {/* 2. Em revisão (Azul) */}
++                  <rect
++                    x={x}
++                    y={yReview}
++                    width={barWidth}
++                    height={hReview}
++                    rx="3"
++                    className="fill-blue-500 transition-opacity hover:opacity-90"
++                  />
+ 
+-                {/* 3. Rascunhos (Roxo/Índigo) */}
+-                <rect
+-                  x={x}
+-                  y={yDrafts}
+-                  width={barWidth}
+-                  height={hDrafts}
+-                  rx="3"
+-                  className="fill-indigo-500 transition-opacity hover:opacity-90"
+-                />
++                  {/* 3. Rascunhos (Roxo/Índigo) */}
++                  <rect
++                    x={x}
++                    y={yDrafts}
++                    width={barWidth}
++                    height={hDrafts}
++                    rx="3"
++                    className="fill-indigo-500 transition-opacity hover:opacity-90"
++                  />
+ 
+-                {/* Rótulo de Data no Eixo X */}
+-                <text
+-                  x={x + barWidth / 2}
+-                  y="190"
+-                  textAnchor="middle"
+-                  className="fill-gray-400 text-[9px] font-medium">
+-                  {item.label}
+-                </text>
+-              </g>
+-            );
+-          })}
+-        </svg>
+-      </div>
+-
++                  {/* Rótulo de Data no Eixo X */}
++                  <text
++                    x={x + barWidth / 2}
++                    y="190"
++                    textAnchor="middle"
++                    className="fill-gray-400 text-[9px] font-medium">
++                    {item.label}
++                  </text>
++                </g>
++              );
++            })}
++          </svg>
++        </div>
++      )}
+       {/* Legenda de Status */}
+       <div className="mt-4 flex flex-wrap items-center gap-6 border-t border-gray-50 pt-4 dark:border-gray-800/60">
+         <div className="flex items-center gap-2">
+--- a/app/admin-dashboard/(protegido)/page.tsx
++++ b/app/admin-dashboard/(protegido)/page.tsx
+@@ -12,6 +12,8 @@
+  *   @/lib/services/commercial-dashboard, @/lib/services/dashboard-summary, @/components/admin/dashboard/*
+  */
+ 
++import { checkAdminUser } from '@/lib/admin/auth';
++import { forbidden, redirect } from 'next/navigation';
+ import { env } from '@/lib/env';
+ import { getDashboardHealthData } from '@/lib/services/health-dashboard';
+ import { getEditorialDashboardData } from '@/lib/services/editorial-dashboard';
+@@ -39,6 +41,19 @@
+ }
+ 
+ export default async function AdminDashboardPage({ searchParams }: PageProps) {
++  // Layouts e páginas podem executar em paralelo. Autoriza antes de qualquer consulta.
++  const auth = await checkAdminUser();
++  if (auth instanceof Response)
++    throw new Error('Admissão administrativa indisponível.');
++  if (!auth.ok) {
++    if (auth.reason === 'unauthenticated') redirect('/admin-dashboard/login');
++    if (auth.reason === 'unauthorized') forbidden();
++    if (auth.reason === 'mfa_enrollment_required')
++      redirect('/admin-dashboard/mfa/setup');
++    if (auth.reason === 'mfa_challenge_required')
++      redirect('/admin-dashboard/mfa/verify');
++    throw new Error('Autorização administrativa indisponível.');
++  }
+   const params = await searchParams;
+   const pageEditorial = Math.max(
+     1,
+@@ -70,7 +85,12 @@
+         <div className="flex flex-col gap-1">
+           <div className="flex items-center gap-2.5">
+             <h1 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl dark:text-white">
+-              Olá, Administrador
++              Olá,{' '}
++              {auth.role === 'admin'
++                ? 'Administrador'
++                : auth.role === 'editor'
++                  ? 'Editor'
++                  : 'Revisor'}
+             </h1>
+             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
+               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+--- a/app/api/admin/usuarios/papeis/route.ts
++++ b/app/api/admin/usuarios/papeis/route.ts
+@@ -24,7 +24,11 @@
+ 
+   let body: Record<string, unknown>;
+   try {
+-    body = await request.json();
++    const parsed: unknown = await request.json();
++    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
++      throw new Error('invalid_body');
++    }
++    body = parsed as Record<string, unknown>;
+   } catch {
+     return NextResponse.json(
+       { error: 'invalid_json', message: 'Corpo da requisicao invalido.' },
+--- a/lib/admin/rate-limit.ts
++++ b/lib/admin/rate-limit.ts
+@@ -6,6 +6,7 @@
+  */
+ import { getCloudflareContext } from '@opennextjs/cloudflare';
+ import { NextResponse } from 'next/server';
++import { env } from '@/lib/env';
+ import {
+   readBoundedJson,
+   type AdminRateDecision,
+@@ -45,7 +46,24 @@
+       // Fora do runtime Cloudflare Workers em ambiente Node local ou teste E2E
+     }
+     if (!binding) {
+-      if (process.env.E2E_REAL_SUPABASE === '1') {
++      // A flag isolada nunca deve trocar a quota compartilhada por memória em nuvem.
++      const isLoopback = (value: string): boolean => {
++        try {
++          const url = new URL(value);
++          return (
++            ['http:', 'https:'].includes(url.protocol) &&
++            ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
++          );
++        } catch {
++          return false;
++        }
++      };
++      if (
++        process.env.E2E_REAL_SUPABASE === '1' &&
++        process.env.E2E_PRODUCTION === '1' &&
++        isLoopback(env.siteUrl) &&
++        isLoopback(env.supabase.url)
++      ) {
+         const now = Date.now();
+         const current = localRateLimits.get(operation);
+         if (!current || now >= current.expiresAt) {
+--- a/__tests__/unit/lib/services/dashboard-summary.test.ts
++++ b/__tests__/unit/lib/services/dashboard-summary.test.ts
+@@ -1,227 +1,177 @@
+ /**
+- * @fileoverview Testes unitários para dashboard-summary.ts
++ * @fileoverview Regressões dos dados operacionais do painel.
+  * @module __tests__/unit/lib/services/dashboard-summary
+- * @description Testa getDashboardMetricSummary, getDashboardRecentActivity,
+- *   getDashboardPublicationHistory, getDashboardSummary, formatTimeAgo,
+- *   mapAuditAction e getDefaultRecentActivity.
++ * @description Recusa dados fictícios e restringe auditoria conforme o operador.
++ * @dependencies vitest, lib/services/dashboard-summary.
+  */
+-
+-import { describe, expect, it, vi } from 'vitest';
+-
++import { beforeEach, describe, expect, it, vi } from 'vitest';
+ vi.mock('server-only', () => ({}));
+-
++const mocks = vi.hoisted(() => ({
++  auth: vi.fn(),
++  client: vi.fn(),
++  editorial: vi.fn(),
++  commercial: vi.fn(),
++}));
++vi.mock('@/lib/admin/auth', () => ({ checkAdminUser: mocks.auth }));
+ vi.mock('@/lib/admin/service-client', () => ({
+-  getAdminServiceClient: vi.fn(() => null),
++  getAdminServiceClient: mocks.client,
+ }));
+-
++vi.mock('@/lib/env', () => ({ env: { adminUserId: 'root' } }));
+ vi.mock('@/lib/services/editorial-dashboard', () => ({
+-  getEditorialDashboardData: vi.fn(async () => ({
+-    status: 'configured',
+-    posts: [],
+-    totalPosts: 42,
+-    page: 1,
+-    pageSize: 50,
+-    source: 'sanity',
+-  })),
++  getEditorialDashboardData: mocks.editorial,
+ }));
+-
+ vi.mock('@/lib/services/commercial-dashboard', () => ({
+-  getCommercialDashboardData: vi.fn(async () => ({
+-    status: 'configured',
+-    offers: [],
+-    totalOffers: 14,
+-    page: 1,
+-    pageSize: 10,
+-    source: 'sanity',
+-  })),
++  getCommercialDashboardData: mocks.commercial,
+ }));
+-
+ import {
+   getDashboardMetricSummary,
+   getDashboardPublicationHistory,
+   getDashboardRecentActivity,
+-  getDashboardSummary,
+ } from '@/lib/services/dashboard-summary';
+ 
+-describe('getDashboardMetricSummary', () => {
+-  it('retorna métricas com valores mínimos garantidos', async () => {
+-    const result = await getDashboardMetricSummary();
+-    expect(result.totalArticles).toBeGreaterThanOrEqual(17);
+-    expect(result.activeOffers).toBeGreaterThanOrEqual(14);
+-    expect(result.registeredUsers).toBeGreaterThanOrEqual(3);
+-    expect(result.totalViews).toBe(182450);
+-    expect(result.viewsGrowth).toBe(18);
+-    expect(result.articlesGrowth).toBe(12);
+-    expect(result.offersGrowth).toBe(6);
+-    expect(result.usersGrowth).toBe(14);
++beforeEach(() => {
++  vi.resetAllMocks();
++  mocks.auth.mockResolvedValue({
++    ok: true,
++    user: { id: 'root' },
++    role: 'admin',
++    aal: 'aal2',
+   });
+-
+-  it('usa contagem do Sanity quando disponível', async () => {
+-    const { getEditorialDashboardData } =
+-      await import('@/lib/services/editorial-dashboard');
+-    vi.mocked(getEditorialDashboardData).mockResolvedValueOnce({
+-      status: 'configured',
++  mocks.client.mockReturnValue(null);
++  mocks.editorial.mockResolvedValue({
++    status: 'empty',
++    totalPosts: 0,
++    posts: [],
++  });
++  mocks.commercial.mockResolvedValue({
++    status: 'empty',
++    totalOffers: 0,
++    offers: [],
++  });
++});
++function query(result: object) {
++  const q: any = {};
++  for (const name of ['from', 'select', 'eq', 'order'])
++    q[name] = vi.fn(() => q);
++  q.neq = vi.fn(async () => result);
++  q.limit = vi.fn(async () => result);
++  return q;
++}
++describe('Dados verdadeiros do painel', () => {
++  it('preserva zero confirmado e não inventa analytics ou variações', async () => {
++    expect(await getDashboardMetricSummary()).toEqual({
++      totalArticles: 0,
++      activeOffers: 0,
++      registeredUsers: null,
++      totalViews: null,
++      articlesGrowth: null,
++      viewsGrowth: null,
++      offersGrowth: null,
++      usersGrowth: null,
++    });
++  });
++  it('fonte indisponível não aparece como zero confirmado', async () => {
++    mocks.editorial.mockResolvedValue({
++      status: 'error',
++      totalPosts: 0,
+       posts: [],
+-      totalPosts: 100,
+-      page: 1,
+-      pageSize: 50,
+-      source: 'sanity',
++    });
++    mocks.commercial.mockResolvedValue({
++      status: 'unconfigured',
++      totalOffers: 0,
++      offers: [],
+     });
+     const result = await getDashboardMetricSummary();
+-    expect(result.totalArticles).toBeGreaterThanOrEqual(100);
++    expect(result.totalArticles).toBeNull();
++    expect(result.activeOffers).toBeNull();
+   });
+-
+-  it('usa contagem do Supabase quando disponível', async () => {
+-    const { getAdminServiceClient } =
+-      await import('@/lib/admin/service-client');
+-    vi.mocked(getAdminServiceClient).mockReturnValueOnce({
+-      from: vi.fn(() => ({
+-        select: vi.fn(() => ({
+-          count: 10,
+-          error: null,
+-        })),
+-      })),
+-    } as any);
++  it('não arredonda contagens reais para mínimos do mockup', async () => {
++    mocks.editorial.mockResolvedValue({ status: 'configured', totalPosts: 2 });
++    mocks.commercial.mockResolvedValue({
++      status: 'configured',
++      totalOffers: 1,
++    });
++    const q = query({ count: 0, error: null });
++    mocks.client.mockReturnValue(q);
+     const result = await getDashboardMetricSummary();
+-    expect(result.registeredUsers).toBeGreaterThanOrEqual(11);
++    expect(result.totalArticles).toBe(2);
++    expect(result.activeOffers).toBe(1);
++    expect(result.registeredUsers).toBe(1);
++    expect(q.neq).toHaveBeenCalledWith('user_id', 'root');
++  });
++  it('recusa consulta agregada antes de acessar as fontes se não autorizado', async () => {
++    mocks.auth.mockResolvedValue({ ok: false, reason: 'unauthenticated' });
++    await expect(getDashboardMetricSummary()).rejects.toThrow();
++    expect(mocks.client).not.toHaveBeenCalled();
++    expect(mocks.editorial).not.toHaveBeenCalled();
++    expect(mocks.commercial).not.toHaveBeenCalled();
++  });
++  it('não entrega contagem privilegiada de operadores ao editor', async () => {
++    mocks.auth.mockResolvedValue({
++      ok: true,
++      user: { id: 'editor' },
++      role: 'editor',
++      aal: 'aal2',
++    });
++    expect((await getDashboardMetricSummary()).registeredUsers).toBeNull();
++    expect(mocks.client).not.toHaveBeenCalled();
++  });
++  it('não produz uma série temporal sem fonte', () => {
++    expect(getDashboardPublicationHistory()).toEqual([]);
+   });
+ });
+-
+-describe('getDashboardPublicationHistory', () => {
+-  it('retorna exatamente 14 pontos de dados', () => {
+-    const result = getDashboardPublicationHistory();
+-    expect(result).toHaveLength(14);
++describe('Trilha de auditoria', () => {
++  it('não cria atividades quando não há serviço nem eventos', async () => {
++    expect(await getDashboardRecentActivity()).toEqual([]);
++    mocks.client.mockReturnValue(query({ data: [], error: null }));
++    expect(await getDashboardRecentActivity()).toEqual([]);
+   });
+-
+-  it('cada ponto tem todos os campos obrigatórios', () => {
+-    const result = getDashboardPublicationHistory();
+-    for (const point of result) {
+-      expect(point.date).toMatch(/\d{2}\/\d{2}/);
+-      expect(point.label).toMatch(/\d{2}\/\d{2}/);
+-      expect(typeof point.published).toBe('number');
+-      expect(typeof point.review).toBe('number');
+-      expect(typeof point.drafts).toBe('number');
+-    }
++  it('recusa sessão sem papel sem consultar o serviço privilegiado', async () => {
++    mocks.auth.mockResolvedValue({ ok: false, reason: 'unauthorized' });
++    expect(await getDashboardRecentActivity()).toEqual([]);
++    expect(mocks.client).not.toHaveBeenCalled();
+   });
+-
+-  it('pontos estão ordenados cronologicamente', () => {
+-    const result = getDashboardPublicationHistory();
+-    // As datas devem ser únicas e cobrir 14 dias consecutivos
+-    const dates = result.map((p) => p.date);
+-    expect(new Set(dates).size).toBe(14);
++  it.each(['editor', 'revisor'])(
++    'restringe %s aos próprios eventos concluídos',
++    async (role) => {
++      mocks.auth.mockResolvedValue({
++        ok: true,
++        user: { id: 'operator' },
++        role,
++        aal: 'aal2',
++      });
++      const q = query({
++        data: [
++          {
++            id: 'event',
++            action: 'auth.login',
++            resource_type: 'auth',
++            resource_id: null,
++            created_at: new Date().toISOString(),
++          },
++        ],
++        error: null,
++      });
++      mocks.client.mockReturnValue(q);
++      const events = await getDashboardRecentActivity();
++      expect(q.eq).toHaveBeenCalledWith('status', 'success');
++      expect(q.eq).toHaveBeenCalledWith('actor_id', 'operator');
++      expect(events).toHaveLength(1);
++      expect(events[0]?.type).toBe('security');
++      expect(q.limit).toHaveBeenCalledWith(5);
++    },
++  );
++  it('administrador consulta eventos concluídos sem filtro de outro ator', async () => {
++    const q = query({ data: [], error: null });
++    mocks.client.mockReturnValue(q);
++    await getDashboardRecentActivity();
++    expect(q.eq).toHaveBeenCalledTimes(1);
++    expect(q.eq).toHaveBeenCalledWith('status', 'success');
++  });
++  it('erro de infraestrutura não vira uma atividade de sucesso', async () => {
++    mocks.client.mockImplementation(() => {
++      throw new Error('indisponível');
++    });
++    expect(await getDashboardRecentActivity()).toEqual([]);
+   });
+ });
+-
+-describe('getDashboardRecentActivity', () => {
+-  it('retorna atividade padrão quando não há cliente', async () => {
+-    const result = await getDashboardRecentActivity();
+-    expect(result).toHaveLength(5);
+-    expect(result[0].type).toBe('article');
+-    expect(result[1].type).toBe('user');
+-    expect(result[2].type).toBe('offer');
+-    expect(result[3].type).toBe('security');
+-    expect(result[4].type).toBe('article');
+-  });
+-
+-  it('retorna atividade padrão quando não há dados', async () => {
+-    const { getAdminServiceClient } =
+-      await import('@/lib/admin/service-client');
+-    vi.mocked(getAdminServiceClient).mockReturnValueOnce({
+-      from: vi.fn(() => ({
+-        select: vi.fn(() => ({
+-          order: vi.fn(() => ({
+-            limit: vi.fn(async () => ({ data: [], error: null })),
+-          })),
+-        })),
+-      })),
+-    } as any);
+-    const result = await getDashboardRecentActivity();
+-    expect(result).toHaveLength(5);
+-  });
+-});
+-
+-describe('getDashboardSummary', () => {
+-  it('agrega métricas, atividades e histórico em paralelo', async () => {
+-    const result = await getDashboardSummary();
+-    expect(result.metrics).toBeDefined();
+-    expect(result.chartData).toHaveLength(14);
+-    expect(result.recentActivities).toHaveLength(5);
+-    expect(result.metrics.totalArticles).toBeGreaterThanOrEqual(17);
+-  });
+-
+-  it('mapeia diferentes tipos de ação de auditoria', async () => {
+-    const { getAdminServiceClient } =
+-      await import('@/lib/admin/service-client');
+-    vi.mocked(getAdminServiceClient).mockReturnValueOnce({
+-      from: vi.fn(() => ({
+-        select: vi.fn(() => ({
+-          order: vi.fn(() => ({
+-            limit: vi.fn(async () => ({
+-              data: [
+-                {
+-                  id: '1',
+-                  action: 'auth.login',
+-                  resource_type: 'auth',
+-                  resource_id: null,
+-                  metadata: {},
+-                  created_at: new Date().toISOString(),
+-                },
+-                {
+-                  id: '2',
+-                  action: 'offer.badge_evaluated',
+-                  resource_type: 'offer',
+-                  resource_id: 'offer-1',
+-                  metadata: {},
+-                  created_at: new Date().toISOString(),
+-                },
+-                {
+-                  id: '3',
+-                  action: 'user.role_assigned',
+-                  resource_type: 'user',
+-                  resource_id: 'user-1',
+-                  metadata: {},
+-                  created_at: new Date().toISOString(),
+-                },
+-                {
+-                  id: '4',
+-                  action: 'preview.issued',
+-                  resource_type: 'preview',
+-                  resource_id: 'preview-1',
+-                  metadata: {},
+-                  created_at: new Date().toISOString(),
+-                },
+-                {
+-                  id: '5',
+-                  action: 'unknown.action',
+-                  resource_type: 'system',
+-                  resource_id: null,
+-                  metadata: {},
+-                  created_at: new Date().toISOString(),
+-                },
+-              ],
+-              error: null,
+-            })),
+-          })),
+-        })),
+-      })),
+-    } as any);
+-    const result = await getDashboardRecentActivity();
+-    expect(result).toHaveLength(5);
+-    expect(result[0].type).toBe('security');
+-    expect(result[1].type).toBe('offer');
+-    expect(result[2].type).toBe('user');
+-    expect(result[3].type).toBe('article');
+-    expect(result[4].type).toBe('system');
+-  });
+-
+-  it('usa activity padrão quando cliente lança exceção', async () => {
+-    const { getAdminServiceClient } =
+-      await import('@/lib/admin/service-client');
+-    vi.mocked(getAdminServiceClient).mockImplementationOnce(() => {
+-      throw new Error('conexão falhou');
+-    });
+-    const result = await getDashboardRecentActivity();
+-    expect(result).toHaveLength(5);
+-    expect(result[0].type).toBe('article');
+-  });
+-});
+--- a/__tests__/unit/components/admin-dashboard-visual.test.tsx
++++ b/__tests__/unit/components/admin-dashboard-visual.test.tsx
+@@ -16,6 +16,14 @@
+ import { describe, expect, it, vi } from 'vitest';
+ 
+ vi.mock('server-only', () => ({}));
++vi.mock('@/lib/admin/auth', () => ({
++  checkAdminUser: vi.fn(async () => ({
++    ok: true,
++    user: { id: 'root' },
++    role: 'admin',
++    aal: 'aal2',
++  })),
++}));
+ 
+ import { MetricCards } from '@/components/admin/dashboard/metric-cards';
+ import { PublicationChart } from '@/components/admin/dashboard/publication-chart';
+@@ -49,20 +57,41 @@
+       expect(screen.getByText('Ofertas ativas')).toBeInTheDocument();
+       expect(screen.getByText('14')).toBeInTheDocument();
+ 
+-      expect(screen.getByText('Usuários cadastrados')).toBeInTheDocument();
++      expect(screen.getByText('Operadores com acesso')).toBeInTheDocument();
+       expect(screen.getByText('3')).toBeInTheDocument();
+     });
+ 
+-    it('renderiza os badges de tendência e sparklines SVG nativos', () => {
++    it('renderiza variação fornecida sem desenhar séries inventadas', () => {
+       const { container } = render(<MetricCards metrics={mockMetrics} />);
+ 
+       expect(screen.getByText('+12% vs. últimos 7 dias')).toBeInTheDocument();
+       expect(screen.getByText('+18% vs. últimos 7 dias')).toBeInTheDocument();
+ 
+       const svgs = container.querySelectorAll('svg');
+-      // Cada cartão possui ao menos 1 sparkline SVG nativo
+-      expect(svgs.length).toBeGreaterThanOrEqual(4);
+-    });
++      // Os quatro ícones continuam presentes; não há polylines fictícias.
++      expect(svgs.length).toBe(4);
++      expect(container.querySelector('polyline')).toBeNull();
++    });
++  });
++
++  it('mostra indisponibilidade sem confundir falta de medição com zero', () => {
++    render(
++      <MetricCards
++        metrics={{
++          totalArticles: 0,
++          activeOffers: 0,
++          registeredUsers: null,
++          totalViews: null,
++          articlesGrowth: null,
++          offersGrowth: null,
++          usersGrowth: null,
++          viewsGrowth: null,
++        }}
++      />,
++    );
++    expect(screen.getAllByText('0')).toHaveLength(2);
++    expect(screen.getAllByText('Indisponível')).toHaveLength(2);
++    expect(screen.getAllByText('Sem série histórica')).toHaveLength(4);
+   });
+ 
+   describe('2. PublicationChart (dash-ui/AC-04)', () => {
+@@ -240,12 +269,18 @@
+       const summary = await getDashboardSummary();
+ 
+       expect(summary).toHaveProperty('metrics');
+-      expect(summary.metrics.totalArticles).toBeGreaterThanOrEqual(0);
+-      expect(summary.metrics.activeOffers).toBeGreaterThanOrEqual(0);
++      expect(
++        summary.metrics.totalArticles === null ||
++          summary.metrics.totalArticles >= 0,
++      ).toBe(true);
++      expect(
++        summary.metrics.activeOffers === null ||
++          summary.metrics.activeOffers >= 0,
++      ).toBe(true);
+ 
+       expect(summary).toHaveProperty('chartData');
+       expect(Array.isArray(summary.chartData)).toBe(true);
+-      expect(summary.chartData.length).toBeGreaterThan(0);
++      expect(summary.chartData).toEqual([]);
+ 
+       expect(summary).toHaveProperty('recentActivities');
+       expect(Array.isArray(summary.recentActivities)).toBe(true);
+--- a/__tests__/unit/app/api/admin/usuarios/papeis.test.ts
++++ b/__tests__/unit/app/api/admin/usuarios/papeis.test.ts
+@@ -62,6 +62,22 @@
+     const response = await POST(request);
+     expect(response.status).toBe(400);
+   });
++
++  it.each([null, [], 'texto', 42])(
++    'recusa corpo JSON sem objeto sem executar RPC: %j',
++    async (body) => {
++      const { assignAdminRole } = await import('@/lib/admin/roles');
++      const response = await POST(
++        new Request('http://localhost/api/admin/usuarios/papeis', {
++          method: 'POST',
++          headers: { 'content-type': 'application/json' },
++          body: JSON.stringify(body),
++        }),
++      );
++      expect(response.status).toBe(400);
++      expect(assignAdminRole).not.toHaveBeenCalled();
++    },
++  );
+ 
+   it('retorna 400 quando userId não é UUID válido', async () => {
+     const request = new Request('http://localhost/api/admin/usuarios/papeis', {
+--- a/__tests__/unit/admin-rate-limit.test.ts
++++ b/__tests__/unit/admin-rate-limit.test.ts
+@@ -7,6 +7,11 @@
+  */
+ import { DatabaseSync } from 'node:sqlite';
+ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
++const harnessEnv = vi.hoisted(() => ({
++  siteUrl: 'https://gradualinfo.com.br',
++  supabase: { url: 'https://db.example.com' },
++}));
++vi.mock('@/lib/env', () => ({ env: harnessEnv }));
+ const context = vi.hoisted(() => ({ get: vi.fn() }));
+ vi.mock('@opennextjs/cloudflare', () => ({
+   getCloudflareContext: context.get,
+@@ -35,6 +40,10 @@
+ }
+ beforeEach(() => {
+   vi.resetAllMocks();
++  vi.stubEnv('E2E_REAL_SUPABASE', '');
++  vi.stubEnv('E2E_PRODUCTION', '');
++  harnessEnv.siteUrl = 'https://gradualinfo.com.br';
++  harnessEnv.supabase.url = 'https://db.example.com';
+   vi.spyOn(Date, 'now').mockReturnValue(100000);
+   failWrite = false;
+   db = new DatabaseSync(':memory:');
+@@ -90,6 +99,7 @@
+ });
+ afterEach(() => {
+   db.close();
++  vi.unstubAllEnvs();
+   vi.restoreAllMocks();
+   vi.useRealTimers();
+ });
+@@ -172,6 +182,33 @@
+   });
+ });
+ describe('Adaptador e respostas externas', () => {
++  it.each([
++    'https://gradualinfo.com.br',
++    'https://localhost.evil.example',
++    'malformed',
++  ])('flag E2E não libera memória na origem %s', async (site) => {
++    context.get.mockReturnValue({ env: {} });
++    vi.stubEnv('E2E_REAL_SUPABASE', '1');
++    vi.stubEnv('E2E_PRODUCTION', '1');
++    harnessEnv.siteUrl = site;
++    harnessEnv.supabase.url = 'http://127.0.0.1:54321';
++    expect((await consumeAdminRateLimit('login')).status).toBe(503);
++  });
++  it('recusa o fallback se o Auth aponta para banco remoto', async () => {
++    context.get.mockReturnValue({ env: {} });
++    vi.stubEnv('E2E_REAL_SUPABASE', '1');
++    vi.stubEnv('E2E_PRODUCTION', '1');
++    harnessEnv.siteUrl = 'http://127.0.0.1:3100';
++    expect((await consumeAdminRateLimit('login')).status).toBe(503);
++  });
++  it('permite fallback apenas com as duas flags e serviços em loopback', async () => {
++    context.get.mockReturnValue({ env: {} });
++    vi.stubEnv('E2E_REAL_SUPABASE', '1');
++    vi.stubEnv('E2E_PRODUCTION', '1');
++    harnessEnv.siteUrl = 'http://127.0.0.1:3100';
++    harnessEnv.supabase.url = 'http://127.0.0.1:54321';
++    expect((await consumeAdminRateLimit('login')).status).toBe(200);
++  });
+   it('dois consumidores compartilham o binding e a quota', async () => {
+     const decisions = await Promise.all(
+       Array.from({ length: 6 }, () => consumeAdminRateLimit('login')),
+--- /dev/null
++++ b/__tests__/unit/admin-dashboard-page-auth.test.tsx
+@@ -0,0 +1,92 @@
++/**
++ * @fileoverview Barreira de autorização anterior às leituras do dashboard.
++ * @module __tests__/unit/admin-dashboard-page-auth
++ * @description Invoca a página diretamente sem depender da execução do layout pai.
++ * @dependencies vitest, app/admin-dashboard/(protegido)/page.
++ */
++import { beforeEach, describe, expect, it, vi } from 'vitest';
++const mocks = vi.hoisted(() => ({
++  auth: vi.fn(),
++  health: vi.fn(),
++  editorial: vi.fn(),
++  commercial: vi.fn(),
++  metrics: vi.fn(),
++  activity: vi.fn(),
++}));
++vi.mock('server-only', () => ({}));
++vi.mock('@/lib/admin/auth', () => ({ checkAdminUser: mocks.auth }));
++vi.mock('next/navigation', () => ({
++  redirect: (path: string) => {
++    throw new Error(`redirect:${path}`);
++  },
++  forbidden: () => {
++    throw new Error('forbidden');
++  },
++}));
++vi.mock('@/lib/env', () => ({ env: { sanityStudioUrl: '' } }));
++vi.mock('@/lib/services/health-dashboard', () => ({
++  getDashboardHealthData: mocks.health,
++}));
++vi.mock('@/lib/services/editorial-dashboard', () => ({
++  getEditorialDashboardData: mocks.editorial,
++}));
++vi.mock('@/lib/services/commercial-dashboard', () => ({
++  getCommercialDashboardData: mocks.commercial,
++}));
++vi.mock('@/lib/services/dashboard-summary', () => ({
++  getDashboardMetricSummary: mocks.metrics,
++  getDashboardRecentActivity: mocks.activity,
++  getDashboardPublicationHistory: () => [],
++}));
++import Page from '@/app/admin-dashboard/(protegido)/page';
++beforeEach(() => {
++  vi.clearAllMocks();
++  mocks.editorial.mockResolvedValue({ posts: [] });
++});
++describe('Página autoriza antes de consultar fontes', () => {
++  it.each([
++    ['unauthenticated', 'redirect:/admin-dashboard/login'],
++    ['unauthorized', 'forbidden'],
++    ['mfa_enrollment_required', 'redirect:/admin-dashboard/mfa/setup'],
++    ['mfa_challenge_required', 'redirect:/admin-dashboard/mfa/verify'],
++    ['role_unavailable', 'Autorização administrativa indisponível.'],
++    ['config_missing', 'Autorização administrativa indisponível.'],
++  ])('recusa %s sem ler dados', async (reason, message) => {
++    mocks.auth.mockResolvedValue({ ok: false, reason });
++    await expect(Page({ searchParams: Promise.resolve({}) })).rejects.toThrow(
++      message,
++    );
++    for (const fn of [
++      mocks.health,
++      mocks.editorial,
++      mocks.commercial,
++      mocks.metrics,
++      mocks.activity,
++    ])
++      expect(fn).not.toHaveBeenCalled();
++  });
++  it('recusa falha de admissão antes de consultas', async () => {
++    mocks.auth.mockResolvedValue(new Response(null, { status: 503 }));
++    await expect(Page({ searchParams: Promise.resolve({}) })).rejects.toThrow(
++      'Admissão',
++    );
++    expect(mocks.commercial).not.toHaveBeenCalled();
++  });
++  it('carrega as fontes após AAL2 comprovado', async () => {
++    mocks.auth.mockResolvedValue({
++      ok: true,
++      user: { id: 'root' },
++      role: 'admin',
++      aal: 'aal2',
++    });
++    await Page({ searchParams: Promise.resolve({}) });
++    for (const fn of [
++      mocks.health,
++      mocks.editorial,
++      mocks.commercial,
++      mocks.metrics,
++      mocks.activity,
++    ])
++      expect(fn).toHaveBeenCalledTimes(1);
++  });
++});
+--- a/workflow/STATE.md
++++ b/workflow/STATE.md
+@@ -22,6 +22,8 @@
+ arquivo inteiro perde o handoff de quem estiver escrevendo ao mesmo tempo.
+ 
+ ## Bastão atual
++
++**Auditoria da cópia exportada v2.0.0 (2026-10-21):** Correções locais de autorização antes de consultas do dashboard, filtro de auditoria por ator/papel, remoção de dados operacionais fictícios, validação do JSON de papéis e isolamento do fallback E2E de rate limit. Relatório: `docs/audits/2026-10-21-1913-backend-admin-v2-auditoria.md`. Regressão focada 65 PASS e TypeScript/ESLint dos arquivos alterados aprovados. Suíte global não aprovada: 1126 PASS, 6 SKIP e 1 suíte falhou por rota de afiliados ausente no ZIP. `scripts/cloudflare-worker.ts` também não veio no pacote. Próxima etapa: `/check review` desta correção contra o repositório atual, recuperar arquivos reais ausentes e validar os gates no ambiente local; depois `/architect` da gestão de operadores. Nenhuma infraestrutura remota alterada e deploy permanece manual. Este registro pertence à cópia exportada e não sobrescreve provas remotas da árvore original.
+ 
+ **encerrado (2026-10-20, linha 696):** Correção da falha real reportada pelo `/test` do commit `e646207` executada em `lib/admin/access-guard.ts:51-59`: a checagem de loopback usava `siteUrl.includes('localhost')`, admitindo `https://localhost.evil.example` com `E2E_PRODUCTION=1` em vez de recusar com 503. Substituída por parsing estrito de `new URL(siteUrl).hostname` comparado contra `localhost`, `127.0.0.1` e `[::1]`, com tratamento de URL malformada como não loopback (recusa). Suíte local 29/29 verde (`__tests__/unit/access-guard.test.ts` e `__tests__/integration/ci-fixtures.test.ts`), `pnpm typecheck` limpo e ESLint sem apontamentos nos três arquivos tocados.
+ 
+@@ -1142,3 +1144,5 @@
+ | 745 | 2026-10-21 | Tarefa 2 — Bucket Lock R2 (retenção 730 dias) | Bucket 'gradualinfo-evidencias' não possuía regras de lock. Aplicada regra 'retention-730-days' com --retention-days 730 no prefixo (todos os objetos). Confirmada via 'wrangler r2 bucket lock list': name=retention-730-days, enabled=Yes, prefix=(all prefixes), condition=after 730 dias. | concluído; próximo Tarefa 4 (rate-limit admin por IP/Turnstile, Spec 0034) |
+ 
+ | 747 | 2026-10-21 | /check verify integral da Spec 0006 | Avaliado o SHA da branch `0b0ef3161a746d0d91ffe32ea4f7ad1bb0223a78`. Os oito ACs ficaram UNVERIFIABLE porque a implantação ativa, o Worker, o Durable Object e a CI do mesmo SHA não puderam ser consultados. Matriz local com 76 testes focados, TypeScript, ESLint e Prettier passou, incluindo os cenários de rascunho autorizado e cookie revogado. A autoridade executável retornou REPROVADO. | repetir `/check verify` em ambiente conectado ao GitHub e Cloudflare; manter T10 e T11 pendentes |
++
++| 748 | 2026-10-21 | Auditoria backend/admin da cópia ZIP v2.0.0 | Corrigidas guarda da página, leitura da auditoria por papel, dados fictícios, JSON nulo e fallback E2E. Relatório docs/audits/2026-10-21-1913-backend-admin-v2-auditoria.md. 65 regressões PASS. Suíte global não aprovada por arquivo ausente no ZIP; build bloqueado por Supabase local indisponível. | /check review das correções, conferência da origem e gates locais; depois /architect gestão de operadores |
+--- /dev/null
++++ b/docs/audits/2026-10-21-1913-backend-admin-v2-auditoria.md
+@@ -0,0 +1,119 @@
++# Auditoria do backend e primeira correção administrativa
++
++Data: 2026-10-21, America/Sao_Paulo.
++Origem: pacote gradualinfo-v2.0.0.zip fornecido pelo proprietário.
++SHA-256 da origem: `bd5178221f5e4ffe1a4008c128dc5229f38414197b37bedc63011c51125fc39a`.
++
++## Resultado
++
++O backend tem uma base aproveitável de Supabase Auth, TOTP, RBAC, guardas de API,
++RPCs de papéis, trilha append only e storage probatório. O painel não está pronto
++para ser tratado como operação administrativa completa. Esta rodada corrigiu
++falhas existentes nas Specs 0032 e 0033 aceitas. Nenhuma aprovação histórica foi
++reutilizada como prova da árvore recebida.
++
++O código foi alterado somente na cópia extraída. A árvore original do proprietário,
++Cloudflare, Sanity, Supabase remoto e GitHub não foram modificados.
++
++## Escopo examinado
++
++Login, matrícula e desafio de MFA, recuperação, autorização e papéis, clientes
++Supabase de servidor e navegador, preview assinado e verificação no DO, serviços
++do dashboard, rotas administrativas, ingestão e consulta de ofertas, configuração
++Wrangler, migrations de RBAC e endurecimento e testes relacionados.
++
++A revisão é de código e testes locais. Não atesta todas as invariantes SQL sem
++executar pgTAP em banco real, nem valida a implantação ou credenciais remotas.
++
++## Achados e correções
++
++| ID     | Prioridade             | Evidência na origem                                                                                                                                                                                           | Resultado desta rodada                                                                                                                                                                                                                   |
++| ------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
++| ADM-01 | Alta                   | A página protegida iniciava consultas em paralelo sem guarda própria; somente o layout verificava sessão. Layout não controla a execução dos filhos.                                                          | A página verifica Access, usuário, papel e AAL2 antes de consultar fontes. O serviço agregador também verifica autorização. Testes invocam a página diretamente e exigem zero consultas na recusa.                                       |
++| ADM-02 | Alta                   | `getDashboardRecentActivity` usava cliente de serviço para ler eventos de todos os atores sem filtro de papel, ignorando a RLS.                                                                               | Verifica autorização, filtra `status=success` e restringe editor/revisor ao próprio `actor_id`. Administrador conserva leitura global. Projeção remove metadata desnecessária.                                                           |
++| ADM-03 | Alta para operação     | Contagens artificialmente elevadas por `Math.max`, 182450 visualizações e crescimentos constantes, cinco atividades inventadas e série temporal fixa de 14 dias. Testes antigos exigiam os números fictícios. | Contagens reais, zero preservado, indisponibilidade como null, nenhuma atividade fictícia e nenhum gráfico inventado. A interface informa que o histórico não está disponível. Não se declara entregue o gráfico temporal real do AC-04. |
++| ADM-04 | Média                  | Fallback do limitador administrativo para memória dependia apenas de `E2E_REAL_SUPABASE=1`.                                                                                                                   | Exige as duas flags do harness e origens do site e Supabase com host loopback validado por URL. Fora disso, ausência do DO retorna 503. Memória continua exclusiva do teste local.                                                       |
++| ADM-05 | Média                  | JSON `null` no POST de papéis era aceito pelo parser e falhava ao acessar `body.userId`.                                                                                                                      | Corpo deve ser objeto não nulo e não array. Casos inválidos retornam 400 sem chamar RPC.                                                                                                                                                 |
++| ADM-06 | Bloqueio do pacote     | `wrangler.jsonc` referencia `scripts/cloudflare-worker.ts`, ausente no ZIP. `route-out-redirect.test.ts` importa `app/api/out/[id]/route.ts`, também ausente.                                                 | Não reconstruídos por suposição. Conferir no repositório original e incluir os arquivos reais na próxima exportação. Não apagar testes para esconder a lacuna.                                                                           |
++| ADM-07 | Alta para continuidade | Sidebar e atalhos apontam para `#secao-usuarios` e `#secao-configuracoes`, sem seções correspondentes. Há POST/DELETE de papéis, mas não há interface de gestão de usuários.                                  | Registrado para a próxima fatia. Contrato de listagem de operadores e composição da tela precisam ser formalizados antes de criar uma nova API.                                                                                          |
++| ADM-08 | Média                  | Consulta comercial trata erro de RPC de mediana como histórico insuficiente e agrega anomalias somente por produto, sem lojista/meio de pagamento/período.                                                    | Pendente. Separar falha de serviço de amostra insuficiente e delimitar anomalias na mesma tupla da oferta e período pretendido.                                                                                                          |
++| ADM-09 | Média                  | `/api/ofertas` limita por Map do processo, sem expurgo, lendo a primeira entrada de X-Forwarded-For; a proteção é desativada em NODE_ENV=test.                                                                | Pendente. Não comprova quota distribuída entre isolates. Definir fonte confiável de IP e mecanismo compartilhado/edge, limite de armazenamento e teste do limitador ativo.                                                               |
++
++## O que a análise confirmou
++
++- Guardas das APIs de negócio declaram papel mínimo. Identidade é obtida por
++  `auth.getUser()`, sem uso de `getSession()` para autorizar essas rotas.
++- O cliente de serviço administrativo possui `server-only` e não persiste sessão.
++- Rotas de atribuição e revogação de papéis recusam alteração da conta raiz.
++- A migration de 2026-10-21 usa lock transacional por usuário nas RPCs de papéis
++  e revoga escritas diretas de `service_role` na tabela de papéis.
++- Preview exige cookie assinado e consulta ao armazenamento de sessão. A assinatura
++  está no código de sessão, não foi atribuída ao DO por suposição.
++- Wrangler mantém `OFFERS_STORAGE_WORM_VERIFIED=false`. O STATE da origem registra
++  aplicação remota de regra de 730 dias em 2026-10-21, mas esta auditoria não
++  consultou a conta nem reproduziu sua contraprova física. Não se afirma que R2
++  continua desativado, nem se considera AC-09 aprovado por esse registro.
++- Nenhum arquivo `.env.local`, `.dev.vars` ou `.env.production.local` veio no ZIP.
++  Isso não equivale a uma certificação de ausência de segredos em todo o pacote.
++
++## Validação executada
++
++| Verificação                             | Resultado observado                                                                                                                                                  |
++| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
++| SHA-256 do ZIP contra arquivo fornecido | Confere                                                                                                                                                              |
++| Extração                                | 2094 entradas; sem caminho absoluto, traversal ou link simbólico                                                                                                     |
++| Instalação isolada                      | pnpm 12.5.1, lockfile congelado, scripts de instalação desativados; Node 24.19.0 disponível, diferente do Node 22 declarado pelo projeto                             |
++| TypeScript                              | `tsc --noEmit`, exit 0                                                                                                                                               |
++| ESLint nos arquivos alterados           | Exit 0                                                                                                                                                               |
++| Prettier nos arquivos alterados         | Exit 0                                                                                                                                                               |
++| Regressão focada                        | 65 testes PASS em 5 arquivos                                                                                                                                         |
++| Suíte completa com dois workers         | 112 arquivos PASS, 1 arquivo FAIL; 1126 testes PASS e 6 SKIP. Falha de resolução do import da rota de afiliados ausente na origem. Exit 1. Não é check:all aprovado. |
++| ESLint global                           | Exit 1 pelo mesmo import ausente na suíte de afiliados                                                                                                               |
++| Next build                              | Compilação e TypeScript concluíram; build terminou com exit 1 no prerender da home, por conexão recusada ao Supabase local 127.0.0.1:54321 sem stack configurada     |
++| OpenNext/Worker e E2E real              | Não validados nesta cópia; entrypoint ausente e infraestrutura de teste não disponível                                                                               |
++| pgTAP e homologação R2                  | Não executados nesta rodada                                                                                                                                          |
++| Gitleaks/Semgrep e histórico Git        | Não executados; o pacote não substitui uma árvore Git com histórico para esse gate                                                                                   |
++
++Não se altera o total canônico de testes de AGENTS.md com base em contagens de
++outro ambiente. A suíte global permanece não aprovada. A execução inicial da
++suíte sem limitar workers terminou sem resumo; o resultado acima é da execução
++seguinte, com `--maxWorkers=2`.
++
++## Limitações da correção
++
++A ausência de uma fonte histórica não foi resolvida com números de demonstração.
++Analytics, percentuais e gráfico real permanecem pendentes. A API atual da mesa
++editorial fornece `_updatedAt`, o que não comprova histórico de publicação ou
++transições por status. É preciso definir consulta pelo campo real de publicação,
++fuso e contagem por documento lógico, incluindo coexistência de draft/publicado.
++
++Em falha de leitura da auditoria, a timeline ainda retorna uma lista vazia. Uma
++próxima fatia deve diferenciar indisponibilidade de ausência de eventos no DTO.
++Os serviços comercial/editorial continuam com autorização pelo chamador; a página
++agora a garante antes das leituras. Futuras rotas devem usar guarda explícita.
++
++## Continuidade recomendada para o admin
++
++1. Reaplicar esta correção somente após `git apply --check`. Conferir divergência
++   contra o ZIP, preservar alterações novas e recuperar os dois arquivos ausentes
++   do repositório original. Rodar os gates no Node 22 e stack local correta.
++2. Formalizar a fatia de gestão de operadores: página real, listagem paginada e
++   projeção segura, acesso exclusivo do admin, atribuição e revogação pelos
++   endpoints existentes, confirmação de mutação, raiz imutável e estados claros.
++   Cadastro/convite de contas e recuperação de delegados são decisões separadas.
++3. Construir uma tela de auditoria com paginação e filtros de ator, ação, status e
++   período. Preservar leitura global somente do admin e própria para delegados,
++   sem metadados sensíveis no navegador.
++4. Conectar métricas e histórico a fontes reais e remover/indicar atalhos ainda
++   indisponíveis. Corrigir o recorte comercial e o rate limit público.
++5. Validar jornadas reais: raiz e delegado, senha incorreta, MFA pendente, AAL1
++   bloqueado, papel revogado, mutação recusada por CSRF/papel, indisponibilidade e
++   logout. Deploy permanece manual por decisão do proprietário.
++
++## Próximo agente
++
++Executar `/check review` das correções deste pacote contra o repositório atual,
++conferindo primeiro os hashes de base. Recuperar os arquivos ausentes da origem,
++sem reconstruir código de segurança por inferência. Depois executar os gates
++completos no ambiente local e usar `/architect` para a tela de gestão de operadores
++conforme as Specs 0032 e 0033. Sem commit, push, merge ou deploy nesta tarefa.

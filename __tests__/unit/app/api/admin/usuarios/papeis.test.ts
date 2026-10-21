@@ -63,6 +63,22 @@ describe('POST /api/admin/usuarios/papeis', () => {
     expect(response.status).toBe(400);
   });
 
+  it.each([null, [], 'texto', 42])(
+    'recusa corpo JSON sem objeto sem executar RPC: %j',
+    async (body) => {
+      const { assignAdminRole } = await import('@/lib/admin/roles');
+      const response = await POST(
+        new Request('http://localhost/api/admin/usuarios/papeis', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+      );
+      expect(response.status).toBe(400);
+      expect(assignAdminRole).not.toHaveBeenCalled();
+    },
+  );
+
   it('retorna 400 quando userId não é UUID válido', async () => {
     const request = new Request('http://localhost/api/admin/usuarios/papeis', {
       method: 'POST',

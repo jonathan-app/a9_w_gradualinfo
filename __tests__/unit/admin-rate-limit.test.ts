@@ -7,6 +7,11 @@
  */
 import { DatabaseSync } from 'node:sqlite';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+const harnessEnv = vi.hoisted(() => ({
+  siteUrl: 'https://gradualinfo.com.br',
+  supabase: { url: 'https://db.example.com' },
+}));
+vi.mock('@/lib/env', () => ({ env: harnessEnv }));
 const context = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock('@opennextjs/cloudflare', () => ({
   getCloudflareContext: context.get,
@@ -35,6 +40,10 @@ function request(operation: string) {
 }
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.stubEnv('E2E_REAL_SUPABASE', '');
+  vi.stubEnv('E2E_PRODUCTION', '');
+  harnessEnv.siteUrl = 'https://gradualinfo.com.br';
+  harnessEnv.supabase.url = 'https://db.example.com';
   vi.spyOn(Date, 'now').mockReturnValue(100000);
   failWrite = false;
   db = new DatabaseSync(':memory:');
@@ -90,6 +99,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   db.close();
+  vi.unstubAllEnvs();
   vi.restoreAllMocks();
   vi.useRealTimers();
 });
@@ -172,6 +182,33 @@ describe('Quota em SQLite, runtime Cloudflare não executado', () => {
   });
 });
 describe('Adaptador e respostas externas', () => {
+  it.each([
+    'https://gradualinfo.com.br',
+    'https://localhost.evil.example',
+    'malformed',
+  ])('flag E2E não libera memória na origem %s', async (site) => {
+    context.get.mockReturnValue({ env: {} });
+    vi.stubEnv('E2E_REAL_SUPABASE', '1');
+    vi.stubEnv('E2E_PRODUCTION', '1');
+    harnessEnv.siteUrl = site;
+    harnessEnv.supabase.url = 'http://127.0.0.1:54321';
+    expect((await consumeAdminRateLimit('login')).status).toBe(503);
+  });
+  it('recusa o fallback se o Auth aponta para banco remoto', async () => {
+    context.get.mockReturnValue({ env: {} });
+    vi.stubEnv('E2E_REAL_SUPABASE', '1');
+    vi.stubEnv('E2E_PRODUCTION', '1');
+    harnessEnv.siteUrl = 'http://127.0.0.1:3100';
+    expect((await consumeAdminRateLimit('login')).status).toBe(503);
+  });
+  it('permite fallback apenas com as duas flags e serviços em loopback', async () => {
+    context.get.mockReturnValue({ env: {} });
+    vi.stubEnv('E2E_REAL_SUPABASE', '1');
+    vi.stubEnv('E2E_PRODUCTION', '1');
+    harnessEnv.siteUrl = 'http://127.0.0.1:3100';
+    harnessEnv.supabase.url = 'http://127.0.0.1:54321';
+    expect((await consumeAdminRateLimit('login')).status).toBe(200);
+  });
   it('dois consumidores compartilham o binding e a quota', async () => {
     const decisions = await Promise.all(
       Array.from({ length: 6 }, () => consumeAdminRateLimit('login')),

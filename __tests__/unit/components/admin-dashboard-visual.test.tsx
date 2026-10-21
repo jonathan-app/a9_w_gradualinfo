@@ -16,6 +16,14 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin/auth', () => ({
+  checkAdminUser: vi.fn(async () => ({
+    ok: true,
+    user: { id: 'root' },
+    role: 'admin',
+    aal: 'aal2',
+  })),
+}));
 
 import { MetricCards } from '@/components/admin/dashboard/metric-cards';
 import { PublicationChart } from '@/components/admin/dashboard/publication-chart';
@@ -49,20 +57,41 @@ describe('Painel Administrativo Profissional - Componentes Visuais (Spec 0033)',
       expect(screen.getByText('Ofertas ativas')).toBeInTheDocument();
       expect(screen.getByText('14')).toBeInTheDocument();
 
-      expect(screen.getByText('Usuários cadastrados')).toBeInTheDocument();
+      expect(screen.getByText('Operadores com acesso')).toBeInTheDocument();
       expect(screen.getByText('3')).toBeInTheDocument();
     });
 
-    it('renderiza os badges de tendência e sparklines SVG nativos', () => {
+    it('renderiza variação fornecida sem desenhar séries inventadas', () => {
       const { container } = render(<MetricCards metrics={mockMetrics} />);
 
       expect(screen.getByText('+12% vs. últimos 7 dias')).toBeInTheDocument();
       expect(screen.getByText('+18% vs. últimos 7 dias')).toBeInTheDocument();
 
       const svgs = container.querySelectorAll('svg');
-      // Cada cartão possui ao menos 1 sparkline SVG nativo
-      expect(svgs.length).toBeGreaterThanOrEqual(4);
+      // Os quatro ícones continuam presentes; não há polylines fictícias.
+      expect(svgs.length).toBe(4);
+      expect(container.querySelector('polyline')).toBeNull();
     });
+  });
+
+  it('mostra indisponibilidade sem confundir falta de medição com zero', () => {
+    render(
+      <MetricCards
+        metrics={{
+          totalArticles: 0,
+          activeOffers: 0,
+          registeredUsers: null,
+          totalViews: null,
+          articlesGrowth: null,
+          offersGrowth: null,
+          usersGrowth: null,
+          viewsGrowth: null,
+        }}
+      />,
+    );
+    expect(screen.getAllByText('0')).toHaveLength(2);
+    expect(screen.getAllByText('Indisponível')).toHaveLength(2);
+    expect(screen.getAllByText('Sem série histórica')).toHaveLength(4);
   });
 
   describe('2. PublicationChart (dash-ui/AC-04)', () => {
@@ -240,12 +269,18 @@ describe('Painel Administrativo Profissional - Componentes Visuais (Spec 0033)',
       const summary = await getDashboardSummary();
 
       expect(summary).toHaveProperty('metrics');
-      expect(summary.metrics.totalArticles).toBeGreaterThanOrEqual(0);
-      expect(summary.metrics.activeOffers).toBeGreaterThanOrEqual(0);
+      expect(
+        summary.metrics.totalArticles === null ||
+          summary.metrics.totalArticles >= 0,
+      ).toBe(true);
+      expect(
+        summary.metrics.activeOffers === null ||
+          summary.metrics.activeOffers >= 0,
+      ).toBe(true);
 
       expect(summary).toHaveProperty('chartData');
       expect(Array.isArray(summary.chartData)).toBe(true);
-      expect(summary.chartData.length).toBeGreaterThan(0);
+      expect(summary.chartData).toEqual([]);
 
       expect(summary).toHaveProperty('recentActivities');
       expect(Array.isArray(summary.recentActivities)).toBe(true);

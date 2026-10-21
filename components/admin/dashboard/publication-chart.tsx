@@ -24,13 +24,13 @@ export function PublicationChart({
 
   const sourceData = initialData || propData || [];
   // Ajusta volume visível de dados de acordo com o período selecionado
-  const data = period === '7' ? sourceData.slice(-7) : sourceData;
+  const data = sourceData.slice(-Number(period));
 
   const maxTotal = Math.max(
     ...(data.length > 0
       ? data.map((d) => (d.published || 0) + (d.review || 0) + (d.drafts || 0))
-      : [35]),
-    35,
+      : [1]),
+    1,
   );
 
   return (
@@ -42,7 +42,7 @@ export function PublicationChart({
             Publicações por Período
           </h2>
           <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-            Total de artigos publicados nos últimos {period} dias
+            Histórico editorial nos últimos {period} dias
           </p>
         </div>
 
@@ -67,98 +67,108 @@ export function PublicationChart({
         </div>
       </div>
 
+      {data.length === 0 && (
+        <p
+          role="status"
+          className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+          Histórico de publicações indisponível. Nenhuma série estimada é
+          exibida.
+        </p>
+      )}
       {/* Área do Gráfico SVG */}
-      <div className="mt-8 h-64 w-full">
-        <svg className="h-full w-full" viewBox="0 0 600 200" fill="none">
-          {/* Linhas de grade horizontais e rótulos do eixo Y */}
-          {[0, 10, 20, 30, 40].map((val) => {
-            const y = 170 - (val / 40) * 150;
-            return (
-              <g key={val}>
-                <line
-                  x1="35"
-                  y1={y}
-                  x2="590"
-                  y2={y}
-                  stroke="currentColor"
-                  className="text-gray-100 dark:text-gray-800/80"
-                  strokeDasharray="3 3"
-                />
-                <text
-                  x="25"
-                  y={y + 4}
-                  textAnchor="end"
-                  className="fill-gray-400 text-[10px] font-medium">
-                  {val}
-                </text>
-              </g>
-            );
-          })}
+      {data.length > 0 && (
+        <div className="mt-8 h-64 w-full">
+          <svg className="h-full w-full" viewBox="0 0 600 200" fill="none">
+            {/* Linhas de grade horizontais e rótulos do eixo Y */}
+            {[0, 1, 2, 3, 4].map((tick) => {
+              const val = Math.ceil(maxTotal / 4) * tick;
+              const y = 170 - (tick / 4) * 150;
+              return (
+                <g key={val}>
+                  <line
+                    x1="35"
+                    y1={y}
+                    x2="590"
+                    y2={y}
+                    stroke="currentColor"
+                    className="text-gray-100 dark:text-gray-800/80"
+                    strokeDasharray="3 3"
+                  />
+                  <text
+                    x="25"
+                    y={y + 4}
+                    textAnchor="end"
+                    className="fill-gray-400 text-[10px] font-medium">
+                    {val}
+                  </text>
+                </g>
+              );
+            })}
 
-          {/* Barras Verticais Empilhadas por Data */}
-          {data.map((item, index) => {
-            const count = data.length;
-            const barWidth = Math.max(12, Math.min(22, 450 / count - 8));
-            const availableWidth = 540;
-            const step = availableWidth / count;
-            const x = 45 + index * step + (step - barWidth) / 2;
+            {/* Barras Verticais Empilhadas por Data */}
+            {data.map((item, index) => {
+              const count = data.length;
+              const barWidth = Math.max(12, Math.min(22, 450 / count - 8));
+              const availableWidth = 540;
+              const step = availableWidth / count;
+              const x = 45 + index * step + (step - barWidth) / 2;
 
-            // Alturas proporcionais com base em maxTotal
-            const scale = 150 / Math.max(maxTotal, 1);
-            const hPublished = item.published * scale;
-            const hReview = item.review * scale;
-            const hDrafts = item.drafts * scale;
+              // Alturas proporcionais com base em maxTotal
+              const scale = 150 / (Math.ceil(maxTotal / 4) * 4);
+              const hPublished = item.published * scale;
+              const hReview = item.review * scale;
+              const hDrafts = item.drafts * scale;
 
-            const yPublished = 170 - hPublished;
-            const yReview = yPublished - hReview;
-            const yDrafts = yReview - hDrafts;
+              const yPublished = 170 - hPublished;
+              const yReview = yPublished - hReview;
+              const yDrafts = yReview - hDrafts;
 
-            return (
-              <g key={item.date} className="group">
-                {/* 1. Publicados (Verde) */}
-                <rect
-                  x={x}
-                  y={yPublished}
-                  width={barWidth}
-                  height={hPublished}
-                  rx="3"
-                  className="fill-emerald-500 transition-opacity hover:opacity-90"
-                />
+              return (
+                <g key={item.date} className="group">
+                  {/* 1. Publicados (Verde) */}
+                  <rect
+                    x={x}
+                    y={yPublished}
+                    width={barWidth}
+                    height={hPublished}
+                    rx="3"
+                    className="fill-emerald-500 transition-opacity hover:opacity-90"
+                  />
 
-                {/* 2. Em revisão (Azul) */}
-                <rect
-                  x={x}
-                  y={yReview}
-                  width={barWidth}
-                  height={hReview}
-                  rx="3"
-                  className="fill-blue-500 transition-opacity hover:opacity-90"
-                />
+                  {/* 2. Em revisão (Azul) */}
+                  <rect
+                    x={x}
+                    y={yReview}
+                    width={barWidth}
+                    height={hReview}
+                    rx="3"
+                    className="fill-blue-500 transition-opacity hover:opacity-90"
+                  />
 
-                {/* 3. Rascunhos (Roxo/Índigo) */}
-                <rect
-                  x={x}
-                  y={yDrafts}
-                  width={barWidth}
-                  height={hDrafts}
-                  rx="3"
-                  className="fill-indigo-500 transition-opacity hover:opacity-90"
-                />
+                  {/* 3. Rascunhos (Roxo/Índigo) */}
+                  <rect
+                    x={x}
+                    y={yDrafts}
+                    width={barWidth}
+                    height={hDrafts}
+                    rx="3"
+                    className="fill-indigo-500 transition-opacity hover:opacity-90"
+                  />
 
-                {/* Rótulo de Data no Eixo X */}
-                <text
-                  x={x + barWidth / 2}
-                  y="190"
-                  textAnchor="middle"
-                  className="fill-gray-400 text-[9px] font-medium">
-                  {item.label}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
+                  {/* Rótulo de Data no Eixo X */}
+                  <text
+                    x={x + barWidth / 2}
+                    y="190"
+                    textAnchor="middle"
+                    className="fill-gray-400 text-[9px] font-medium">
+                    {item.label}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      )}
       {/* Legenda de Status */}
       <div className="mt-4 flex flex-wrap items-center gap-6 border-t border-gray-50 pt-4 dark:border-gray-800/60">
         <div className="flex items-center gap-2">
