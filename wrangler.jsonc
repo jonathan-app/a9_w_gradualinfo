@@ -89,10 +89,19 @@
     },
   ],
   "routes": [
-    { "pattern": "gradualinfo.com.br/*", "zone_name": "gradualinfo.com.br" },
+    {
+      "pattern": "gradualinfo.com.br/*",
+      "zone_name": "gradualinfo.com.br",
+    },
     {
       "pattern": "www.gradualinfo.com.br/*",
       "zone_name": "gradualinfo.com.br",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "gradualinfo-evidencias",
+      "binding": "gradualinfo_evidencias",
     },
   ],
 }
