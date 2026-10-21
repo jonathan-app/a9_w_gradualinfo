@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "0b0ef3161a746d0d91ffe32ea4f7ad1bb0223a78",
+  "evaluatedTree": "597abca5e19e464a4d69419ab7e6611c6b731300",
+  "spec": {
+    "path": "docs/specs/2026-10-08-2228-0006-transicao-editorial-sanity.md",
+    "sha256": "50920860f259e08be0c87b33ffcc42aa1f43e1c0cd33cabebffe6095e9148e38"
+  },
+  "acs": [
+    {
+      "id": "sanity/AC-01",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-02",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-03",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-04",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-05",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-06",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-07",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    },
+    {
+      "id": "sanity/AC-08",
+      "status": "UNVERIFIABLE",
+      "evidence": "docs/reviews/evidence/2026-10-21-1746-0006-verify/evidence.md",
+      "evidenceSha256": "2788c0e3625f025ec692a87ba37ba9dc4c0fbc9183e5098b9c462bb5d3ba007c"
+    }
+  ],
+  "findings": []
+}
