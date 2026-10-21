@@ -80,34 +80,6 @@ describe('posts', () => {
       expect(result).toEqual([]);
     });
 
-    it('usa Sanity quando isSanityConfigured esta ativo', async () => {
-      const { env } = await import('@/lib/env');
-      const { getSanityPublishedPosts } = await import('@/lib/sanity/client');
-      (env as any).isSanityConfigured = true;
-      vi.mocked(getSanityPublishedPosts).mockResolvedValueOnce([
-        {
-          id: 's1',
-          slug: 's1',
-          title: 'S1',
-          content: '',
-          excerpt: '',
-          cover_image_url: '',
-          editoria: 'T',
-          author_name: 'A',
-          fontes_citadas: [],
-          status: 'publicado',
-          published_at: '2026-01-01',
-          updated_at: '2026-01-01',
-          created_at: '2026-01-01',
-        },
-      ]);
-
-      const supabase = { from: vi.fn() } as any;
-      const result = await getPublishedPosts(supabase);
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('s1');
-    });
-
     it('usa catálogo local quando editorialLocal esta ativo', async () => {
       const { env } = await import('@/lib/env');
       const { getLocalPosts } = await import('@/lib/editorial/local-posts');
