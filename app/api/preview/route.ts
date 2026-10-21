@@ -172,12 +172,7 @@ export async function POST(request: NextRequest) {
       const { data: verified, error: userError } =
         await supabase.auth.getUser();
       const user = verified.user;
-      if (
-        userError ||
-        !user ||
-        user.id !== env.previewUserId ||
-        ![true, 'true'].includes(user.app_metadata?.preview)
-      ) {
+      if (userError || !user || user.id !== env.previewUserId) {
         audit({ type: 'preview_login', ok: false });
         return failure('Identidade não autorizada.', 403);
       }

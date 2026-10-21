@@ -166,15 +166,7 @@ export async function verifyPreviewSession(
     throw new PreviewStoreUnavailableError();
   }
   if (doResult.authorized) {
-    if (
-      !(env.sanity?.projectId && env.sanity?.dataset) &&
-      Boolean(env.previewEmail && env.previewPassword && env.previewUserId)
-    ) {
-      return verifySupabasePreviewGrant(
-        supabase,
-        readPreviewGrant(previewCookieValue, env.previewSigningKey),
-      );
-    }
+    // DO é a fonte da verdade para sessões ativas; não cair no caminho legado
     return true;
   }
 
