@@ -269,7 +269,7 @@ Formato obrigatório do bloco final:
   antes do `edit`.
 - **Preview Durable Object não publicado.** Rotas de preview e logout falham
   com 503 se o `PreviewSessionDO` não estiver publicado na Cloudflare com
-  migration aplicada. Verificar `wrangler migrations list` e `wrangler deploy`.
+  migration aplicada. Verificar as tags no array `migrations` de `wrangler.jsonc` e executar `wrangler deploy`.
 - **Cloudflare Access não configurado.** Guards admin devolvem 403/503 sem
   issuer/AUD/hosts válidos em `wrangler.jsonc` ou secrets. Provisionar antes
   de testar rotas protegidas.
@@ -334,6 +334,15 @@ Quem escreve o quê, para ninguém gravar estado no lugar errado:
 As pastas `docs/scope/`, `docs/specs/` e `docs/reviews/` já contêm escopo,
 índice, specs, templates e relatórios. Consulte os artefatos vigentes e seus
 estados; a presença de um arquivo não comprova aprovação ou execução.
+
+## OpenCode / agentes
+
+- Skills de sessão local: `.opencode/skills/` (security-edge, deploy-runbook, e2e-critical, privacy-lgpd, impeccable).
+- Skills oficiais de CI: `security/skills-catalog*` + allowlist; materializar antes de check.
+- Docs de libs: preferir MCP `context7`. Exemplos públicos: `gh_grep`.
+- Não usar GitHub MCP completo (contexto).
+- UI/design system: skill `impeccable` + `DESIGN.md`.
+- Deploy real e secrets: só com pedido explícito; skill `deploy-runbook`.
 
 ## Context files
 

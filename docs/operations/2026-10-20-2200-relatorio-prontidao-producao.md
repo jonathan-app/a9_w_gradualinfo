@@ -53,7 +53,7 @@ As áreas abaixo não constituem necessariamente defeitos ativos, mas representa
 A presença de código e adaptadores não garante operacionalidade remota. Os seguintes itens dependem de provisionamento e validação externa:
 
 - **Bindings e Migrations de Durable Objects:**
-  - Provisionamento real do `PreviewSessionDO` e do `RateLimiterDO` na conta Cloudflare, com migrações aplicadas no ambiente remoto (`wrangler migrations apply`).
+  - Provisionamento real de `PreviewSessionDO`, `AdminRateLimitDO` e `DOQueueHandler` na conta Cloudflare, com migrações declaradas no `wrangler.jsonc` (`migrations` array) aplicadas atomicamente pela plataforma durante a publicação (`wrangler deploy`).
 - **Storage Imutável Cloudflare R2 (WORM):**
   - Criação do bucket R2 na Cloudflare com política de Bucket Lock (retenção imutável ativada no painel).
   - Vinculação do binding `R2_EVIDENCE_BUCKET` aos Workers de produção e homologação.

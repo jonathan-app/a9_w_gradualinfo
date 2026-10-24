@@ -1,0 +1,57 @@
+diff --git a/open-next.config.ts b/open-next.config.ts
+index 8548bea..a218d99 100644
+--- a/open-next.config.ts
++++ b/open-next.config.ts
+@@ -17,7 +17,8 @@
+  */
+ import { defineCloudflareConfig } from '@opennextjs/cloudflare';
+ import kvIncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache';
++import doQueue from '@opennextjs/cloudflare/overrides/queue/do-queue';
+ 
+ // A home é ISR de 300 s. Sem cache incremental o OpenNext re-renderiza a
+ // página a cada visita e os 42 ms de CPU estouram o teto de 10 ms do plano
+ // Free. O R2 não está habilitado na conta; KV atende com cerca de 576
+ // gravações/dia (ISR + lista), abaixo do limite gratuito de 1.000.
++// doQueue (DOQueueHandler) gerencia o enfileiramento e revalidação em background.
+ const config = {
+-  ...defineCloudflareConfig({ incrementalCache: kvIncrementalCache }),
++  ...defineCloudflareConfig({
++    incrementalCache: kvIncrementalCache,
++    queue: doQueue,
++  }),
+   buildCommand: 'pnpm build:webpack',
+ };
+ 
+ export default config;
+diff --git a/wrangler.jsonc b/wrangler.jsonc
+index 1b4410a..0d9f092 100644
+--- a/wrangler.jsonc
++++ b/wrangler.jsonc
+@@ -80,6 +80,10 @@
+         "name": "ADMIN_RATE_LIMIT_DO",
+         "class_name": "AdminRateLimitDO",
+       },
++      {
++        "name": "NEXT_CACHE_DO_QUEUE",
++        "class_name": "DOQueueHandler",
++      },
+     ],
+   },
+   "migrations": [
+@@ -91,6 +95,16 @@
+       "tag": "v2-admin-rate-limit",
+       "new_sqlite_classes": ["AdminRateLimitDO"],
+     },
++    {
++      "tag": "v3-do-queue",
++      "new_sqlite_classes": ["DOQueueHandler"],
++    },
++  ],
++  "services": [
++    {
++      "binding": "WORKER_SELF_REFERENCE",
++      "service": "gradualinfo",
++    },
+   ],
+   "routes": [
+     {

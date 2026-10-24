@@ -1,0 +1,8 @@
+diff --git a/open-next.config.ts b/open-next.config.ts
+--- a/open-next.config.ts
++++ b/open-next.config.ts
+@@ -29,3 +29,3 @@
+   }),
+-  buildCommand: 'pnpm build:webpack',
++  buildCommand: 'pnpm build:next',
+ };

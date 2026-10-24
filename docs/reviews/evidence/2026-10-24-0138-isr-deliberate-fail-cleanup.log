@@ -1,0 +1,21 @@
+=== CAPTURA DE FALHA DELIBERADA (--test-deliberate-fail) ===
+Data/Hora: 2026-10-24T01:27:33-03:00
+Comando: bash -c "set -o pipefail; node scripts/verify-isr-doqueue.mjs --test-deliberate-fail 2>&1; echo EXIT_CODE=$?"
+
+Saída:
+======================================================================
+🚀 BATERIA DE VALIDAÇÃO LOCAL ISR COM DOQUEUE & DURABLE OBJECT
+======================================================================
+[TEST_FINALLY] Injetando falha deliberada para comprovar execução do bloco finally...
+✘ [TEST_FINALLY] Falha forçada para comprovar que o bloco finally executa a limpeza.
+EXIT_CODE=1
+
+=== VERIFICAÇÃO DE LIMPEZA NO BANCO SQLITE APÓS A FALHA ===
+Comando:
+sqlite3 "$(find .wrangler/state/v3/kv/ -name "*.sqlite" ! -name "metadata.sqlite")" "SELECT * FROM _mf_entries WHERE key LIKE '__test_%';"
+
+Saída:
+(vazio - zero registros retornados)
+
+Conclusão:
+A função fail() lançou exceção permitindo a execução obrigatória do bloco finally (cleanupTestFlags), limpando todas as chaves sintéticas antes da terminação do processo com código de erro 1.
