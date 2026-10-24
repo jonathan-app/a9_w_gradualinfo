@@ -140,3 +140,40 @@ describe('revokeAdminRole', () => {
     ).resolves.toBeUndefined();
   });
 });
+
+// cliente privilegiado ausente: falha fechada antes de qualquer chamada ao banco.
+describe('configuração administrativa ausente', () => {
+  it('assignAdminRole lança CONFIG_MISSING quando o cliente não é construído', async () => {
+    const { getAdminServiceClient } =
+      await import('@/lib/admin/service-client');
+    vi.mocked(getAdminServiceClient).mockImplementation(() => {
+      throw new Error('sem service role');
+    });
+    try {
+      await assignAdminRole({
+        userId: 'user-1',
+        role: 'editor',
+        actorId: 'actor-1',
+      });
+      throw new Error('deveria ter lançado');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RoleMutationError);
+      expect((err as RoleMutationError).code).toBe('CONFIG_MISSING');
+    }
+  });
+
+  it('revokeAdminRole lança CONFIG_MISSING quando o cliente não é construído', async () => {
+    const { getAdminServiceClient } =
+      await import('@/lib/admin/service-client');
+    vi.mocked(getAdminServiceClient).mockImplementation(() => {
+      throw new Error('sem service role');
+    });
+    try {
+      await revokeAdminRole({ userId: 'user-1', actorId: 'actor-1' });
+      throw new Error('deveria ter lançado');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RoleMutationError);
+      expect((err as RoleMutationError).code).toBe('CONFIG_MISSING');
+    }
+  });
+});

@@ -2,7 +2,7 @@
 -- Executar em Supabase local descartavel
 
 BEGIN;
-SELECT plan(52);
+SELECT plan(63);
 
 -- 1. Validacao de estrutura
 SELECT has_table('public', 'admin_user_roles', 'tabela admin_user_roles existe');
@@ -208,6 +208,30 @@ SELECT ok(
   AND NOT has_table_privilege('authenticated', 'public.profiles', 'INSERT')
   AND NOT has_table_privilege('authenticated', 'public.profiles', 'DELETE'),
   'public.profiles revoga privilegios indevidos de anon e authenticated'
+);
+
+-- 8. RPC list_admin_operadores (Spec 0036)
+SELECT has_function('public', 'list_admin_operadores', ARRAY['uuid','int','int'], 'list_admin_operadores existe');
+SELECT is((SELECT prosecdef FROM pg_proc WHERE oid = 'public.list_admin_operadores(uuid,int,int)'::regprocedure), true, 'list_admin_operadores e SECURITY DEFINER');
+SELECT ok((SELECT proconfig @> ARRAY['search_path=""'] FROM pg_proc WHERE oid = 'public.list_admin_operadores(uuid,int,int)'::regprocedure), 'list_admin_operadores tem search_path vazio');
+SELECT ok(has_function_privilege('service_role', 'public.list_admin_operadores(uuid,int,int)', 'EXECUTE'), 'service_role executa list_admin_operadores');
+SELECT ok(NOT has_function_privilege('anon', 'public.list_admin_operadores(uuid,int,int)', 'EXECUTE'), 'anon nao executa list_admin_operadores');
+SELECT ok(NOT has_function_privilege('authenticated', 'public.list_admin_operadores(uuid,int,int)', 'EXECUTE'), 'authenticated nao executa list_admin_operadores');
+SELECT ok((SELECT user_id IS NULL FROM public.list_admin_operadores(NULL::uuid, 20, 0) LIMIT 1), 'list_admin_operadores sem dados nao retorna operador real');
+SELECT ok((SELECT total_count FROM public.list_admin_operadores(NULL::uuid, 20, 0)) = 0::bigint, 'list_admin_operadores sem dados retorna total zero');
+SELECT ok((SELECT total_count FROM public.list_admin_operadores(NULL::uuid, 20, -5)) = 0::bigint, 'list_admin_operadores com offset negativo nao falha (piso em 0)');
+SELECT ok((SELECT total_count FROM public.list_admin_operadores(NULL::uuid, 999, 0)) = 0::bigint, 'list_admin_operadores com limit acima de 50 nao falha (cap interno)');
+
+-- 9. Desempate por user_id quando created_at e igual (Spec 0036, AC-10)
+INSERT INTO public.admin_user_roles (user_id, role, created_at)
+VALUES
+  ('22222222-2222-2222-2222-222222222222'::uuid, 'editor'::public.admin_role_type, '2026-10-20T10:00:00Z'::timestamptz),
+  ('11111111-1111-1111-1111-111111111111'::uuid, 'editor'::public.admin_role_type, '2026-10-20T10:00:00Z'::timestamptz);
+
+SELECT is(
+  (SELECT user_id::text FROM public.list_admin_operadores(NULL::uuid, 20, 0) LIMIT 1),
+  '11111111-1111-1111-1111-111111111111',
+  'desempate por created_at igual usa user_id crescente'
 );
 
 SELECT * FROM finish();

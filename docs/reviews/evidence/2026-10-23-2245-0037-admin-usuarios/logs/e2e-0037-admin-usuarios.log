@@ -1,0 +1,1447 @@
+[WebServer] ▲ [WARNING] [Sentry] Failed to register diagnostics-channel injection hooks (a2.on is not a function), so channel-based integrations will not record spans. See https://docs.sentry.io/platforms/javascript/guides/node/troubleshooting/
+[WebServer] 
+[WebServer] 
+
+Running 5 tests using 1 worker
+
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at m (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:707:8524)
+[WebServer]       at v3 (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:350:1107) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+     1 … de usuários e não vê controles de atribuição/revogação na própria conta
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+  ✓  1 …rios e não vê controles de atribuição/revogação na própria conta (11.3s)
+     2 …scape não dispara requisição; foco retorna ao controle que abriu o modal
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+  ✓  2 …ão dispara requisição; foco retorna ao controle que abriu o modal (9.7s)
+     3 …usuarios) › editor e revisor são recusados na página de usuários (AC-10)
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+  ✓  3 …s) › editor e revisor são recusados na página de usuários (AC-10) (9.8s)
+     4 …arios) › paginação: Anterior/Proxima navegam e mantêm o estado da tabela
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+  ✓  4 … paginação: Anterior/Proxima navegam e mantêm o estado da tabela (10.3s)
+     5 …d/usuarios) › raiz é imutável: tentativa de modificar a raiz retorna 409
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+[WebServer] ✘ [ERROR] Failed to revalidate stale page / FatalError: Dummy queue is not implemented
+[WebServer] 
+[WebServer]       at Object.send (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:19699)
+[WebServer]       at revalidateIfRequired (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:67219)
+[WebServer]       at OpenNextNodeResponse.onEnd (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:68603)
+[WebServer]       at OpenNextNodeResponse._flush (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:2431:27181)
+[WebServer]       at OpenNextNodeResponse.final [as _final] (node-internal:streams_transform:127:10)
+[WebServer]       at prefinish (node-internal:streams_writable:992:14)
+[WebServer]       at finishMaybe (node-internal:streams_writable:1006:5)
+[WebServer]       at Writable.end (node-internal:streams_writable:905:5)
+[WebServer]       at Object.close (file:///home/jonathan/Workspace/Projetos_Ativos/a9_w_gradualinfo/.open-next/server-functions/default/handler.mjs:820:5230) {
+[WebServer]     __openNextInternal: true,
+[WebServer]     canIgnore: false,
+[WebServer]     logLevel: 2
+[WebServer]   }
+[WebServer] 
+[WebServer] 
+  ✓  5 …ios) › raiz é imutável: tentativa de modificar a raiz retorna 409 (8.0s)
+
+  5 passed (54.9s)

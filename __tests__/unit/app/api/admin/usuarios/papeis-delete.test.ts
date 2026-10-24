@@ -42,13 +42,16 @@ vi.mock('@/lib/utils/api-response', () => ({
 }));
 
 import { DELETE } from '@/app/api/admin/usuarios/papeis/[userId]/route';
+import { env } from '@/lib/env';
 
 const ROOT_ADMIN_ID = '00000000-0000-4000-8000-000000000001';
 const OTHER_USER_ID = '00000000-0000-4000-8000-000000000002';
+const ROOT_COM_LETRAS = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 
 describe('DELETE /api/admin/usuarios/papeis/[userId]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    env.adminUserId = ROOT_ADMIN_ID;
   });
 
   it('retorna 400 quando userId não é UUID válido', async () => {
@@ -63,6 +66,18 @@ describe('DELETE /api/admin/usuarios/papeis/[userId]', () => {
       params: Promise.resolve({ userId: 'não-é-uuid' }),
     });
     expect(response.status).toBe(400);
+  });
+
+  it('retorna 409 para a conta raiz em caixa alta (SEC-02)', async () => {
+    env.adminUserId = ROOT_COM_LETRAS;
+    const request = new Request(
+      `http://localhost/api/admin/usuarios/papeis/${ROOT_COM_LETRAS.toUpperCase()}`,
+      { method: 'DELETE', duplex: 'half' },
+    );
+    const response = await DELETE(request, {
+      params: Promise.resolve({ userId: ROOT_COM_LETRAS.toUpperCase() }),
+    });
+    expect(response.status).toBe(409);
   });
 
   it('retorna 409 quando tenta remover conta raiz', async () => {

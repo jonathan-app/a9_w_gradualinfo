@@ -20,18 +20,54 @@
  */
 
 /**
+ * Gera um nonce CSP de 128 bits, imprevisível por requisição.
+ *
+ * O `crypto` global existe tanto no runtime Node do proxy quanto no Worker;
+ * `btoa` evita depender de `Buffer`, que não existe no runtime de borda.
+ *
+ * @returns Nonce em base64, pronto para o padrão `'nonce-...'`.
+ */
+export function createCspNonce(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes));
+}
+
+/**
+ * Hash do script inline que o `next-themes` injeta antes da hidratação para
+ * aplicar o tema salvo sem piscar.
+ *
+ * O layout raiz é estático (a home é ISR), então ele não pode ler `headers()`
+ * para repassar o nonce ao provider; o script fica sem nonce e a política com
+ * nonce o bloquearia. O hash libera exatamente esse conteúdo, sem abrir
+ * `'unsafe-inline'`. O script muda se a configuração do `theme-provider.tsx`
+ * mudar (chave, atributo, temas ou tema padrão); nesse caso este hash precisa
+ * ser recalculado a partir do HTML gerado.
+ */
+const THEME_BOOTSTRAP_HASH =
+  "'sha256-q1+DaXsZUnEJs3jpN9ZoWp6ypK1xBwXiRxG+C31xOUA='";
+
+/**
  * Monta o valor da Content-Security-Policy.
  *
  * @param isProduction - `true` em produção some com o `unsafe-eval`.
+ * @param [nonce] - Nonce da requisição. Quando presente, o Next o injeta nos
+ *   scripts inline que ele mesmo gera; isso exige renderização dinâmica, por
+ *   isso só as rotas administrativas o recebem (a home continua ISR).
  * @returns String pronta para o header.
  */
-export function contentSecurityPolicy(isProduction: boolean): string {
+export function contentSecurityPolicy(
+  isProduction: boolean,
+  nonce?: string,
+): string {
   return [
     "default-src 'self'",
     // 'unsafe-inline' só fora de produção: em produção remove-se para evitar
     // injeção de script arbitrário via qualquer ponto de injeção HTML; o dev
     // server do React precisa de 'unsafe-inline' e 'unsafe-eval' para HMR.
-    `script-src 'self'${isProduction ? '' : " 'unsafe-inline'"} https://va.vercel-scripts.com https://www.googletagmanager.com https://static.cloudflareinsights.com${isProduction ? '' : " 'unsafe-eval'"}`,
+    // Quando há nonce, o navegador ignora 'unsafe-inline' e aceita apenas os
+    // scripts marcados pelo Next — é o que reabilita a hidratação do painel.
+    `script-src 'self'${nonce ? ` 'nonce-${nonce}' ${THEME_BOOTSTRAP_HASH}` : ''}${isProduction ? '' : " 'unsafe-inline'"} https://va.vercel-scripts.com https://www.googletagmanager.com https://static.cloudflareinsights.com${isProduction ? '' : " 'unsafe-eval'"}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",
@@ -53,13 +89,18 @@ export function contentSecurityPolicy(isProduction: boolean): string {
 /**
  * Conjunto completo de headers de segurança.
  *
- * @param [options] - `isProduction` (padrão: o de `lib/env`) e `siteUrl`
- *   (padrão: o de `lib/env`) decidem o HSTS.
+ * @param [options] - `isProduction` (padrão: o de `lib/env`), `siteUrl`
+ *   (padrão: o de `lib/env`) decidem o HSTS; `nonce` liga a política com
+ *   nonce usada nas rotas administrativas.
  * @returns Mapa de header para valor, pronto para `Object.entries` (next.config)
  *   ou para espalhar em `headers` de `Response`/`NextResponse`.
  */
 export function securityHeaders(
-  options: { isProduction?: boolean; siteUrl?: string } = {},
+  options: {
+    isProduction?: boolean;
+    siteUrl?: string;
+    nonce?: string;
+  } = {},
 ): Record<string, string> {
   const isProduction = options.isProduction ?? defaultIsProduction();
   const siteUrl = options.siteUrl ?? 'http://localhost:3000';
@@ -68,7 +109,10 @@ export function securityHeaders(
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'X-Frame-Options': 'DENY',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-    'Content-Security-Policy': contentSecurityPolicy(isProduction),
+    'Content-Security-Policy': contentSecurityPolicy(
+      isProduction,
+      options.nonce,
+    ),
   };
   // HSTS só em produção com host real em https: fixar max-age para localhost
   // prende o dev server ao TLS, e o aviso de certificado não confiável não tem

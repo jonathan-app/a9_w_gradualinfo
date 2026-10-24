@@ -43,13 +43,17 @@ vi.mock('@/lib/utils/api-response', () => ({
 }));
 
 import { POST } from '@/app/api/admin/usuarios/papeis/route';
+import { env } from '@/lib/env';
 
 const ROOT_ADMIN_ID = '00000000-0000-4000-8000-000000000001';
 const OTHER_USER_ID = '00000000-0000-4000-8000-000000000002';
+const ROOT_COM_LETRAS = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const USUARIO_COM_LETRAS = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 
 describe('POST /api/admin/usuarios/papeis', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    env.adminUserId = ROOT_ADMIN_ID;
   });
 
   it('retorna 400 quando corpo não é JSON válido', async () => {
@@ -99,6 +103,41 @@ describe('POST /api/admin/usuarios/papeis', () => {
     });
     const response = await POST(request);
     expect(response.status).toBe(400);
+  });
+
+  it('retorna 409 para a conta raiz em caixa alta (SEC-02)', async () => {
+    env.adminUserId = ROOT_COM_LETRAS;
+    const request = new Request('http://localhost/api/admin/usuarios/papeis', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId: ROOT_COM_LETRAS.toUpperCase(),
+        role: 'editor',
+      }),
+      duplex: 'half',
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(409);
+  });
+
+  it('normaliza a caixa do UUID alvo antes da RPC (SEC-02)', async () => {
+    const { assignAdminRole } = await import('@/lib/admin/roles');
+    vi.mocked(assignAdminRole).mockResolvedValueOnce(undefined);
+    env.adminUserId = ROOT_COM_LETRAS;
+    const request = new Request('http://localhost/api/admin/usuarios/papeis', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId: USUARIO_COM_LETRAS.toUpperCase(),
+        role: 'editor',
+      }),
+      duplex: 'half',
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(assignAdminRole).toHaveBeenCalledWith(
+      expect.objectContaining({ userId: USUARIO_COM_LETRAS }),
+    );
   });
 
   it('retorna 409 quando tenta modificar conta raiz', async () => {
@@ -153,5 +192,43 @@ describe('POST /api/admin/usuarios/papeis', () => {
     });
     const response = await POST(request);
     expect(response.status).toBe(404);
+  });
+
+  it('retorna 403 quando a guarda de admin nega e não chama a RPC', async () => {
+    const { assertAdminApiAuth } = await import('@/lib/admin/auth');
+    const { assignAdminRole } = await import('@/lib/admin/roles');
+    vi.mocked(assertAdminApiAuth).mockResolvedValueOnce({
+      ok: false,
+      response: new Response('Acesso negado.', { status: 403 }),
+    });
+
+    const request = new Request('http://localhost/api/admin/usuarios/papeis', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ userId: OTHER_USER_ID, role: 'editor' }),
+      duplex: 'half',
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(403);
+    expect(assignAdminRole).not.toHaveBeenCalled();
+  });
+
+  it('retorna 500 quando a atribuição falha com erro inesperado', async () => {
+    const { assignAdminRole } = await import('@/lib/admin/roles');
+    vi.mocked(assignAdminRole).mockRejectedValueOnce(
+      new Error('falha inesperada do banco'),
+    );
+
+    const request = new Request('http://localhost/api/admin/usuarios/papeis', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ userId: OTHER_USER_ID, role: 'editor' }),
+      duplex: 'half',
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(500);
+    const body = await response.json();
+    expect(body.error).toBe('role_assignment_failed');
+    expect(body.message).toBe('Falha ao processar a atribuicao de papel.');
   });
 });

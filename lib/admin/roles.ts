@@ -38,7 +38,15 @@ export class RoleMutationError extends Error {
 export async function assignAdminRole(
   input: AssignAdminRoleInput,
 ): Promise<void> {
-  const supabase = getAdminServiceClient();
+  let supabase;
+  try {
+    supabase = getAdminServiceClient();
+  } catch {
+    throw new RoleMutationError(
+      'Configuracao administrativa ausente.',
+      'CONFIG_MISSING',
+    );
+  }
   const cleanEmail = input.actorEmail
     ? input.actorEmail.trim().slice(0, 320) || null
     : null;
@@ -76,7 +84,15 @@ export async function assignAdminRole(
 export async function revokeAdminRole(
   input: Omit<AssignAdminRoleInput, 'role'>,
 ): Promise<void> {
-  const supabase = getAdminServiceClient();
+  let supabase;
+  try {
+    supabase = getAdminServiceClient();
+  } catch {
+    throw new RoleMutationError(
+      'Configuracao administrativa ausente.',
+      'CONFIG_MISSING',
+    );
+  }
   const cleanEmail = input.actorEmail
     ? input.actorEmail.trim().slice(0, 320) || null
     : null;

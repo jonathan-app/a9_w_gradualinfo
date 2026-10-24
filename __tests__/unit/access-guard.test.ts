@@ -19,6 +19,7 @@ vi.mock('next/headers', () => ({
   headers: vi.fn(async () => ({})),
 }));
 vi.mock('@/lib/env', () => ({
+  env: { isProduction: false },
   readAdminAccessConfig: vi.fn(
     (bindings: Record<string, unknown>) =>
       bindings.ADMIN_ACCESS_CONFIG as
@@ -89,6 +90,9 @@ function makeRequest(pathname = '/admin-dashboard', method = 'GET') {
 afterEach(() => {
   delete process.env.E2E_PRODUCTION;
   delete process.env.NEXT_PUBLIC_SITE_URL;
+  // Limpa implementações pendentes (mockImplementationOnce) de testes anteriores
+  // para não vazar entre describes, ex. testes E2E que lançam 'no context'.
+  getCloudflareContextMock.mockReset();
 });
 
 describe('guardAdminAccess', () => {
@@ -285,6 +289,8 @@ describe('requireAdminAccessPage', () => {
   });
 
   it('resolve quando guard passa', async () => {
+    process.env.E2E_PRODUCTION = '1';
+    process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3000';
     setupValid();
     await expect(requireAdminAccessPage()).resolves.toBeUndefined();
   });
@@ -301,6 +307,8 @@ describe('getAdminAccessLogoutUrl', () => {
   });
 
   it('monta URL de logout do Access', () => {
+    process.env.E2E_PRODUCTION = '1';
+    process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3000';
     setupValid();
     expect(getAdminAccessLogoutUrl()).toBe(
       'https://gradualinfo.cloudflareaccess.com/cdn-cgi/access/logout',

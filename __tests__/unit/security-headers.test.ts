@@ -13,7 +13,11 @@
  * Roda em ambiente Node (directive acima): não há DOM nem browser em jogo.
  */
 import { describe, expect, it } from 'vitest';
-import { contentSecurityPolicy, securityHeaders } from '@/lib/security-headers';
+import {
+  contentSecurityPolicy,
+  createCspNonce,
+  securityHeaders,
+} from '@/lib/security-headers';
 
 describe('securityHeaders', () => {
   it('traz o conjunto base em qualquer ambiente', () => {
@@ -105,5 +109,44 @@ describe('contentSecurityPolicy', () => {
 
     expect(policy).not.toContain('form-action');
     expect(policy).toContain("frame-ancestors 'none'");
+  });
+
+  it('declara o nonce da requisicao quando informado', () => {
+    const policy = contentSecurityPolicy(true, 'nonce-de-teste');
+
+    expect(policy).toContain("'nonce-nonce-de-teste'");
+    expect(policy).toMatch(/script-src 'self' 'nonce-nonce-de-teste'/);
+    // O script de tema do next-themes nao recebe nonce (layout raiz estatico);
+    // o hash libera apenas esse conteudo, sem unsafe-inline.
+    expect(policy).toContain(
+      "'sha256-q1+DaXsZUnEJs3jpN9ZoWp6ypK1xBwXiRxG+C31xOUA='",
+    );
+  });
+
+  it('sem nonce nao declara nonce algum (home ISR e respostas manuais)', () => {
+    const policy = contentSecurityPolicy(true);
+
+    expect(policy).not.toContain("'nonce-");
+  });
+
+  it('securityHeaders repassa o nonce para a CSP', () => {
+    const headers = securityHeaders({
+      isProduction: true,
+      siteUrl: 'https://gradualinfo.com.br',
+      nonce: 'abc123',
+    });
+
+    expect(headers['Content-Security-Policy']).toContain("'nonce-abc123'");
+  });
+});
+
+describe('createCspNonce', () => {
+  it('gera valores distintos e sem espaco, utilizaveis no header', () => {
+    const first = createCspNonce();
+    const second = createCspNonce();
+
+    expect(first).not.toBe(second);
+    expect(first.length).toBeGreaterThanOrEqual(16);
+    expect(first).toMatch(/^[A-Za-z0-9+/=]+$/);
   });
 });

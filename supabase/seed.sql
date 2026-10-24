@@ -14,7 +14,9 @@ insert into auth.users (instance_id, id, aud, role, email, encrypted_password, e
 values
   ('00000000-0000-0000-0000-000000000000', '11111111-1111-1111-1111-111111111111', 'authenticated', 'authenticated', 'ana@exemplo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Ana Silva"}', '', '', '', '', ''),
   ('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'bruno@exemplo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Bruno Costa"}', '', '', '', '', ''),
-  ('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'preview@gradualinfo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"],"preview":"true"}', '{"display_name":"Preview System"}', '', '', '', '', '')
+  ('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'preview@gradualinfo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"],"preview":"true"}', '{"display_name":"Preview System"}', '', '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '2e773cf6-e88a-473c-a8da-02c11a7b6286', 'authenticated', 'authenticated', 'e2e-test-usuarios@exemplo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Operador E2E"}', '', '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', 'ca670053-7e87-481b-9fbc-9246449ac677', 'authenticated', 'authenticated', 'e2e-target@exemplo.dev', crypt('senha-de-teste-123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Alvo E2E"}', '', '', '', '', '')
 on conflict (id) do nothing;
 
 -- auth.identities: o GoTrue exige uma linha por provider. Sem ela o login
@@ -23,7 +25,9 @@ insert into auth.identities (id, user_id, provider_id, identity_data, provider, 
 values
   ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', '{"sub":"11111111-1111-1111-1111-111111111111","email":"ana@exemplo.dev"}', 'email', now(), now(), now()),
   ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', '{"sub":"22222222-2222-2222-2222-222222222222","email":"bruno@exemplo.dev"}', 'email', now(), now(), now()),
-  ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', '{"sub":"33333333-3333-3333-3333-333333333333","email":"preview@gradualinfo.dev"}', 'email', now(), now(), now())
+  ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', '{"sub":"33333333-3333-3333-3333-333333333333","email":"preview@gradualinfo.dev"}', 'email', now(), now(), now()),
+  ('2e773cf6-e88a-473c-a8da-02c11a7b6286', '2e773cf6-e88a-473c-a8da-02c11a7b6286', '2e773cf6-e88a-473c-a8da-02c11a7b6286', '{"sub":"2e773cf6-e88a-473c-a8da-02c11a7b6286","email":"e2e-test-usuarios@exemplo.dev"}', 'email', now(), now(), now()),
+  ('ca670053-7e87-481b-9fbc-9246449ac677', 'ca670053-7e87-481b-9fbc-9246449ac677', 'ca670053-7e87-481b-9fbc-9246449ac677', '{"sub":"ca670053-7e87-481b-9fbc-9246449ac677","email":"e2e-target@exemplo.dev"}', 'email', now(), now(), now())
 on conflict (id) do nothing;
 
 -- O perfil de cada um nasce pelo trigger on_auth_user_created; aqui só se
@@ -33,8 +37,16 @@ set avatar_url = null
 where id in (
   '11111111-1111-1111-1111-111111111111',
   '22222222-2222-2222-2222-222222222222',
-  '33333333-3333-3333-3333-333333333333'
+  '33333333-3333-3333-3333-333333333333',
+  '2e773cf6-e88a-473c-a8da-02c11a7b6286',
+  'ca670053-7e87-481b-9fbc-9246449ac677'
 );
+
+-- Atribui papel admin ao operador de testes E2E em admin_user_roles
+insert into public.admin_user_roles (user_id, role, assigned_by)
+values
+  ('2e773cf6-e88a-473c-a8da-02c11a7b6286', 'admin', '11111111-1111-1111-1111-111111111111')
+on conflict (user_id) do update set role = excluded.role;
 
 
 -- Fixtures locais: uma linha de cada estado para provar leitura pública real.

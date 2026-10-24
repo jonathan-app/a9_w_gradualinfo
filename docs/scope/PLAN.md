@@ -15,6 +15,8 @@
 9 · Documentar vars faltantes em .env.example · 3 · done
 10 · Confirmar SMTP do Supabase para recovery · 3 · planned
 11 · Confirmar SANITY_API_READ_TOKEN como secret · 3 · planned
+12 · Listagem paginada de operadores (Spec 0036) · 3 · existing
+13 · Gestão de operadores /admin-dashboard/usuarios (Spec 0037) · 3 · in-progress
 
 ## Fase 1 — Go-live mínimo de backend (bloqueia deploy)
 
@@ -146,8 +148,30 @@ Done when: Preview de rascunhos funciona com token de leitura do Sanity.
 - [ ] Verificar secret no wrangler/ambiente
 - [ ] Testar preview de rascunho
 
+### 12. Listagem paginada de operadores (Spec 0036)
+
+· phase 3 · existing
+
+`GET /api/admin/usuarios/papeis` com RPC `public.list_admin_operadores`, paginação 20/50, raiz destacada separadamente, HTTP 400 quando `limit > 50`, página além do fim retorna 200 com `operadores: []`. Implementado em `app/api/admin/usuarios/papeis/route.ts`.
+
+Done quando: já entregue e aprovada via `/check` (11 ACs PASS, 0 BLOCKER/WARNING/NIT) em 2026-10-21. Registrada como `existing` para histórico; `/develop` e `/sync` não tocam linhas `existing`.
+
+### 13. Gestão de operadores /admin-dashboard/usuarios (Spec 0037)
+
+· phase 3 · in-progress
+
+Interface de gestão de operadores em `/admin-dashboard/usuarios` contra `usuarios/AC-1..10` (page.tsx, usuarios-table.tsx, usuarios-form.tsx), guarda `assertAdminApiAuth`, roles cumulativos admin/editor/revisor, eventos em `admin_audit_log`. Spec `Accepted` pelo proprietário. `/develop` concluído, `/check verify` + `/check review` aprovado (10 ACs PASS). `pnpm check:all` verde.
+
+Done quando: `/test` aprovado e `/sync` marca a feature como `done`. Commit, push, merge e deploy seguem não autorizados pelo proprietário.
+
+- [ ] Executar `/test` da Spec 0037
+- [ ] Executar `/sync` para marcar `done`
+
 ## Legend
 
 - `planned`: não começou ainda
+- `existing`: já existe no repositório, prévia ao fluxo; `/develop` e `/sync` não tocam
+- `in-progress`: `/develop` registrou trabalho construído; `/sync` marca `done` após as gates
+- `done`: este pipeline construiu e verificou
 - `Phase 1/2/3`: ordem de execução
 - `needs a decision`: exige escolha do time antes de desenvolver
