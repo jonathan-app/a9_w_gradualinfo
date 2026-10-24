@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "evaluatedCommit": "e9401aa8a522cd0805d498b2248f6871bac611c9",
-  "evaluatedTree": "11c6b9cd939d1116bce31ee5634bb1ad89120e80",
+  "evaluatedCommit": "e9f7ba4015606dea9ec6580e1e0815d61bb2a055",
+  "evaluatedTree": "843b443fac3284daaa0ff140479caa4635c077f5",
   "spec": {
     "path": "docs/specs/2026-10-21-2130-0037-admin-dashboard-usuarios.md",
     "sha256": "82f3ce99c45545d2603e1744d277aea3b680c536a1b2f880c9970181375e4d4c"
