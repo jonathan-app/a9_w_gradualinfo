@@ -29,7 +29,7 @@ const config = {
     incrementalCache: kvIncrementalCache,
     queue: doQueue,
   }),
-  buildCommand: 'pnpm build:webpack',
+  buildCommand: 'pnpm build:next',
 };
 
 export default config;
