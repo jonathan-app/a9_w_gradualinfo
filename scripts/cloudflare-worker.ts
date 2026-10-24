@@ -85,6 +85,23 @@ export default {
       });
     }
 
+    if (isLocalHarness && request.headers.get('x-isr') === '1') {
+      const kv = env.NEXT_INC_CACHE_KV as KVNamespace | undefined;
+      if ((await kv?.get('__test_simulate_isr_500__')) === '1') {
+        await kv?.put('__test_isr_500_triggered__', '1');
+        return new Response('Simulated transient ISR 500 error', {
+          status: 500,
+        });
+      }
+      const callId = crypto.randomUUID();
+      console.log(
+        `[TEST-HARNESS] Internal ISR revalidation received at ${Date.now()} UUID: ${callId}`,
+      );
+      await kv?.put(`__test_isr_call_${callId}__`, '1');
+      // Atraso sintético para simular tempo realista de renderização (150ms) no isolate local
+      await new Promise((r) => setTimeout(r, 150));
+    }
+
     const response = await dispatchWithAdminAccess(
       targetRequest,
       envRecord,

@@ -1,0 +1,558 @@
+diff --git a/scripts/cloudflare-worker.ts b/scripts/cloudflare-worker.ts
+index 0df2c62..0064def 100644
+--- a/scripts/cloudflare-worker.ts
++++ b/scripts/cloudflare-worker.ts
+@@ -85,6 +85,23 @@ export default {
+       });
+     }
+ 
++    if (isLocalHarness && request.headers.get('x-isr') === '1') {
++      const kv = env.NEXT_INC_CACHE_KV as KVNamespace | undefined;
++      if ((await kv?.get('__test_simulate_isr_500__')) === '1') {
++        await kv?.put('__test_isr_500_triggered__', '1');
++        return new Response('Simulated transient ISR 500 error', {
++          status: 500,
++        });
++      }
++      const callId = crypto.randomUUID();
++      console.log(
++        `[TEST-HARNESS] Internal ISR revalidation received at ${Date.now()} UUID: ${callId}`,
++      );
++      await kv?.put(`__test_isr_call_${callId}__`, '1');
++      // Atraso sintético para simular tempo realista de renderização (150ms) no isolate local
++      await new Promise((r) => setTimeout(r, 150));
++    }
++
+     const response = await dispatchWithAdminAccess(
+       targetRequest,
+       envRecord,
+diff --git a/scripts/verify-isr-doqueue.mjs b/scripts/verify-isr-doqueue.mjs
+new file mode 100644
+index 0000000..43b9582
+--- /dev/null
++++ b/scripts/verify-isr-doqueue.mjs
+@@ -0,0 +1,524 @@
++/**
++ * @fileoverview Validação empírica do ISR com doQueue e Durable Object no Worker local.
++ * @module scripts/verify-isr-doqueue
++ * @description Executa a bateria de 6 cenários exigidos para o ISR:
++ *   1. Cache inicial (HIT) estritamente no build atual.
++ *   2. Expiração controlada do cache da Home em KV.
++ *   3. Resposta STALE imediata com enfileiramento via doQueue e registro no DO.
++ *   4. Deduplicação sob requisições concorrentes com contagem atômica (chaves únicas).
++ *   5. Tolerância a falha transitória (500 comprovado na regeneração interna).
++ *   6. Recuperação natural sem intervenção em sync e atualização efetiva de conteúdo.
++ * @dependencies node:fs, node:path, node:child_process.
++ */
++import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
++import path from 'node:path';
++import { execSync } from 'node:child_process';
++
++const WORKER_BASE_URL = 'http://127.0.0.1:3101';
++const HOME_HASH =
++  'b8f0c64c6b32724bc32214c6dbfd7e56b9ef986abaa4a2fad2ad29463740214d';
++
++function log(step, msg) {
++  console.log(`\x1b[36m[${step}]\x1b[0m ${msg}`);
++}
++
++function success(step, msg) {
++  console.log(`\x1b[32m✔ [${step}]\x1b[0m ${msg}`);
++}
++
++function fail(step, msg) {
++  const err = new Error(`[${step}] ${msg}`);
++  err.step = step;
++  throw err;
++}
++
++function getKvDb() {
++  const out = execSync(
++    'find .wrangler/state/v3/kv/ -name "*.sqlite" ! -name "metadata.sqlite"',
++    { encoding: 'utf8' },
++  )
++    .trim()
++    .split('\n')[0];
++  if (!out) throw new Error('Banco SQLite do KV não encontrado em .wrangler');
++  return out;
++}
++
++function getBlobsDir() {
++  const out = execSync('find .wrangler/state/v3/kv/ -type d -name "blobs"', {
++    encoding: 'utf8',
++  })
++    .trim()
++    .split('\n')[0];
++  if (!out)
++    throw new Error('Diretório de blobs do KV não encontrado em .wrangler');
++  return out;
++}
++
++function getDoQueueDb() {
++  const out = execSync(
++    'find .wrangler/state/v3/do/gradualinfo-DOQueueHandler/ -name "*.sqlite" ! -name "metadata.sqlite"',
++    { encoding: 'utf8' },
++  )
++    .trim()
++    .split('\n')[0];
++  if (!out)
++    throw new Error(
++      'Banco SQLite do DOQueueHandler não encontrado em .wrangler',
++    );
++  return out;
++}
++
++function getActiveBuildId() {
++  const buildIdPath = '.open-next/assets/BUILD_ID';
++  if (existsSync(buildIdPath)) {
++    return readFileSync(buildIdPath, 'utf8').trim();
++  }
++  const nextBuildId = '.next/BUILD_ID';
++  if (existsSync(nextBuildId)) {
++    return readFileSync(nextBuildId, 'utf8').trim();
++  }
++  throw new Error('BUILD_ID ativo não encontrado');
++}
++
++function findHomeKvBlob() {
++  const kvDb = getKvDb();
++  const blobsDir = getBlobsDir();
++  const buildId = getActiveBuildId();
++  const targetKey = `incremental-cache/${buildId}/${HOME_HASH}.cache`;
++
++  const blobId = execSync(
++    `sqlite3 "${kvDb}" "SELECT blob_id FROM _mf_entries WHERE key = '${targetKey}';"`,
++    { encoding: 'utf8' },
++  ).trim();
++
++  if (!blobId) {
++    throw new Error(
++      `Cache da Home para o build atual (${buildId}) não encontrado no KV (chave: ${targetKey})`,
++    );
++  }
++
++  const blobPath = path.join(blobsDir, blobId);
++  if (!existsSync(blobPath)) {
++    throw new Error(`Arquivo blob não existe no disco: ${blobPath}`);
++  }
++
++  return { blobPath, targetKey, buildId };
++}
++
++function setKv(key, value) {
++  const kvDb = getKvDb();
++  const blobsDir = getBlobsDir();
++  const blobPath = path.join(blobsDir, key);
++  writeFileSync(blobPath, String(value));
++  execSync(
++    `sqlite3 "${kvDb}" "INSERT OR REPLACE INTO _mf_entries (key, blob_id) VALUES ('${key}', '${key}');"`,
++  );
++}
++
++function getKv(key) {
++  const kvDb = getKvDb();
++  const blobsDir = getBlobsDir();
++  const blobId = execSync(
++    `sqlite3 "${kvDb}" "SELECT blob_id FROM _mf_entries WHERE key = '${key}';"`,
++    { encoding: 'utf8' },
++  ).trim();
++  if (!blobId) return null;
++  const blobPath = path.join(blobsDir, blobId);
++  if (!existsSync(blobPath)) return null;
++  return readFileSync(blobPath, 'utf8').trim();
++}
++
++function deleteKv(key) {
++  const kvDb = getKvDb();
++  const blobsDir = getBlobsDir();
++  execSync(`sqlite3 "${kvDb}" "DELETE FROM _mf_entries WHERE key = '${key}';"`);
++  const blobPath = path.join(blobsDir, key);
++  if (existsSync(blobPath)) unlinkSync(blobPath);
++}
++
++function clearCallRecords() {
++  const kvDb = getKvDb();
++  const blobsDir = getBlobsDir();
++  const rows = execSync(
++    `sqlite3 "${kvDb}" "SELECT key, blob_id FROM _mf_entries WHERE key LIKE '__test_isr_call_%';"`,
++    { encoding: 'utf8' },
++  ).trim();
++  if (rows) {
++    for (const line of rows.split('\n')) {
++      const parts = line.split('|');
++      const blobId = parts[1];
++      if (blobId) {
++        const blobPath = path.join(blobsDir, blobId);
++        if (existsSync(blobPath)) {
++          unlinkSync(blobPath);
++        }
++      }
++    }
++    execSync(
++      `sqlite3 "${kvDb}" "DELETE FROM _mf_entries WHERE key LIKE '__test_isr_call_%';"`,
++    );
++  }
++}
++
++function countCallRecords() {
++  const kvDb = getKvDb();
++  const countStr = execSync(
++    `sqlite3 "${kvDb}" "SELECT count(*) FROM _mf_entries WHERE key LIKE '__test_isr_call_%';"`,
++    { encoding: 'utf8' },
++  ).trim();
++  return Number(countStr || 0);
++}
++
++function cleanupTestFlags() {
++  deleteKv('__test_simulate_isr_500__');
++  deleteKv('__test_isr_500_triggered__');
++  clearCallRecords();
++}
++
++function expireHomeCache(deltaMs = 400_000) {
++  const { blobPath } = findHomeKvBlob();
++  const data = JSON.parse(readFileSync(blobPath, 'utf8'));
++  const original = data.lastModified;
++  data.lastModified = Date.now() - deltaMs;
++  writeFileSync(blobPath, JSON.stringify(data));
++
++  // Alinha o lastSuccess na tabela sync para representar um ciclo anterior ao lastModified,
++  // permitindo que o checkSyncTable reconheça a expiração sem apagar a tabela sync.
++  try {
++    const doDb = getDoQueueDb();
++    const prevSuccessSec = Math.round(data.lastModified / 1000) - 60;
++    execSync(
++      `sqlite3 "${doDb}" "UPDATE sync SET lastSuccess = ${prevSuccessSec} WHERE id = 'localhost/';"`,
++    );
++  } catch {
++    // Se o registro ainda não existir na sync, segue normalmente
++  }
++
++  return { blobPath, original, expired: data.lastModified };
++}
++
++async function fetchHome(method = 'GET') {
++  const res = await fetch(`${WORKER_BASE_URL}/`, { method });
++  const text = await res.text();
++  return {
++    status: res.status,
++    cache: res.headers.get('x-nextjs-cache'),
++    staleTime: res.headers.get('x-nextjs-stale-time'),
++    prerender: res.headers.get('x-nextjs-prerender'),
++    body: text,
++  };
++}
++
++async function run() {
++  console.log('='.repeat(70));
++  console.log('🚀 BATERIA DE VALIDAÇÃO LOCAL ISR COM DOQUEUE & DURABLE OBJECT');
++  console.log('='.repeat(70));
++
++  try {
++    cleanupTestFlags();
++
++    if (process.argv.includes('--test-deliberate-fail')) {
++      log(
++        'TEST_FINALLY',
++        'Injetando falha deliberada para comprovar execução do bloco finally...',
++      );
++      setKv('__test_simulate_isr_500__', '1');
++      setKv('__test_isr_call_dummy__', '1');
++      fail(
++        'TEST_FINALLY',
++        'Falha forçada para comprovar que o bloco finally executa a limpeza.',
++      );
++    }
++
++    // --- Cenário 1: Cache Inicial ---
++    log('CENÁRIO 1', 'Verificando aquecimento e resposta de cache inicial...');
++    let res1 = await fetchHome();
++    if (res1.cache === 'MISS') {
++      res1 = await fetchHome();
++    }
++
++    // Localiza e valida o cache estritamente no build atual (sem fallback)
++    const { blobPath } = findHomeKvBlob();
++    const initialBlob = JSON.parse(readFileSync(blobPath, 'utf8'));
++    initialBlob.lastModified = Date.now();
++    writeFileSync(blobPath, JSON.stringify(initialBlob));
++
++    res1 = await fetchHome();
++    if (res1.status !== 200 || res1.cache !== 'HIT') {
++      fail(
++        'CENÁRIO 1',
++        `Esperado HTTP 200 com cache HIT, obtido ${res1.status} (${res1.cache})`,
++      );
++    }
++    success(
++      'CENÁRIO 1',
++      `Cache inicial ativo: HTTP 200, x-nextjs-cache: ${res1.cache}, stale-time: ${res1.staleTime}s`,
++    );
++
++    // --- Cenário 2: Expiração Controlada ---
++    log(
++      'CENÁRIO 2',
++      'Aplicando expiração temporal controlada no cache da Home...',
++    );
++    const expInfo = expireHomeCache();
++    success(
++      'CENÁRIO 2',
++      `lastModified adiantado para ${new Date(expInfo.expired).toISOString()} (> 300s TTL)`,
++    );
++
++    // --- Cenário 3: Resposta STALE e disparo do doQueue ---
++    log(
++      'CENÁRIO 3',
++      'Requisitando home expirada para verificar resposta STALE e acionamento do doQueue...',
++    );
++    const res3 = await fetchHome();
++    if (res3.status !== 200 || res3.cache !== 'STALE') {
++      fail(
++        'CENÁRIO 3',
++        `Esperado HTTP 200 com STALE, obtido ${res3.status} (${res3.cache})`,
++      );
++    }
++    success(
++      'CENÁRIO 3',
++      'Resposta STALE imediata entregue ao leitor: HTTP 200, x-nextjs-cache: STALE',
++    );
++
++    // Aguarda regeneração em background pelo DOQueueHandler
++    await new Promise((r) => setTimeout(r, 1500));
++
++    // Confirma registro de sucesso no SQLite do DOQueueHandler
++    const doDb = getDoQueueDb();
++    const syncRecord = execSync(
++      `sqlite3 "${doDb}" "SELECT * FROM sync WHERE id = 'localhost/';"`,
++      {
++        encoding: 'utf8',
++      },
++    ).trim();
++    if (!syncRecord.includes('localhost/')) {
++      fail(
++        'CENÁRIO 3',
++        `Registro de revalidação não encontrado na tabela sync do DOQueueHandler: ${syncRecord}`,
++      );
++    }
++    success(
++      'CENÁRIO 3',
++      `doQueue executou regeneração com sucesso. Tabela sync: ${syncRecord}`,
++    );
++
++    // Leitura subsequente deve ser HIT
++    const resSub = await fetchHome();
++    if (resSub.cache !== 'HIT') {
++      fail(
++        'CENÁRIO 3',
++        `Esperado cache HIT após regeneração, obtido ${resSub.cache}`,
++      );
++    }
++    success(
++      'CENÁRIO 3',
++      'Leitura subsequente confirmada com cache renovado: x-nextjs-cache: HIT',
++    );
++
++    // --- Cenário 4: Requisições Concorrentes e Medição Efetiva de Deduplicação com Chaves Únicas ---
++    log(
++      'CENÁRIO 4',
++      'Exercitando 10 requisições simultâneas com cache expirado e medindo regenerações com chaves atômicas...',
++    );
++    expireHomeCache();
++    clearCallRecords();
++
++    // Executa as 10 requisições em paralelo
++    const concurrentPromises = Array.from({ length: 10 }, () =>
++      fetchHome('HEAD'),
++    );
++    const concurrentResults = await Promise.all(concurrentPromises);
++    const staleCount = concurrentResults.filter(
++      (r) => r.cache === 'STALE',
++    ).length;
++    const hitCount = concurrentResults.filter((r) => r.cache === 'HIT').length;
++    const okCount = concurrentResults.filter((r) => r.status === 200).length;
++    if (staleCount < 1 || okCount !== 10) {
++      fail(
++        'CENÁRIO 4',
++        `Falha em requisições concorrentes: ${staleCount} STALE, ${hitCount} HIT, ${okCount}/10 OK`,
++      );
++    }
++
++    // Aguarda o DOQueueHandler processar a fila
++    await new Promise((r) => setTimeout(r, 1800));
++
++    // Mede quantas chamadas internas de regeneração foram recebidas através de chaves únicas atômicas
++    const revalCount = countCallRecords();
++    if (revalCount !== 1) {
++      fail(
++        'CENÁRIO 4',
++        `Deduplicação falhou: esperada exatamente 1 regeneração interna para 10 requisições, obtido: ${revalCount}`,
++      );
++    }
++    success(
++      'CENÁRIO 4',
++      `DEDUPLICAÇÃO ATÔMICA COMPROVADA: 10 requisições simultâneas atendidas com HTTP 200 (${staleCount} STALE, ${hitCount} HIT) dispararam exatamente ${revalCount} regeneração interna.`,
++    );
++
++    // --- Cenário 5: Injeção Comprovada de Falha Transitória (500) ---
++    log(
++      'CENÁRIO 5',
++      'Injetando falha transitória (500) na regeneração em background e verificando captura...',
++    );
++    expireHomeCache();
++    setKv('__test_isr_500_triggered__', '0');
++    setKv('__test_simulate_isr_500__', '1');
++
++    const resFail = await fetchHome();
++    if (resFail.status !== 200 || resFail.cache !== 'STALE') {
++      fail(
++        'CENÁRIO 5',
++        `Cliente deve receber 200 STALE mesmo com falha em background, obtido ${resFail.status}`,
++      );
++    }
++
++    // Aguarda tentativa do DO
++    await new Promise((r) => setTimeout(r, 1500));
++
++    // Confirma que o hook de 500 foi atingido pela revalidação interna
++    const was500Triggered = getKv('__test_isr_500_triggered__');
++    if (was500Triggered !== '1') {
++      fail(
++        'CENÁRIO 5',
++        `O hook de 500 não foi acionado pela revalidação interna. Flag obtida: ${was500Triggered}`,
++      );
++    }
++    success(
++      'CENÁRIO 5',
++      'FALHA TRANSITÓRIA COMPROVADA: requisição interna de revalidação recebeu HTTP 500 simulado.',
++    );
++    success(
++      'CENÁRIO 5',
++      'Cliente continuou recebendo HTTP 200 STALE e Worker permaneceu íntegro sem crash.',
++    );
++
++    // --- Cenário 6: Recuperação Natural sem DELETE FROM sync e Atualização Efetiva ---
++    log(
++      'CENÁRIO 6',
++      'Desativando simulação de 500 e verificando recuperação NATURAL do DO (sem tocar na tabela sync)...',
++    );
++    // Remove flag de erro — NÃO altera a tabela sync do DO!
++    deleteKv('__test_simulate_isr_500__');
++    clearCallRecords();
++
++    const testId = Date.now();
++    const staleMarker = `data-synthetic-isr-test="${testId}"`;
++
++    // Injeta marcador sintético no cache stale da Home para comprovar regeneração autêntica
++    const { blobPath: homeBlobPath } = findHomeKvBlob();
++    const currentBlobData = JSON.parse(readFileSync(homeBlobPath, 'utf8'));
++    const originalHtml = currentBlobData.value.html;
++    currentBlobData.value.html = originalHtml.replace(
++      '<body',
++      `<body ${staleMarker}`,
++    );
++    // Mantém timestamp expirado para acionar nova revalidação
++    currentBlobData.lastModified = Date.now() - 400_000;
++    writeFileSync(homeBlobPath, JSON.stringify(currentBlobData));
++
++    log(
++      'CENÁRIO 6',
++      `Marcador sintético injetado no cache stale: ${staleMarker}`,
++    );
++
++    // Primeira requisição recebe stale com o marcador
++    const staleReq = await fetchHome();
++    if (staleReq.cache !== 'STALE' || !staleReq.body.includes(staleMarker)) {
++      fail(
++        'CENÁRIO 6',
++        `Esperado receber HTML stale contendo o marcador sintético, cache: ${staleReq.cache}`,
++      );
++    }
++    success(
++      'CENÁRIO 6',
++      'Resposta stale entregue com sucesso contendo o marcador sintético: x-nextjs-cache: STALE',
++    );
++
++    // Aguarda DOQueueHandler se recuperar naturalmente e regenerar a página via WORKER_SELF_REFERENCE
++    log(
++      'CENÁRIO 6',
++      'Aguardando DOQueueHandler se recuperar naturalmente e regenerar a página via WORKER_SELF_REFERENCE...',
++    );
++    await new Promise((r) => setTimeout(r, 2200));
++
++    // Confirma que houve regeneração interna
++    const recoveredRevalCount = countCallRecords();
++    if (recoveredRevalCount < 1) {
++      fail(
++        'CENÁRIO 6',
++        `DOQueueHandler não disparou revalidação interna após recuperação. Contagem: ${recoveredRevalCount}`,
++      );
++    }
++
++    // Leitura posterior deve ter o novo HTML regenerado pelo Next (sem o marcador stale) e cache HIT
++    const updatedReq = await fetchHome();
++    if (updatedReq.cache !== 'HIT') {
++      fail(
++        'CENÁRIO 6',
++        `Esperado cache HIT na leitura posterior, obtido ${updatedReq.cache}`,
++      );
++    }
++    if (updatedReq.body.includes(staleMarker)) {
++      fail(
++        'CENÁRIO 6',
++        'O marcador stale ainda está presente! A regeneração não atualizou o KV.',
++      );
++    }
++
++    // Verifica novo blob e avanço do timestamp
++    const { blobPath: freshBlobPath } = findHomeKvBlob();
++    const freshBlobData = JSON.parse(readFileSync(freshBlobPath, 'utf8'));
++    if (freshBlobData.lastModified <= currentBlobData.lastModified) {
++      fail(
++        'CENÁRIO 6',
++        `Timestamp do cache não avançou! Anterior: ${currentBlobData.lastModified}, Atual: ${freshBlobData.lastModified}`,
++      );
++    }
++
++    // Confirma que a tabela sync do DO foi atualizada pela própria recuperação
++    const finalSync = execSync(
++      `sqlite3 "${doDb}" "SELECT * FROM sync WHERE id = 'localhost/';"`,
++      {
++        encoding: 'utf8',
++      },
++    ).trim();
++
++    success(
++      'CENÁRIO 6',
++      'RECUPERAÇÃO NATURAL E ATUALIZAÇÃO EFETIVA COMPROVADAS:',
++    );
++    console.log(
++      '       - DO se recuperou sem intervenção manual na tabela sync',
++    );
++    console.log(
++      `       - Regeneração interna disparada com sucesso (${recoveredRevalCount} chamada)`,
++    );
++    console.log(
++      `       - Novo HTML renderizado e salvo no KV pelo Next (timestamp: ${freshBlobData.lastModified})`,
++    );
++    console.log(
++      '       - Leitura posterior entregou x-nextjs-cache: HIT e HTML sem o marcador sintético!',
++    );
++    console.log(
++      `       - Tabela sync do DO atualizada naturalmente: ${finalSync}`,
++    );
++
++    console.log('='.repeat(70));
++    console.log(
++      '🎉 TODOS OS 6 CENÁRIOS DO ISR COM DOQUEUE FORAM APROVADOS COM MEDIÇÃO ATÔMICA!',
++    );
++    console.log('='.repeat(70));
++  } finally {
++    cleanupTestFlags();
++  }
++}
++
++run().catch((err) => {
++  console.error(`\x1b[31m✘ ${err.message}\x1b[0m`);
++  cleanupTestFlags();
++  process.exit(1);
++});
