@@ -80,6 +80,10 @@
         "name": "ADMIN_RATE_LIMIT_DO",
         "class_name": "AdminRateLimitDO",
       },
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler",
+      },
     ],
   },
   "migrations": [
@@ -90,6 +94,16 @@
     {
       "tag": "v2-admin-rate-limit",
       "new_sqlite_classes": ["AdminRateLimitDO"],
+    },
+    {
+      "tag": "v3-do-queue",
+      "new_sqlite_classes": ["DOQueueHandler"],
+    },
+  ],
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "gradualinfo",
     },
   ],
   "routes": [
