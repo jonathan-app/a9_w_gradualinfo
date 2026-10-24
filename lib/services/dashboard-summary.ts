@@ -8,19 +8,22 @@
  */
 import 'server-only';
 
+import { checkAdminUser } from '@/lib/admin/auth';
+import { env } from '@/lib/env';
+
 import { getAdminServiceClient } from '@/lib/admin/service-client';
 import { getEditorialDashboardData } from '@/lib/services/editorial-dashboard';
 import { getCommercialDashboardData } from '@/lib/services/commercial-dashboard';
 
 export interface DashboardMetricSummary {
-  totalArticles: number;
-  articlesGrowth: number;
-  totalViews: number;
-  viewsGrowth: number;
-  activeOffers: number;
-  offersGrowth: number;
-  registeredUsers: number;
-  usersGrowth: number;
+  totalArticles: number | null;
+  articlesGrowth: number | null;
+  totalViews: number | null;
+  viewsGrowth: number | null;
+  activeOffers: number | null;
+  offersGrowth: number | null;
+  registeredUsers: number | null;
+  usersGrowth: number | null;
 }
 
 export interface PublicationDataPoint {
@@ -42,19 +45,20 @@ export interface RecentActivityItem {
 /**
  * Retorna contagem de usuários com papel ativo em admin_user_roles.
  */
-async function getAdminUsersCount(): Promise<number> {
+async function getAdminUsersCount(): Promise<number | null> {
   try {
     const client = getAdminServiceClient();
-    if (!client) return 1;
+    if (!client) return null;
 
     const { count, error } = await client
       .from('admin_user_roles')
-      .select('*', { count: 'exact', head: true });
+      .select('*', { count: 'exact', head: true })
+      .neq('user_id', env.adminUserId.trim());
 
-    if (error || typeof count !== 'number') return 1;
-    return Math.max(1, count + 1); // +1 referente à raiz permanente
+    if (error || typeof count !== 'number') return null;
+    return count + 1; // Raiz permanente contada apenas uma vez.
   } catch {
-    return 1;
+    return null;
   }
 }
 
@@ -62,25 +66,33 @@ async function getAdminUsersCount(): Promise<number> {
  * Retorna as métricas numéricas agregadas do topo do dashboard.
  */
 export async function getDashboardMetricSummary(): Promise<DashboardMetricSummary> {
+  const auth = await checkAdminUser();
+  if (auth instanceof Response || !auth.ok) {
+    throw new Error('Acesso administrativo indisponível.');
+  }
   const [editorialData, commercialData, usersCount] = await Promise.all([
     getEditorialDashboardData({ page: 1, pageSize: 50 }),
     getCommercialDashboardData({ page: 1, pageSize: 50 }),
-    getAdminUsersCount(),
+    auth.role === 'admin' ? getAdminUsersCount() : Promise.resolve(null),
   ]);
 
-  const totalArticles = editorialData.totalPosts || editorialData.posts.length;
-  const activeOffers =
-    commercialData.totalOffers || commercialData.offers.length;
+  // Zero confirmado é diferente de uma fonte indisponível.
+  const totalArticles = ['configured', 'empty'].includes(editorialData.status)
+    ? editorialData.totalPosts
+    : null;
+  const activeOffers = ['configured', 'empty'].includes(commercialData.status)
+    ? commercialData.totalOffers
+    : null;
 
   return {
-    totalArticles: Math.max(totalArticles, 17),
-    articlesGrowth: 12,
-    totalViews: 182450,
-    viewsGrowth: 18,
-    activeOffers: Math.max(activeOffers, 14),
-    offersGrowth: 6,
-    registeredUsers: Math.max(usersCount, 3),
-    usersGrowth: 14,
+    totalArticles,
+    articlesGrowth: null,
+    totalViews: null,
+    viewsGrowth: null,
+    activeOffers,
+    offersGrowth: null,
+    registeredUsers: usersCount,
+    usersGrowth: null,
   };
 }
 
@@ -90,6 +102,7 @@ export async function getDashboardMetricSummary(): Promise<DashboardMetricSummar
 function formatTimeAgo(isoDate: string): string {
   try {
     const date = new Date(isoDate);
+    if (!Number.isFinite(date.getTime())) return 'horário indisponível';
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -174,18 +187,25 @@ export async function getDashboardRecentActivity(): Promise<
   RecentActivityItem[]
 > {
   try {
+    const auth = await checkAdminUser();
+    if (auth instanceof Response || !auth.ok) return [];
     const client = getAdminServiceClient();
     if (!client) {
-      return getDefaultRecentActivity();
+      return [];
     }
-    const { data, error } = await client
+    let query = client
       .from('admin_audit_log')
-      .select('id, action, resource_type, resource_id, metadata, created_at')
+      .select('id, action, resource_type, resource_id, created_at')
+      .eq('status', 'success');
+    // O cliente de serviço ignora RLS, portanto a restrição do ator é explícita.
+    if (auth.role !== 'admin') query = query.eq('actor_id', auth.user.id);
+    const { data, error } = await query
       .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
       .limit(5);
 
     if (error || !data || data.length === 0) {
-      return getDefaultRecentActivity();
+      return [];
     }
 
     return data.map((item) => {
@@ -203,95 +223,17 @@ export async function getDashboardRecentActivity(): Promise<
       };
     });
   } catch {
-    return getDefaultRecentActivity();
+    return [];
   }
 }
 
 /**
- * Lista de atividade padrão de contingência visual alinhada ao mockup.
- */
-function getDefaultRecentActivity(): RecentActivityItem[] {
-  return [
-    {
-      id: 'mock-1',
-      title: 'Artigo publicado',
-      description: 'Melhores notebooks para trabalhar em 2026',
-      timeAgo: 'há 1h',
-      type: 'article',
-    },
-    {
-      id: 'mock-2',
-      title: 'Novo usuário',
-      description: 'Operador delegado cadastrado com sucesso',
-      timeAgo: 'há 2h',
-      type: 'user',
-    },
-    {
-      id: 'mock-3',
-      title: 'Oferta atualizada',
-      description: 'Selo de preço verificado com evidência WORM',
-      timeAgo: 'há 3h',
-      type: 'offer',
-    },
-    {
-      id: 'mock-4',
-      title: 'Configuração alterada',
-      description: 'Política de segurança de MFA renovada',
-      timeAgo: 'há 5h',
-      type: 'security',
-    },
-    {
-      id: 'mock-5',
-      title: 'Rascunho salvo',
-      description: 'Guia completo de smart home e automação',
-      timeAgo: 'há 6h',
-      type: 'article',
-    },
-  ];
-}
-
-/**
- * Gera série temporal dos últimos 14 dias para o gráfico de publicações.
+ * A fonte atual não oferece histórico de transições editoriais nem analytics.
+ * Retorna ausência de série em vez de gerar eventos que não aconteceram.
+ * @returns Série vazia até existir consulta temporal comprovada.
  */
 export function getDashboardPublicationHistory(): PublicationDataPoint[] {
-  const days: PublicationDataPoint[] = [];
-  const today = new Date();
-
-  // Histórico representativo de 14 dias
-  const sampleValues = [
-    { p: 4, r: 3, d: 2 },
-    { p: 6, r: 4, d: 1 },
-    { p: 5, r: 5, d: 2 },
-    { p: 4, r: 3, d: 3 },
-    { p: 7, r: 4, d: 2 },
-    { p: 8, r: 3, d: 3 },
-    { p: 6, r: 5, d: 2 },
-    { p: 7, r: 4, d: 3 },
-    { p: 9, r: 5, d: 4 },
-    { p: 5, r: 4, d: 4 },
-    { p: 8, r: 6, d: 3 },
-    { p: 9, r: 5, d: 1 },
-    { p: 12, r: 8, d: 5 },
-    { p: 9, r: 4, d: 2 },
-  ];
-
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const sample = sampleValues[13 - i] || { p: 5, r: 3, d: 2 };
-
-    days.push({
-      date: `${day}/${month}`,
-      label: `${day}/${month}`,
-      published: sample.p,
-      review: sample.r,
-      drafts: sample.d,
-    });
-  }
-
-  return days;
+  return [];
 }
 
 export interface DashboardSummaryData {

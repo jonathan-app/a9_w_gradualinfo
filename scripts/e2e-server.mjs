@@ -25,7 +25,10 @@ import { startFaultProxy } from './e2e-fault-proxy.mjs';
 const closeFaultProxy =
   process.env.E2E_NETWORK_FAULTS === '1' ? startFaultProxy() : () => {};
 const useWorker =
-  process.env.E2E_USE_WORKER === '1' && existsSync('.open-next/assets');
+  (process.env.E2E_USE_WORKER === '1' ||
+    process.env.E2E_PRODUCTION === '1' ||
+    process.env.E2E_REAL_SUPABASE === '1') &&
+  existsSync('.open-next/assets');
 
 let sanityReadToken = process.env.SANITY_API_READ_TOKEN || '';
 if (!sanityReadToken && existsSync('.env.local')) {
@@ -63,7 +66,7 @@ if (useWorker) {
     'ADMIN_ACCESS_ISSUER=https://test-team.cloudflareaccess.com',
     'ADMIN_ACCESS_AUD=spec-0018-test-aud',
     'ADMIN_ACCESS_OWNER_EMAIL=ana@exemplo.dev',
-    'ADMIN_ACCESS_HOSTS=admin.example.test',
+    'ADMIN_ACCESS_HOSTS=localhost',
     'ADMIN_USER_ID=11111111-1111-1111-1111-111111111111',
     'ADMIN_EMAIL=ana@exemplo.dev',
     'NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3100',

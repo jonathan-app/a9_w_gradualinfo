@@ -429,7 +429,15 @@ describe('Spec 0021: Concorrência real e idempotência no banco de dados local'
 
     const actorUserId = '11111111-1111-1111-1111-111111111111';
     const targetUserId = '22222222-2222-2222-2222-222222222222';
-    const ipMarker = `198.51.100.${Math.floor(Math.random() * 200) + 10}`;
+    // IP único por execução para evitar colisão com registros anteriores
+    const ipMarker = `198.51.100.${(Date.now() % 250) + 10}`;
+
+    // Limpa auditoria prévia para este alvo/IP para isolar o teste
+    await client1
+      .from('admin_audit_log')
+      .delete()
+      .eq('resource_id', targetUserId)
+      .eq('ip_address', ipMarker);
 
     // Limpa papel prévio se existir via RPC transacional
     await client1.rpc('revoke_admin_role', {

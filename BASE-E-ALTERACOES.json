@@ -1,0 +1,67 @@
+[
+  {
+    "path": "lib/services/dashboard-summary.ts",
+    "base_sha256": "3f46d681fea1b9be01c55938d18e65bbbcc94eeb7eee55c58ee6509c67ba2d90",
+    "updated_sha256": "d5577f782353342de80a24043c5cdf8e7a91a07e7e4fec1104218c5b81551791"
+  },
+  {
+    "path": "components/admin/dashboard/metric-cards.tsx",
+    "base_sha256": "8c4e0eac9a533eff6f062448c10b00b9a412e8e888e0da4753e02fc76e99c234",
+    "updated_sha256": "c511a11af8a05fbb02cdd29c0895e8de429c1dd3ca9594eae41e94b3f5563f58"
+  },
+  {
+    "path": "components/admin/dashboard/publication-chart.tsx",
+    "base_sha256": "7f726bff0ec22d82d50e134e7c4f0d323bffded156d52dfb53a2a08faf659c16",
+    "updated_sha256": "11bd33d877fd0b1d4882c0e2724095bf4c30f55f061a523069d5db97b3e43de3"
+  },
+  {
+    "path": "app/admin-dashboard/(protegido)/page.tsx",
+    "base_sha256": "acb397a71c59c4dc46ab9c7010087a387a15e9ac7dde6e31ae0ae87c3f268e36",
+    "updated_sha256": "13bb329329bfeeab3f42568291f8aa712e52fed34f7ff24d8920b10b360ce072"
+  },
+  {
+    "path": "app/api/admin/usuarios/papeis/route.ts",
+    "base_sha256": "2b3d7e41976ec7108047e835d2d115351705bd1c18aefc852e49c942dc256917",
+    "updated_sha256": "c8ad003304f80bf0340018b351af433553373676a0b3dc48d22cf0f6771c65e9"
+  },
+  {
+    "path": "lib/admin/rate-limit.ts",
+    "base_sha256": "6e90a0c6d8642581d4bfb231f79955954ccf53d4d79cd063a3beee88fb2cce13",
+    "updated_sha256": "668d774b916dc57dbf035d5977537851799316623a3cfb403507e13eaeb6c0fb"
+  },
+  {
+    "path": "__tests__/unit/lib/services/dashboard-summary.test.ts",
+    "base_sha256": "18593cb95f5acb2a5d24a0ea8a99e4025e42ed95895a95059dccecd60c030a9c",
+    "updated_sha256": "c47939d8c80ee7ee637eafbef91434ea5dd437c2224b10c94e08d321b502b05a"
+  },
+  {
+    "path": "__tests__/unit/components/admin-dashboard-visual.test.tsx",
+    "base_sha256": "412aa623b201e9cef7031905736096db9d395d495eea8a76b4970dc7eab5d153",
+    "updated_sha256": "4f53a76380b86a3a461316528895c27d359f6e29265d40d9d399b4d43aa7f28b"
+  },
+  {
+    "path": "__tests__/unit/app/api/admin/usuarios/papeis.test.ts",
+    "base_sha256": "67302acacd96cd181a62f20853cb7f3d6bfeedaab6f26d6b760bf4eb2491ed9e",
+    "updated_sha256": "5c00e9ba038775291763516f41864cb9983a8108257c27db1a12cf7593ac1056"
+  },
+  {
+    "path": "__tests__/unit/admin-rate-limit.test.ts",
+    "base_sha256": "8bd52a93cf0de2cb1f51b80318c2d1d49e07cb589654fc0db7c3dac7257891f6",
+    "updated_sha256": "b118d289684ce446f999c1fa083ed97f0ca7c3d045c243eab71c5121942dcfe7"
+  },
+  {
+    "path": "__tests__/unit/admin-dashboard-page-auth.test.tsx",
+    "base_sha256": null,
+    "updated_sha256": "e4635c6ae1b0c3320309315165b38d0a41a205753b72d66ffc7d87a884d234a7"
+  },
+  {
+    "path": "workflow/STATE.md",
+    "base_sha256": "e3c2a0479e9f70ced72723a23bba7f403fb0c3f594b0e01e5b354cc3cb9a4860",
+    "updated_sha256": "1964bd528cb19bf703f78a70667d21f8f29ccecda0d49c0c64515eb1ca9e4c91"
+  },
+  {
+    "path": "docs/audits/2026-10-21-1913-backend-admin-v2-auditoria.md",
+    "base_sha256": null,
+    "updated_sha256": "dd11d4ec418f3f7d6d6780bd2a91003507721f7016d7a5356a8e9dc88ba7e1ef"
+  }
+]

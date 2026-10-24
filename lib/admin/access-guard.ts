@@ -6,7 +6,7 @@
  */
 import { headers } from 'next/headers';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
-import { readAdminAccessConfig } from '../env';
+import { readAdminAccessConfig, env } from '../env';
 import {
   accessFailureResponse,
   classifyAdminPath,
@@ -19,6 +19,28 @@ import {
  * @returns Recusa privada ou null quando o contexto interno é válido.
  */
 export function guardAdminAccess(request?: Request): Response | null {
+  // Harness de teste local: admite requisições de loopback em desenvolvimento
+  // quando o harness de testes está ativo, sem exigir bindings Worker da
+  // Cloudflare. Nunca admite em produção remota.
+  const siteUrl = String(process.env.NEXT_PUBLIC_SITE_URL ?? '');
+  let hostname = '';
+  try {
+    hostname = new URL(siteUrl).hostname;
+  } catch {
+    // URL malformada não é loopback: segue para a validação normal.
+  }
+  const isLoopback =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '[::1]';
+  if (
+    !env.isProduction &&
+    (process.env.E2E_TEST === '1' || process.env.E2E_PRODUCTION === '1') &&
+    isLoopback
+  ) {
+    return null;
+  }
+
   try {
     const bindings = getCloudflareContext().env as unknown as Record<
       string,
@@ -59,11 +81,7 @@ export function guardAdminAccess(request?: Request): Response | null {
       hostname === 'localhost' ||
       hostname === '127.0.0.1' ||
       hostname === '[::1]';
-    if (
-      process.env.E2E_PRODUCTION === '1' &&
-      isLoopback &&
-      hostname !== 'gradualinfo.com.br'
-    ) {
+    if (!env.isProduction && process.env.E2E_PRODUCTION === '1' && isLoopback) {
       return null;
     }
     return accessFailureResponse(request, 503);

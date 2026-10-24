@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "e9401aa8a522cd0805d498b2248f6871bac611c9",
+  "evaluatedTree": "11c6b9cd939d1116bce31ee5634bb1ad89120e80",
+  "spec": {
+    "path": "docs/specs/2026-10-21-2130-0037-admin-dashboard-usuarios.md",
+    "sha256": "82f3ce99c45545d2603e1744d277aea3b680c536a1b2f880c9970181375e4d4c"
+  },
+  "acs": [
+    {
+      "id": "usuarios/AC-1",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-01-execucao.md",
+      "evidenceSha256": "5d4b9a5e84ec75676463748c3769b0e6b61e580a26e10daddfa09772c5da95fe",
+      "evidenceNote": "Comprovado conjuntamente: E2E prova login real + AAL2 + Access no Worker; teste unitário prova a guarda estrita no servidor."
+    },
+    {
+      "id": "usuarios/AC-2",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-02-execucao.md",
+      "evidenceSha256": "6e3b6b561c93f7486a1550f3546280539e21dd8c124d9708c9b4a73b6deb8b41",
+      "evidenceNote": "Comprovado conjuntamente: unitário testa rigorosamente os limites padrão (20) e teto (50); E2E comprova a navegação real entre páginas no navegador."
+    },
+    {
+      "id": "usuarios/AC-3",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-03-execucao.md",
+      "evidenceSha256": "f9debf3a5c2aad98723e1b898f368497a62ccc6dcf3c11c56fecd42e0a661806",
+      "evidenceNote": "Comprovado conjuntamente: unitário valida a presença das colunas e destaque da raiz; E2E comprova renderização sob o runtime real do Worker."
+    },
+    {
+      "id": "usuarios/AC-4",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-04-execucao.md",
+      "evidenceSha256": "93dff9aa48b405985f4fa4ca513e296bda638e4785950a8eb1ee5e07e444eb1a",
+      "evidenceNote": "Comprovado conjuntamente: unitário valida o disparo do payload; E2E valida a integração ponta a ponta com o backend real."
+    },
+    {
+      "id": "usuarios/AC-5",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-05-execucao.md",
+      "evidenceSha256": "5af336b9da0e31b41ca927bac16710eb7b0c218db6a7adf76e727188654e682e",
+      "evidenceNote": "Comprovado conjuntamente: unitário valida que o registro em auth.users permanece intacto; E2E valida a revogação real no banco via UI."
+    },
+    {
+      "id": "usuarios/AC-6",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-06-execucao.md",
+      "evidenceSha256": "86dc8b842c3f0db27369aa8d569abfcaddf2849282e0bcc8247d6d61e126a9db",
+      "evidenceNote": "Comprovado conjuntamente: unitário comprova a desabilitação contra múltiplos cliques; E2E comprova a contagem única de requisição de rede."
+    },
+    {
+      "id": "usuarios/AC-7",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-07-execucao.md",
+      "evidenceSha256": "dcb9aca6281375d61005b7abb9e83871da9dbc91466d74134c02f5085bc8f6ff",
+      "evidenceNote": "Comprovado conjuntamente: unitário testa o listener de teclado; E2E comprova que nenhuma requisição HTTP sai pelo navegador."
+    },
+    {
+      "id": "usuarios/AC-8",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-08-execucao.md",
+      "evidenceSha256": "d36432252bd977eb0cd1cd32f180402a342efbfe954e85d22d00c697ebb0927a",
+      "evidenceNote": "Comprovado conjuntamente: unitário e E2E validam a restauração do foco com foco acessível ativo no DOM."
+    },
+    {
+      "id": "usuarios/AC-9",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-09-execucao.md",
+      "evidenceSha256": "602a16d80359dd821d8d269a73c38c29a39e4521481a87012dff135da6021e50",
+      "evidenceNote": "Comprovado conjuntamente: a matriz completa de status HTTP (400, 401, 403, 404, 409, 500 e 503) e UI e sustentada por testes unitarios existentes; E2E valida 403 e 409 no servidor real."
+    },
+    {
+      "id": "usuarios/AC-10",
+      "status": "PASS",
+      "evidence": "docs/reviews/evidence/2026-10-23-2245-0037-admin-usuarios/AC-10-execucao.md",
+      "evidenceSha256": "a73c2d3498d1139366d084d96bdb349c25d61bcb76d8def31a2655c44c2e4ae0",
+      "evidenceNote": "Comprovado conjuntamente: unitário comprova a recusa de AAL1; E2E comprova a recusa de editor e revisor na UI (tela 403) e na API (HTTP 403)."
+    }
+  ],
+  "findings": [],
+  "approved": true,
+  "verdict": "APROVADO",
+  "counts": {
+    "totalACs": 10,
+    "PASS": 10,
+    "FAIL": 0,
+    "UNVERIFIABLE": 0,
+    "missingEvidence": 0,
+    "BLOCKER": 0,
+    "WARNING": 0
+  },
+  "reasons": []
+}

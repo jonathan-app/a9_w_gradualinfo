@@ -355,7 +355,9 @@ export async function checkAdminUser(
   if (admissionFailure) return admissionFailure;
   const adminId = env.adminUserId.trim();
 
-  // Fail-closed absoluto: configuracao ausente nunca pode abrir o painel
+  // Fail-closed absoluto: configuracao ausente nunca pode abrir o painel.
+  // Sem ADMIN_USER_ID configurado, nao entra identidade substituta em nenhum
+  // ambiente — so um harness de teste explicit pode injetar um cliente mock.
   if (!adminId) {
     return { ok: false, reason: 'config_missing' };
   }

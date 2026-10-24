@@ -148,7 +148,7 @@ export function AdminHeader({
           <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 max-w-[140px] truncate">
             {userEmail}
           </p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 capitalize">
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">
             {userRole === 'admin'
               ? 'Administrador Único'
               : roleLabels[userRole] || 'Operador'}

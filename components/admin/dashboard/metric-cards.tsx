@@ -18,7 +18,6 @@ interface MetricCardItem {
   value: string;
   growth: string;
   color: 'blue' | 'green' | 'purple' | 'cyan';
-  sparklinePoints: string;
   icon: React.ReactNode;
 }
 
@@ -27,10 +26,15 @@ export function MetricCards({ metrics }: MetricCardsProps) {
     {
       id: 'articles',
       label: 'Total de artigos',
-      value: metrics.totalArticles.toLocaleString('pt-BR'),
-      growth: `+${metrics.articlesGrowth}% vs. últimos 7 dias`,
+      value:
+        metrics.totalArticles === null
+          ? 'Indisponível'
+          : metrics.totalArticles.toLocaleString('pt-BR'),
+      growth:
+        metrics.articlesGrowth === null
+          ? 'Sem série histórica'
+          : `${metrics.articlesGrowth >= 0 ? '+' : ''}${metrics.articlesGrowth}% vs. últimos 7 dias`,
       color: 'blue',
-      sparklinePoints: '0,18 15,14 30,16 45,10 60,12 75,6 90,8 100,2',
       icon: (
         <svg
           className="h-6 w-6 text-blue-600 dark:text-blue-400"
@@ -49,10 +53,15 @@ export function MetricCards({ metrics }: MetricCardsProps) {
     {
       id: 'views',
       label: 'Visualizações',
-      value: metrics.totalViews.toLocaleString('pt-BR'),
-      growth: `+${metrics.viewsGrowth}% vs. últimos 7 dias`,
+      value:
+        metrics.totalViews === null
+          ? 'Indisponível'
+          : metrics.totalViews.toLocaleString('pt-BR'),
+      growth:
+        metrics.viewsGrowth === null
+          ? 'Sem série histórica'
+          : `${metrics.viewsGrowth >= 0 ? '+' : ''}${metrics.viewsGrowth}% vs. últimos 7 dias`,
       color: 'green',
-      sparklinePoints: '0,16 15,12 30,15 45,8 60,11 75,4 90,6 100,1',
       icon: (
         <svg
           className="h-6 w-6 text-emerald-600 dark:text-emerald-400"
@@ -77,10 +86,15 @@ export function MetricCards({ metrics }: MetricCardsProps) {
     {
       id: 'offers',
       label: 'Ofertas ativas',
-      value: metrics.activeOffers.toLocaleString('pt-BR'),
-      growth: `+${metrics.offersGrowth}% vs. últimos 7 dias`,
+      value:
+        metrics.activeOffers === null
+          ? 'Indisponível'
+          : metrics.activeOffers.toLocaleString('pt-BR'),
+      growth:
+        metrics.offersGrowth === null
+          ? 'Sem série histórica'
+          : `${metrics.offersGrowth >= 0 ? '+' : ''}${metrics.offersGrowth}% vs. últimos 7 dias`,
       color: 'purple',
-      sparklinePoints: '0,17 15,15 30,12 45,14 60,8 75,10 90,4 100,3',
       icon: (
         <svg
           className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
@@ -98,11 +112,16 @@ export function MetricCards({ metrics }: MetricCardsProps) {
     },
     {
       id: 'users',
-      label: 'Usuários cadastrados',
-      value: metrics.registeredUsers.toLocaleString('pt-BR'),
-      growth: `+${metrics.usersGrowth}% vs. últimos 7 dias`,
+      label: 'Operadores com acesso',
+      value:
+        metrics.registeredUsers === null
+          ? 'Indisponível'
+          : metrics.registeredUsers.toLocaleString('pt-BR'),
+      growth:
+        metrics.usersGrowth === null
+          ? 'Sem série histórica'
+          : `${metrics.usersGrowth >= 0 ? '+' : ''}${metrics.usersGrowth}% vs. últimos 7 dias`,
       color: 'cyan',
-      sparklinePoints: '0,18 15,13 30,14 45,9 60,11 75,5 90,7 100,2',
       icon: (
         <svg
           className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
@@ -174,23 +193,6 @@ export function MetricCards({ metrics }: MetricCardsProps) {
               <span className={`text-xs font-semibold ${style.growthColor}`}>
                 {card.growth}
               </span>
-
-              {/* Sparkline SVG Nativo */}
-              <div className="h-6 w-24">
-                <svg
-                  className="h-full w-full overflow-visible"
-                  viewBox="0 0 100 20"
-                  fill="none">
-                  <polyline
-                    fill="none"
-                    stroke={style.stroke}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    points={card.sparklinePoints}
-                  />
-                </svg>
-              </div>
             </div>
           </div>
         );

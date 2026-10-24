@@ -40,10 +40,17 @@
   /* Marca */
   --color-brand-50: oklch(0.97 0.02 250);
   --color-brand-100: oklch(0.93 0.04 250);
+  --color-brand-200: oklch(0.88 0.07 250);
   --color-brand-400: oklch(0.78 0.14 250);
   --color-brand-500: oklch(0.62 0.17 250);
   --color-brand-600: oklch(0.55 0.17 250);
   --color-brand-700: oklch(0.47 0.15 250);
+  /* Tons profundos: o card da conta raiz usa `dark:bg-brand-950/40` e
+     `dark:border-brand-900/50`. Sem as chaves, o Tailwind descarta a classe e
+     o card fica claro no modo escuro, derrubando o contraste do texto. */
+  --color-brand-800: oklch(0.4 0.12 250);
+  --color-brand-900: oklch(0.3 0.09 250);
+  --color-brand-950: oklch(0.2 0.06 250);
 
   /* Modo escuro: as mesmas chaves, outros valores. Como o dark mode é por
      classe, basta trocar as variáveis em .dark — nenhuma utilitário muda. */

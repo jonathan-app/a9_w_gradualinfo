@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "evaluatedCommit": "36ee14bda5193724a8fa33479e965423839eeb58",
+  "evaluatedTree": "5d0603210cd7f40f170a3c8d451551754ad4eef3",
+  "spec": {
+    "path": "docs/specs/2026-10-21-2256-0036-listagem-operadores.md",
+    "sha256": "8e4ba21042d1694df7e733dbd4ac880fcd306448e302713a9e0b7aba70f41633"
+  },
+  "acs": [
+    {
+      "id": "operadores/AC-01",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-02",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-03",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-04",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-05",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-06",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-07",
+      "status": "PASS",
+      "evidence": "supabase/tests/database/admin_rbac.test.sql",
+      "evidenceSha256": "691ce47f995469b2b22ce59724a204a71b2f5d0cd834fd9e992292f9e47bd20c"
+    },
+    {
+      "id": "operadores/AC-08",
+      "status": "PASS",
+      "evidence": "check/0036-listagem-operadores/2026-10-22-0744-listagem-operadores-papeis/TEST.md",
+      "evidenceSha256": "4a08e5fc22eb24b988a5aa60c538752cd538ab0cc3aef6505c8ab435b7411af9"
+    },
+    {
+      "id": "operadores/AC-09",
+      "status": "PASS",
+      "evidence": "supabase/tests/database/admin_rbac.test.sql",
+      "evidenceSha256": "691ce47f995469b2b22ce59724a204a71b2f5d0cd834fd9e992292f9e47bd20c"
+    },
+    {
+      "id": "operadores/AC-10",
+      "status": "PASS",
+      "evidence": "supabase/tests/database/admin_rbac.test.sql",
+      "evidenceSha256": "691ce47f995469b2b22ce59724a204a71b2f5d0cd834fd9e992292f9e47bd20c"
+    },
+    {
+      "id": "operadores/AC-11",
+      "status": "PASS",
+      "evidence": "supabase/tests/database/admin_rbac.test.sql",
+      "evidenceSha256": "691ce47f995469b2b22ce59724a204a71b2f5d0cd834fd9e992292f9e47bd20c"
+    }
+  ],
+  "findings": []
+}

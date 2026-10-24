@@ -90,7 +90,7 @@ export function AdminSidebar({
     {
       id: 'users',
       label: 'Usuários',
-      href: '#secao-usuarios',
+      href: '/admin-dashboard/usuarios',
       icon: (
         <svg
           className="h-5 w-5"
@@ -299,7 +299,7 @@ export function AdminSidebar({
 
             {/* Grupo Sistema */}
             <div className="pt-6">
-              <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Sistema
               </span>
               <div className="mt-2 space-y-1">

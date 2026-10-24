@@ -85,7 +85,12 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/:path*',
+        // O painel tem política própria por requisição (nonce no `proxy.ts`).
+        // Esta regra global não pode cobrir essas rotas: o navegador aplica
+        // todas as CSP recebidas, e a política estática bloquearia justamente
+        // os scripts inline que o nonce libera. A exclusão usa limite de
+        // segmento para não isentar um caminho como `/admin-dashboardx`.
+        source: '/((?!admin-dashboard(?:/|$)|api/admin(?:/|$)).*)',
         headers: securityHeaderList,
       },
     ];

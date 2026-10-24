@@ -38,6 +38,7 @@ function makeRequest(pathname: string, method = 'GET'): NextRequest {
   return {
     nextUrl: { pathname },
     method,
+    headers: new Headers(),
     url: `https://gradualinfo.com.br${pathname}`,
   } as unknown as NextRequest;
 }
@@ -94,6 +95,58 @@ describe('proxy', () => {
     const request = makeRequest('/');
     await proxy(request);
     expect(set).not.toHaveBeenCalled();
+  });
+
+  it('aplica CSP com nonce na pagina administrativa e encaminha o nonce ao render', async () => {
+    const set = vi.fn();
+    const res = { headers: { set } } as unknown as Response;
+    updateSession.mockResolvedValueOnce(res);
+    classifyAdminPath.mockReturnValueOnce('protected');
+    const request = makeRequest('/admin-dashboard/usuarios');
+
+    await proxy(request);
+
+    const nonce = request.headers.get('x-nonce');
+    expect(nonce).toBeTruthy();
+    expect(request.headers.get('content-security-policy')).toContain(
+      `'nonce-${nonce}'`,
+    );
+    expect(set).toHaveBeenCalledWith(
+      'Content-Security-Policy',
+      expect.stringContaining(`'nonce-${nonce}'`),
+    );
+  });
+
+  it('nao aplica nonce na home, que continua ISR com a politica estatica', async () => {
+    const set = vi.fn();
+    const res = { headers: { set } } as unknown as Response;
+    updateSession.mockResolvedValueOnce(res);
+    const request = makeRequest('/');
+
+    await proxy(request);
+
+    expect(request.headers.get('x-nonce')).toBeNull();
+    expect(set).not.toHaveBeenCalledWith(
+      'Content-Security-Policy',
+      expect.anything(),
+    );
+  });
+});
+
+describe('needsScriptNonce', () => {
+  it('liga para o painel e seus filhos, inclusive o login', async () => {
+    const { needsScriptNonce } = await import('@/proxy');
+    expect(needsScriptNonce('/admin-dashboard')).toBe(true);
+    expect(needsScriptNonce('/admin-dashboard/login')).toBe(true);
+    expect(needsScriptNonce('/admin-dashboard/usuarios')).toBe(true);
+  });
+
+  it('nao liga para home, artigos nem APIs administrativas', async () => {
+    const { needsScriptNonce } = await import('@/proxy');
+    expect(needsScriptNonce('/')).toBe(false);
+    expect(needsScriptNonce('/artigos/exemplo')).toBe(false);
+    expect(needsScriptNonce('/api/admin/usuarios/papeis')).toBe(false);
+    expect(needsScriptNonce('/admin-dashboardx')).toBe(false);
   });
 });
 

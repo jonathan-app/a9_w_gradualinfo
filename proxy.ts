@@ -23,6 +23,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { env, isLocalEditorialMode } from '@/lib/env';
 import { getLocalPostBySlug } from '@/lib/editorial/local-posts';
 import { updateSession } from '@/lib/supabase/middleware';
+import {
+  contentSecurityPolicy,
+  createCspNonce,
+  securityHeaders,
+} from '@/lib/security-headers';
 
 /**
  * Renova a sessão e aplica a visibilidade antes do streaming da rota.
@@ -50,16 +55,63 @@ export async function proxy(request: NextRequest) {
     }
     return NextResponse.next();
   }
-  if (classifyAdminPath(request.nextUrl.pathname) !== 'public') {
+  const adminPath = classifyAdminPath(request.nextUrl.pathname) !== 'public';
+  if (adminPath) {
     const failure = guardAdminAccess(request);
     if (failure) return failure;
   }
+
+  /*
+   * CSP com nonce apenas no painel. A home e os artigos são ISR: o Next só
+   * injeta nonce em página renderizada por requisição, e aplicar a política
+   * com nonce a uma página estática deixaria os scripts inline sem nonce e sem
+   * permissão. O proxy encaminha a política no request (é de onde o Next lê o
+   * nonce) e repete o mesmo valor no response, para a resposta e o HTML não
+   * divergirem. O `next.config.ts` deixa de aplicar o conjunto global nas rotas
+   * administrativas: duas CSP na mesma resposta são aplicadas juntas, e a
+   * estática bloquearia os scripts que o nonce autoriza. Por isso o conjunto
+   * completo (não só a CSP) é repetido aqui para o painel.
+   */
+  const nonce = needsScriptNonce(request.nextUrl.pathname)
+    ? createCspNonce()
+    : undefined;
+  if (nonce) {
+    request.headers.set('x-nonce', nonce);
+    // O Next extrai o nonce do header CSP da requisição e o injeta nos scripts
+    // inline que ele mesmo gera.
+    request.headers.set(
+      'Content-Security-Policy',
+      contentSecurityPolicy(env.isProduction, nonce),
+    );
+  }
+
   const response = await updateSession(request);
-  if (classifyAdminPath(request.nextUrl.pathname) !== 'public') {
+  if (adminPath) {
+    for (const [key, value] of Object.entries(
+      securityHeaders({
+        isProduction: env.isProduction,
+        siteUrl: env.siteUrl,
+        nonce,
+      }),
+    )) {
+      response.headers.set(key, value);
+    }
     response.headers.set('Cache-Control', 'private, no-store');
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   }
   return response;
+}
+
+/**
+ * Decide se a rota é uma página do painel, onde a CSP leva nonce.
+ *
+ * @param pathname - Caminho da requisição.
+ * @returns `true` para `/admin-dashboard` e seus filhos.
+ */
+export function needsScriptNonce(pathname: string): boolean {
+  return (
+    pathname === '/admin-dashboard' || pathname.startsWith('/admin-dashboard/')
+  );
 }
 
 /** Seleciona caminhos que exigem sessão, incluindo os protegidos com extensão. */

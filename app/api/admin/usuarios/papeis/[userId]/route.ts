@@ -12,8 +12,10 @@ import { revokeAdminRole, RoleMutationError } from '@/lib/admin/roles';
 import { env } from '@/lib/env';
 import { apiErrorResponse } from '@/lib/utils/api-response';
 
+// Mesma regra da rota de atribuicao: forma hexadecimal, sem exigir versao e
+// variante RFC, e caixa normalizada para a comparacao com a conta raiz.
 const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function DELETE(
   request: Request,
@@ -25,7 +27,7 @@ export async function DELETE(
   }
 
   const params = await context.params;
-  const targetUserId = params?.userId?.trim();
+  const targetUserId = params?.userId?.trim().toLowerCase();
 
   if (!targetUserId || !UUID_REGEX.test(targetUserId)) {
     return NextResponse.json(
@@ -37,7 +39,7 @@ export async function DELETE(
     );
   }
 
-  const rootAdminId = env.adminUserId.trim();
+  const rootAdminId = env.adminUserId.trim().toLowerCase();
   if (rootAdminId && targetUserId === rootAdminId) {
     return NextResponse.json(
       {

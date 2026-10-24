@@ -8,13 +8,123 @@
 
 import { NextResponse } from 'next/server';
 import { assertAdminApiAuth, type AdminRole } from '@/lib/admin/auth';
+import { listAdminOperadores } from '@/lib/admin/operators';
 import { assignAdminRole, RoleMutationError } from '@/lib/admin/roles';
 import { env } from '@/lib/env';
 import { apiErrorResponse } from '@/lib/utils/api-response';
 
+// Forma 8-4-4-4-12 em hexadecimal. Versao e variante RFC nao entram na
+// validacao: o tipo `uuid` do Postgres aceita qualquer hexadecimal e a conta
+// raiz do projeto usa um identificador fora do padrao v4. Quem garante que o
+// usuario existe e a RPC, que falha fechada com P0002.
 const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ALLOWED_ROLES: AdminRole[] = ['admin', 'editor', 'revisor'];
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 50;
+
+function parsePageLimit(
+  searchParams: URLSearchParams,
+): { page: number; limit: number } | NextResponse {
+  const pageValues = searchParams.getAll('page');
+  const limitValues = searchParams.getAll('limit');
+
+  if (pageValues.length > 1 || limitValues.length > 1) {
+    return NextResponse.json(
+      {
+        error: 'invalid_params',
+        message: 'Parametros duplicados nao sao permitidos.',
+      },
+      { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+    );
+  }
+
+  const pageRaw = pageValues[0] ?? '';
+  const limitRaw = limitValues[0] ?? '';
+
+  let page: number;
+  if (pageRaw === '') {
+    page = DEFAULT_PAGE;
+  } else if (!/^\d+$/.test(pageRaw)) {
+    return NextResponse.json(
+      { error: 'invalid_page', message: 'Pagina invalida.' },
+      { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+    );
+  } else {
+    page = Number(pageRaw);
+    if (!Number.isSafeInteger(page) || page < 1) {
+      return NextResponse.json(
+        { error: 'invalid_page', message: 'Pagina deve ser maior que zero.' },
+        { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+      );
+    }
+  }
+
+  let limit: number;
+  if (limitRaw === '') {
+    limit = DEFAULT_LIMIT;
+  } else if (!/^\d+$/.test(limitRaw)) {
+    return NextResponse.json(
+      { error: 'invalid_limit', message: 'Limite invalido.' },
+      { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+    );
+  } else {
+    limit = Number(limitRaw);
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > MAX_LIMIT) {
+      return NextResponse.json(
+        {
+          error: 'invalid_limit',
+          message: `Limite deve estar entre 1 e ${MAX_LIMIT}.`,
+        },
+        { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+      );
+    }
+  }
+
+  if ((page - 1) * limit > 2147483647) {
+    return NextResponse.json(
+      {
+        error: 'invalid_page',
+        message: 'Pagina excede o limite maximo suportado.',
+      },
+      { status: 400, headers: { 'Cache-Control': 'private, no-store' } },
+    );
+  }
+
+  return { page, limit };
+}
+
+export async function GET(request: Request) {
+  const auth = await assertAdminApiAuth(request, 'admin');
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  const parsed = parsePageLimit(new URL(request.url).searchParams);
+  if (parsed instanceof NextResponse) {
+    return parsed;
+  }
+  const { page, limit } = parsed;
+
+  try {
+    const data = await listAdminOperadores({
+      page,
+      limit,
+      actorRole: auth.role,
+    });
+    return NextResponse.json(data, {
+      status: 200,
+      headers: { 'Cache-Control': 'private, no-store' },
+    });
+  } catch {
+    return apiErrorResponse(
+      503,
+      'role_list_failed',
+      'Falha ao listar operadores administrativos.',
+    );
+  }
+}
 
 export async function POST(request: Request) {
   const auth = await assertAdminApiAuth(request, 'admin');
@@ -24,7 +134,11 @@ export async function POST(request: Request) {
 
   let body: Record<string, unknown>;
   try {
-    body = await request.json();
+    const parsed: unknown = await request.json();
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('invalid_body');
+    }
+    body = parsed as Record<string, unknown>;
   } catch {
     return NextResponse.json(
       { error: 'invalid_json', message: 'Corpo da requisicao invalido.' },
@@ -32,7 +146,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const targetUserId = String(body.userId || '').trim();
+  // Normaliza a caixa: o Postgres compara uuid sem distincao de caixa, e a
+  // guarda da conta raiz precisa comparar o mesmo valor que chega ao banco.
+  const targetUserId = String(body.userId || '')
+    .trim()
+    .toLowerCase();
   const targetRole = String(body.role || '').trim() as AdminRole;
 
   if (!UUID_REGEX.test(targetUserId)) {
@@ -57,7 +175,7 @@ export async function POST(request: Request) {
   }
 
   // A conta raiz permanente nao pode ser rebaixada ou sobrescrita via banco
-  const rootAdminId = env.adminUserId.trim();
+  const rootAdminId = env.adminUserId.trim().toLowerCase();
   if (rootAdminId && targetUserId === rootAdminId) {
     return NextResponse.json(
       {
